@@ -1,0 +1,451 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uanify MES · Control de Producción y Tablero Andon | Planta Sombreros San Pancho</title>
+  <meta name="description" content="Sistema MES y Tablero Andon Digital para Fábrica de Sombreros y Accesorios en San Francisco del Rincón, Guanajuato. Digitalización de planta, control OEE y trazabilidad en tiempo real.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="industrial-theme">
+  <!-- Top Global Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-container">
+        <img src="assets/logo-uanify.svg" alt="Uanify MES" class="brand-logo">
+      </div>
+      <div class="plant-meta">
+        <span class="plant-tag">PLANTA SAN PANCHO #1</span>
+        <span class="live-pill active">
+          <span class="pulse-dot"></span> EN VIVO · EDGE GATEWAY LOCAL
+        </span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <nav class="nav-tabs" id="mainNav">
+        <button class="nav-btn active" data-tab="andon">
+          <span class="tab-icon">📺</span>
+          <span class="tab-label">Tablero Andon (Piso)</span>
+        </button>
+        <button class="nav-btn" data-tab="terminal">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-label">Terminal / Pedal (Prensas)</span>
+        </button>
+        <button class="nav-btn" data-tab="engineer">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">Ingeniería & OEE</span>
+        </button>
+        <button class="nav-btn" data-tab="executive">
+          <span class="tab-icon">💼</span>
+          <span class="tab-label">Dirección (Edmundo)</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <div class="shift-badge">
+        <span class="shift-label">TURNO 1</span>
+        <span class="shift-clock" id="liveClock">00:00:00</span>
+      </div>
+      <button class="sound-toggle" id="soundToggle" title="Sonido industrial (Beep de conteo)">
+        🔊 <span class="sound-text">Audio ON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-content">
+
+    <!-- TAB 1: TABLERO ANDON DE PLANTA (MODO PANTALLA TV DE PISO) -->
+    <section class="view-panel active" id="view-andon">
+      <div class="view-hero-bar">
+        <div>
+          <h1 class="view-title">Tablero Andon Digital · Nave Central</h1>
+          <p class="view-subtitle">Sustituto digital en tiempo real de los pizarrones físicos en estaciones de trabajo</p>
+        </div>
+        <div class="kpi-banner">
+          <div class="banner-stat">
+            <span class="stat-caption">Meta Turno</span>
+            <span class="stat-val" id="andonGoalTotal">850 pzas</span>
+          </div>
+          <div class="banner-stat accent">
+            <span class="stat-caption">Producidas</span>
+            <span class="stat-val" id="andonProducedTotal">612 pzas</span>
+          </div>
+          <div class="banner-stat">
+            <span class="stat-caption">Ritmo / Takt</span>
+            <span class="stat-val highlight" id="andonTaktTime">42 seg/pza</span>
+          </div>
+          <div class="banner-stat">
+            <span class="stat-caption">Eficiencia Global</span>
+            <span class="stat-val success" id="andonGlobalOee">88.4%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Estaciones de la Planta de Sombreros -->
+      <div class="stations-grid" id="stationsGrid">
+        <!-- Generado dinámicamente en JS con las 6 etapas reales -->
+      </div>
+
+      <!-- Hora por Hora Breakdown -->
+      <div class="hourly-strip card-glass">
+        <div class="strip-header">
+          <h3>Progreso Hora por Hora (Turno Matutino 07:00 - 15:30)</h3>
+          <span class="badge-subtle">Actualización automática cada 10s</span>
+        </div>
+        <div class="hourly-bars" id="hourlyBars">
+          <!-- Horas generadas por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TERMINAL DE OPERARIO & PRENSAS (PEDAL POKA-YOKE / SIMULADOR) -->
+    <section class="view-panel" id="view-terminal">
+      <div class="terminal-layout">
+        <!-- Panel Izquierdo: Selección y Contexto de Máquina -->
+        <div class="terminal-sidebar card-glass">
+          <div class="station-selector">
+            <label class="field-label">Estación Actual:</label>
+            <select id="terminalStationSelect" class="custom-select">
+              <option value="prensas" selected>Prensa Hormado #2 (Vapor & Calor)</option>
+              <option value="apresto">Engomado & Apresto #1</option>
+              <option value="corte">Corte & Planchado de Falda</option>
+              <option value="ribete">Ribeteado & Tafilete (Costura)</option>
+              <option value="adorno">Toquilla, Adorno & Acabado Final</option>
+              <option value="empaque">Inspección de Calidad & Empaque</option>
+            </select>
+          </div>
+
+          <div class="model-badge-box">
+            <span class="model-badge-tag">LOTE EN PRODUCCIÓN</span>
+            <h3 class="model-title" id="terminalModel">Sombrero Fedora Fieltro Lana 4X</h3>
+            <p class="model-sku">SKU: FED-L4X-BLK-58 | Talla: 58 (7 1/4) | Color: Negro Mate</p>
+          </div>
+
+          <div class="station-live-indicators">
+            <div class="indicator-row">
+              <span>Operario en Puesto:</span>
+              <strong id="terminalOperator">Juan Manuel Pérez (P-04)</strong>
+            </div>
+            <div class="indicator-row">
+              <span>Meta de la Estación:</span>
+              <strong>140 pzas / turno</strong>
+            </div>
+            <div class="indicator-row">
+              <span>Producidas en este puesto:</span>
+              <strong class="color-cyan" id="terminalProduced">98 pzas</strong>
+            </div>
+            <div class="indicator-row">
+              <span>Mermas / Defectos:</span>
+              <strong class="color-red" id="terminalScrap">3 pzas</strong>
+            </div>
+            <div class="indicator-row">
+              <span>Estado Máquina:</span>
+              <span class="badge-status status-running" id="terminalMachineStatus">OPERANDO NORMAL</span>
+            </div>
+          </div>
+
+          <div class="hardware-note">
+            <span class="hw-icon">🔌</span>
+            <div>
+              <strong>Hardware Compatible en Planta:</strong>
+              <p>Simulador táctil. En piso se conecta a pedal mecánico de prensas o botonera industrial IP65 vía ESP32 / Ethernet.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Central: Gran Simulador de Conteo Ergonómico (Pulsador/Pedal) -->
+        <div class="terminal-main card-glass">
+          <div class="timer-display">
+            <span class="timer-label">Tiempo de Ciclo Actual</span>
+            <div class="cycle-time" id="cycleStopwatch">00:24.8</div>
+            <span class="timer-target">Meta estándar: 28 seg/pza</span>
+          </div>
+
+          <!-- EL BOTÓN GIGANTE / SIMULADOR DE PEDAL -->
+          <div class="pedal-action-container">
+            <button class="pedal-btn" id="pedalBtn" aria-label="Registrar pieza producida">
+              <div class="pedal-inner">
+                <span class="pedal-icon">🥾</span>
+                <span class="pedal-title">PISAR PEDAL / REGISTRAR</span>
+                <span class="pedal-subtitle">+1 Sombrero Prensado OK</span>
+                <span class="pedal-counter" id="pedalCounterVisual">98</span>
+              </div>
+            </button>
+            <p class="pedal-shortcut">💡 Atajo de teclado: Presiona <kbd>ESPACIO</kbd> o <kbd>ENTER</kbd> para simular el pedal</p>
+          </div>
+
+          <!-- Botones de Acción Secundaria (Defecto y Paro) -->
+          <div class="secondary-actions">
+            <button class="action-btn btn-scrap" id="btnReportScrap">
+              <span class="btn-icon">⚠️</span>
+              <span class="btn-text">
+                <strong>Reportar Defecto / Merma</strong>
+                <small>Quemado, roto, manchado</small>
+              </span>
+            </button>
+            <button class="action-btn btn-stop" id="btnReportStop">
+              <span class="btn-icon">🛑</span>
+              <span class="btn-text">
+                <strong>Paro de Máquina / Asistencia</strong>
+                <small>Cambio de horma, vapor, falla</small>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CONSOLA DEL INGENIERO DE PRODUCCIÓN -->
+    <section class="view-panel" id="view-engineer">
+      <div class="view-hero-bar">
+        <div>
+          <h1 class="view-title">Consola de Control de Ingeniería Industrial</h1>
+          <p class="view-subtitle">Herramientas analíticas para balanceo de líneas, cálculo de OEE y eliminación de cuellos de botella</p>
+        </div>
+        <div class="actions-right">
+          <button class="btn-primary" id="btnSimulateShift">⚡ Simular +1 Hora de Producción</button>
+          <button class="btn-secondary" id="btnResetSimulation">🔄 Reiniciar Datos Turno</button>
+        </div>
+      </div>
+
+      <!-- OEE Breakdown 3 Pilares -->
+      <div class="oee-summary-grid">
+        <div class="oee-card card-glass">
+          <div class="oee-header">
+            <span>DISPONIBILIDAD (A)</span>
+            <span class="oee-badge" id="oeeAvailBadge">94.2%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill fill-cyan" style="width: 94.2%;"></div></div>
+          <p class="oee-detail">Tiempo productivo real vs. programado (Paros por cambio de molde: 18 min)</p>
+        </div>
+
+        <div class="oee-card card-glass">
+          <div class="oee-header">
+            <span>RENDIMIENTO / EFICIENCIA (P)</span>
+            <span class="oee-badge" id="oeePerfBadge">91.8%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width: 91.8%;"></div></div>
+          <p class="oee-detail">Velocidad real de ciclo vs. tiempo estándar de ingeniería (Takt: 42s)</p>
+        </div>
+
+        <div class="oee-card card-glass">
+          <div class="oee-header">
+            <span>CALIDAD (Q)</span>
+            <span class="oee-badge" id="oeeQualBadge">97.6%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill fill-purple" style="width: 97.6%;"></div></div>
+          <p class="oee-detail">Piezas buenas a la primera sin retrabajo (15 mermas de 627 procesadas)</p>
+        </div>
+
+        <div class="oee-card card-glass oee-master">
+          <div class="oee-header">
+            <span class="master-title">OEE GLOBAL DE PLANTA</span>
+            <span class="oee-score" id="oeeGlobalScore">84.4%</span>
+          </div>
+          <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. mes anterior en papel.</p>
+        </div>
+      </div>
+
+      <!-- Visualizador de Balanceo de Líneas & Cuellos de Botella -->
+      <div class="engineer-grid">
+        <div class="card-glass bottleneck-card">
+          <div class="card-head">
+            <h3>Detección de Cuellos de Botella (Work In Progress - WIP en Espera)</h3>
+            <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
+          </div>
+          <p class="section-desc">Muestra la acumulación de piezas esperando entre cada etapa para balancear personal.</p>
+          <div class="pipeline-viz" id="pipelineViz">
+            <!-- Renderizado dinámico -->
+          </div>
+        </div>
+
+        <!-- Bitácora de Paros Recientes -->
+        <div class="card-glass downtime-card">
+          <div class="card-head">
+            <h3>Bitácora de Paros de Máquina (Hoy)</h3>
+            <span class="badge-subtle">Cálculo de minutos perdidos</span>
+          </div>
+          <div class="downtime-table-wrapper">
+            <table class="data-table" id="downtimeTable">
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Estación</th>
+                  <th>Causa de Paro</th>
+                  <th>Duración</th>
+                  <th>Impacto</th>
+                </tr>
+              </thead>
+              <tbody id="downtimeTbody">
+                <!-- Inyectado por JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: DASHBOARD EJECUTIVO PARA EDMUNDO (DIRECCIÓN) -->
+    <section class="view-panel" id="view-executive">
+      <div class="view-hero-bar">
+        <div>
+          <h1 class="view-title">Dashboard Directivo · Visión de Negocio & ROI</h1>
+          <p class="view-subtitle">Traducción de métricas de piso de producción a valor financiero y cumplimiento de entregas</p>
+        </div>
+        <div class="badge-executive">Acceso Dirección General · Confidencial</div>
+      </div>
+
+      <div class="exec-kpi-grid">
+        <div class="exec-card card-glass">
+          <span class="exec-label">VALOR DE PRODUCCIÓN DEL DÍA</span>
+          <div class="exec-metric color-green" id="execRevenueValue">$275,400 MXN</div>
+          <span class="exec-trend">↑ 612 sombreros terminados @ $450 prom.</span>
+        </div>
+
+        <div class="exec-card card-glass">
+          <span class="exec-label">CUMPLIMIENTO DE PEDIDOS B2B</span>
+          <div class="exec-metric color-cyan" id="execFulfillment">94.8%</div>
+          <span class="exec-trend">14 pedidos de mayoristas en ruta a tiempo</span>
+        </div>
+
+        <div class="exec-card card-glass">
+          <span class="exec-label">COSTO DE MERMA / DESPERDICIO</span>
+          <div class="exec-metric color-red" id="execScrapCost">$6,750 MXN</div>
+          <span class="exec-trend">15 piezas defectuosas (2.4% merma)</span>
+        </div>
+
+        <div class="exec-card card-glass">
+          <span class="exec-label">HORAS AHORRADAS EN REPORTES</span>
+          <div class="exec-metric color-purple" id="execHoursSaved">2.5 hrs/día</div>
+          <span class="exec-trend">Eliminación de captura en papel y Excel</span>
+        </div>
+      </div>
+
+      <!-- Comparativa Business Case Uanify MES -->
+      <div class="exec-insights-grid">
+        <div class="card-glass roi-comparison">
+          <h3>Retorno de Inversión (ROI) Estimado para la Planta</h3>
+          <div class="roi-columns">
+            <div class="roi-col before">
+              <h4>Antes (Papel y Pizarrones Físicos)</h4>
+              <ul>
+                <li>❌ Datos desfasados 24 horas</li>
+                <li>❌ Paros no registrados ni analizados</li>
+                <li>❌ 4.5% de merma no rastreada</li>
+                <li>❌ 15 hrs semanales de oficina vaciando notas</li>
+                <li>❌ Incertidumbre en fechas de entrega B2B</li>
+              </ul>
+            </div>
+            <div class="roi-col after">
+              <h4>Con Uanify MES (Digitalización de Planta)</h4>
+              <ul>
+                <li>✅ <strong>Visibilidad en vivo 100%</strong> desde móvil y TV</li>
+                <li>✅ Detección temprana de cuellos de botella</li>
+                <li>✅ <strong>Reducción de merma a < 2%</strong> con Poka-Yoke</li>
+                <li>✅ Reportes OEE automáticos en 1 solo clic</li>
+                <li>✅ <strong>Payback estimado de implementación: 2.8 meses</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-glass quote-summary">
+          <h3>Propuesta Modular para la Reunión en San Pancho</h3>
+          <div class="tier-pill-box">
+            <div class="tier-item">
+              <span class="tier-badge">FASE 1 · QUICK WIN (4 Semanas)</span>
+              <strong>Captura en Prensas + Tablero Andon TV</strong>
+              <p>Lo que pide el ingeniero: Conteo con pedales/pulsadores, pantallas digitales y métricas hora por hora.</p>
+            </div>
+            <div class="tier-item highlight">
+              <span class="tier-badge">FASE 2 · CONTROL TOTAL (8 Semanas)</span>
+              <strong>MES Completo + Inventario de Materia Prima</strong>
+              <p>Descuento automático de lona, fieltro y piel al producir cada lote.</p>
+            </div>
+            <div class="tier-item">
+              <span class="tier-badge">FASE 3 · ECOSISTEMA B2B (12 Semanas)</span>
+              <strong>Portal de Pedidos de Mayoristas</strong>
+              <p>Los clientes levantan pedidos con status de fabricación en tiempo real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: REGISTRAR MERMA / DEFECTO -->
+  <div class="modal-backdrop" id="modalScrap">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <h3>⚠️ Reportar Defecto de Fabricación</h3>
+        <button class="modal-close" id="btnCloseScrapModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Selecciona el motivo del defecto para el sombrero actual:</p>
+        <div class="scrap-options">
+          <button class="scrap-opt-btn" data-reason="Quemado en prensa por exceso de calor/vapor">
+            🔥 Quemado por vapor/prensa
+          </button>
+          <button class="scrap-opt-btn" data-reason="Falla en engomado / mancha de apresto">
+            🧪 Mancha de apresto o químico
+          </button>
+          <button class="scrap-opt-btn" data-reason="Rotura de campana / ala rasgada">
+            ✂️ Rotura de ala o campana
+          </button>
+          <button class="scrap-opt-btn" data-reason="Costura chueca / tafilete torcido">
+            🧵 Costura o tafilete chueco
+          </button>
+          <button class="scrap-opt-btn" data-reason="Defecto en materia prima (fieltro/palma)">
+            📦 Defecto en materia prima
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REPORTAR PARO DE MÁQUINA -->
+  <div class="modal-backdrop" id="modalStop">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <h3>🛑 Registrar Paro de Línea</h3>
+        <button class="modal-close" id="btnCloseStopModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Indica la causa para detener el contador de tiempo productivo:</p>
+        <div class="stop-options">
+          <button class="stop-opt-btn" data-stop="Cambio de horma / molde de sombrero (SMED)">
+            🔧 Cambio de horma / molde (SMED)
+          </button>
+          <button class="stop-opt-btn" data-stop="Falta de presión de vapor en caldera">
+            💨 Falta de vapor / caldera baja
+          </button>
+          <button class="stop-opt-btn" data-stop="Falta de materia prima en estación">
+            📦 Falta de material en puesto
+          </button>
+          <button class="stop-opt-btn" data-stop="Falla mecánica / mantenimiento urgente">
+            ⚙️ Falla mecánica en prensa
+          </button>
+          <button class="stop-opt-btn" data-stop="Cambio de turno / comida de personal">
+            🥪 Descanso / cambio de turno
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/andon.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/engineer.js"></script>
+  <script src="js/executive.js"></script>
+</body>
+</html>
