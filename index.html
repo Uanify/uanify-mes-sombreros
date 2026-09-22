@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uanify MES · Control de Producción y Tablero Andon | Planta Sombreros San Pancho</title>
-  <meta name="description" content="Sistema MES y Tablero Andon Digital para Fábrica de Sombreros y Accesorios en San Francisco del Rincón, Guanajuato. Digitalización de planta, control OEE y trazabilidad en tiempo real.">
+  <title>Tombstone Hats MES · Control de Planta & Tablero Andon | San Francisco del Rincón</title>
+  <meta name="description" content="Sistema MES y Tablero Andon Digital para Planta de Sombreros y Texanas Tombstone Hats en San Francisco del Rincón, Guanajuato. Control OEE, prensas de vapor y trazabilidad en tiempo real.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,10 +16,10 @@
   <header class="app-header">
     <div class="header-left">
       <div class="brand-container">
-        <img src="assets/logo-uanify.svg" alt="Uanify MES" class="brand-logo">
+        <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
       </div>
       <div class="plant-meta">
-        <span class="plant-tag">PLANTA SAN PANCHO #1</span>
+        <span class="plant-tag">PLANTA MATRIZ · SAN FRANCISCO DEL RINCÓN</span>
         <span class="live-pill active">
           <span class="pulse-dot"></span> EN VIVO · EDGE GATEWAY LOCAL
         </span>
@@ -49,7 +49,7 @@
 
     <div class="header-right">
       <div class="shift-badge">
-        <span class="shift-label">TURNO 1</span>
+        <span class="shift-label">TURNO 1 · MATUTINO</span>
         <span class="shift-clock" id="liveClock">00:00:00</span>
       </div>
       <button class="sound-toggle" id="soundToggle" title="Sonido industrial (Beep de conteo)">
@@ -65,8 +65,8 @@
     <section class="view-panel active" id="view-andon">
       <div class="view-hero-bar">
         <div>
-          <h1 class="view-title">Tablero Andon Digital · Nave Central</h1>
-          <p class="view-subtitle">Sustituto digital en tiempo real de los pizarrones físicos en estaciones de trabajo</p>
+          <h1 class="view-title">Tablero Andon Digital · Nave Central Tombstone</h1>
+          <p class="view-subtitle">Sustituto digital en tiempo real de los pizarrones físicos de piso en San Francisco del Rincón</p>
         </div>
         <div class="kpi-banner">
           <div class="banner-stat">
@@ -74,7 +74,7 @@
             <span class="stat-val" id="andonGoalTotal">850 pzas</span>
           </div>
           <div class="banner-stat accent">
-            <span class="stat-caption">Producidas</span>
+            <span class="stat-caption">Texanas & Sombreros</span>
             <span class="stat-val" id="andonProducedTotal">612 pzas</span>
           </div>
           <div class="banner-stat">
@@ -88,16 +88,16 @@
         </div>
       </div>
 
-      <!-- Grid de Estaciones de la Planta de Sombreros -->
+      <!-- Grid de Estaciones de la Planta Tombstone -->
       <div class="stations-grid" id="stationsGrid">
-        <!-- Generado dinámicamente en JS con las 6 etapas reales -->
+        <!-- Generado dinámicamente en JS con las 6 etapas reales de Tombstone -->
       </div>
 
       <!-- Hora por Hora Breakdown -->
       <div class="hourly-strip card-glass">
         <div class="strip-header">
-          <h3>Progreso Hora por Hora (Turno Matutino 07:00 - 15:30)</h3>
-          <span class="badge-subtle">Actualización automática cada 10s</span>
+          <h3>Progreso Hora por Hora · Corrida Activa (07:00 - 15:30)</h3>
+          <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
         </div>
         <div class="hourly-bars" id="hourlyBars">
           <!-- Horas generadas por JS -->
@@ -111,21 +111,30 @@
         <!-- Panel Izquierdo: Selección y Contexto de Máquina -->
         <div class="terminal-sidebar card-glass">
           <div class="station-selector">
-            <label class="field-label">Estación Actual:</label>
+            <label class="field-label">Estación de Trabajo:</label>
             <select id="terminalStationSelect" class="custom-select">
-              <option value="prensas" selected>Prensa Hormado #2 (Vapor & Calor)</option>
-              <option value="apresto">Engomado & Apresto #1</option>
-              <option value="corte">Corte & Planchado de Falda</option>
-              <option value="ribete">Ribeteado & Tafilete (Costura)</option>
-              <option value="adorno">Toquilla, Adorno & Acabado Final</option>
-              <option value="empaque">Inspección de Calidad & Empaque</option>
+              <option value="prensas" selected>Prensa Hormado Tombstone #2 (Calor & Vapor)</option>
+              <option value="apresto">Engomado & Apresto Telar #1</option>
+              <option value="corte">Troquelado de Falda & Plancha</option>
+              <option value="ribete">Ribeteado & Tafilete Tombstone</option>
+              <option value="adorno">Toquillas, Plumas & Herrajes</option>
+              <option value="empaque">Inspección de Calidad & Cajas B2B</option>
             </select>
           </div>
 
           <div class="model-badge-box">
-            <span class="model-badge-tag">LOTE EN PRODUCCIÓN</span>
-            <h3 class="model-title" id="terminalModel">Sombrero Fedora Fieltro Lana 4X</h3>
-            <p class="model-sku">SKU: FED-L4X-BLK-58 | Talla: 58 (7 1/4) | Color: Negro Mate</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="model-badge-tag">CATÁLOGO OFICIAL TOMBSTONE</span>
+              <span style="font-size:11px; color:#F59E0B; font-weight:700;">$1,310 MXN</span>
+            </div>
+            <label class="field-label" style="margin-top:8px;">Modelo en Fabricación:</label>
+            <select id="tombstoneModelSelect" class="custom-select" style="background:#0F172A; border-color:#F59E0B;">
+              <option value="0">1000X Master Telar Denver</option>
+              <option value="1">1000X Master Telar El Viejonón</option>
+              <option value="2">1000X Master Telar Laredo F10</option>
+              <option value="3">1000X Master Telar Frontier F9</option>
+            </select>
+            <p class="model-sku" id="terminalModelSku" style="margin-top:6px;">SKU: TB-1000X-DNV-58 | Talla: 58 (7 1/4) | Telar Fino 1000X</p>
           </div>
 
           <div class="station-live-indicators">
@@ -143,7 +152,7 @@
             </div>
             <div class="indicator-row">
               <span>Mermas / Defectos:</span>
-              <strong class="color-red" id="terminalScrap">3 pzas</strong>
+              <strong class="color-red" id="terminalScrap">4 pzas</strong>
             </div>
             <div class="indicator-row">
               <span>Estado Máquina:</span>
@@ -154,8 +163,8 @@
           <div class="hardware-note">
             <span class="hw-icon">🔌</span>
             <div>
-              <strong>Hardware Compatible en Planta:</strong>
-              <p>Simulador táctil. En piso se conecta a pedal mecánico de prensas o botonera industrial IP65 vía ESP32 / Ethernet.</p>
+              <strong>Hardware Compatible en Planta Tombstone:</strong>
+              <p>Simulador táctil. En piso se enlaza a pedal mecánico de prensas térmicas o botonera industrial IP65 vía ESP32 / Ethernet.</p>
             </div>
           </div>
         </div>
@@ -164,8 +173,8 @@
         <div class="terminal-main card-glass">
           <div class="timer-display">
             <span class="timer-label">Tiempo de Ciclo Actual</span>
-            <div class="cycle-time" id="cycleStopwatch">00:24.8</div>
-            <span class="timer-target">Meta estándar: 28 seg/pza</span>
+            <div class="cycle-time" id="cycleStopwatch">00:26.0</div>
+            <span class="timer-target">Takt Time Estándar: 28 seg / hormado</span>
           </div>
 
           <!-- EL BOTÓN GIGANTE / SIMULADOR DE PEDAL -->
@@ -174,7 +183,7 @@
               <div class="pedal-inner">
                 <span class="pedal-icon">🥾</span>
                 <span class="pedal-title">PISAR PEDAL / REGISTRAR</span>
-                <span class="pedal-subtitle">+1 Sombrero Prensado OK</span>
+                <span class="pedal-subtitle">+1 Texana Tombstone OK</span>
                 <span class="pedal-counter" id="pedalCounterVisual">98</span>
               </div>
             </button>
@@ -187,14 +196,14 @@
               <span class="btn-icon">⚠️</span>
               <span class="btn-text">
                 <strong>Reportar Defecto / Merma</strong>
-                <small>Quemado, roto, manchado</small>
+                <small>Quemado en prensa, telar roto, costura</small>
               </span>
             </button>
             <button class="action-btn btn-stop" id="btnReportStop">
               <span class="btn-icon">🛑</span>
               <span class="btn-text">
                 <strong>Paro de Máquina / Asistencia</strong>
-                <small>Cambio de horma, vapor, falla</small>
+                <small>Cambio de horma Denver/Laredo, caldera</small>
               </span>
             </button>
           </div>
@@ -207,7 +216,7 @@
       <div class="view-hero-bar">
         <div>
           <h1 class="view-title">Consola de Control de Ingeniería Industrial</h1>
-          <p class="view-subtitle">Herramientas analíticas para balanceo de líneas, cálculo de OEE y eliminación de cuellos de botella</p>
+          <p class="view-subtitle">Herramientas analíticas para balanceo de líneas, cálculo de OEE y eliminación de cuellos de botella en Tombstone</p>
         </div>
         <div class="actions-right">
           <button class="btn-primary" id="btnSimulateShift">⚡ Simular +1 Hora de Producción</button>
@@ -223,7 +232,7 @@
             <span class="oee-badge" id="oeeAvailBadge">94.2%</span>
           </div>
           <div class="progress-track"><div class="progress-fill fill-cyan" style="width: 94.2%;"></div></div>
-          <p class="oee-detail">Tiempo productivo real vs. programado (Paros por cambio de molde: 18 min)</p>
+          <p class="oee-detail">Tiempo productivo real vs. programado (Cambio de hormas SMED: 14 min)</p>
         </div>
 
         <div class="oee-card card-glass">
@@ -238,18 +247,18 @@
         <div class="oee-card card-glass">
           <div class="oee-header">
             <span>CALIDAD (Q)</span>
-            <span class="oee-badge" id="oeeQualBadge">97.6%</span>
+            <span class="oee-badge" id="oeeQualBadge">97.8%</span>
           </div>
-          <div class="progress-track"><div class="progress-fill fill-purple" style="width: 97.6%;"></div></div>
-          <p class="oee-detail">Piezas buenas a la primera sin retrabajo (15 mermas de 627 procesadas)</p>
+          <div class="progress-track"><div class="progress-fill fill-purple" style="width: 97.8%;"></div></div>
+          <p class="oee-detail">Primeras calidades sin retrabajo (14 mermas de 626 piezas procesadas)</p>
         </div>
 
         <div class="oee-card card-glass oee-master">
           <div class="oee-header">
-            <span class="master-title">OEE GLOBAL DE PLANTA</span>
-            <span class="oee-score" id="oeeGlobalScore">84.4%</span>
+            <span class="master-title">OEE GLOBAL TOMBSTONE</span>
+            <span class="oee-score" id="oeeGlobalScore">84.5%</span>
           </div>
-          <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. mes anterior en papel.</p>
+          <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
         </div>
       </div>
 
@@ -260,7 +269,7 @@
             <h3>Detección de Cuellos de Botella (Work In Progress - WIP en Espera)</h3>
             <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
           </div>
-          <p class="section-desc">Muestra la acumulación de piezas esperando entre cada etapa para balancear personal.</p>
+          <p class="section-desc">Muestra la acumulación de piezas esperando entre cada etapa para balancear personal en planta.</p>
           <div class="pipeline-viz" id="pipelineViz">
             <!-- Renderizado dinámico -->
           </div>
@@ -296,29 +305,29 @@
     <section class="view-panel" id="view-executive">
       <div class="view-hero-bar">
         <div>
-          <h1 class="view-title">Dashboard Directivo · Visión de Negocio & ROI</h1>
+          <h1 class="view-title">Dashboard Directivo · Visión de Negocio Tombstone Hats</h1>
           <p class="view-subtitle">Traducción de métricas de piso de producción a valor financiero y cumplimiento de entregas</p>
         </div>
-        <div class="badge-executive">Acceso Dirección General · Confidencial</div>
+        <div class="badge-executive">Dirección General Tombstone · Confidencial</div>
       </div>
 
       <div class="exec-kpi-grid">
         <div class="exec-card card-glass">
           <span class="exec-label">VALOR DE PRODUCCIÓN DEL DÍA</span>
-          <div class="exec-metric color-green" id="execRevenueValue">$275,400 MXN</div>
-          <span class="exec-trend">↑ 612 sombreros terminados @ $450 prom.</span>
+          <div class="exec-metric color-green" id="execRevenueValue">$801,720 MXN</div>
+          <span class="exec-trend">↑ 612 texanas terminadas @ $1,310 prom. (Catálogo Tombstone)</span>
         </div>
 
         <div class="exec-card card-glass">
           <span class="exec-label">CUMPLIMIENTO DE PEDIDOS B2B</span>
           <div class="exec-metric color-cyan" id="execFulfillment">94.8%</div>
-          <span class="exec-trend">14 pedidos de mayoristas en ruta a tiempo</span>
+          <span class="exec-trend">14 pedidos de mayoristas y tiendas vaqueras en ruta a tiempo</span>
         </div>
 
         <div class="exec-card card-glass">
           <span class="exec-label">COSTO DE MERMA / DESPERDICIO</span>
-          <div class="exec-metric color-red" id="execScrapCost">$6,750 MXN</div>
-          <span class="exec-trend">15 piezas defectuosas (2.4% merma)</span>
+          <div class="exec-metric color-red" id="execScrapCost">$18,340 MXN</div>
+          <span class="exec-trend">14 piezas con defecto (2.2% merma controlada)</span>
         </div>
 
         <div class="exec-card card-glass">
@@ -331,26 +340,26 @@
       <!-- Comparativa Business Case Uanify MES -->
       <div class="exec-insights-grid">
         <div class="card-glass roi-comparison">
-          <h3>Retorno de Inversión (ROI) Estimado para la Planta</h3>
+          <h3>Retorno de Inversión (ROI) Estimado para Tombstone Hats</h3>
           <div class="roi-columns">
             <div class="roi-col before">
               <h4>Antes (Papel y Pizarrones Físicos)</h4>
               <ul>
                 <li>❌ Datos desfasados 24 horas</li>
-                <li>❌ Paros no registrados ni analizados</li>
+                <li>❌ Paros en prensas no registrados ni analizados</li>
                 <li>❌ 4.5% de merma no rastreada</li>
                 <li>❌ 15 hrs semanales de oficina vaciando notas</li>
-                <li>❌ Incertidumbre en fechas de entrega B2B</li>
+                <li>❌ Incertidumbre en fechas de entrega mayorista</li>
               </ul>
             </div>
             <div class="roi-col after">
               <h4>Con Uanify MES (Digitalización de Planta)</h4>
               <ul>
-                <li>✅ <strong>Visibilidad en vivo 100%</strong> desde móvil y TV</li>
-                <li>✅ Detección temprana de cuellos de botella</li>
+                <li>✅ <strong>Visibilidad en vivo 100%</strong> desde móvil, tablet y TV</li>
+                <li>✅ Detección temprana de cuellos de botella en hormado</li>
                 <li>✅ <strong>Reducción de merma a < 2%</strong> con Poka-Yoke</li>
                 <li>✅ Reportes OEE automáticos en 1 solo clic</li>
-                <li>✅ <strong>Payback estimado de implementación: 2.8 meses</strong></li>
+                <li>✅ <strong>Payback estimado de implementación: 2.1 meses</strong></li>
               </ul>
             </div>
           </div>
@@ -367,12 +376,12 @@
             <div class="tier-item highlight">
               <span class="tier-badge">FASE 2 · CONTROL TOTAL (8 Semanas)</span>
               <strong>MES Completo + Inventario de Materia Prima</strong>
-              <p>Descuento automático de lona, fieltro y piel al producir cada lote.</p>
+              <p>Descuento automático de telares, fieltro, tafiletes y toquillas al producir cada lote.</p>
             </div>
             <div class="tier-item">
               <span class="tier-badge">FASE 3 · ECOSISTEMA B2B (12 Semanas)</span>
               <strong>Portal de Pedidos de Mayoristas</strong>
-              <p>Los clientes levantan pedidos con status de fabricación en tiempo real.</p>
+              <p>Distribuidores y tiendas vaqueras levantan pedidos con status de fabricación en tiempo real.</p>
             </div>
           </div>
         </div>
@@ -385,25 +394,25 @@
   <div class="modal-backdrop" id="modalScrap">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>⚠️ Reportar Defecto de Fabricación</h3>
+        <h3>⚠️ Reportar Defecto de Fabricación · Tombstone</h3>
         <button class="modal-close" id="btnCloseScrapModal">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Selecciona el motivo del defecto para el sombrero actual:</p>
+        <p>Selecciona el motivo del defecto para la texana/sombrero actual:</p>
         <div class="scrap-options">
-          <button class="scrap-opt-btn" data-reason="Quemado en prensa por exceso de calor/vapor">
+          <button class="scrap-opt-btn" data-reason="Quemado en prensa de hormado por exceso de calor/vapor">
             🔥 Quemado por vapor/prensa
           </button>
-          <button class="scrap-opt-btn" data-reason="Falla en engomado / mancha de apresto">
+          <button class="scrap-opt-btn" data-reason="Falla en engomado / mancha de resina en telar">
             🧪 Mancha de apresto o químico
           </button>
-          <button class="scrap-opt-btn" data-reason="Rotura de campana / ala rasgada">
+          <button class="scrap-opt-btn" data-reason="Rotura de campana / ala rasgada al troquelar">
             ✂️ Rotura de ala o campana
           </button>
-          <button class="scrap-opt-btn" data-reason="Costura chueca / tafilete torcido">
+          <button class="scrap-opt-btn" data-reason="Costura chueca / tafilete torcido en badana">
             🧵 Costura o tafilete chueco
           </button>
-          <button class="scrap-opt-btn" data-reason="Defecto en materia prima (fieltro/palma)">
+          <button class="scrap-opt-btn" data-reason="Defecto en materia prima (telar master / fieltro)">
             📦 Defecto en materia prima
           </button>
         </div>
@@ -415,22 +424,22 @@
   <div class="modal-backdrop" id="modalStop">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>🛑 Registrar Paro de Línea</h3>
+        <h3>🛑 Registrar Paro de Línea · Tombstone</h3>
         <button class="modal-close" id="btnCloseStopModal">&times;</button>
       </div>
       <div class="modal-body">
         <p>Indica la causa para detener el contador de tiempo productivo:</p>
         <div class="stop-options">
-          <button class="stop-opt-btn" data-stop="Cambio de horma / molde de sombrero (SMED)">
+          <button class="stop-opt-btn" data-stop="Cambio de horma / molde (Denver, Viejonón, Laredo SMED)">
             🔧 Cambio de horma / molde (SMED)
           </button>
           <button class="stop-opt-btn" data-stop="Falta de presión de vapor en caldera">
             💨 Falta de vapor / caldera baja
           </button>
-          <button class="stop-opt-btn" data-stop="Falta de materia prima en estación">
+          <button class="stop-opt-btn" data-stop="Falta de campanas o telares en estación">
             📦 Falta de material en puesto
           </button>
-          <button class="stop-opt-btn" data-stop="Falla mecánica / mantenimiento urgente">
+          <button class="stop-opt-btn" data-stop="Falla mecánica en prensa o troqueladora">
             ⚙️ Falla mecánica en prensa
           </button>
           <button class="stop-opt-btn" data-stop="Cambio de turno / comida de personal">

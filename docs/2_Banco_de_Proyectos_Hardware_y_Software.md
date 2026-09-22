@@ -1,11 +1,11 @@
-# 🏭 Uanify × Fábrica de Sombreros — Banco de Proyectos
-## Documento Vivo de Ideas e Implementaciones Hardware/Software
+# 🤠 Uanify × Tombstone Hats — Banco de Proyectos de Planta
+## Documento Vivo de Soluciones Hardware / Software (Industria 4.0)
 
-> **Estado:** 🟡 En construcción — Pre-visita de planta  
+> **Cliente:** Tombstone Hats ([tombstone.mx](https://tombstone.mx/)) — San Francisco del Rincón, Gto.  
+> **Estado:** 🟡 Listo para validación en visita de planta  
 > **Última actualización:** Septiembre 2026  
-> **Próximo hito:** Visita a planta (Martes o Jueves — San Pancho, ~10:30-11:00 AM)  
-> **Contacto cliente:** Amigo del equipo — Director / Área de Dirección  
-> **Ingeniero clave:** Ingeniero de Producción (mero mero — definirá specs del Proyecto 1)
+> **Contacto Dirección:** Edmundo ("Mundo") | **Contacto Planta:** Ingeniero de Producción  
+> **Prototipo Live:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
 ---
 

@@ -1,6 +1,6 @@
 ﻿/**
  * UANIFY MES · TERMINAL DE PUESTO & SIMULADOR DE PEDAL
- * Ergonomic pulse counting, cycle timer, scrap and stoppage reporting
+ * Personalizado para Tombstone Hats
  */
 
 window.initTerminalView = function() {
@@ -9,8 +9,22 @@ window.initTerminalView = function() {
   const terminalProduced = document.getElementById('terminalProduced');
   const terminalScrap = document.getElementById('terminalScrap');
   const stationSelect = document.getElementById('terminalStationSelect');
+  const modelSelect = document.getElementById('tombstoneModelSelect');
+  const modelSkuEl = document.getElementById('terminalModelSku');
 
-  // Cycle Timer
+  // Selector de modelos Tombstone
+  if (modelSelect) {
+    modelSelect.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.value, 10);
+      UanifyState.selectedModelIndex = idx;
+      const model = UanifyState.activeModels[idx];
+      if (model && modelSkuEl) {
+        modelSkuEl.textContent = `SKU: ${model.sku} | Talla: ${model.size} | ${model.material}`;
+      }
+    });
+  }
+
+  // Cronómetro de ciclo
   let cycleStart = Date.now();
   let timerInterval = null;
 
@@ -28,31 +42,27 @@ window.initTerminalView = function() {
   }
   runCycleStopwatch();
 
-  // Register Piece Action
+  // Registro de pieza (Pedal)
   function triggerPieceRegistration() {
     IndustrialAudio.playPedalClick();
 
-    // Haptic/visual button push
     if (pedalBtn) {
       pedalBtn.classList.add('pedal-pressed');
       setTimeout(() => pedalBtn.classList.remove('pedal-pressed'), 120);
     }
 
-    // Find active station
     const stId = stationSelect ? stationSelect.value : 'prensas';
     const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[1];
 
     station.produced++;
     UanifyState.producedTotal++;
 
-    // Increment current hour in demo
+    // Incrementar en hora activa
     UanifyState.hourlyData[6].produced++;
 
-    // Update UI
     if (counterVisual) counterVisual.textContent = station.produced;
     if (terminalProduced) terminalProduced.textContent = `${station.produced} pzas`;
 
-    // Reset cycle stopwatch
     runCycleStopwatch();
 
     EventBus.emit('piece-registered', { station, total: UanifyState.producedTotal });
@@ -62,11 +72,10 @@ window.initTerminalView = function() {
     pedalBtn.addEventListener('click', triggerPieceRegistration);
   }
 
-  // Keyboard shortcut (Space / Enter) when in terminal view
+  // Atajo de teclado ESPACIO / ENTER
   window.addEventListener('keydown', (e) => {
     if (UanifyState.activeTab === 'terminal') {
       if (e.code === 'Space' || e.code === 'Enter') {
-        // Prevent page scrolling on space
         if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'INPUT') {
           e.preventDefault();
           triggerPieceRegistration();
@@ -75,7 +84,7 @@ window.initTerminalView = function() {
     }
   });
 
-  // Station Change
+  // Cambio de estación
   if (stationSelect) {
     stationSelect.addEventListener('change', (e) => {
       const selected = UanifyState.stations.find(s => s.id === e.target.value);
@@ -89,7 +98,7 @@ window.initTerminalView = function() {
     });
   }
 
-  // MODALS LOGIC
+  // Modales
   const modalScrap = document.getElementById('modalScrap');
   const btnReportScrap = document.getElementById('btnReportScrap');
   const btnCloseScrap = document.getElementById('btnCloseScrapModal');
@@ -99,30 +108,20 @@ window.initTerminalView = function() {
   const btnCloseStop = document.getElementById('btnCloseStopModal');
 
   if (btnReportScrap && modalScrap) {
-    btnReportScrap.addEventListener('click', () => {
-      modalScrap.classList.add('active');
-    });
+    btnReportScrap.addEventListener('click', () => modalScrap.classList.add('active'));
   }
-
   if (btnCloseScrap && modalScrap) {
-    btnCloseScrap.addEventListener('click', () => {
-      modalScrap.classList.remove('active');
-    });
+    btnCloseScrap.addEventListener('click', () => modalScrap.classList.remove('active'));
   }
 
   if (btnReportStop && modalStop) {
-    btnReportStop.addEventListener('click', () => {
-      modalStop.classList.add('active');
-    });
+    btnReportStop.addEventListener('click', () => modalStop.classList.add('active'));
   }
-
   if (btnCloseStop && modalStop) {
-    btnCloseStop.addEventListener('click', () => {
-      modalStop.classList.remove('active');
-    });
+    btnCloseStop.addEventListener('click', () => modalStop.classList.remove('active'));
   }
 
-  // Scrap Option Click
+  // Click opción de merma
   document.querySelectorAll('.scrap-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const reason = btn.getAttribute('data-reason');
@@ -137,11 +136,11 @@ window.initTerminalView = function() {
       modalScrap.classList.remove('active');
 
       EventBus.emit('scrap-registered', { station, reason });
-      alert(`⚠️ Defecto registrado en ${station.name}:\n"${reason}"\n\nRegistrado en base de datos local y contabilizado para OEE.`);
+      alert(`⚠️ Defecto registrado en ${station.name}:\n"${reason}"\n\nDescontado de nómina de destajo y registrado en OEE.`);
     });
   });
 
-  // Stop Option Click
+  // Click opción de paro
   document.querySelectorAll('.stop-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const stopReason = btn.getAttribute('data-stop');
@@ -151,7 +150,6 @@ window.initTerminalView = function() {
       const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[1];
       station.status = 'stopped';
 
-      // Log in downtimes
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       UanifyState.downtimes.unshift({
@@ -171,7 +169,7 @@ window.initTerminalView = function() {
       }
 
       EventBus.emit('status-updated');
-      alert(`🛑 PARO DE LÍNEA REGISTRADO:\n${station.name}\nMotivo: "${stopReason}"\n\nEl Tablero Andon ha cambiado a ROJO y la alerta fue enviada al Ingeniero.`);
+      alert(`🛑 PARO DE LÍNEA REGISTRADO EN TOMBSTONE:\n${station.name}\nMotivo: "${stopReason}"\n\nEl Tablero Andon cambió a ROJO y la alerta fue enviada al Ingeniero.`);
     });
   });
 };

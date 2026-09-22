@@ -1,10 +1,11 @@
-# 🏭 Uanify × Planta Manufacturera de Sombreros
-## Estrategia de Descubrimiento y Levantamiento de Requerimientos
+# 🤠 Uanify × Tombstone Hats (San Francisco del Rincón)
+## Estrategia de Descubrimiento y Levantamiento de Requerimientos de Planta
 
 > **Rol:** Socio técnico & Consultor Senior — Uanify  
 > **Fecha:** Septiembre 2026  
-> **Cliente:** [Planta de Producción de Sombreros — Confidencial]  
-> **Objetivo:** Identificar cuellos de botella reales → Diseñar propuesta técnica y comercial irresistible
+> **Cliente:** Tombstone Hats ([tombstone.mx](https://tombstone.mx/)) — Planta Matriz San Francisco del Rincón, Gto.  
+> **Contacto Dirección:** Edmundo ("Mundo") | **Contacto Planta:** Ingeniero de Producción  
+> **Objetivo:** Identificar cuellos de botella reales → Diseñar propuesta técnica y comercial irresistible (MES, IoT, Inventarios)
 
 ---
 
