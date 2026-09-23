@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -118,7 +118,7 @@
           <div class="model-badge-box">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="model-badge-tag">LOTE MADRE (60 PIEZAS)</span>
-              <span style="font-size:11px; color:#F59E0B; font-weight:700;">Lote L-1094</span>
+              <span style="font-size:11px; color:#F59E0B; font-weight:700;">Lote 1094 · Horma: Roper</span>
             </div>
             <label class="field-label" style="margin-top:8px;">Modelo en Fabricación:</label>
             <select id="tombstoneModelSelect" class="custom-select" style="background:#0F172A; border-color:#F59E0B;">
@@ -150,18 +150,22 @@
           </div>
 
           <div class="station-selector">
-            <label class="field-label">Estación de Trabajo Actual:</label>
+            <label class="field-label">Departamento Actual (14 puntos reales):</label>
             <select id="terminalStationSelect" class="custom-select">
-              <option value="prensas" selected>Prensas de Hormado (Hormas Denver/Laredo)</option>
-              <option value="corte">Tendido & Corte de Cuadros</option>
-              <option value="alambrado">Alambrado & Costura de Ala</option>
-              <option value="dope">Englobado & Baño Dope (Camas)</option>
-              <option value="alineado">Hidráulico & Fraccionado (Rampa)</option>
-              <option value="refaldeado">Refaldeado & Recorte de Falda</option>
-              <option value="pintura">Pintura, Secado & Brillo</option>
-              <option value="adorno">Adorno 1 (Pegado Tafilete & Toquilla)</option>
-              <option value="calidad">Inspección Final & Segundas</option>
-              <option value="embarque">Producto Terminado & Embarque</option>
+              <option value="corte">D-01 · Corte de Cuadros</option>
+              <option value="alambrado">D-02 · Alambrado de Ala</option>
+              <option value="dope">D-03 · Englopado / Baño de Dope (Camas)</option>
+              <option value="refuerzos">D-04 · Refuerzos (Pintola / Brocha)</option>
+              <option value="calidad1">C-01 · Calidad 1 (Post-Dope / Refuerzos)</option>
+              <option value="prensas" selected>D-05 · Prensas Hormado (Copa y Falda)</option>
+              <option value="recortes">D-06 · Recorte y Refaldeado</option>
+              <option value="pintura">D-07 · Pintura y Secado</option>
+              <option value="calidad2">C-02 · Calidad 2 (Post-Pintura)</option>
+              <option value="brillo">D-08 · Brillo / Acabado</option>
+              <option value="temperado">D-09 · Temperado / Refaldear</option>
+              <option value="adorno">D-10 · Adorno 1 (Tafilete + Toquilla)</option>
+              <option value="calidad3">C-03 · Calidad 3 (Producto Terminado)</option>
+              <option value="embarque">D-11 · Embarque y Vale COMPAC</option>
             </select>
           </div>
 
@@ -318,6 +322,46 @@
         </div>
       </div>
 
+      <!-- Inventario de Hormas / Moldes -->
+      <div class="card-glass" style="margin-top:20px; padding:20px;">
+        <div class="card-head">
+          <h3>📋 Inventario de Hormas / Moldes (Roper, Chaparral, Viejón, Laredo, Frontier)</h3>
+          <span class="badge-subtle">Vinculación a Prensas para Planeación (PPSP)</span>
+        </div>
+        <p class="section-desc">Identificadas por color y forma. Se asignan a prensas de vapor e hidráulicas según el modelo en fabricación.</p>
+        <div class="downtime-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Nombre de Horma</th><th>Color ID</th><th>Prensa Asignada</th><th>Estado</th></tr>
+            </thead>
+            <tbody id="hormasInventoryTable">
+              <!-- Inyectado por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Matriz de Materiales con Cambio Masivo -->
+      <div class="card-glass" style="margin-top:20px; padding:20px;">
+        <div class="card-head" style="flex-wrap:wrap; gap:10px;">
+          <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+          <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
+            🔄 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
+          </button>
+        </div>
+        <p class="section-desc">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic. Sin editar ficha por ficha.</p>
+        <div class="downtime-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
+            </thead>
+            <tbody id="materialMatrixBody">
+              <!-- Inyectado por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Bitácora de Paros Recientes -->
       <div class="card-glass downtime-card" style="margin-top:20px;">
         <div class="card-head">
@@ -385,8 +429,8 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div>
             <span class="badge-subtle" style="color:#00E5FF; background:rgba(0,229,255,0.15);">MÓDULO DE INTEGRACIÓN COMPAC (CONTPAQi)</span>
-            <h3 style="font-family:'Outfit'; font-size:18px; margin-top:6px;">Orden de Compra Mayorista #OC-2026-4421 (10,500 Sombreros)</h3>
-            <p style="font-size:12px; color:#94A3B8;">Cliente: Distribuidora Western de Monterrey · 3,680 entregados / 6,820 pendientes</p>
+            <h3 style="font-family:'Outfit'; font-size:18px; margin-top:6px;">Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)</h3>
+            <p style="font-size:12px; color:#94A3B8;">Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes</p>
           </div>
           <button class="btn-primary" onclick="emitirValeEntrega()" style="padding:10px 18px; font-size:13px;">
             🚚 Emitir Vale de Entrega para Camioneta

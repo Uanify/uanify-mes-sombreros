@@ -1,24 +1,31 @@
-﻿/**
- * UANIFY MES · TERMINAL DE SUPERVISOR / OPERARIO & ESCÁNER DE TARJETA VIAJERA
- * Implementa la lógica operativa validada en planta:
- * - Escaneo QR de Tarjeta Viajera (Lote de 60 pzas)
- * - Fraccionamiento de Lote en 4 Sublotes de 15 pzas (Rampa / Alineado)
- * - Registro de Avance de Fracción por Almacén
- * - Asignación de Operarios y Registro de Segundas para los viernes
+/**
+ * UANIFY MES · TERMINAL DE SUPERVISOR & ESCÁNER DE TARJETA VIAJERA
+ *
+ * REGLAS DE NEGOCIO VALIDADAS EN AUDIO (Tombstone Hats):
+ * ─ Tarjetas viajeras: impresas en Ingeniería, entregadas por supervisor a auxiliar.
+ * ─ Lote madre: 60 piezas. Al cruzar la Rampa → auxiliar hace cambio de tarjeta madre
+ *   por tarjetas hijas de sublote (15 pzas cada una). El sistema lotificador (Excel actual)
+ *   define la subdivisión; Uanify digitaliza y automatiza este proceso.
+ * ─ Módulos físicos con pistola QR en puntos de almacén. NO pedal por pieza.
+ * ─ Supervisores registran el avance por lote; pueden tener acceso a dispositivo.
+ * ─ Operarios NO tienen celular en planta. Identificación por # de empleado.
+ * ─ Lotes NUNCA salen incompletos. Si hay piezas con defecto, se sustituyen de saldo.
+ * ─ Merma: almacén dedicado → venta de viernes al cliente como "saldo".
+ * ─ 4 puntos de inspección de calidad fijos (definidos por Carlos en audio).
+ * ─ Registro de avance: por lote al entrar/salir de almacén intermedio.
  */
 
 window.initTerminalView = function() {
-  const pedalBtn = document.getElementById('pedalBtn');
-  const counterVisual = document.getElementById('pedalCounterVisual');
+  const pedalBtn       = document.getElementById('pedalBtn');
+  const counterVisual  = document.getElementById('pedalCounterVisual');
   const terminalProduced = document.getElementById('terminalProduced');
-  const terminalScrap = document.getElementById('terminalScrap');
-  const stationSelect = document.getElementById('terminalStationSelect');
-  const modelSelect = document.getElementById('tombstoneModelSelect');
-  const modelSkuEl = document.getElementById('terminalModelSku');
+  const terminalScrap  = document.getElementById('terminalScrap');
+  const stationSelect  = document.getElementById('terminalStationSelect');
+  const modelSelect    = document.getElementById('tombstoneModelSelect');
+  const modelSkuEl     = document.getElementById('terminalModelSku');
 
-  const btnScanQr = document.getElementById('btnScanQr');
+  const btnScanQr      = document.getElementById('btnScanQr');
   const btnSubdivideLot = document.getElementById('btnSubdivideLot');
-  const lotSelector = document.getElementById('lotSelector');
   const sublotsContainer = document.getElementById('sublotsContainer');
 
   // Selector de modelos Tombstone
@@ -28,12 +35,15 @@ window.initTerminalView = function() {
       UanifyState.selectedModelIndex = idx;
       const model = UanifyState.activeModels[idx];
       if (model && modelSkuEl) {
-        modelSkuEl.textContent = `SKU: ${model.sku} | Talla: ${model.size} | Horma: ${model.crownHorma} | ${model.material}`;
+        modelSkuEl.textContent =
+          `SKU: ${model.sku} | Talla: ${model.size} | Horma: ${model.crownHorma} | ${model.tipo} | ${model.material}`;
       }
     });
+    // Trigger inicial
+    modelSelect.dispatchEvent(new Event('change'));
   }
 
-  // Cronómetro de ciclo
+  // Cronómetro de ciclo (tiempo entre escaneos)
   let cycleStart = Date.now();
   let timerInterval = null;
 
@@ -43,7 +53,7 @@ window.initTerminalView = function() {
     timerInterval = setInterval(() => {
       const elapsed = Math.floor((Date.now() - cycleStart) / 100);
       const secs = Math.floor(elapsed / 10);
-      const ms = elapsed % 10;
+      const ms   = elapsed % 10;
       const display = `00:${secs < 10 ? '0' : ''}${secs}.${ms}`;
       const el = document.getElementById('cycleStopwatch');
       if (el) el.textContent = display;
@@ -51,16 +61,33 @@ window.initTerminalView = function() {
   }
   runCycleStopwatch();
 
-  // Escanear Tarjeta Viajera (Pistola QR)
+  // ── ESCANEAR TARJETA VIAJERA (Pistola QR) ────────────────────────────────
+  // Audio: "lector de QR o barras en puntos estratégicos de la planta"
+  // Supervisor o auxiliar escanea al llegar el lote a un almacén intermedio.
   if (btnScanQr) {
     btnScanQr.addEventListener('click', () => {
       IndustrialAudio.playQrBeep();
       const lot = UanifyState.activeLots[0];
-      alert(`🏷️ TARJETA VIAJERA ESCANEADA (QR):\n\nLote: ${lot.lotId}\nModelo: ${lot.model}\nTalla: ${lot.size}\nPiezas en Lote: ${lot.totalPieces} pzas\nUbicación actual: ${lot.currentStation}\nOperador asignado: ${lot.operator}\n\nDatos cargados al sistema en 0.2 segundos.`);
+      alert(
+        `🏷️ TARJETA VIAJERA ESCANEADA (Pistola QR/Barras)\n\n` +
+        `Lote: ${lot.lotId}\n` +
+        `Modelo: ${lot.model}\n` +
+        `Horma: ${lot.horma} · Tipo: ${lot.tipo}\n` +
+        `Talla: ${lot.size}\n` +
+        `Piezas: ${lot.totalPieces} pzas (lote madre completo)\n` +
+        `Ubicación actual: ${lot.currentStation}\n` +
+        `Auxiliar asignado: ${lot.operator}\n\n` +
+        `Tarjeta generada en Ingeniería. Sistema registra avance en 0.2 segundos.\n` +
+        `OC asociada: ${UanifyState.compacSync.activeOrderB2B}`
+      );
     });
   }
 
-  // Fraccionar Lote en Sublotes (Rampa de Alineado)
+  // ── FRACCIONAR LOTE EN RAMPA ─────────────────────────────────────────────
+  // Audio Carlos: "físicamente hacemos cambio de tarjeta... lote 351 lleva el 1,2,3 y 4.
+  //   Hay también 1094 con sublotes del 01 al 14."
+  // El auxiliar quita la tarjeta madre de 60 pzas y pone las tarjetas hijas de 15 pzas.
+  // Uanify reemplaza: un escaneo genera automáticamente los sublotes e imprime las tarjetas hijas.
   if (btnSubdivideLot) {
     btnSubdivideLot.addEventListener('click', () => {
       IndustrialAudio.playPedalClick();
@@ -68,7 +95,16 @@ window.initTerminalView = function() {
       lot.isSubdivided = true;
       renderSublots();
       EventBus.emit('lot-subdivided', lot);
-      alert(`📦 LOTE ${lot.lotId} FRACCIONADO EN 4 SUBLOTES DE 15 PZAS:\n\n• ${lot.lotId}-01 (15 pzas)\n• ${lot.lotId}-02 (15 pzas)\n• ${lot.lotId}-03 (15 pzas)\n• ${lot.lotId}-04 (15 pzas)\n\nSe generaron 4 tarjetas viajeras hijas con QR listos para asignar a operarios.`);
+      alert(
+        `📦 LOTE ${lot.lotId} FRACCIONADO EN SUBLOTES DE 15 PZAS\n\n` +
+        `• ${lot.lotId}-01 (15 pzas) — Horma: ${lot.horma}\n` +
+        `• ${lot.lotId}-02 (15 pzas) — Horma: ${lot.horma}\n` +
+        `• ${lot.lotId}-03 (15 pzas) — Horma: ${lot.horma}\n` +
+        `• ${lot.lotId}-04 (15 pzas) — Horma: ${lot.horma}\n\n` +
+        `Se generaron 4 tarjetas viajeras hijas con QR.\n` +
+        `El auxiliar hace el cambio físico de tarjeta madre → tarjetas hijas.\n` +
+        `Asignar a operarios por número de empleado.`
+      );
     });
   }
 
@@ -76,7 +112,12 @@ window.initTerminalView = function() {
     if (!sublotsContainer) return;
     const lot = UanifyState.activeLots[0];
     if (!lot.isSubdivided) {
-      sublotsContainer.innerHTML = `<p style="font-size:11px; color:#94A3B8;">Lote completo de 60 piezas. Presiona "Fraccionar Lote" en la rampa de alineado para dividir en 4 sublotes de 15 piezas.</p>`;
+      sublotsContainer.innerHTML = `
+        <p style="font-size:11px; color:#94A3B8; padding:8px;">
+          Lote <strong style="color:#00E5FF;">${lot.lotId}</strong> completo (${lot.totalPieces} pzas).
+          Al cruzar la Rampa hacia la Nave de Hidráulicos, presiona "Fraccionar en Rampa"
+          para dividir en sublotes de 15 pzas y generar tarjetas hijas con QR.
+        </p>`;
       return;
     }
 
@@ -85,53 +126,65 @@ window.initTerminalView = function() {
         <div>
           <strong style="color:#00E5FF; font-family:'JetBrains Mono'; font-size:12px;">${sl.id}</strong>
           <span style="font-size:11px; color:#E2E8F0; margin-left:8px;">${sl.pieces} pzas</span>
-          <small style="display:block; font-size:10px; color:#94A3B8;">Estación: ${sl.station} | Op: ${sl.operator}</small>
+          <small style="display:block; font-size:10px; color:#94A3B8; margin-top:2px;">
+            Almacén: ${sl.station} | Op: ${sl.operator || 'Sin asignar'}
+          </small>
+          <small style="display:block; font-size:10px; color:${sl.status === 'En Proceso' ? '#22c55e' : '#F59E0B'};">
+            ● ${sl.status}
+          </small>
         </div>
-        <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="darAvanceSublote('${sl.id}')">Dar Avance</button>
+        <button class="btn-secondary" style="padding:4px 8px; font-size:11px;"
+          onclick="darAvanceSublote('${sl.id}')">
+          📤 Dar Avance
+        </button>
       </div>
     `).join('');
   }
   renderSublots();
 
+  // ── DAR AVANCE A SUBLOTE (QR en Almacén Intermedio) ──────────────────────
   window.darAvanceSublote = function(sublotId) {
     IndustrialAudio.playQrBeep();
     const lot = UanifyState.activeLots[0];
-    const sl = lot.sublots.find(s => s.id === sublotId);
+    const sl  = lot.sublots.find(s => s.id === sublotId);
     if (sl) {
-      sl.station = 'Adorno 1 (Tafilete)';
-      sl.status = 'Avanzado';
+      sl.station = 'Adorno 1 (Tafilete + Toquilla)';
+      sl.status  = 'Avanzado';
       renderSublots();
       EventBus.emit('piece-registered');
-      alert(`✅ AVANCE REGISTRADO PARA ${sublotId}:\nEl sublote de ${sl.pieces} pzas avanzó a Almacén de Adorno 1.`);
+      alert(
+        `✅ AVANCE REGISTRADO — ${sublotId}\n\n` +
+        `${sl.pieces} pzas avanzaron a Almacén de Adorno 1.\n` +
+        `Supervisora de Adorno validará disponibilidad de tafilete talla ${lot.size} antes de procesar.\n\n` +
+        `Registrado por: Supervisor (módulo físico QR)`
+      );
     }
   };
 
-  // Botón Principal de Conteo / Pedal
+  // ── BOTÓN DE CONTEO MANUAL / PEDAL ──────────────────────────────────────
+  // Audio: "ahorita no traemos la parte de pieza por pieza, sería la parte de lotes"
+  // Este botón se mantiene para demostración. En producción real el registro es por lote con QR.
   function triggerPieceRegistration() {
     IndustrialAudio.playPedalClick();
-
     if (pedalBtn) {
       pedalBtn.classList.add('pedal-pressed');
       setTimeout(() => pedalBtn.classList.remove('pedal-pressed'), 120);
     }
 
     const stId = stationSelect ? stationSelect.value : 'prensas';
-    const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
-
+    const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[5];
     station.produced++;
     UanifyState.producedTotal++;
     UanifyState.hourlyData[6].produced++;
 
-    if (counterVisual) counterVisual.textContent = station.produced;
+    if (counterVisual)   counterVisual.textContent  = station.produced;
     if (terminalProduced) terminalProduced.textContent = `${station.produced} pzas`;
 
     runCycleStopwatch();
     EventBus.emit('piece-registered', { station, total: UanifyState.producedTotal });
   }
 
-  if (pedalBtn) {
-    pedalBtn.addEventListener('click', triggerPieceRegistration);
-  }
+  if (pedalBtn) pedalBtn.addEventListener('click', triggerPieceRegistration);
 
   // Atajo de teclado ESPACIO / ENTER
   window.addEventListener('keydown', (e) => {
@@ -145,76 +198,80 @@ window.initTerminalView = function() {
     }
   });
 
-  // Cambio de estación
+  // Cambio de estación en selector
   if (stationSelect) {
     stationSelect.addEventListener('change', (e) => {
       const selected = UanifyState.stations.find(s => s.id === e.target.value);
       if (selected) {
-        if (counterVisual) counterVisual.textContent = selected.produced;
+        if (counterVisual)    counterVisual.textContent   = selected.produced;
         if (terminalProduced) terminalProduced.textContent = `${selected.produced} pzas`;
-        if (terminalScrap) terminalScrap.textContent = `${selected.scrap} pzas`;
+        if (terminalScrap)    terminalScrap.textContent    = `${selected.scrap} pzas`;
         const opEl = document.getElementById('terminalOperator');
         if (opEl) opEl.textContent = selected.operator;
       }
     });
   }
 
-  // Modales
-  const modalScrap = document.getElementById('modalScrap');
+  // ── MODALES ─────────────────────────────────────────────────────────────
+  const modalScrap  = document.getElementById('modalScrap');
   const btnReportScrap = document.getElementById('btnReportScrap');
-  const btnCloseScrap = document.getElementById('btnCloseScrapModal');
+  const btnCloseScrap  = document.getElementById('btnCloseScrapModal');
+  const modalStop   = document.getElementById('modalStop');
+  const btnReportStop  = document.getElementById('btnReportStop');
+  const btnCloseStop   = document.getElementById('btnCloseStopModal');
 
-  const modalStop = document.getElementById('modalStop');
-  const btnReportStop = document.getElementById('btnReportStop');
-  const btnCloseStop = document.getElementById('btnCloseStopModal');
+  if (btnReportScrap && modalScrap) btnReportScrap.addEventListener('click', () => modalScrap.classList.add('active'));
+  if (btnCloseScrap  && modalScrap) btnCloseScrap.addEventListener('click',  () => modalScrap.classList.remove('active'));
+  if (btnReportStop  && modalStop)  btnReportStop.addEventListener('click',  () => modalStop.classList.add('active'));
+  if (btnCloseStop   && modalStop)  btnCloseStop.addEventListener('click',   () => modalStop.classList.remove('active'));
 
-  if (btnReportScrap && modalScrap) {
-    btnReportScrap.addEventListener('click', () => modalScrap.classList.add('active'));
-  }
-  if (btnCloseScrap && modalScrap) {
-    btnCloseScrap.addEventListener('click', () => modalScrap.classList.remove('active'));
-  }
-
-  if (btnReportStop && modalStop) {
-    btnReportStop.addEventListener('click', () => modalStop.classList.add('active'));
-  }
-  if (btnCloseStop && modalStop) {
-    btnCloseStop.addEventListener('click', () => modalStop.classList.remove('active'));
-  }
-
-  // Registro de Merma o Segunda
+  // ── REGISTRO DE MERMA / SEGUNDA ──────────────────────────────────────────
+  // Audio: merma → almacén dedicado → venta de viernes.
+  // Si tiene arreglo → regresa al dpto. previo. Si no → saldo/segunda.
+  // Audio: "Producto sin arreglo → saldo. Se pueden crear lotes [de saldo]."
   document.querySelectorAll('.scrap-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const reason = btn.getAttribute('data-reason');
+      const reason    = btn.getAttribute('data-reason');
+      const isSeconda = btn.getAttribute('data-type') === 'segunda';
       IndustrialAudio.playAlert('scrap');
 
-      const isSecond = btn.getAttribute('data-type') === 'segunda';
-      const stId = stationSelect ? stationSelect.value : 'prensas';
-      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
+      const stId    = stationSelect ? stationSelect.value : 'prensas';
+      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[5];
 
-      if (isSecond) {
+      if (isSeconda) {
         UanifyState.secondGradeTotal++;
-        alert(`📦 PRODUCTO REGULAR / SEGUNDA REGISTRADO:\nMotivo: "${reason}"\n\nSeparado en almacén de saldos para venta de viernes.`);
+        alert(
+          `📦 SALDO / SEGUNDA REGISTRADA\n\n` +
+          `Motivo: "${reason}"\n` +
+          `Departamento: ${station.name}\n\n` +
+          `Pieza separada al almacén de saldos.\n` +
+          `Acumuladas esta semana: ${UanifyState.secondGradeTotal} pzas para venta de viernes.`
+        );
       } else {
         station.scrap++;
         UanifyState.scrapTotal++;
         if (terminalScrap) terminalScrap.textContent = `${station.scrap} pzas`;
-        alert(`⚠️ MERMA REGISTRADA EN ${station.name}:\n"${reason}"\n\nDescontado de producción efectiva.`);
+        alert(
+          `⚠️ MERMA REGISTRADA EN ${station.name}\n\n` +
+          `Motivo: "${reason}"\n\n` +
+          `Pieza sin posibilidad de arreglo. Descontada de producción efectiva.\n` +
+          `El lote se repone con pieza de saldo para mantenerlo completo (60 pzas).`
+        );
       }
 
-      modalScrap.classList.remove('active');
+      if (modalScrap) modalScrap.classList.remove('active');
       EventBus.emit('scrap-registered', { station, reason });
     });
   });
 
-  // Registro de Paro
+  // ── REGISTRO DE PARO ─────────────────────────────────────────────────────
   document.querySelectorAll('.stop-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const stopReason = btn.getAttribute('data-stop');
       IndustrialAudio.playAlert('stop');
 
-      const stId = stationSelect ? stationSelect.value : 'prensas';
-      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
+      const stId    = stationSelect ? stationSelect.value : 'prensas';
+      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[5];
       station.status = 'stopped';
 
       const now = new Date();
@@ -227,16 +284,22 @@ window.initTerminalView = function() {
         impact: 'Calculando'
       });
 
-      modalStop.classList.remove('active');
+      if (modalStop) modalStop.classList.remove('active');
 
       const statusBadge = document.getElementById('terminalMachineStatus');
       if (statusBadge) {
-        statusBadge.textContent = 'MÁQUINA DETENIDA';
+        statusBadge.textContent = 'MÁQUINA / ÁREA DETENIDA';
         statusBadge.className = 'badge-status status-stopped';
       }
 
       EventBus.emit('status-updated');
-      alert(`🛑 PARO DE LÍNEA REGISTRADO EN TOMBSTONE:\n${station.name}\nMotivo: "${stopReason}"\n\nNotificado al Ingeniero y Andon en ROJO.`);
+      alert(
+        `🛑 PARO REGISTRADO — ${station.name}\n\n` +
+        `Hora: ${timeStr}\n` +
+        `Motivo: "${stopReason}"\n\n` +
+        `Notificado al Ingeniero de Procesos y Tablero Andon en ROJO.\n` +
+        `Supervisor debe confirmar reanudación para cerrar el paro.`
+      );
     });
   });
 };

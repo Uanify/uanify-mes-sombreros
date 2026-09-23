@@ -2,9 +2,10 @@
 ## Documento Vivo de Soluciones Hardware / Software (Industria 4.0)
 
 > **Cliente:** Tombstone Hats ([tombstone.mx](https://tombstone.mx/)) — San Francisco del Rincón, Gto.  
-> **Estado:** 🟡 Listo para validación en visita de planta  
-> **Última actualización:** Septiembre 2026  
-> **Contacto Dirección:** Edmundo ("Mundo") | **Contacto Planta:** Ingeniero de Producción  
+> **Estado:** 🟢 Validado en visita de planta (Audios Septiembre 2026)  
+> **Última actualización:** Septiembre 2026 — Post-visita, datos validados en audio de planta  
+> **Contacto Dirección:** Edmundo ("Mundo") | **Contacto Planta:** Ing. Carlos (Jefe de Producción)  
+> **Correo oficial:** making.tombstone@gmail.com  
 > **Prototipo Live:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
 ---
@@ -13,26 +14,28 @@
 
 | Aspecto | Estado Actual |
 |---|---|
-| Tipo de empresa | Fábrica familiar de sombreros y accesorios (carteras, etc.) |
-| Ubicación | San Pancho (aprox. 40-45 min desde Punta del Este) |
-| Rol del contacto | Dirección — involucrado en producción, RRHH, ingeniería |
-| Madurez digital | Baja — mayormente papel y Excel |
-| Maquinaria | Mix de máquinas mecánicas/automáticas + puestos manuales operados por persona |
-| Control actual de producción | Personas en cada puesto registran a mano piezas y tiempos |
-| Visualización de KPIs | **Pizarrones físicos** en cada área de producción |
-| Metodologías | Ya aplican algunas metodologías tipo lean/industrial (visión avanzada para su tamaño) |
-| Apertura a tecnología | **Alta** — el director y el ingeniero ya están pidiendo software activamente |
+| Tipo de empresa | Fábrica familiar de sombreros y accesorios (carteras, cintos, mariconeras, bolsitas, horquillas) |
+| Ubicación | San Pancho (San Francisco del Rincón, Gto.) |
+| Contacto Planta | **Ing. Carlos** (Jefe de Producción / Procesos) |
+| Contacto Dirección | **Edmundo ("Mundo")** (familiar de la persona usuaria; lder de negocio) |
+| Madurez digital | Baja — control con papel, Excel y app interna de lotificación (en desarrollo inicial) |
+| Maquinaria | Mezcla: prensas de vapor, hidráulicas, máquinas de coser, puestos manuales y áreas de patio |
+| Control actual de producción | Tarjetas viajeras de papel impresas en Ingeniería. Supervisores distribuyen a auxiliares. |
+| Visualización de KPIs | Pizarrones físicos + tablitas con formatito en algunos puestos. Sin sistema digital. |
+| Apertura a tecnología | **Alta** — el director y el Ing. Carlos solicitan activamente el sistema |
+| Restricción celulares | Operarios **no** tienen celular en planta. Supervisores sí tienen acceso a dispositivo. |
+| COMPAC (CONTPAQi) | Ingeniera **externa** de soporte (membresía anual). Interviene al inicio (pedidos) y al final (factura). |
 
 ---
 
 ## 🚦 Mapa de Prioridades
 
 ```
-PRIORIDAD 1 (Entrada)    ██████████  Captura de KPIs de Producción (lo que pide el ingeniero)
-PRIORIDAD 2 (Siguiente)  ████████░░  Control de Inventarios
-PRIORIDAD 3 (Futuro)     ██████░░░░  Gestión de Pedidos B2B
-PRIORIDAD 4 (Futuro)     █████░░░░░  Trazabilidad / Calidad
-PRIORIDAD 5 (Futuro)     ████░░░░░░  RRHH / Nómina / Rendimiento por operario
+PRIORIDAD 1 (Fase 1)    ██████████  MES: Seguimiento de lotes/fracciones + Tablero Andon (lo que pide el Ing. Carlos)
+PRIORIDAD 2 (Fase 2)    ████████░░  Subensambles: Tafiletes por Talla en Adorno 1
+PRIORIDAD 3 (Fase 2)    ████████░░  Vales de Entrega Digital + Puente CONTPAQi (COMPAC)
+PRIORIDAD 4 (Fase 3)    ██████░░░░  Fichas Técnicas y Costeo de Accesorios (Carteras, Cintos, etc.)
+PRIORIDAD 5 (Futuro)    ████░░░░░░  Destajo / Rendimiento por Operador (actualmente sueldos fijos)
 ```
 
 ---
@@ -44,13 +47,16 @@ PRIORIDAD 5 (Futuro)     ████░░░░░░  RRHH / Nómina / Rendim
 
 ### 🎯 Problema que resuelve (Confirmado en Planta)
 Actualmente el flujo de producción de Tombstone Hats opera con:
-- **Tarjetas Viajeras de papel** que se llenan a mano con pluma en cada estación.
-- **Lotes madre de 60 piezas** que al pasar la rampa hacia el almacén de alineado/hidráulico se dividen físicamente en **4 sublotes de 15 piezas** mediante un archivo de Excel y cambio manual de tarjetas.
-- **10 almacenes intermedios (WIP)** donde no se tiene visibilidad en tiempo real de cuántas piezas hay en espera.
-- **Pizarrones físicos** que se actualizan de forma inconsistente.
+- **Tarjetas Viajeras de papel** impresas en Ingeniería. Supervisores las llevan físicamente a los auxiliares.
+- **Lotes madre de 60 piezas** que al cruzar la rampa hacia la nave de hidráulicos, el auxiliar hace cambio físico de tarjeta madre por **tarjetas hijas de sublote** (15 pzas cada una). El Excel "lotificador" define la subdivisión. El lote `1094` puede generar sublotes `1094-01` hasta `1094-14` (o más, dependiendo del volumen de la orden).
+- **11 departamentos + 3 puntos de calidad** (14 puntos totales) en el proceso.
+- **Pizarrones físicos** + "formatitos" en mesas que se actualizan a mano. Sin visibilidad en tiempo real.
 
-**El Ingeniero de Producción (Carlos) definió el requerimiento exacto:**
-> *"Nosotros estamos pensando con tarjetas de producción por lote... Ahorita sería la parte de irnos por lotes, no traemos tanto la parte de pieza por pieza. Módulos físicos en puntos estratégicos con escáner de QR o barras para registrar los avances de cada fracción y saber qué tenemos en cada almacén."*
+**El Ingeniero de Producción (Carlos) definió el requerimiento exacto en audio:**
+> *"Nosotros estamos pensando con tarjetas de producción por lote... Ahorita no traemos tanto la parte de pieza por pieza. Sí sería la parte de irnos por lotes. Módulos físicos en puntos estratégicos con escáner de QR o barras para registrar los avances de cada fracción y saber qué tenemos en cada almacén."*
+
+**Meta principal validada (audio):**
+> *"Lo que queremos es generar información que nos ayude a nosotros a tomar decisiones. Saber cómo va avanzando, si yo quiero consultar un lote, en dónde está. Y también la parte de los materiales, cambio masivo si cambia un proveedor."*
 
 ---
 
