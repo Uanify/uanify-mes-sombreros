@@ -1,6 +1,10 @@
 ﻿/**
- * UANIFY MES · TERMINAL DE PUESTO & SIMULADOR DE PEDAL
- * Personalizado para Tombstone Hats
+ * UANIFY MES · TERMINAL DE SUPERVISOR / OPERARIO & ESCÁNER DE TARJETA VIAJERA
+ * Implementa la lógica operativa validada en planta:
+ * - Escaneo QR de Tarjeta Viajera (Lote de 60 pzas)
+ * - Fraccionamiento de Lote en 4 Sublotes de 15 pzas (Rampa / Alineado)
+ * - Registro de Avance de Fracción por Almacén
+ * - Asignación de Operarios y Registro de Segundas para los viernes
  */
 
 window.initTerminalView = function() {
@@ -12,6 +16,11 @@ window.initTerminalView = function() {
   const modelSelect = document.getElementById('tombstoneModelSelect');
   const modelSkuEl = document.getElementById('terminalModelSku');
 
+  const btnScanQr = document.getElementById('btnScanQr');
+  const btnSubdivideLot = document.getElementById('btnSubdivideLot');
+  const lotSelector = document.getElementById('lotSelector');
+  const sublotsContainer = document.getElementById('sublotsContainer');
+
   // Selector de modelos Tombstone
   if (modelSelect) {
     modelSelect.addEventListener('change', (e) => {
@@ -19,7 +28,7 @@ window.initTerminalView = function() {
       UanifyState.selectedModelIndex = idx;
       const model = UanifyState.activeModels[idx];
       if (model && modelSkuEl) {
-        modelSkuEl.textContent = `SKU: ${model.sku} | Talla: ${model.size} | ${model.material}`;
+        modelSkuEl.textContent = `SKU: ${model.sku} | Talla: ${model.size} | Horma: ${model.crownHorma} | ${model.material}`;
       }
     });
   }
@@ -42,7 +51,62 @@ window.initTerminalView = function() {
   }
   runCycleStopwatch();
 
-  // Registro de pieza (Pedal)
+  // Escanear Tarjeta Viajera (Pistola QR)
+  if (btnScanQr) {
+    btnScanQr.addEventListener('click', () => {
+      IndustrialAudio.playQrBeep();
+      const lot = UanifyState.activeLots[0];
+      alert(`🏷️ TARJETA VIAJERA ESCANEADA (QR):\n\nLote: ${lot.lotId}\nModelo: ${lot.model}\nTalla: ${lot.size}\nPiezas en Lote: ${lot.totalPieces} pzas\nUbicación actual: ${lot.currentStation}\nOperador asignado: ${lot.operator}\n\nDatos cargados al sistema en 0.2 segundos.`);
+    });
+  }
+
+  // Fraccionar Lote en Sublotes (Rampa de Alineado)
+  if (btnSubdivideLot) {
+    btnSubdivideLot.addEventListener('click', () => {
+      IndustrialAudio.playPedalClick();
+      const lot = UanifyState.activeLots[0];
+      lot.isSubdivided = true;
+      renderSublots();
+      EventBus.emit('lot-subdivided', lot);
+      alert(`📦 LOTE ${lot.lotId} FRACCIONADO EN 4 SUBLOTES DE 15 PZAS:\n\n• ${lot.lotId}-01 (15 pzas)\n• ${lot.lotId}-02 (15 pzas)\n• ${lot.lotId}-03 (15 pzas)\n• ${lot.lotId}-04 (15 pzas)\n\nSe generaron 4 tarjetas viajeras hijas con QR listos para asignar a operarios.`);
+    });
+  }
+
+  function renderSublots() {
+    if (!sublotsContainer) return;
+    const lot = UanifyState.activeLots[0];
+    if (!lot.isSubdivided) {
+      sublotsContainer.innerHTML = `<p style="font-size:11px; color:#94A3B8;">Lote completo de 60 piezas. Presiona "Fraccionar Lote" en la rampa de alineado para dividir en 4 sublotes de 15 piezas.</p>`;
+      return;
+    }
+
+    sublotsContainer.innerHTML = lot.sublots.map(sl => `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px; margin-bottom:6px;">
+        <div>
+          <strong style="color:#00E5FF; font-family:'JetBrains Mono'; font-size:12px;">${sl.id}</strong>
+          <span style="font-size:11px; color:#E2E8F0; margin-left:8px;">${sl.pieces} pzas</span>
+          <small style="display:block; font-size:10px; color:#94A3B8;">Estación: ${sl.station} | Op: ${sl.operator}</small>
+        </div>
+        <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="darAvanceSublote('${sl.id}')">Dar Avance</button>
+      </div>
+    `).join('');
+  }
+  renderSublots();
+
+  window.darAvanceSublote = function(sublotId) {
+    IndustrialAudio.playQrBeep();
+    const lot = UanifyState.activeLots[0];
+    const sl = lot.sublots.find(s => s.id === sublotId);
+    if (sl) {
+      sl.station = 'Adorno 1 (Tafilete)';
+      sl.status = 'Avanzado';
+      renderSublots();
+      EventBus.emit('piece-registered');
+      alert(`✅ AVANCE REGISTRADO PARA ${sublotId}:\nEl sublote de ${sl.pieces} pzas avanzó a Almacén de Adorno 1.`);
+    }
+  };
+
+  // Botón Principal de Conteo / Pedal
   function triggerPieceRegistration() {
     IndustrialAudio.playPedalClick();
 
@@ -52,19 +116,16 @@ window.initTerminalView = function() {
     }
 
     const stId = stationSelect ? stationSelect.value : 'prensas';
-    const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[1];
+    const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
 
     station.produced++;
     UanifyState.producedTotal++;
-
-    // Incrementar en hora activa
     UanifyState.hourlyData[6].produced++;
 
     if (counterVisual) counterVisual.textContent = station.produced;
     if (terminalProduced) terminalProduced.textContent = `${station.produced} pzas`;
 
     runCycleStopwatch();
-
     EventBus.emit('piece-registered', { station, total: UanifyState.producedTotal });
   }
 
@@ -121,33 +182,39 @@ window.initTerminalView = function() {
     btnCloseStop.addEventListener('click', () => modalStop.classList.remove('active'));
   }
 
-  // Click opción de merma
+  // Registro de Merma o Segunda
   document.querySelectorAll('.scrap-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const reason = btn.getAttribute('data-reason');
       IndustrialAudio.playAlert('scrap');
 
+      const isSecond = btn.getAttribute('data-type') === 'segunda';
       const stId = stationSelect ? stationSelect.value : 'prensas';
-      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[1];
-      station.scrap++;
-      UanifyState.scrapTotal++;
+      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
 
-      if (terminalScrap) terminalScrap.textContent = `${station.scrap} pzas`;
+      if (isSecond) {
+        UanifyState.secondGradeTotal++;
+        alert(`📦 PRODUCTO REGULAR / SEGUNDA REGISTRADO:\nMotivo: "${reason}"\n\nSeparado en almacén de saldos para venta de viernes.`);
+      } else {
+        station.scrap++;
+        UanifyState.scrapTotal++;
+        if (terminalScrap) terminalScrap.textContent = `${station.scrap} pzas`;
+        alert(`⚠️ MERMA REGISTRADA EN ${station.name}:\n"${reason}"\n\nDescontado de producción efectiva.`);
+      }
+
       modalScrap.classList.remove('active');
-
       EventBus.emit('scrap-registered', { station, reason });
-      alert(`⚠️ Defecto registrado en ${station.name}:\n"${reason}"\n\nDescontado de nómina de destajo y registrado en OEE.`);
     });
   });
 
-  // Click opción de paro
+  // Registro de Paro
   document.querySelectorAll('.stop-opt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const stopReason = btn.getAttribute('data-stop');
       IndustrialAudio.playAlert('stop');
 
       const stId = stationSelect ? stationSelect.value : 'prensas';
-      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[1];
+      const station = UanifyState.stations.find(s => s.id === stId) || UanifyState.stations[3];
       station.status = 'stopped';
 
       const now = new Date();
@@ -169,7 +236,7 @@ window.initTerminalView = function() {
       }
 
       EventBus.emit('status-updated');
-      alert(`🛑 PARO DE LÍNEA REGISTRADO EN TOMBSTONE:\n${station.name}\nMotivo: "${stopReason}"\n\nEl Tablero Andon cambió a ROJO y la alerta fue enviada al Ingeniero.`);
+      alert(`🛑 PARO DE LÍNEA REGISTRADO EN TOMBSTONE:\n${station.name}\nMotivo: "${stopReason}"\n\nNotificado al Ingeniero y Andon en ROJO.`);
     });
   });
 };

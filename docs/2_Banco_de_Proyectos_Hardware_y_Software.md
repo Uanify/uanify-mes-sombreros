@@ -39,82 +39,53 @@ PRIORIDAD 5 (Futuro)     ████░░░░░░  RRHH / Nómina / Rendim
 
 ---
 
-# ✅ PROYECTO 1 — Sistema de Captura de KPIs de Producción (MES Ligero)
-## `[PRIORIDAD ALTA — Lo que pide el ingeniero]`
+# ✅ PROYECTO 1 — Sistema MES de Avances por Fracciones, Lotes & Tarjetas Viajeras QR
+## `[PRIORIDAD ALTA — Requerimiento Central Validado en Visita]`
 
-### 🎯 Problema que resuelve
+### 🎯 Problema que resuelve (Confirmado en Planta)
+Actualmente el flujo de producción de Tombstone Hats opera con:
+- **Tarjetas Viajeras de papel** que se llenan a mano con pluma en cada estación.
+- **Lotes madre de 60 piezas** que al pasar la rampa hacia el almacén de alineado/hidráulico se dividen físicamente en **4 sublotes de 15 piezas** mediante un archivo de Excel y cambio manual de tarjetas.
+- **10 almacenes intermedios (WIP)** donde no se tiene visibilidad en tiempo real de cuántas piezas hay en espera.
+- **Pizarrones físicos** que se actualizan de forma inconsistente.
 
-Actualmente cada puesto de producción tiene **una persona que anota a mano** cuántas piezas se procesan y cuánto tiempo tarda cada operación. Esta información:
-- No es consistente (no siempre se hace)
-- No es en tiempo real
-- Termina en **pizarrones físicos** por área
-- No está centralizada ni es analizable históricamente
-
-**El ingeniero de producción quiere:** métricas de máquinas y puestos, tanto automáticos como manuales, en un sistema digital.
+**El Ingeniero de Producción (Carlos) definió el requerimiento exacto:**
+> *"Nosotros estamos pensando con tarjetas de producción por lote... Ahorita sería la parte de irnos por lotes, no traemos tanto la parte de pieza por pieza. Módulos físicos en puntos estratégicos con escáner de QR o barras para registrar los avances de cada fracción y saber qué tenemos en cada almacén."*
 
 ---
 
-### 📐 Alcance Funcional
+### 📐 Alcance Funcional Validado
 
-| Funcionalidad | Descripción |
+| Módulo Funcional | Descripción Operativa en Planta Tombstone |
 |---|---|
-| **Captura de producción** | Registrar piezas completadas por puesto / máquina |
-| **Captura de tiempos** | Tiempo de ciclo por pieza o lote (inicio/fin de operación) |
-| **KPIs por puesto** | Rendimiento actual vs. meta, piezas/hora, eficiencia |
-| **Dashboard en tiempo real** | Vista de toda la planta para supervisores e ingeniería |
-| **Pizarrón digital** | Reemplazar los pizarrones### 🔌 Variantes de Implementación (Evaluar en Visita)
-
-> 💡 **Nota de Ingeniería de Planta (San Pancho):** En las estaciones de prensado térmico y hormado a vapor de sombreros, los operarios usan guantes de calor o tienen manos con restos de apresto/cola. Una pantalla táctil capacitiva común puede sufrir o dificultar el ritmo de trabajo. Presentamos 4 enfoques:
-
-#### **Opción A — Tablet Industrial / Rugged por Puesto (Interacción rica)**
-```
-[Operario]  →  [Tablet Android con funda de uso rudo]  →  [App PWA / Local]  →  [Edge Gateway]  →  [Dashboard]
-                  Botón "Iniciar Lote" / "Finalizar"
-                  Captura de motivo de paro / defectos
-```
-- ✅ Permite seleccionar modelo de sombrero, talla, color y reportar causas de paro.
-- ✅ Implementación rápida sin cableado mecánico.
-- ⚠️ Requiere disciplina del operario; sensible a caídas o suciedad si no tiene protección IP adecuada.
-- 💰 Costo hardware: ~$2,500–$4,000 MXN por puesto (tablet + soporte articulado + funda ruda).
+| **Generador de Tarjetas Viajeras con QR** | Sustituye el llenado a mano. Genera la tarjeta del lote madre (60 pzas) con modelo, talla, horma y código QR único. |
+| **Fraccionador de Lotes en Rampa (Alineado)** | Al cruzar la rampa de naves, un solo escaneo divide automáticamente el lote de 60 pzas en 4 tarjetas hijas de 15 pzas (`351-01`, `351-02`, etc.). |
+| **Avance de Fracción por Almacén WIP** | El supervisor o auxiliar escanea con pistola QR el lote al terminar una fracción y el sistema actualiza de inmediato el stock en el almacén siguiente. |
+| **Asignación de Operarios por Fracción** | Vincula el lote/sublote al número de empleado que lo procesó para control de calidad y posterior cálculo de destajo. |
+| **Tablero Andon TV en Nave Central** | Pantalla de 50" que muestra el avance hora por hora, semáforos por estación y acumulación de cuellos de botella. |
+| **Registro de Segundas (Venta de Viernes)** | Clasifica piezas con defectos estéticos leves como "Producto Regular / Segunda" para venta de saldo los viernes. |
 
 ---
 
-#### **Opción B — Sensores IoT no Invasivos en Máquinas (100% Automático)**
-```
-[Máquina / Prensa]  →  [Sensor Inductivo / Final de Carrera / Óptico]  →  [Nodo ESP32 Industrial]  →  [Dashboard]
-                       Detecta carrera del pistón o cierre de prensa
-```
-- ✅ Conteo infalible: no depende de que el operario recuerde presionar nada.
-- ✅ Captura exacta de tiempos de ciclo y tiempos muertos entre prensadas.
-- ⚠️ No registra por sí solo el motivo si la máquina se detiene (requiere complemento).
-- 💰 Costo hardware: ~$800–$1,800 MXN por máquina (sensor + caja IP65 + ESP32).
+### 🔌 Arquitectura de Hardware de Planta (Adaptada a Restricciones de Tombstone)
 
----
+> ⚠️ **Restricción Ambiental Clave:** En el área de prensas y recorte de falda hay **alto nivel de polvo**. Además, los operarios tienen **prohibido el uso de celular**. Por ende, la captura es a través de terminales de supervisor y escáneres específicos.
 
-#### **Opción C — Cajas de Pulsadores Industriales / Pedales (Ergonomía Poka-Yoke) ⭐ RECOMENDADA PARA PRENSAS**
-```
-[Operario en Prensa]  →  [Pedal de pie o Botonera Industrial IP65]  →  [Nodo Microcontrolador]  →  [Dashboard]
-                         (Verde = Pieza OK | Rojo = Defecto | Amarillo = Asistencia)
-```
-- ✅ **A prueba de planta:** Operable con guantes térmicos, manos húmedas o con pedal al cerrar prensa.
-- ✅ Costo ultra bajo, mantenimiento cero, prácticamente indestructible.
-- ✅ Elimina distracciones: el operario no quita la vista del proceso de hormado.
-- 💰 Costo hardware: ~$600–$1,200 MXN por estación.
-
----
-
-#### **Opción D — Enfoque Híbrido Uanify (El Estándar Profesional)**
+#### **Esquema de Hardware Recomendado (Módulos Físicos Estratégicos):**
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Prensas y Maquinaria Automática: Sensores IoT o Pedales (Conteo exacto)│
-│ Puestos Manuales (Adorno/Ribete): Botoneras o Tablets compartidas     │
-│ En Planta (Piso): Pantallas TV / Monitores (Pizarrón Digital Andon)    │
-│ Gateway Local: Mini PC / Raspberry Pi (Edge Computing Offline-First)   │
+│ Puntos de Almacén WIP: Pistolas lectoras de QR / Barras industriales  │
+│                        conectadas por USB o Bluetooth                  │
+│ Terminales de Supervisor: Tablets de uso rudo (Carcasa IP65 antipolvo) │
+│                        en montajes articulados en 4 puntos de planta   │
+│ Nave Central: Smart TV 50" conectada a red para Tablero Andon         │
+│ Servidor / Edge Gateway: Mini PC en red local LAN (con repetidores     │
+│                          existentes en planta, tolerancia a cortes)    │
 └────────────────────────────────────────────────────────────────────────┘
 ```
-- ✅ Cubre toda la diversidad de estaciones (desde prensas calientes hasta mesas de costura y empaque).
-- ✅ Funciona aunque se corte el internet en la nave industrial.
-- ✅ Proporciona visibilidad instantánea en piso para los operarios y en móvil para dirección.
+- ✅ **Cero riesgo de polvo:** Lectores sellados y tablets con fundas industriales.
+- ✅ **Cero fricción con operarios:** No usan celulares personales; el supervisor o auxiliar valida el lote en 1 segundo con la pistola QR.
+- ✅ **Presupuesto eficiente:** No se compran 50 tablets; solo se instalan **4 a 6 estaciones de escaneo estratégico**.
 
 ---
 
@@ -240,83 +211,67 @@ Los sombreros no se producen en cantidades al azar. Se miden en **centímetros d
 
 ---
 
-### 🎯 Problema que resuelve
-Sin visibilidad en tiempo real de materiales disponibles, la planta puede para por faltante sin haberlo visto venir.
+# 💡 PROYECTO 2 — Control de Subensambles (Tafiletes por Talla) & Matriz de Materiales
+## `[PRIORIDAD MEDIA-ALTA — Fase 2]`
 
-### Ideas de implementación
-- **App web / tablet** para registrar entradas y salidas de almacén
-- **Códigos QR o códigos de barras** en cada material / rollo / caja
-- **Alertas automáticas** cuando un material llega al punto de reorden
-- **Integración con Proyecto 1:** Si la producción consume X unidades, el inventario se descuenta automáticamente
+### 🎯 Problema que resuelve (Confirmado en Planta)
+1. **Desabasto en Adorno 1:** Los tafiletes se elaboran en un subensamble paralelo. Actualmente los supervisores se comunican de forma verbal y a gritos: *"¿Tienes tafilete talla 57? Sí, 150"*. Si no hay tafiletes listos de la talla del lote de sombreros que entra a la mesa, la línea se detiene.
+2. **Cambio Masivo de Materiales:** Si cambia el proveedor de una laca o pintura (ej. pintura Taiwan 1125), el Ingeniero tiene que editar manualmente ficha por ficha.
 
-### Preguntas pendientes
-- [ ] ¿Cómo reciben la materia prima actualmente? ¿Hay persona de almacén?
-- [ ] ¿Cuántos SKUs de materiales manejan?
-- [ ] ¿Tienen algún sistema aunque sea básico de inventario?
+### 📐 Solución Uanify:
+* **Monitor de Stock de Tafiletes por Talla en Pantalla:** Semáforo en vivo (Verde = Abastecido, Amarillo = En Límite, Rojo = Crítico) para tallas 55 a 60 cm.
+* **Matriz Maestra de Materiales:** Cambio masivo de insumos en 1 solo clic aplicado a todos los productos que consumen ese material.
+* **Trazabilidad de Químicos y Rollos de Telar:** Registro de entrada desde factura de compras y descuento automático por lote producido.
 
 ---
 
-# 💡 PROYECTO 3 — Portal de Pedidos B2B
-## `[PRIORIDAD MEDIA-BAJA — Futuro próximo]`
+# 💡 PROYECTO 3 — Integración CONTPAQi (COMPAC) & Vales de Entrega Mayorista
+## `[PRIORIDAD ALTA — Fase 2/3]`
 
-### 🎯 Problema que resuelve
-Pedidos tomados por WhatsApp, teléfono o email = errores, pedidos perdidos, sin trazabilidad.
+### 🎯 Problema que resuelve (Confirmado en Planta)
+Actualmente, cuando el cliente mayorista llega con su camioneta:
+1. Se genera un **vale de salida en papel**.
+2. Ese vale se descuenta manualmente en un archivo de Excel de órdenes de producción.
+3. El papel viaja a oficinas donde una persona vuelve a capturar todo en **COMPAC (CONTPAQi)** para emitir la factura.
 
-### Ideas de implementación
-- **Portal web para distribuidores / clientes mayoristas** — hacen su pedido directamente
-- **Catálogo digital** con modelos, colores, tallas disponibles según inventario real
-- **Status de pedido en tiempo real** — el cliente ve en qué etapa está su sombrero
-- **Reglas de negocio:** precios por volumen, condiciones de pago, mínimos de pedido
-- **Integración con Proyecto 1:** El pedido entra al portal y genera automáticamente la orden de producción
-
-### Preguntas pendientes
-- [ ] ¿Cómo reciben pedidos actualmente?
-- [ ] ¿Tienen clientes fijos / distribuidores recurrentes?
-- [ ] ¿Venden online? ¿Planean hacerlo?
+### 📐 Solución Uanify:
+* **Vale de Entrega Digital:** El almacén genera el vale de salida escaneando los lotes entregados al camión.
+* **Enlace con COMPAC:** Sincronización mediante la API o base de datos de CONTPAQi (en coordinación con la ingeniera de soporte externa de COMPAC) para timbrar la factura y descontar inventarios contables sin recaptura.
 
 ---
 
-# 💡 PROYECTO 4 — Trazabilidad y Control de Calidad
-## `[PRIORIDAD MEDIA-BAJA — Futuro]`
+# 💡 PROYECTO 4 — Fichas Técnicas & Costeo de Accesorios (Carteras, Cintos, Horquillas)
+## `[PRIORIDAD MEDIA-BAJA — Fase 3]`
 
-### 🎯 Problema que resuelve
-Sin trazabilidad, no saben cuánta merma generan ni en qué etapa del proceso se generan los defectos.
-
-### Ideas de implementación
-- **Registro de defectos por etapa** — el operario o supervisor marca si una pieza salió defectuosa y el tipo de defecto
-- **Trazabilidad de lote** — desde materia prima hasta producto terminado
-- **QR/código en cada pieza o lote** — escaneado en cada etapa para confirmar el paso
-- **Dashboard de calidad** — % de merma por área, por operario, por máquina, por día
-- **Integración con Proyecto 1:** La merma se registra en el mismo sistema que la producción
+### 🎯 Problema que resuelve (Confirmado en Planta)
+El 70% de la producción de Tombstone son sombreros y texanas. El 30% restante son accesorios (carteras, cintos, mariconeras, bolsitas, horquillas). Los ingenieros confirmaron que aquí no se requiere un flujo complejo en piso, sino:
+* **Fichas Técnicas Digitales:** Catálogo visual con imágenes, medidas, herrajes y desglose de materiales.
+* **Ficha de Costeo Automático:** Cálculo del costo de producción según los insumos asignados en la ficha.
 
 ---
 
-# 💡 PROYECTO 5 — Dashboard Ejecutivo / Business Intelligence
-## `[PRIORIDAD BAJA — Consolidación]`
+# 💡 PROYECTO 5 — Control de Calidad, Reparaciones & Registro de Segundas (Viernes)
+## `[INTEGRADO EN FASE 1 Y 2]`
 
-### 🎯 Problema que resuelve
-El director no tiene visibilidad en tiempo real del estado de la empresa — toma decisiones con intuición o con datos del día anterior.
+### 🎯 Problema que resuelve (Confirmado en Planta)
+En Tombstone existen **4 puntos de inspección de calidad**. Si una pieza sale defectuosa:
+* **Si tiene arreglo:** Se regresa a la fracción previa (ej. volver a aplicar pintura o planchar falda).
+* **Si es defecto cosmético menor:** Se clasifica como **"Producto Regular / Segunda"**. Se aparta en el almacén de saldos y **los días viernes se vende en lote a clientes mayoristas**.
+* **Si es daño destructivo:** Se manda como merma y se repone la pieza para que el lote de 60 salga completo.
 
-### Ideas de implementación
-- **Dashboard ejecutivo** con KPIs clave: producción del día, pedidos en proceso, inventario crítico, eficiencia de planta
-- **Acceso desde celular** — el director ve su planta desde donde esté
-- **Alertas inteligentes** — "La prensa 3 lleva 2 horas sin registrar actividad"
-- **Comparativos históricos** — esta semana vs. semana pasada vs. meta del mes
-- **Integración de todos los proyectos anteriores** — este es el tablero que une todo
+### 📐 Solución Uanify:
+* Registro digital de motivos de defecto por operario y máquina.
+* Inventario acumulado de "Segundas" en tiempo real para agilizar la venta de remate de los viernes.
 
 ---
 
-# 💡 PROYECTO 6 — Rendimiento por Operario / Módulo de RRHH Operativo
-## `[PRIORIDAD BAJA — Futuro]`
+# 💡 PROYECTO 6 — Productividad por Operador & Nómina de Destajo Digital
+## `[EVOLUCIÓN FUTURA — Fase 3]`
 
-### 🎯 Problema que resuelve
-Sin datos individuales, no es posible detectar quién necesita capacitación, quién es el mejor operario, ni cómo incentivar el rendimiento.
-
-### Ideas de implementación
-- **Asociar registros del Proyecto 1 a un operario específico** (login simple con QR o PIN)
-- **Ranking de rendimiento** — piezas/hora por operario, calidad de su trabajo
-- **Sistema de bonos por desempeño** — automatizar el cálculo de incentivos
-- **Onboarding digital** — guías en tablet para que nuevos operarios aprendan su puesto
+### 🎯 Problema que resuelve (Confirmado en Planta)
+Los operarios cobran por **destajo** (por pieza terminada). Actualmente los supervisores anotan a mano en tarjetas o libretas lo que hace cada persona, provocando disputas semanales de sueldos.
+* **Solución Uanify:** Al escanear el lote o sublote con la tarjeta viajera, se asocia el número de empleado del operario. El sistema calcula en automático el importe a pagar por destajo por turno y semana, eliminando papel y discusiones.
+* **Impacto:** Transparencia laboral, auditoría automática de piezas producidas y pago justo basado en datos reales del sistema.
 
 ---
 

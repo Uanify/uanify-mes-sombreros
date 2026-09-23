@@ -340,47 +340,60 @@ Impacto calculado:
 
 ---
 
-## 🤝 Perfil de Stakeholders — Cómo Tratar a Cada Interlocutor Clave
+## 🤝 Stakeholders Validados en la Reunión de Planta (Tombstone Hats)
 
-| Interlocutor Real | Sus Miedos / Objeciones | Su Aspiración / Triunfo | Estrategia de Posicionamiento Uanify |
+| Interlocutor Real | Rol en la Fábrica | Postura / Necesidad Clave Detectada | Canal de Contacto & Siguiente Paso |
 |---|---|---|---|
-| **Edmundo ("Mundo")** *(Dirección / Amigo de Prepa La Salle)* | • Quedar mal con su familia si una inversión no rinde.<br>• Que la relación de amistad choque con temas de negocio o entregas.<br>• Complejidad de adopción por parte del personal de planta. | • Modernizar la fábrica de su familia con tecnología de punta.<br>• Tener control ejecutivo en tiempo real sin estar metido en piso todo el día.<br>• Convertir la fábrica en un referente industrial en San Pancho. | **Socio Estratégico de Confianza:** Mantener la calidez del trato personal pero elevando la conversación al rigor técnico y financiero. Presentar contratos claros, SLAs y fases medibles que le den tranquilidad total ante su familia y socios. |
-| **Ingeniero de Producción** *(El "Mero Mero" en Piso)* | • Que Uanify sea un proveedor "de oficina" que no entiende la grasa, el vapor y el ritmo de planta.<br>• Que el software sea una carga de trabajo extra o un sistema de fiscalización que lo exponga.<br>• Que el software falle y pare la línea. | • Automatizar el vaciado de datos y dejar de lidiar con pizarrones y papeles.<br>• Demostrar a Dirección con métricas duras (OEE, tiempos de ciclo) las mejoras que ha logrado.<br>• Contar con herramientas profesionales para justificar compras y balanceo de líneas. | **Su Aliado Técnico ("El Brazo de Software que le faltaba"):** Hablarle en su idioma (Lean, Takt time, cuellos de botella, paros no programados). Decirle explícitamente: *"Nosotros no venimos a decirte cómo hacer tu trabajo; venimos a programar exactamente lo que tú necesitas para que tu operación rinda al máximo y tus reportes salgan solos en 1 clic."* |
-| **Supervisores y Maestros de Taller** *(Operación física en San Pancho)* | • Que la tecnología los reemplace o los haga ver lentos.<br>• No saber usar computadoras o tablets complicadas. | • Que los operarios no se retrasen y que las máquinas no fallen sin aviso. | **Diseño Cero Fricción:** Involucrarlos en la ergonomía (pedales, botoneras gigantes, pizarrones digitales visibles a 10 metros). Garantizar capacitación paciente y respeto a su oficio artesanal. |
+| **Edmundo ("Mundo")** | Dirección General | Busca modernizar y digitalizar toda la empresa paso a paso. Apoya la visión integral, pero respalda la prioridad de producción que pide su equipo técnico. | Contacto directo y WhatsApp. |
+| **Carlos** | Ingeniero de Producción / Procesos ("Mero Mero") | **El Champion Técnico:** Ya estructuró el flujo en 10 áreas. Necesita monitorear el avance de fracciones, tener inventario en proceso (WIP) y eliminar la doble captura en papel/Excel. Acepta escáneres QR y tablets uso rudo. | Enviar propuesta formal y diagramas a: **`making.tombstone@gmail.com`** |
+| **César / Ricardo** | Supervisión de Planta | Viven el día a día en piso: necesitan ver el stock de tafiletes por talla para no desabastecer Adorno 1 y fraccionar los lotes de 60 a 15 pzas en rampa sin errores. | Validación en piso durante las pruebas piloto. |
+| **Ingeniera Externa COMPAC** | Soporte Técnico CONTPAQi | Administra la membresía anual de facturación e inventarios. | Contactar para validar endpoints de integración (evitar retrabajos de facturación). |
 
 ---
 
-## ✅ Checklist Pre-Reunión
+## 🏭 Radiografía Operativa Validada en Planta (Hallazgos Críticos)
 
-### 48 horas antes:
-- [ ] Investigar la empresa (LinkedIn, web, noticias)
-- [ ] Preparar carpeta de presentación Uanify (credenciales + casos de uso industria)
-- [ ] Imprimir o tener digital: lista de preguntas + hoja de captura de datos
-- [ ] Confirmar asistentes y roles en la reunión
+1. **El Producto Campeón (70% del volumen):**
+   * **Sombreros de Telar (Master Telar):** Se fabrican desde cero en la nave (corte de rollos en cuadros, armado, entallado, alambrado, baño de dope para cerrar poros y refuerzo con pistola).
+   * **Variantes de Estructura:** Sombreros de 2 piezas (copa y falda unidas por calor) vs. sombreros de 1 sola pieza.
+   * **Campanas Preformadas:** Se reciben ya moldeadas y omiten los primeros departamentos de corte y alambrado.
 
-### 24 horas antes:
-- [ ] Preparar 2-3 "insights" sobre el sector manufacturero de sombreros / textiles para demostrar que llegaste preparado
-- [ ] Llevar calculadora de ROI lista (hoja de Excel o Notion con fórmulas)
-- [ ] Llevar laptop con demos o prototipos si los tienes
+2. **Lotes de 60 Piezas y Fraccionamiento a Sublotes de 15 Piezas:**
+   * La orden de producción se arranca en **lotes madre de 60 piezas** con su **Tarjeta Viajera de papel**.
+   * Al pasar la rampa hacia el almacén de alineado/hidráulico, el lote de 60 se **fracciona físicamente en 4 sublotes de 15 piezas** (ej. Lote `351` se divide en `351-01`, `351-02`, `351-03`, `351-04`).
+   * *Oportunidad Uanify:* Sustituir el cambio manual de tarjetas y el Excel "lotificador" por **etiquetas con código QR** que el auxiliar o supervisor escanea en 1 segundo.
 
-### En la reunión:
-- [ ] Tomar notas visibles — muestra que escuchas
-- [ ] Confirmar números reales: producción diaria, número de operarios, costo promedio
-- [ ] Pedir tour de planta si no está confirmado
-- [ ] Agendar fecha de presentación de propuesta ANTES de salir
+3. **Subensambles Críticos (Tafilete / Badana por Tallas):**
+   * El tafilete se elabora de manera paralela por tallas (55 a 60 cm).
+   * *Dolor actual:* La coordinación entre Adorno 1 y el almacén de tafilete es verbal ("¿tienes talla 57? Sí, 150").
+   * *Solución Uanify:* Pantalla de stock de subensambles disponibles por talla para alimentar el pegado de tafiletes sin tiempos muertos.
+
+4. **Calidad, Segundas y Mermas (Venta de Viernes):**
+   * Existen 4 puntos críticos de inspección de calidad (después de englobado/dope, prensas, pintura y final).
+   * La merma cosmética no se desecha: se clasifica como **"Producto Regular / Segunda"**, se acumula en un almacén designado y **los viernes se vende a clientes mayoristas con descuento**.
+   * El sistema debe registrar tanto la merma destructiva (pérdida) como las Segundas (recuperación de costo).
+
+5. **Condiciones Físicas y Hardware de Planta:**
+   * **Polvo Extremo:** Especialmente en el área de prensas y recorte de falda. Las tablets comerciales comunes corren alto riesgo de falla; se recomiendan tablets uso rudo con certificación IP65 o terminales en cajas selladas.
+   * **Política de Celulares:** Los operarios tienen **estrictamente prohibido el celular** en piso. Los supervisores sí están autorizados para portar tablet/dispositivo de captura.
+   * **Conectividad:** Cuentan con red WiFi con repetidores y servidor local módem, con cableado hacia ingeniería.
+
+6. **Flujo de Salida y Facturación en CONTPAQi (COMPAC):**
+   * El cliente mayorista llega con su camioneta.
+   * Se emite un vale de salida en papel, se descuenta de las órdenes en Excel y pasa a contabilidad para timbrar la factura en COMPAC.
+   * La integración API o enlace bidireccional con COMPAC evitará recapturas y descuadres contables.
 
 ---
 
-## 📅 Roadmap de Trabajo Post-Sesión
+## 📅 Calendario de Entrega Acordado en la Reunión
 
 ```
-DÍA 1-2    → Consolidar notas y validar hipótesis
-DÍA 3-4    → Calcular ROI con datos reales de la sesión
-DÍA 5-7    → Diseñar arquitectura modular y propuesta comercial por tiers
-DÍA 8-10   → Preparar deck ejecutivo (máx 15 slides, orientado a negocio)
-DÍA 10-12  → Presentación de propuesta (con el tomador de decisión en sala)
+DÍA 1-2 (Miércoles/Jueves) → Consolidación de transcripciones y ajuste de prototipo
+DÍA 3 (Viernes)           → Estructuración de cotización comercial por fases (Tiers)
+PRINCIPIOS DE PRÓX. SEM.  → Envío de propuesta formal a: making.tombstone@gmail.com
+SEMANA PRÓXIMA (Junta)    → Sesión de revisión, ajustes finos y cierre de contrato
 ```
 
 ---
 
-*Documento vivo — Uanify Consulting / Actualizar con notas de cada sesión*
+*Documento consolidado post-visita — Uanify Consulting*

@@ -1,6 +1,8 @@
 ﻿/**
  * UANIFY MES · GLOBAL APP CONTROLLER
- * Personalizado para Planta de Producción Tombstone Hats (San Pancho, Gto.)
+ * Sistema MES para Planta Matriz Tombstone Hats (San Francisco del Rincón, Gto.)
+ * Basado en levantamiento técnico de planta: Lotes de 60 pzas, fraccionamiento a 15 pzas,
+ * almacenes intermedios (WIP), subensambles de tafilete por talla e integración CONTPAQi (COMPAC).
  */
 
 const UanifyState = {
@@ -8,113 +10,219 @@ const UanifyState = {
   soundEnabled: true,
   currentShift: 'Turno 1 (Matutino · 07:00 - 15:30)',
   
-  // Tombstone Hats Operational Metrics
+  // Métricas Generales Tombstone Hats
   metaShiftTotal: 850,
   producedTotal: 612,
   scrapTotal: 14,
+  secondGradeTotal: 26, // Sombreros de segunda / regulares (para venta de viernes)
   taktTimeSec: 42,
-  unitPriceMxn: 1310, // Precio promedio catálogo Tombstone (Línea Master Telar / Texanas)
+  unitPriceMxn: 1310, // Precio promedio catálogo Tombstone (Master Telar)
   
-  // Modelos activos de Tombstone Hats
+  // Modelos del Catálogo Oficial Tombstone Hats
   activeModels: [
-    { id: 'denver', name: '1000X Master Telar Denver', sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel', size: '58 (7 1/4)' },
-    { id: 'viejonon', name: '1000X Master Telar El Viejonón', sku: 'TB-1000X-VJN-57', price: 1310, material: 'Telar Master / Horma Bullrider', size: '57 (7 1/8)' },
-    { id: 'laredo', name: '1000X Master Telar Laredo F10', sku: 'TB-1000X-LRD-58', price: 1310, material: 'Master Telar / Plancha Falda 4"', size: '58 (7 1/4)' },
-    { id: 'frontier', name: '1000X Master Telar Frontier F9', sku: 'TB-1000X-FRN-59', price: 1310, material: 'Fieltro / Copa Gota de Agua', size: '59 (7 3/8)' }
+    { id: 'denver', name: '1000X Master Telar Denver', sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel', size: '58 (7 1/4)', crownHorma: 'Denver' },
+    { id: 'viejonon', name: '1000X Master Telar El Viejonón', sku: 'TB-1000X-VJN-57', price: 1310, material: 'Master Telar / Horma Bullrider', size: '57 (7 1/8)', crownHorma: 'Viejón' },
+    { id: 'laredo', name: '1000X Master Telar Laredo F10', sku: 'TB-1000X-LRD-58', price: 1310, material: 'Master Telar / Falda 4" Plana', size: '58 (7 1/4)', crownHorma: 'Laredo' },
+    { id: 'frontier', name: '1000X Master Telar Frontier F9', sku: 'TB-1000X-FRN-59', price: 1310, material: 'Telar / Copa Gota de Agua', size: '59 (7 3/8)', crownHorma: 'Frontier' },
+    { id: 'chaparral', name: '1000X Master Telar Chaparral', sku: 'TB-1000X-CHP-56', price: 1310, material: 'Telar Blanco / Toquilla Texana', size: '56 (7)', crownHorma: 'Chaparral' }
   ],
   selectedModelIndex: 0,
 
-  // Estaciones reales de manufactura en planta Tombstone
+  // Lotes Madres (60 pzas) y Sublotes (15 pzas)
+  activeLots: [
+    {
+      lotId: 'L-1094',
+      model: '1000X Master Telar Denver',
+      size: '58',
+      totalPieces: 60,
+      currentStation: 'Hidráulico & Alineado (Rampa)',
+      operator: 'Juan Manuel Pérez (P-04)',
+      status: 'Fraccionando en sublotes',
+      isSubdivided: true,
+      sublots: [
+        { id: 'L-1094-01', pieces: 15, station: 'Pintura & Secado', status: 'En Proceso', operator: 'Carlos Ortiz' },
+        { id: 'L-1094-02', pieces: 15, station: 'Pintura & Secado', status: 'En Proceso', operator: 'Carlos Ortiz' },
+        { id: 'L-1094-03', pieces: 15, station: 'Almacén Alineado', status: 'En Espera', operator: 'Sin Asignar' },
+        { id: 'L-1094-04', pieces: 15, station: 'Almacén Alineado', status: 'En Espera', operator: 'Sin Asignar' }
+      ]
+    },
+    {
+      lotId: 'L-1095',
+      model: '1000X Master Telar El Viejonón',
+      size: '57',
+      totalPieces: 60,
+      currentStation: 'Prensas de Hormado',
+      operator: 'Raúl Mendoza',
+      status: 'Hormado Térmico',
+      isSubdivided: false,
+      sublots: []
+    },
+    {
+      lotId: 'L-1096',
+      model: '1000X Master Telar Laredo F10',
+      size: '58',
+      totalPieces: 60,
+      currentStation: 'Englobado (Baño Dope)',
+      operator: 'Pedro Torres',
+      status: 'Secado en Cama #3',
+      isSubdivided: false,
+      sublots: []
+    }
+  ],
+
+  // Stock de Subensambles (Tafiletes por Talla listos para Adorno 1)
+  tafileteStock: [
+    { size: '55', stock: 85, reserved: 30, available: 55 },
+    { size: '56', stock: 140, reserved: 60, available: 80 },
+    { size: '57', stock: 230, reserved: 120, available: 110 }, // Talla estrella
+    { size: '58', stock: 165, reserved: 90, available: 75 },
+    { size: '59', stock: 75, reserved: 30, available: 45 },
+    { size: '60', stock: 40, reserved: 15, available: 25 }
+  ],
+
+  // Almacenes Intermedios y Estaciones de Producción en Planta Tombstone
   stations: [
     {
-      id: 'apresto',
-      code: 'EST-01',
-      name: 'Engomado & Apresto',
-      desc: 'Rigidez química de campanas y telares',
+      id: 'corte',
+      code: 'ALM-01',
+      name: 'Tendido, Corte & Cuadros',
+      desc: 'Tendido de telar y corte en cuadros para copa/falda',
       target: 150,
-      produced: 118,
-      scrap: 2,
-      wipWaiting: 14,
-      cycleTime: '36s',
+      produced: 135,
+      scrap: 1,
+      wipWaiting: 18,
+      cycleTime: '32s',
       status: 'running',
-      operator: 'Raúl Mendoza'
+      operator: 'Esteban Lozano'
+    },
+    {
+      id: 'alambrado',
+      code: 'ALM-02',
+      name: 'Alambrado & Costura de Ala',
+      desc: 'Colocación de alambre de memoria en falda',
+      target: 145,
+      produced: 124,
+      scrap: 2,
+      wipWaiting: 15,
+      cycleTime: '38s',
+      status: 'running',
+      operator: 'Rocío Morales'
+    },
+    {
+      id: 'dope',
+      code: 'ALM-03',
+      name: 'Englobado & Baño de Dope',
+      desc: 'Sellado químico de poros y secado en camas por lote',
+      target: 140,
+      produced: 110,
+      scrap: 1,
+      wipWaiting: 22,
+      cycleTime: '45s',
+      status: 'running',
+      operator: 'Pedro Torres'
     },
     {
       id: 'prensas',
-      code: 'EST-02',
-      name: 'Prensas de Hormado Tombstone',
-      desc: 'Hormas térmicas Denver / Bullrider / Laredo',
+      code: 'ALM-04',
+      name: 'Prensas de Hormado Térmico',
+      desc: 'Hormas Denver, Viejón, Laredo, Roper a vapor',
       target: 140,
       produced: 98,
       scrap: 4,
-      wipWaiting: 46, // Cuello de botella
+      wipWaiting: 46, // Cuello de botella detectado en planta
       cycleTime: '26s',
       status: 'running',
       operator: 'Juan Manuel Pérez (P-04)'
     },
     {
-      id: 'corte',
-      code: 'EST-03',
-      name: 'Troquelado de Falda & Plancha',
-      desc: 'Corte de ala circular y asentado de falda',
+      id: 'alineado',
+      code: 'ALM-05',
+      name: 'Hidráulico & Fraccionado (Rampa)',
+      desc: 'Almacén de alineado donde lote de 60 se divide a 15 pzas',
+      target: 140,
+      produced: 102,
+      scrap: 2,
+      wipWaiting: 14,
+      cycleTime: '24s',
+      status: 'running',
+      operator: 'Auxiliar de Línea (Rampa)'
+    },
+    {
+      id: 'refaldeado',
+      code: 'ALM-06',
+      name: 'Refaldeado & Recorte de Falda',
+      desc: 'Corte perimetral con cuchilla circular y perfilado',
       target: 145,
       produced: 104,
       scrap: 1,
-      wipWaiting: 9,
+      wipWaiting: 10,
       cycleTime: '28s',
       status: 'running',
       operator: 'Carlos Ortiz'
     },
     {
-      id: 'ribete',
-      code: 'EST-04',
-      name: 'Ribeteado & Tafilete Tombstone',
-      desc: 'Costura de badana con sello dorado Tombstone',
+      id: 'pintura',
+      code: 'ALM-07',
+      name: 'Pintura, Secado & Brillo',
+      desc: 'Aplicación de sellador, pintura con pistola y barniz',
       target: 135,
       produced: 96,
-      scrap: 3,
+      scrap: 2,
       wipWaiting: 16,
-      cycleTime: '44s',
+      cycleTime: '42s',
       status: 'warning',
-      operator: 'María Elena Gómez'
+      operator: 'Marcos Villegas'
     },
     {
       id: 'adorno',
-      code: 'EST-05',
-      name: 'Toquillas, Plumas & Herrajes',
-      desc: 'Ensamble de toquilla y pin de plata Tombstone',
+      code: 'ALM-08',
+      name: 'Adorno 1 (Pegado Tafilete & Toquilla)',
+      desc: 'Cruce de 3 subensambles: cuerpo + tafilete + toquilla',
       target: 140,
       produced: 101,
       scrap: 2,
-      wipWaiting: 11,
+      wipWaiting: 12,
       cycleTime: '40s',
       status: 'running',
-      operator: 'Sofía Rocha'
+      operator: 'María Elena Gómez'
     },
     {
-      id: 'empaque',
-      code: 'EST-06',
-      name: 'Inspección de Calidad & Cajas B2B',
-      desc: 'Control de calidad final y encajonado mayorista',
+      id: 'calidad',
+      code: 'ALM-09',
+      name: 'Inspección Final de Calidad & Segundas',
+      desc: 'Separación de Primera (A) vs Segundas/Mermas de viernes',
       target: 140,
       produced: 95,
       scrap: 2,
-      wipWaiting: 6,
-      cycleTime: '30s',
+      wipWaiting: 8,
+      cycleTime: '25s',
       status: 'running',
-      operator: 'Fernando Valdivia'
+      operator: 'Inspectora de Calidad'
+    },
+    {
+      id: 'embarque',
+      code: 'ALM-10',
+      name: 'Producto Terminado & Vale COMPAC',
+      desc: 'Carga a camioneta de mayoristas con vale de entrega',
+      target: 140,
+      produced: 90,
+      scrap: 0,
+      wipWaiting: 5,
+      cycleTime: '20s',
+      status: 'running',
+      operator: 'Fernando Valdivia (Almacén)'
     }
   ],
 
-  // Bitácora de Paros (Downtimes)
+  // Paros de Máquina Registrados
   downtimes: [
     { time: '07:45', station: 'Prensas Hormado #2', cause: 'Cambio de molde a Texana Denver F10 (SMED)', duration: '14 min', impact: '-22 pzas' },
-    { time: '09:20', station: 'Engomado & Apresto', cause: 'Ajuste de fórmula de resina en tina', duration: '8 min', impact: '-10 pzas' },
-    { time: '11:10', station: 'Prensas Hormado #1', cause: 'Baja presión en línea de caldera de vapor', duration: '12 min', impact: '-18 pzas' },
-    { time: '12:35', station: 'Ribeteado & Tafilete', cause: 'Rotura de hilo de pespunte en tafilete de piel', duration: '5 min', impact: '-6 pzas' }
+    { time: '09:20', station: 'Englobado (Baño Dope)', cause: 'Ajuste de fórmula de laca/resina en tina', duration: '8 min', impact: '-10 pzas' },
+    { time: '11:10', station: 'Prensas Hormado #1', cause: 'Baja presión de vapor en caldera matriz', duration: '12 min', impact: '-18 pzas' },
+    { time: '12:35', station: 'Adorno 1 (Tafilete)', cause: 'Falta de tafiletes talla 58 en stock de subensamble', duration: '9 min', impact: '-12 pzas' }
   ],
 
-  // Registro hora por hora
+  // Avance Hora por Hora
   hourlyData: [
     { hour: '07:00', target: 100, produced: 92 },
     { hour: '08:00', target: 110, produced: 88 },
@@ -122,9 +230,21 @@ const UanifyState = {
     { hour: '10:00', target: 110, produced: 108 },
     { hour: '11:00', target: 110, produced: 96 },
     { hour: '12:00', target: 110, produced: 112 },
-    { hour: '13:00', target: 110, produced: 12 }, // Hora en curso
+    { hour: '13:00', target: 110, produced: 12 }, // En curso
     { hour: '14:00', target: 90,  produced: 0 }
-  ]
+  ],
+
+  // Integración COMPAC / CONTPAQi
+  compacSync: {
+    status: 'Conectado · Sincronizado',
+    lastSync: 'Hace 4 minutos',
+    activeOrderB2B: 'OC-2026-4421',
+    customer: 'Distribuidora Western de Monterrey S.A. de C.V.',
+    orderQuantity: 10500,
+    deliveredSoFar: 3680,
+    pendingQuantity: 6820,
+    invoiceStatus: 'Pre-factura generada en COMPAC'
+  }
 };
 
 // Event bus
@@ -141,7 +261,7 @@ const EventBus = {
   }
 };
 
-// Sintetizador de audio industrial
+// Sintetizador de audio industrial (clicks de pistola QR, pedal, alertas)
 const IndustrialAudio = {
   ctx: null,
   init() {
@@ -167,6 +287,23 @@ const IndustrialAudio = {
       osc.stop(this.ctx.currentTime + 0.08);
     } catch(e) {}
   },
+  playQrBeep() {
+    if (!UanifyState.soundEnabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1760, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.1);
+    } catch(e) {}
+  },
   playAlert(type) {
     if (!UanifyState.soundEnabled) return;
     try {
@@ -187,9 +324,9 @@ const IndustrialAudio = {
   }
 };
 
-// Inicialización
+// Inicialización de la aplicación
 document.addEventListener('DOMContentLoaded', () => {
-  // Pestañas de Navegación
+  // Pestañas de navegación
   const navBtns = document.querySelectorAll('.nav-btn');
   const viewPanels = document.querySelectorAll('.view-panel');
 
@@ -220,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateClock, 1000);
   updateClock();
 
-  // Control de sonido
+  // Sonido
   const soundToggle = document.getElementById('soundToggle');
   if (soundToggle) {
     soundToggle.addEventListener('click', () => {

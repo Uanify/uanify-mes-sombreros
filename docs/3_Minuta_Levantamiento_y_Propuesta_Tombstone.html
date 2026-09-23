@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uanify × Tombstone Hats · Minuta de Levantamiento y Propuesta Técnica</title>
+<style>
+  @page {
+    margin: 20mm 15mm 20mm 15mm;
+    size: letter;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #ffffff;
+  }
+  h1 {
+    color: #0f172a;
+    font-size: 24px;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 8px;
+    margin-top: 24px;
+  }
+  h2 {
+    color: #0369a1;
+    font-size: 19px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 6px;
+    margin-top: 24px;
+  }
+  h3 {
+    color: #0f172a;
+    font-size: 15px;
+    margin-top: 18px;
+  }
+  h4 {
+    color: #334155;
+    font-size: 13px;
+    margin-top: 14px;
+  }
+  p {
+    margin: 8px 0;
+  }
+  strong {
+    color: #0f172a;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  blockquote {
+    border-left: 4px solid #0284c7;
+    background: #f0f9ff;
+    padding: 10px 16px;
+    margin: 12px 0;
+    color: #0369a1;
+    border-radius: 0 6px 6px 0;
+  }
+  ul, ol {
+    padding-left: 24px;
+    margin: 8px 0;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  code {
+    font-family: Consolas, Monaco, monospace;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #0f172a;
+  }
+  pre {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.4;
+    page-break-inside: avoid;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  hr {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 24px 0;
+  }
+  a {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<h1>🤠 Uanify × Tombstone Hats (San Francisco del Rincón)</h1>
+<h2>Minuta Ejecutiva de Levantamiento en Planta y Propuesta Técnica Integral</h2>
+<blockquote><strong>Documento:</strong> Minuta Técnica de Levantamiento & Propuesta de Solución Industria 4.0</blockquote>
+<blockquote><strong>Fecha de Reunión en Planta:</strong> Septiembre 2026</blockquote>
+<blockquote><strong>Fecha de Entrega de Propuesta:</strong> Principios de la próxima semana (Compromiso acordado)</blockquote>
+<blockquote><strong>Empresa:</strong> Tombstone Hats (<a href="https://tombstone.mx/" target="_blank">tombstone.mx</a>) — San Francisco del Rincón, Guanajuato</blockquote>
+<blockquote><strong>Destinatario y Envío Oficial:</strong> Edmundo ("Mundo") e Ing. Carlos</blockquote>
+<blockquote><strong>Correo Oficial para Propuesta y Diagramas:</strong> <code>making.tombstone@gmail.com</code></blockquote>
+<blockquote><strong>Elaborado por:</strong> Equipo de Consultoría y Arquitectura de Software — Uanify</blockquote>
+<blockquote><strong>Prototipo Interactivo Desplegado:</strong> <a href="https://uanify.github.io/uanify-mes-sombreros/" target="_blank">https://uanify.github.io/uanify-mes-sombreros/</a></blockquote>
+<hr>
+<h2>📋 Resumen Ejecutivo</h2>
+<p>Tras la reunión y recorrido técnico realizado en las instalaciones de la planta matriz de <strong>Tombstone Hats</strong> en San Francisco del Rincón ("San Pancho"), Guanajuato, se levantaron a detalle las dinámicas operativas, restricciones físicas y prioridades estratégicas de Dirección y Producción.</p>
+<p>El objetivo central acordado es <strong>eliminar la ceguera operativa</strong> en el piso de manufactura, transitando de un control manual basado en tarjetas viajeras de papel, pizarrones físicos y hojas de Excel desconectadas, hacia un <strong>Sistema MES (Manufacturing Execution System) ágil y robusto</strong>, adaptado a las condiciones reales de planta (polvo, operarios sin celular, lotes fraccionados y enlace con CONTPAQi).</p>
+<hr>
+<h2>🏭 1. Diagnóstico Operativo de Planta (Levantamiento en Sitio)</h2>
+<h3>1.1 El Producto y Mix de Fabricación</h3>
+<ul><li><strong>El Producto Campeón (70% del volumen):</strong> Sombreros y Texanas de <strong>Telar</strong> (gamas como <em>Master Telar Denver, El Viejonón, Laredo, Frontier</em>).</li></ul>
+<ul><li><strong>Proceso de origen:</strong> Inicia en el almacén de materiales con rollos de tela que se tienden y se cortan en cuadros.</li></ul>
+<ul><li><strong>Construcción:</strong> Existen dos variantes:</li></ul>
+<ol><li><em>Sombreros de 2 piezas:</em> Copa y falda/ala se procesan por separado y se fusionan mediante pegamento térmico y calor.</li></ol>
+<ol><li><em>Sombreros de 1 pieza:</em> Moldeado integral de la pieza.</li></ol>
+<ul><li><strong>Campana Preformada (Fieltro de lana y pelo fino):</strong> Línea que omite el corte de cuadros e inicia directamente en las prensas de vapor y hormas.</li></ul>
+<ul><li><strong>Línea de Accesorios (30% del volumen):</strong> Carteras, cintos vaqueros, mariconeras, bolsitas y horquillas. Se requiere ficha técnica y costeo más que control de flujo por fracciones.</li></ul>
+<h3>1.2 Mapeo de Hormas y Maquinaria</h3>
+<ul><li><strong>Inventario de Hormas / Moldes:</strong> Formas comerciales como <em>Chaparral, Roper, Viejón</em>, identificadas por colores y formas.</li></ul>
+<ul><li><strong>Dos tipos principales de maquinaria:</strong></li></ul>
+<ol><li><em>Prensas de vapor y calor:</em> Donde se da la forma inicial a copa y falda con moldes de aluminio.</li></ol>
+<ol><li><em>Prensas hidráulicas:</em> Para conformado fino y alineado.</li></ol>
+<h3>1.3 El Flujo de Lotes y la Dinámica de la "Rampa" (Cuello de Botella Operativo)</h3>
+<p>Actualmente el flujo de producción opera bajo una regla crítica de lotificación:</p>
+<ol><li><strong>Lote Madre (60 piezas):</strong> Nace en Ingeniería / Almacén de Materiales con una tarjeta viajera de papel. Pasa por Corte de cuadros, Englopado (baño de dope en esquina y secado en camas, donde cada cama representa 1 lote), Refuerzos con pistola y Prensas de vapor.</li></ol>
+<ol><li><strong>Fraccionamiento en Rampa (Hacia Nave de Hidráulicas):</strong></li></ol>
+<ul><li>Al cruzar la rampa hacia la otra nave (almacén de alineado), el lote madre de 60 piezas <strong>se subdivide físicamente en 4 sublotes de 15 piezas</strong> (ejemplo: Lote <code>351</code> se divide en <code>351-01</code>, <code>351-02</code>, <code>351-03</code>, <code>351-04</code>).</li></ul>
+<ul><li><em>Situación actual:</em> Se hace de manera artesanal: una persona consulta un archivo de Excel "lotificador", busca tarjetas impresas en una mesa y las intercambia una por una a mano.</li></ul>
+<ul><li><em>Requerimiento:</em> Digitalizar y automatizar este fraccionamiento en el sistema con un solo escaneo.</li></ul>
+<h3>1.4 La Regla del "Lote Completo" y la Gestión de "Segundas" (Venta de Viernes)</h3>
+<ul><li><strong>Regla estricta:</strong> Ningún lote debe salir incompleto al siguiente departamento. Si entran 60 piezas, deben salir 60 piezas.</li></ul>
+<ul><li><strong>Tratamiento de defectos en los 4 puntos de inspección de calidad:</strong></li></ul>
+<ul><li><em>Con defecto recuperable:</em> Se regresa a la fracción anterior para compostura inmediata (ej. retoque de pintura o rebajado).</li></ul>
+<ul><li><em>Con defecto cosmético no recuperable:</em> Se clasifica como <strong>"Producto Regular / Segunda"</strong>.</li></ul>
+<ul><li>Si un lote de 60 piezas tiene 2 piezas de menor calidad, se documentan <strong>58 piezas de primera + 2 piezas de segunda</strong> (o se sustituyen con saldo de reposición para mantener la orden íntegra).</li></ul>
+<ul><li><strong>Venta de Viernes:</strong> Toda la merma y producto regular se almacena en un área específica. <strong>Los días viernes se consolidan y se venden al cliente como lote de segunda</strong>, recuperando el costo del material.</li></ul>
+<h3>1.5 Subensambles Críticos: Tafiletes por Talla en Adorno 1</h3>
+<ul><li>En el departamento de <strong>Adorno 1</strong>, el sombrero recibe 3 componentes simultáneos:</li></ul>
+<ol><li>El cuerpo del sombrero procesado.</li></ol>
+<ol><li>El <strong>tafilete (badana interior)</strong>, confeccionado en un área de subensamble por tallas: <strong>55, 56, 57, 58, 59 y 60 cm</strong>.</li></ol>
+<ol><li>La <strong>toquilla</strong> (cinto exterior).</li></ol>
+<ul><li><em>Dolor actual:</em> Los supervisores coordinan esto a gritos entre naves: <em>"¿Tienes tafilete de la 57 para este lote? Sí, tengo 150"</em>. Si la talla no coincide, el lote de sombreros se queda parado en mesa.</li></ul>
+<ul><li><em>Requerimiento:</em> Tablero digital de stock de tafiletes por talla en tiempo real.</li></ul>
+<h3>1.6 Despacho, Camiones y Puente CONTPAQi (COMPAC)</h3>
+<ul><li>Las órdenes de clientes mayoristas (ej. 10,500 piezas: 7,500 de un modelo, 2,000 de otro, 1,000 de otro) se capturan en Excel y CONTPAQi.</li></ul>
+<ul><li>El cliente envía su propio camión o camioneta a planta.</li></ul>
+<ul><li>El almacén genera un <strong>Vale de Salida en papel</strong>, se descuenta a mano del Excel de órdenes de producción y viaja físicamente a la oficina administrativa para que la contadora / encargada facture en <strong>COMPAC</strong>.</li></ul>
+<ul><li>Cuentan con soporte de una ingeniera externa especializada en CONTPAQi con membresía anual.</li></ul>
+<ul><li><em>Requerimiento Uanify:</em> Generar el vale de salida digital y crear el puente de datos hacia CONTPAQi para evitar la doble captura.</li></ul>
+<hr>
+<h2>🛡️ 2. Restricciones Físicas y Ambientales de Planta (Hardware)</h2>
+<p>Durante la visita se identificaron 3 restricciones determinantes para el diseño tecnológico:</p>
+<table><thead><tr>
+<th>Restricción Identificada</th>
+<th>Impacto Técnico</th>
+<th>Solución Propuesta Uanify</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Alto nivel de polvo</strong> en Prensas y Recorte</td>
+<td>Daña ventiladores y puertos de computadoras estándar.</td>
+<td>Terminales de supervisor con <strong>carcasa industrial IP65</strong> (selladas contra polvo) y lectores QR sellados.</td>
+</tr>
+<tr>
+<td><strong>Celulares estrictamente prohibidos</strong> para operarios</td>
+<td>No es viable pedirles que descarguen una app móvil en su celular personal.</td>
+<td><strong>Módulos Físicos Estratégicos:</strong> Pistolas lectoras de QR fijas en los almacenes intermedios (WIP) y tablets únicamente para supervisores.</td>
+</tr>
+<tr>
+<td><strong>Infraestructura de Red existente</strong></td>
+<td>Cuentan con módem, servidor administrativo y repetidores Wi-Fi en nave.</td>
+<td>Arquitectura <strong>Edge Local con sincronización a la Nube</strong>: opera 100% en red local aunque se corte el internet; sincroniza en automático.</td>
+</tr>
+</tbody></table>
+<blockquote>📌 <strong>Conclusión sobre Hardware:</strong> Se descarta la opción inicial de un pedal o cámara con IA por cada máquina individual (demasiado invasivo y costoso en Fase 1). Se aprueba el modelo de <strong>Módulos de Escaneo QR por Almacén Intermedio (WIP)</strong> operados por supervisores y auxiliares.</blockquote>
+<hr>
+<h2>🚀 3. Propuesta de Solución Faseada (Roadmap de Implementación)</h2>
+<p>Para garantizar un retorno de inversión inmediato sin detener la producción, proponemos un despliegue en <strong>3 Fases</strong>:</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│ FASE 1 (Inmediata - 4 semanas)                                         │
+│ • Sistema MES Base con Tarjetas Viajeras QR                            │
+│ • Fraccionador Automático de Rampa (Lote 60 → 4 Sublotes de 15)        │
+│ • Registro de Avance en 10 Almacenes WIP con Pistolas QR              │
+│ • Tablero Andon TV de 50" en Nave Central (Metas Hora × Hora)         │
+│ • Módulo de Registro de Segundas y Mermas (Venta de Viernes)          │
+├────────────────────────────────────────────────────────────────────────┤
+│ FASE 2 (Siguiente - 4 semanas)                                         │
+│ • Monitor de Subensambles: Tafiletes por Talla (55-60) en Adorno 1    │
+│ • Vales de Salida Digitales para Camiones de Clientes                 │
+│ • Puente de Integración con CONTPAQi (Facturación e Inventarios)      │
+│ • Matriz Maestra de Materiales (Cambio masivo de tintas/químicos)     │
+├────────────────────────────────────────────────────────────────────────┤
+│ FASE 3 (Consolidación - A convenir)                                    │
+│ • Módulo de Cálculo de Destajo Automático por Operador y Fracción      │
+│ • Fichas Técnicas Digitales y Costeo para Accesorios (Carteras/Cintos)│
+│ • Analítica Predictiva de Takt Time y OEE Avanzado                     │
+└────────────────────────────────────────────────────────────────────────┘</code></pre>
+<hr>
+<h2>💻 4. Prototipo Funcional Entregado y Validado</h2>
+<p>El prototipo interactivo ya refleja exactamente la operación de Tombstone Hats y puede consultarse en vivo desde cualquier tablet, PC o teléfono móvil en:</p>
+<p>👉 <strong><a href="https://uanify.github.io/uanify-mes-sombreros/" target="_blank">https://uanify.github.io/uanify-mes-sombreros/</a></strong></p>
+<h3>Módulos Interactivos Disponibles en el Prototipo:</h3>
+<ol><li><strong>Tablero Andon Digital (Piso de Nave):</strong></li></ol>
+<ul><li>Vista de las 10 estaciones reales de Tombstone: <em>Corte, Englopado/Dope, Refuerzos, Prensas de Vapor, Recorte y Alambrado, Alineado/Hidráulico, Pintura y Brillo, Temperado/Refaldear, Adorno 1 (Tafiletes) y Calidad/Embarque</em>.</li></ul>
+<ul><li>Semáforos en tiempo real, piezas producidas vs. meta de 850 pzas/turno, Takt Time (42 seg/pza) y OEE global.</li></ul>
+<ol><li><strong>Terminal de Supervisor & Lotes QR:</strong></li></ol>
+<ul><li>Lote madre activo <code>L-1094</code> (60 piezas, Sombrero Master Telar Denver 1000X, Talla 57, Horma Roper).</li></ul>
+<ul><li>Botón interactivo para simular el <strong>Escaneo de Tarjeta Viajera con Pistola QR</strong>.</li></ul>
+<ul><li>Botón interactivo para <strong>Fraccionar Lote en la Rampa</strong> en 4 sublotes de 15 piezas (<code>L-1094-01</code> a <code>04</code>) con asignación a operarios.</li></ul>
+<ul><li>Registro clasificado de <strong>Merma vs. Producto Regular/Segunda</strong> (acumulado para venta de viernes).</li></ul>
+<ol><li><strong>Consola de Ingeniería & Subensambles:</strong></li></ol>
+<ul><li>Monitor en vivo de stock de <strong>Tafiletes por Talla</strong> (tallas 55 a 60 cm) con alertas de desabasto en Adorno 1.</li></ul>
+<ul><li>Registro de inventario de <strong>Hormas/Moldes</strong> (Chaparral, Roper, Viejón, etc.) vinculadas a prensas.</li></ul>
+<ul><li>Matriz de materiales con simulador de cambio masivo (ej. cambio de proveedor de pintura Taiwan 1125).</li></ul>
+<ol><li><strong>Dashboard de Dirección & Vales CONTPAQi:</strong></li></ol>
+<ul><li>Cumplimiento de pedidos mayoristas (Orden #9420 de 10,500 piezas).</li></ul>
+<ul><li>Generador de <strong>Vales de Entrega Digital</strong> para camión del cliente con desglose de lotes y estado de sincronización hacia CONTPAQi.</li></ul>
+<hr>
+<h2>❓ 5. Dudas Técnicas para Afinar en la Propuesta Final</h2>
+<p>Conforme a lo acordado al cierre de la reunión, dejamos asentados los puntos que revisaremos con el equipo de Tombstone a principios de la próxima semana:</p>
+<ol><li><strong>Integración CONTPAQi:</strong></li></ol>
+<ul><li>¿Podemos coordinar una breve llamada técnica de 20 minutos con la ingeniera externa de soporte de COMPAC para conocer si la base de datos está en SQL Server y qué versión de licencia tienen activa?</li></ul>
+<ol><li><strong>Diagramas de Flujo de Proceso:</strong></li></ol>
+<ul><li>En cuanto nos envíen por correo el diagrama de flujo del producto campeón y sus variantes (1 pieza vs 2 piezas), ajustaremos las fracciones en el MES para que el mapeo sea 100% idéntico a sus códigos internos.</li></ul>
+<ol><li><strong>Ubicación Física de los Módulos de Escaneo:</strong></li></ol>
+<ul><li>Definir los 4 a 6 puntos exactos donde se colocarán los soportes de escáneres QR (sugeridos: Rampa de corte/englopado, Salida de Prensas, Rampa de Alineado/Hidráulico, Salida de Brillos, Mesa de Adorno 1 y Mesa de Calidad Final).</li></ul>
+<hr>
+<h2>📅 6. Próximos Pasos y Calendario de Acuerdos</h2>
+<table><thead><tr>
+<th>Fecha</th>
+<th>Hito Acordado</th>
+<th>Responsable</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Inmediato (Hoy)</strong></td>
+<td>Entrega de minuta de levantamiento y prototipo interactivo desplegado en web.</td>
+<td>Uanify</td>
+</tr>
+<tr>
+<td><strong>Viernes / Lunes temprano</strong></td>
+<td>Recepción de diagramas de flujo de proceso y contacto de CONTPAQi vía <code>making.tombstone@gmail.com</code>.</td>
+<td>Tombstone Hats</td>
+</tr>
+<tr>
+<td><strong>Principios de la próxima semana</strong></td>
+<td>Envío de la Propuesta Formal Técnico-Económica desglosada con cotización de hardware IP65 y software MES.</td>
+<td>Uanify</td>
+</tr>
+<tr>
+<td><strong>Semana entrante</strong></td>
+<td>Sesión de revisión en planta o videollamada para definir fecha de arranque del piloto en Fase 1.</td>
+<td>Uanify & Tombstone</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>Uanify — Consultoría en Transformación Digital e Industria 4.0</em></p>
+<p><em>Contacto: contacto@uanify.com | San Francisco del Rincón & León, Guanajuato</em></p>
+</body>
+</html>
