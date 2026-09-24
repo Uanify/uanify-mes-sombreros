@@ -699,3 +699,439 @@ body.industrial-theme {
     display: none;
   }
 }
+
+/* ==========================================================================
+   PIZARRA DIGITAL DE LÍNEA "1000 X M.T PRENSAS SECAS" (RF-52)
+   Réplica fiel del pizarrón blanco físico de nave Tombstone Hats
+   ========================================================================== */
+.whiteboard-wrapper {
+  margin-top: 14px;
+}
+
+.whiteboard-lamp-fixture {
+  background: linear-gradient(180deg, #94A3B8 0%, #CBD5E1 50%, #64748B 100%);
+  height: 14px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.lamp-tube {
+  width: 75%;
+  height: 4px;
+  background: #FFFFFF;
+  border-radius: 4px;
+  box-shadow: 0 0 8px #FFFFFF, 0 0 14px rgba(255,255,255,0.8);
+}
+
+.whiteboard-frame {
+  background: #FFFFFF;
+  border: 6px solid #CBD5E1;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 18px 22px;
+  box-shadow: 0 15px 35px -5px rgba(0,0,0,0.12), inset 0 0 15px rgba(0,0,0,0.02);
+}
+
+.whiteboard-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2.5px solid #1E293B;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wb-title-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.wb-magnetic-badge {
+  background: #16A34A;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.wb-magnetic-badge.highlight-model {
+  background: #0F172A;
+  color: #F8FAFC;
+  border-color: #38BDF8;
+}
+
+.wb-targets-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.wb-target-badge {
+  background: #22C55E;
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(34,197,94,0.3);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.wb-target-badge.weekly {
+  background: #15803D;
+}
+
+.wb-target-lbl {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.wb-target-qty {
+  font-size: 13.5px;
+  font-weight: 900;
+  font-family: var(--font-display);
+}
+
+.wb-actions-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #F8FAFC;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+
+.wb-legend-pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wb-legend-pill .dot-green {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #16A34A;
+}
+
+.wb-legend-pill .dot-red {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #DC2626;
+}
+
+.wb-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.whiteboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #1E293B;
+  background: #FFFFFF;
+}
+
+.wb-th {
+  border: 1.5px solid #1E293B;
+  background: #F1F5F9;
+  color: #0F172A;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  padding: 8px 4px;
+  font-family: var(--font-main);
+}
+
+.wb-th.wb-col-process {
+  background: #E2E8F0;
+  font-size: 12px;
+  text-align: left;
+  padding-left: 10px;
+  width: 160px;
+  min-width: 150px;
+}
+
+.wb-th.wb-col-total {
+  background: #E2E8F0;
+  width: 85px;
+  min-width: 80px;
+}
+
+.wb-th.meal-hour {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.wb-td {
+  border: 1.5px solid #1E293B;
+  text-align: center;
+  padding: 0;
+  height: 48px;
+  position: relative;
+  background: #FFFFFF;
+}
+
+.wb-td-process {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  color: #0F172A;
+  background: #F8FAFC;
+}
+
+.wb-td-split {
+  background: linear-gradient(to top right, #FFFFFF calc(50% - 0.75px), #334155 calc(50% - 0.75px), #334155 calc(50% + 0.75px), #FFFFFF calc(50% + 0.75px));
+  min-width: 62px;
+}
+
+.wb-td-split.meal-cell {
+  background: linear-gradient(to top right, #FFFBEB calc(50% - 0.75px), #334155 calc(50% - 0.75px), #334155 calc(50% + 0.75px), #FFFBEB calc(50% + 0.75px));
+}
+
+.wb-diagonal-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 46px;
+}
+
+.wb-val-actual {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  font-size: 15px;
+  font-weight: 900;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.wb-val-target {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.wb-val-green {
+  color: #16A34A !important;
+  text-shadow: 0 0 1px rgba(22,163,74,0.4);
+}
+
+.wb-val-red {
+  color: #DC2626 !important;
+  text-shadow: 0 0 1px rgba(220,38,38,0.4);
+}
+
+.wb-val-zero {
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.wb-td-day {
+  min-width: 75px;
+}
+
+.wb-day-number {
+  font-size: 15px;
+  font-weight: 900;
+  font-family: var(--font-display);
+}
+
+.wb-td-total {
+  background: #F8FAFC;
+  padding: 6px;
+}
+
+.proc-total-number {
+  display: block;
+  font-size: 16px;
+  font-weight: 900;
+  font-family: var(--font-display);
+}
+
+.proc-total-sub {
+  font-size: 10px;
+  color: #64748B;
+  font-family: var(--font-mono);
+}
+
+.wb-total-green {
+  color: #15803D !important;
+  background: #F0FDF4 !important;
+}
+
+.wb-total-red {
+  color: #B91C1C !important;
+  background: #FEF2F2 !important;
+}
+
+.wb-weekly-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 2.5px solid #1E293B;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.wb-weekly-badge {
+  background: #15803D;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.whiteboard-footer-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+  border-top: 1px dashed #CBD5E1;
+  padding-top: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   FICHA TÉCNICA VISUAL CON FOTO (GAP-08)
+   ========================================================================== */
+.spec-layout-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.spec-photo-column {
+  text-align: center;
+}
+
+.spec-photo-frame {
+  background: linear-gradient(145deg, #FEF8F4, #FDF3EB);
+  border: 2px solid var(--color-brand-border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  box-shadow: 0 4px 12px rgba(139,94,60,0.1);
+}
+
+.spec-photo-tag {
+  background: var(--color-brand);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 10px;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.spec-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.spec-details-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.spec-details-table td:first-child {
+  width: 160px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .spec-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   REGLAS DE IMPRESIÓN OFICIAL (ESTILOS @MEDIA PRINT)
+   ========================================================================== */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .app-sidebar,
+  .view-hero-bar,
+  .sub-nav-tabs,
+  .kpi-banner,
+  .wb-actions-strip,
+  .camera-controls-bar,
+  .manual-qr-entry,
+  .modal-footer,
+  .modal-close,
+  button {
+    display: none !important;
+  }
+
+  .app-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .whiteboard-frame {
+    border: 2px solid #000000 !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+  }
+
+  .whiteboard-table {
+    border: 1.5px solid #000000 !important;
+  }
+
+  .wb-th, .wb-td {
+    border: 1px solid #000000 !important;
+  }
+
+  .tombstone-traveler-sleeve {
+    box-shadow: none !important;
+    border: 1.5px dashed #000000 !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid !important;
+  }
+}

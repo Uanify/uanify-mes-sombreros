@@ -396,3 +396,26 @@ Excepciones permitidas con style="":
    - Título en color verde bosque intenso (`#065F46`) con peso bold/extra-bold (`font-weight: 800`).
 3. **Barra de Progreso Regresiva (`.toast-progress`):** Cada toast debe incorporar una barra inferior animada de 3px que desciende progresivamente a lo largo de 4.5 segundos.
 4. **Pausa Ergonómica:** Al colocar el cursor sobre el toast (`mouseenter`), la cuenta regresiva debe pausarse automáticamente para permitir la lectura tranquila del mensaje, y reanudarse al salir (`mouseleave`).
+
+---
+
+## REGLA 0.31: Réplica Fiel de Pizarras y Tableros Físicos de Planta (MANDATORIA)
+
+**Toda evidencia fotográfica de pizarrones y tableros físicos de piso de planta debe ser digitalizada e integrada respetando su estructura y código visual.**
+
+1. **Estructura y Celdas Partidas en Diagonal:**
+   - La tabla horaria (08:00 a 18:00) de la línea de prensas secas (1000 X M.T) debe respetar la celda partida en diagonal: número Real manuscrito en el cuadrante superior izquierdo y meta fija impresa en el cuadrante inferior derecho.
+   - Respeto a las metas horarias reales: 165 piezas en horas completas y 90 piezas en horas de receso/comida (10:00-11:00 y 14:00-15:00) para un total diario de 1,500 piezas por proceso.
+2. **5 Procesos Oficiales de Prensas Secas:**
+   - `1. HORMADO`
+   - `2. REPLANCHAR COPA`
+   - `3. RECORTAR COPAS`
+   - `4. PEGAR COPA C/FALDA` (ensamble en rampa)
+   - `5. REPLANCHADO C/ALAMBRE` (conformado con alambre)
+3. **Semaforización de Plumón Marcador:**
+   - Número en verde esmeralda (`#16A34A`) si el real iguala o supera la meta.
+   - Número en rojo brillante (`#DC2626`) si el real está por debajo de la meta.
+4. **Ciclo Semanal de Planta (Jueves a Miércoles):**
+   - El tablero semanal debe estructurarse conforme al corte de producción de San Francisco del Rincón: Jueves, Viernes, Sábado, Lunes, Martes y Miércoles, con meta de 7,500 piezas por proceso.
+5. **Persistencia e Interactividad:**
+   - Debe permitir cargar los datos originales de la fotografía (`#btnLoadPhotoData`), simular avances en línea en tiempo real (`#btnSimulateWhiteboardHour`) y mandar a imprimir el reporte oficial de la pizarra.

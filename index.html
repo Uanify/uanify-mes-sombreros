@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.11.0">
-  <link rel="stylesheet" href="css/components.css?v=2.11.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.13.0">
+  <link rel="stylesheet" href="css/components.css?v=2.13.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.11.0</span>
+        <span class="system-version-pill login-version-pill">v2.13.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -143,7 +143,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.11.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.13.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -186,6 +186,7 @@
           <button class="sub-tab-btn active" data-subtab="subtab-andon-stations">🏭 14 Departamentos & Semáforos</button>
           <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">⏱️ Progreso Hora por Hora</button>
           <button class="sub-tab-btn" data-subtab="subtab-andon-stops">🛑 Bitácora de Paros & Eventos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-whiteboard" style="color:var(--color-brand); font-weight:700;">📋 Pizarra de Línea · 1000X Prensas Secas</button>
         </div>
 
         <!-- Pestaña 1: Grid de Estaciones -->
@@ -217,6 +218,125 @@
             </div>
             <div id="downtimeListAndon">
               <!-- Llenado dinámico -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: Pizarra Digital de Línea "1000 X M.T PRENSAS SECAS" (Réplica Fiel de Planta Tombstone) -->
+        <div class="sub-tab-content" id="subtab-andon-whiteboard">
+          <div class="whiteboard-wrapper">
+            <!-- Barra Superior / Luminaria de Pizarrón de Planta -->
+            <div class="whiteboard-lamp-fixture">
+              <div class="lamp-tube"></div>
+            </div>
+
+            <div class="whiteboard-frame">
+              <!-- Encabezado del Pizarrón -->
+              <div class="whiteboard-header-bar">
+                <div class="wb-title-group">
+                  <span class="wb-magnetic-badge">AVANCE</span>
+                  <span class="wb-magnetic-badge">DE</span>
+                  <span class="wb-magnetic-badge">PRODUCCIÓN</span>
+                  <span class="wb-magnetic-badge">HORA POR HORA</span>
+                  <span class="wb-magnetic-badge highlight-model">1000 X M.T</span>
+                  <span class="wb-magnetic-badge">PRENSAS</span>
+                  <span class="wb-magnetic-badge">SECAS</span>
+                </div>
+                <div class="wb-targets-group">
+                  <div class="wb-target-badge">
+                    <span class="wb-target-lbl">META DIARIA</span>
+                    <strong class="wb-target-qty">1500 PZS POR PROCESO</strong>
+                  </div>
+                  <div class="wb-target-badge weekly">
+                    <span class="wb-target-lbl">META SEMANAL</span>
+                    <strong class="wb-target-qty">7500 PZS POR PROCESO</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Barra de Acciones Operativas de Pizarra -->
+              <div class="wb-actions-strip">
+                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                  <span class="wb-legend-pill"><span class="dot-green"></span> Verde: Cumple / Supera Meta</span>
+                  <span class="wb-legend-pill"><span class="dot-red"></span> Rojo: Déficit / Parada</span>
+                  <span class="wb-legend-pill split-info">📐 Celda partida: Superior = Real | Inferior = Meta</span>
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="btn-secondary" id="btnLoadPhotoData" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
+                    📷 Cargar Datos de Foto de Planta
+                  </button>
+                  <button type="button" class="btn-secondary" id="btnSimulateWhiteboardHour" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
+                    ⚡ Simular Registro de Hora
+                  </button>
+                  <button type="button" class="btn-primary" id="btnPrintWhiteboardReport" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
+                    🖨️ Imprimir Pizarra
+                  </button>
+                </div>
+              </div>
+
+              <!-- TABLA 1: AVANCE HORA POR HORA (08:00 A 18:00) -->
+              <div class="wb-table-responsive">
+                <table class="whiteboard-table" id="tablePrensasHourly">
+                  <thead>
+                    <tr>
+                      <th class="wb-th wb-col-process">HORA / PROCESO</th>
+                      <th class="wb-th">8:00-9:00</th>
+                      <th class="wb-th">9:00-10:00</th>
+                      <th class="wb-th meal-hour">10:00-11:00</th>
+                      <th class="wb-th">11:00-12:00</th>
+                      <th class="wb-th">12:00-1:00</th>
+                      <th class="wb-th">1:00-2:00</th>
+                      <th class="wb-th meal-hour">2:00-3:00</th>
+                      <th class="wb-th">3:00-4:00</th>
+                      <th class="wb-th">4:00-5:00</th>
+                      <th class="wb-th">5:00-6:00</th>
+                      <th class="wb-th wb-col-total">TOTALES</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyPrensasHourly">
+                    <!-- Filas inyectadas por renderPrensasWhiteboard() en andon.js -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- TABLA 2: AVANCE SEMANAL DE PRODUCCIÓN (JUEVES A MIÉRCOLES) -->
+              <div class="wb-weekly-header">
+                <div class="wb-title-group">
+                  <span class="wb-magnetic-badge">AVANCE</span>
+                  <span class="wb-magnetic-badge">SEMANAL</span>
+                  <span class="wb-magnetic-badge">DE</span>
+                  <span class="wb-magnetic-badge">PRODUCCIÓN</span>
+                  <span class="wb-magnetic-badge highlight-model">1000 X M.T</span>
+                </div>
+                <div class="wb-weekly-badge">
+                  <span>META SEMANAL: 7,500 PZS POR PROCESO</span>
+                </div>
+              </div>
+
+              <div class="wb-table-responsive" style="margin-top:10px;">
+                <table class="whiteboard-table" id="tablePrensasWeekly">
+                  <thead>
+                    <tr>
+                      <th class="wb-th wb-col-process">PROCESO / DÍA</th>
+                      <th class="wb-th">JUEVES</th>
+                      <th class="wb-th">VIERNES</th>
+                      <th class="wb-th">SÁBADO</th>
+                      <th class="wb-th">LUNES</th>
+                      <th class="wb-th">MARTES</th>
+                      <th class="wb-th">MIÉRCOLES</th>
+                      <th class="wb-th wb-col-total">TOTALES</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyPrensasWeekly">
+                    <!-- Filas semanales inyectadas por andon.js -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="whiteboard-footer-note">
+                <span>📍 Planta Matriz Tombstone Hats · Línea de Prensas Secas & Ensamble Rampa · San Francisco del Rincón, Gto.</span>
+                <span id="whiteboardSyncStatus">🟢 Sincronizado en tiempo real con terminal de supervisor</span>
+              </div>
             </div>
           </div>
         </div>
@@ -355,6 +475,12 @@
                     <p class="section-desc" style="margin-bottom:0; font-size:11.5px;">Validada según tarjetas físicas de planta: Lotes sin número abajo a la derecha, Sublotes con número de sublote.</p>
                   </div>
                   <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button" class="btn-primary" id="btnPrintPhysicalTraveler" style="padding:6px 12px; font-size:11.5px; font-weight:700; background:var(--color-brand);">
+                      🖨️ Imprimir Tarjeta Viajera (Física/PDF)
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnViewHatSpecSheet" style="padding:6px 12px; font-size:11.5px; font-weight:700; color:var(--color-amber);">
+                      📋 Ficha Técnica Oficial c/Foto
+                    </button>
                     <button type="button" class="btn-secondary" id="btnPreviewSublot3" style="padding:5px 10px; font-size:11.5px; font-weight:700;">
                       👁️ Sublote #3 (Viejonón · Jorge)
                     </button>
@@ -1993,6 +2119,143 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: IMPRESIÓN FÍSICA OFICIAL DE TARJETA VIAJERA (GAP-01)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="travelerCardPrintModal" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:540px;">
+      <div class="modal-header">
+        <div>
+          <h3>🖨️ Impresión Oficial de Tarjeta Viajera</h3>
+          <p class="modal-header-sub">Formato de planta listo para mica protectora y cordel</p>
+        </div>
+        <button type="button" class="modal-close" id="btnClosePrintModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px; text-align: center;">
+        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:14px;">
+          Esta vista previa proyecta la tarjeta en tamaño escala 1:1 lista para imprimir en hoja carta o térmica para su colocación en la mica protectora de piso.
+        </p>
+        <div id="printCardPreviewArea" style="display:inline-block; margin:0 auto; background:#F1F5F9; padding:16px; border-radius:12px; border:1px dashed var(--border-medium);">
+          <!-- Inyectado dinámicamente con la réplica -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCancelPrintModal">Cerrar</button>
+        <button type="button" class="btn-primary" id="btnExecuteCardPrint" style="background:var(--color-brand); border-color:var(--color-brand-dark);">
+          🖨️ Mandar a Impresión (Impresora / PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: FICHA TÉCNICA VISUAL CON FOTO DE MODELO (GAP-08)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="hatSpecModal" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:720px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="hatSpecTitle">📋 Ficha Técnica Oficial · 1000X Master Telar Denver</h3>
+          <p class="modal-header-sub">Especificaciones de acabado, tolerancias y muestra visual para piso</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseHatSpecModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="spec-layout-grid">
+          <!-- Columna Izquierda: Fotografía de Muestra de Sombrero -->
+          <div class="spec-photo-column">
+            <div class="spec-photo-frame">
+              <svg width="220" height="150" viewBox="0 0 240 160" class="hat-vector-illustration">
+                <!-- Ilustración Vectorial Fiel del Sombrero Tombstone 1000X Denver -->
+                <defs>
+                  <linearGradient id="hatStrawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FEF3C7" />
+                    <stop offset="50%" stop-color="#FDE68A" />
+                    <stop offset="100%" stop-color="#D97706" />
+                  </linearGradient>
+                  <linearGradient id="hatBandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#451A03" />
+                    <stop offset="50%" stop-color="#78350F" />
+                    <stop offset="100%" stop-color="#271102" />
+                  </linearGradient>
+                </defs>
+                <!-- Sombra base -->
+                <ellipse cx="120" cy="140" rx="90" ry="12" fill="rgba(0,0,0,0.15)" />
+                <!-- Falda / Ala texana doblada -->
+                <path d="M 20 125 C 50 140, 190 140, 220 125 C 230 115, 210 110, 180 112 C 140 115, 100 115, 60 112 C 30 110, 10 115, 20 125 Z" fill="url(#hatStrawGrad)" stroke="#B45309" stroke-width="1.5" />
+                <!-- Copa moldeada con hendidura Denver / Bullrider -->
+                <path d="M 75 113 C 70 70, 75 45, 95 38 C 110 32, 130 32, 145 38 C 165 45, 170 70, 165 113 Z" fill="url(#hatStrawGrad)" stroke="#B45309" stroke-width="1.5" />
+                <!-- Hendidura superior de copa -->
+                <path d="M 95 38 Q 120 48 145 38" fill="none" stroke="#92400E" stroke-width="2" />
+                <!-- Toquilla de piel vaquera exterior -->
+                <path d="M 74 105 C 100 112, 140 112, 166 105 L 166 113 C 140 120, 100 120, 74 113 Z" fill="url(#hatBandGrad)" />
+                <!-- Hebilla metálica miniatura Tombstone -->
+                <rect x="85" y="106" width="10" height="7" rx="1.5" fill="#E2E8F0" stroke="#475569" stroke-width="1" />
+                <!-- Pluma decorativa de faisán -->
+                <path d="M 90 106 Q 115 80 125 70" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <div class="spec-photo-tag">🤠 MUESTRA DE REFERENCIA VISUAL</div>
+            </div>
+            <div style="margin-top:10px; font-size:11.5px; color:var(--text-muted); text-align:center;">
+              Control visual para estación de Adorno y Calidad Final
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Tabla de Parámetros y Materiales -->
+          <div class="spec-data-column">
+            <table class="spec-details-table">
+              <tbody>
+                <tr>
+                  <td><strong>Modelo Comercial:</strong></td>
+                  <td id="specModelName">1000X Master Telar Denver</td>
+                </tr>
+                <tr>
+                  <td><strong>Horma Requerida:</strong></td>
+                  <td id="specHorma">Denver (Aluminio Maquinado) · Prensa #04</td>
+                </tr>
+                <tr>
+                  <td><strong>Falda / Ala:</strong></td>
+                  <td id="specBrim">9 1/2 cm (3 3/4") · Doblado Arriba</td>
+                </tr>
+                <tr>
+                  <td><strong>Copa:</strong></td>
+                  <td id="specCrown">11.5 cm · Hendidura Recta Tradicional</td>
+                </tr>
+                <tr>
+                  <td><strong>Material Copa/Falda:</strong></td>
+                  <td>Paja fina trenzado Telar Master 1000X (2 piezas)</td>
+                </tr>
+                <tr>
+                  <td><strong>Acabado / Laca:</strong></td>
+                  <td>Nitrocelulósica Brillante (2 manos con túnel térmico)</td>
+                </tr>
+                <tr>
+                  <td><strong>Toquilla Exterior:</strong></td>
+                  <td>Piel vacuno café oscuro 12mm con hebilla plateada</td>
+                </tr>
+                <tr>
+                  <td><strong>Tafilete Interior:</strong></td>
+                  <td>Piel Badana grabado en pan de oro Tombstone®</td>
+                </tr>
+                <tr>
+                  <td><strong>Forro Interior:</strong></td>
+                  <td>Satín blanco perla bordado con escudo vaquero</td>
+                </tr>
+                <tr>
+                  <td><strong>Criterio de Calidad:</strong></td>
+                  <td>Cero manchas de laca, costura de tafilete oculta, falda simétrica &plusmn;1mm</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-primary" id="btnOkHatSpecModal">Entendido / Cerrar Ficha</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: CONFIRMACIÓN ESTANDARIZADA IN-APP (SIN ALERT / CONFIRM NATIVO)
        ====================================================================== -->
   <div class="modal-backdrop" id="uanifyConfirmModal">
@@ -2015,11 +2278,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.12.0"></script>
-  <script src="js/andon.js?v=2.12.0"></script>
-  <script src="js/terminal.js?v=2.12.0"></script>
-  <script src="js/engineer.js?v=2.12.0"></script>
-  <script src="js/executive.js?v=2.12.0"></script>
-  <script src="js/config.js?v=2.12.0"></script>
+  <script src="js/app.js?v=2.13.0"></script>
+  <script src="js/andon.js?v=2.13.0"></script>
+  <script src="js/terminal.js?v=2.13.0"></script>
+  <script src="js/engineer.js?v=2.13.0"></script>
+  <script src="js/executive.js?v=2.13.0"></script>
+  <script src="js/config.js?v=2.13.0"></script>
 </body>
 </html>

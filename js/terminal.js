@@ -284,7 +284,61 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 3. ESCANEAR TARJETA VIAJERA (CÁMARA O INGRESO MANUAL) ──
+  // ── HANDLERS DE IMPRESIÓN FÍSICA Y FICHA TÉCNICA VISUAL (GAP-01 Y GAP-08) ──
+  const btnPrintPhysical = document.getElementById('btnPrintPhysicalTraveler');
+  const printModal = document.getElementById('travelerCardPrintModal');
+  const printPreviewArea = document.getElementById('printCardPreviewArea');
+  const btnClosePrintModal = document.getElementById('btnClosePrintModal');
+  const btnCancelPrintModal = document.getElementById('btnCancelPrintModal');
+  const btnExecuteCardPrint = document.getElementById('btnExecuteCardPrint');
+
+  if (btnPrintPhysical && printModal) {
+    btnPrintPhysical.addEventListener('click', () => {
+      // Clonar la tarjeta viajera actual en el área de impresión
+      if (travelerCardContainer && printPreviewArea) {
+        printPreviewArea.innerHTML = travelerCardContainer.innerHTML;
+      }
+      printModal.style.display = 'flex';
+    });
+
+    const closePrint = () => {
+      printModal.style.display = 'none';
+    };
+
+    if (btnClosePrintModal) btnClosePrintModal.addEventListener('click', closePrint);
+    if (btnCancelPrintModal) btnCancelPrintModal.addEventListener('click', closePrint);
+
+    if (btnExecuteCardPrint) {
+      btnExecuteCardPrint.addEventListener('click', () => {
+        window.print();
+        UanifyUI.toast(
+          'Se envió la tarjeta viajera a la cola de impresión de planta.',
+          'success',
+          '🖨️ Impresión Ejecutada'
+        );
+        closePrint();
+      });
+    }
+  }
+
+  // Visualizador de Ficha Técnica Visual con Fotografía
+  const btnViewSpec = document.getElementById('btnViewHatSpecSheet');
+  const specModal = document.getElementById('hatSpecModal');
+  const btnCloseSpec = document.getElementById('btnCloseHatSpecModal');
+  const btnOkSpec = document.getElementById('btnOkHatSpecModal');
+
+  if (btnViewSpec && specModal) {
+    btnViewSpec.addEventListener('click', () => {
+      specModal.style.display = 'flex';
+    });
+
+    const closeSpec = () => {
+      specModal.style.display = 'none';
+    };
+
+    if (btnCloseSpec) btnCloseSpec.addEventListener('click', closeSpec);
+    if (btnOkSpec) btnOkSpec.addEventListener('click', closeSpec);
+  }
   if (btnScanQr) {
     btnScanQr.addEventListener('click', () => {
       const query = (manualQrInput ? manualQrInput.value.trim() : '') || '49633-3';

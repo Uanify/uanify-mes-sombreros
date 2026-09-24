@@ -1,6 +1,6 @@
 {
   "name": "uanify-mes-sombreros",
-  "version": "2.11.0",
+  "version": "2.13.0",
   "description": "Sistema MES y Tablero Andon Digital para Tombstone Hats · San Francisco del Rincón, Guanajuato",
   "private": true,
   "scripts": {
