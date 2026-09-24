@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UANIFY MES · DASHBOARD EJECUTIVO (EDMUNDO / DIRECCIÓN & COMPAC)
  * Convierte métricas de piso a valor financiero y gestiona órdenes mayoristas B2B
  */
@@ -38,7 +38,6 @@ function updateExecutiveMetrics() {
 }
 
 window.emitirValeEntrega = function() {
-  IndustrialAudio.playQrBeep();
   const c = UanifyState.compacSync;
   alert(`🚚 VALE DE ENTREGA GENERADO Y ENVIADO A COMPAC:\n\nCliente: ${c.customer}\nOrden de Compra: ${c.activeOrderB2B}\nLote entregado: 350 texanas Master Telar\nTransporte: Camioneta del cliente en andén de carga\n\n✅ Pre-factura emitida y descuento de inventario procesado en CONTPAQi.`);
 };

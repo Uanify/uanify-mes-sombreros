@@ -21,7 +21,6 @@
 
 const UanifyState = {
   activeTab: 'andon',
-  soundEnabled: true,
   currentShift: 'Turno 1 (Matutino · 07:00 - 15:30)',
   
   // Métricas Generales Tombstone Hats
@@ -328,67 +327,11 @@ const EventBus = {
   }
 };
 
-// Sintetizador de audio industrial
+// Sintetizador de audio industrial (Desactivado por especificación de planta)
 const IndustrialAudio = {
-  ctx: null,
-  init() {
-    if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  },
-  playPedalClick() {
-    if (!UanifyState.soundEnabled) return;
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(460, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(920, this.ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.08);
-    } catch(e) {}
-  },
-  playQrBeep() {
-    if (!UanifyState.soundEnabled) return;
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1760, this.ctx.currentTime);
-      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.1);
-    } catch(e) {}
-  },
-  playAlert(type) {
-    if (!UanifyState.soundEnabled) return;
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sawtooth';
-      const freq = type === 'stop' ? 220 : 330;
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.25);
-    } catch(e) {}
-  }
+  playPedalClick() {},
+  playQrBeep() {},
+  playAlert() {}
 };
 
 // Inicialización de la aplicación
@@ -417,19 +360,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateClock, 1000);
   updateClock();
 
-  const soundToggle = document.getElementById('soundToggle');
-  if (soundToggle) {
-    soundToggle.addEventListener('click', () => {
-      UanifyState.soundEnabled = !UanifyState.soundEnabled;
-      soundToggle.classList.toggle('muted', !UanifyState.soundEnabled);
-      const soundText = soundToggle.querySelector('.sound-text');
-      if (soundText) soundText.textContent = UanifyState.soundEnabled ? 'Audio ON' : 'Audio OFF';
-      IndustrialAudio.playPedalClick();
-    });
-  }
-
   if (window.initAndonView)     window.initAndonView();
   if (window.initTerminalView)  window.initTerminalView();
   if (window.initEngineerView)  window.initEngineerView();
   if (window.initExecutiveView) window.initExecutiveView();
+  if (window.initConfigView)    window.initConfigView();
 });

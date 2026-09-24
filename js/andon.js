@@ -68,7 +68,7 @@ function renderStations() {
             <strong>${pct}%</strong>
           </div>
           <div class="progress-track">
-            <div class="progress-fill ${pct >= 90 ? 'fill-green' : pct >= 70 ? 'fill-cyan' : 'fill-red'}" style="width: ${pct}%;"></div>
+            <div class="progress-fill ${pct >= 90 ? 'fill-green' : pct >= 70 ? 'fill-brand' : 'fill-red'}" style="width: ${pct}%;"></div>
           </div>
         </div>
 
@@ -91,7 +91,7 @@ function renderHourlyProgress() {
     return `
       <div class="hour-col ${isCurrent ? 'current' : ''}">
         <span class="hour-time">${h.hour}</span>
-        <div class="hour-pzas" style="color: ${overTarget ? '#22c55e' : h.produced > 0 ? '#00E5FF' : '#475569'}">${h.produced}</div>
+        <div class="hour-pzas" style="color: ${overTarget ? 'var(--color-green)' : h.produced > 0 ? 'var(--color-brand)' : 'var(--text-muted)'}">${h.produced}</div>
         <div class="hour-target">Meta: ${h.target}</div>
       </div>
     `;

@@ -43,7 +43,6 @@ window.initEngineerView = function() {
       });
       const currentH = UanifyState.hourlyData.find(h => h.produced < h.target);
       if (currentH) currentH.produced += Math.floor(Math.random() * 20) + 40;
-      IndustrialAudio.playPedalClick();
       EventBus.emit('piece-registered');
       alert('⚡ Simulación: Se procesó 1 hora de producción en todos los departamentos de Tombstone.');
     });
@@ -60,7 +59,6 @@ window.initEngineerView = function() {
   const btnMassChange = document.getElementById('btnMassChange');
   if (btnMassChange) {
     btnMassChange.addEventListener('click', () => {
-      IndustrialAudio.playPedalClick();
       alert(
         '🔄 CAMBIO MASIVO DE MATERIAL\n\n' +
         'Material anterior: Pintura Taiwan 1125 (Proveedor A)\n' +
