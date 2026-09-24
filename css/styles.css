@@ -70,6 +70,24 @@
   padding: 0;
 }
 
+/* REGLA DE CURSOR INTERACTIVO (OBLIGATORIA SEGÚN AGENTS.MD) */
+button,
+.btn,
+.btn-primary,
+.btn-secondary,
+.stop-opt-btn,
+select,
+.custom-select,
+.nav-btn,
+.tab-btn,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+.clickable-item {
+  cursor: pointer !important;
+}
+
 body.industrial-theme {
   background-color: var(--bg-core);
   background-image: 
@@ -125,6 +143,7 @@ body.industrial-theme {
 .brand-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
@@ -132,6 +151,32 @@ body.industrial-theme {
   height: 40px;
   width: auto;
   object-fit: contain;
+}
+
+.system-version-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-brand);
+  background: var(--color-brand-light);
+  border: 1px solid var(--color-brand-border);
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+
+.footer-version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--color-brand);
+  background: var(--color-brand-light);
+  border: 1px solid var(--color-brand-border);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 10px;
 }
 
 .sidebar-plant-meta {

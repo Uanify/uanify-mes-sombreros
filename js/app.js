@@ -20,6 +20,7 @@
  */
 
 const UanifyState = {
+  version: '2.7.0',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
