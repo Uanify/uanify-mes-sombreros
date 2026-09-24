@@ -64,7 +64,7 @@ function renderStations() {
 
         <div class="station-progress">
           <div class="sp-labels">
-            <span>Cumplimiento Turno</span>
+            <span>Cumplimiento Turno Único</span>
             <strong>${pct}%</strong>
           </div>
           <div class="progress-track">
@@ -103,7 +103,7 @@ function renderDowntimes() {
   if (!container) return;
 
   if (!UanifyState.downtimes.length) {
-    container.innerHTML = `<p style="font-size:11px; color:#64748B; text-align:center; padding:12px;">Sin paros registrados en este turno.</p>`;
+    container.innerHTML = `<p style="font-size:11px; color:#64748B; text-align:center; padding:12px;">Sin paros registrados en este Turno Único.</p>`;
     return;
   }
 

@@ -208,7 +208,7 @@ Para garantizar la seguridad y evitar saturación en piso, el sistema implementa
 
 4. **Ubicación física de módulos QR:** Definir los 4–6 puntos exactos donde se instalarán los lectores fijos (sugeridos: Rampa, Salida de Prensas, Salida de Recortes, Salida de Brillos, Mesa de Adorno 1, Mesa de Calidad Final).
 
-5. **Roles y permisos:** ¿Cuántos supervisores hay actualmente? ¿Hay turnos formales o solo turno matutino? Carlos en audio menciona solo 1 turno aparente.
+5. **Turnos y Horarios Operativos [CONFIRMADO]:** La planta opera de manera consolidada en **Turno Único** de 07:00 a 15:30 hrs (Lunes a Viernes), con meta diaria de 850 piezas y 42 segundos de Takt Time estándar. Queda formalizado el esquema de 3 roles en el sistema MES: Administrador (acceso total y gestión de permisos), Ingeniero de Producción (Takt Time, líneas, BOMs) y Supervisor de Línea (escaneo de lotes en iPad, alertas WIP y paros Andon).
 
 ---
 

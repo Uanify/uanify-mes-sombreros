@@ -131,7 +131,8 @@ window.initConfigView = function() {
 
       alert(
         `💾 CONFIGURACIÓN DE PLANTA GUARDADA\n\n` +
-        `• Meta del Turno: ${newGoal} pzas\n` +
+        `• Régimen: Turno Único (07:00 - 15:30 · Lunes a Viernes)\n` +
+        `• Meta Diaria del Turno Único: ${newGoal} pzas\n` +
         `• Takt Time Estándar: ${newTakt} seg/pza\n` +
         `• 14 Departamentos y Almacenes sincronizados con Tablero Andon.\n` +
         `• Políticas de acceso y usuarios vigentes.`

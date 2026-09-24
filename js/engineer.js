@@ -51,7 +51,7 @@ window.initEngineerView = function() {
   const btnReset = document.getElementById('btnResetSimulation');
   if (btnReset) {
     btnReset.addEventListener('click', () => {
-      if (confirm('¿Reiniciar métricas del turno de demostración?')) location.reload();
+      if (confirm('¿Reiniciar métricas del Turno Único de demostración?')) location.reload();
     });
   }
 

@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.6.0">
-  <link rel="stylesheet" href="css/components.css?v=2.6.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.7.0">
+  <link rel="stylesheet" href="css/components.css?v=2.7.0">
 </head>
 <body class="industrial-theme">
   <div class="app-layout">
@@ -96,8 +96,8 @@
       <div class="sidebar-footer">
         <div class="sidebar-shift-info">
           <div class="shift-text">
-            <span class="shift-label">Turno Activo</span>
-            <span class="shift-title">Turno 1 · Matutino</span>
+            <span class="shift-label">Horario de Operación</span>
+            <span class="shift-title">Turno Único (07:00 - 15:30)</span>
           </div>
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
@@ -122,7 +122,7 @@
           </div>
           <div class="kpi-banner">
             <div class="banner-stat">
-              <span class="stat-caption">Meta Turno</span>
+              <span class="stat-caption">Meta Turno Único</span>
               <span class="stat-val" id="andonGoalTotal">850 pzas</span>
             </div>
             <div class="banner-stat">
@@ -148,7 +148,7 @@
         <!-- Hora por Hora Breakdown -->
         <div class="hourly-strip card-glass">
           <div class="strip-header">
-            <h3>Progreso Hora por Hora · Corrida Activa (07:00 - 15:30)</h3>
+            <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
             <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
           </div>
           <div class="hourly-bars" id="hourlyBars">
@@ -320,7 +320,7 @@
           </div>
           <div style="display:flex; gap:10px;">
             <button class="btn-primary" id="btnSimulateShift">⚡ Simular +1 Hora de Producción</button>
-            <button class="btn-secondary" id="btnResetSimulation">🔄 Reiniciar Datos Turno</button>
+            <button class="btn-secondary" id="btnResetSimulation">🔄 Reiniciar Datos Turno Único</button>
           </div>
         </div>
 
@@ -586,16 +586,14 @@
         <div class="config-grid">
           <!-- Parámetros Generales de Turno -->
           <div class="config-card card-glass">
-            <h3>⏰ Parámetros del Turno</h3>
+            <h3>⏰ Horario de Planta · Turno Único</h3>
             <div class="form-group">
-              <label class="field-label">Turno Activo:</label>
-              <select class="custom-select" id="cfgShiftSelect">
-                <option value="1">Turno 1 Matutino (07:00 - 15:30)</option>
-                <option value="2">Turno 2 Vespertino (15:30 - 23:00)</option>
-              </select>
+              <label class="field-label">Régimen Operativo:</label>
+              <input type="text" class="form-input" id="cfgShiftSelect" value="Turno Único · 07:00 a 15:30 hrs (Lunes a Viernes)" readonly style="background:#F1F5F9; font-weight:600; color:var(--text-main);">
+              <small style="color:var(--text-muted); font-size:11px;">Operación consolidada a un solo turno productivo de 8.5 hrs (45 min comida)</small>
             </div>
             <div class="form-group">
-              <label class="field-label">Meta de Piezas por Turno:</label>
+              <label class="field-label">Meta Diaria del Turno Único (Piezas):</label>
               <input type="number" class="form-input" id="cfgShiftGoal" value="850">
             </div>
             <div class="form-group">
@@ -694,7 +692,7 @@
                   <th>Departamento</th>
                   <th>Tipo</th>
                   <th>Takt Time Std</th>
-                  <th>Capacidad Turno</th>
+                  <th>Capacidad Turno Único</th>
                   <th>Supervisor Asignado</th>
                   <th>Estado</th>
                 </tr>
@@ -766,8 +764,8 @@
           <button class="stop-opt-btn" data-stop="Falla mecánica en prensa o troqueladora">
             ⚙️ Falla mecánica en prensa
           </button>
-          <button class="stop-opt-btn" data-stop="Cambio de turno / comida de personal">
-            🥪 Descanso / cambio de turno
+          <button class="stop-opt-btn" data-stop="Descanso de personal / comida (12:00 - 12:45)">
+            🥪 Descanso de personal / comida (12:00 - 12:45)
           </button>
         </div>
       </div>
@@ -882,11 +880,11 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/app.js"></script>
-  <script src="js/andon.js"></script>
-  <script src="js/terminal.js"></script>
-  <script src="js/engineer.js"></script>
-  <script src="js/executive.js"></script>
-  <script src="js/config.js"></script>
+  <script src="js/app.js?v=2.7.0"></script>
+  <script src="js/andon.js?v=2.7.0"></script>
+  <script src="js/terminal.js?v=2.7.0"></script>
+  <script src="js/engineer.js?v=2.7.0"></script>
+  <script src="js/executive.js?v=2.7.0"></script>
+  <script src="js/config.js?v=2.7.0"></script>
 </body>
 </html>

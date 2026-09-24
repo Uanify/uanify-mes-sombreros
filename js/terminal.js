@@ -98,7 +98,7 @@ window.initTerminalView = function() {
         `📥 ENTRADA REGISTRADA EN ALMACÉN\n\n` +
         `Sublote: ${manualQrInput ? manualQrInput.value : '1094-01'} (15 pzas)\n` +
         `Almacén / Departamento: ${station.name}\n` +
-        `Operador en Turno: ${station.operator}\n\n` +
+        `Operador en Turno Único: ${station.operator}\n\n` +
         `Piezas en cola actualizadas en Tablero Andon.`
       );
     });

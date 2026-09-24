@@ -21,7 +21,7 @@
 
 const UanifyState = {
   activeTab: 'andon',
-  currentShift: 'Turno 1 (Matutino · 07:00 - 15:30)',
+  currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
   // ─── GESTIÓN DE USUARIOS Y ROLES (RBAC) ──────────────────────────────────
   currentUser: 'admin-1',
