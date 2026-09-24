@@ -191,3 +191,13 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 3. **Asignación Múltiple de Operadores:** Al registrar un departamento, el sistema debe permitir seleccionar uno o múltiples operadores de piso existentes mediante una lista de verificación interactiva, o bien permitir dar de alta un nuevo operador de forma inmediata en el mismo flujo.
 4. **Visualización en Catálogo:** La tabla maestra de departamentos debe listar de manera explícita y mediante badges individuales los operadores asignados a cada estación de trabajo.
 
+---
+
+## REGLA 0.18: Rutas Productivas por Modelo, Áreas de Calidad y Línea de Tiempo de Trazabilidad
+
+1. **Consulta Visual de Ubicación de Lotes (Supervisor de Piso):** El supervisor (así como ingeniería y dirección) debe poder consultar en cualquier momento dónde se encuentra un lote específico a través de un mapa de proceso visual o línea de tiempo interactiva (Value Stream Map).
+2. **Visualización de Nodos y Filtros de Calidad:** La línea de tiempo debe reflejar todos los pasos departamentales y las paradas de control de calidad (`C-XX`) por las que transita el lote, destacando de manera prominente la estación activa (**📍 AQUÍ ESTÁ EL LOTE**), las estaciones ya superadas (✅) y los pasos pendientes (⏳).
+3. **Secuencias Dependientes del Tipo de Sombrero (Rutas de Fabricación):** Cada modelo de sombrero (ej. 1000X Master Telar, Campana Preformada de 1 pieza, Laqueados Especiales) posee su propia secuencia departamental. Estas rutas deben ser configurables, permitiendo reordenar (subir/bajar) los pasos, agregar o remover departamentos y filtros de calidad.
+4. **Facultad de Configuración para Ingeniería y Dirección:** La creación de áreas de calidad (`C-XX`) y la edición de las secuencias de rutas de fabricación son facultades exclusivas de los roles **Ingeniero** y **Administrador**.
+
+

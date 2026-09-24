@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.4-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.9.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -29,10 +29,11 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 
 | Módulo | Usuario | Funcionalidad Clave |
 |---|---|---|
-| **1. 📺 Tablero Andon (Piso)** | Supervisores y Operarios | Pantalla de 50" en nave central. Estado en vivo de las 6 estaciones Tombstone, ritmo Takt Time (42s) y avance hora por hora. |
+| **1. 📺 Tablero Andon (Piso)** | Supervisores y Operarios | Pantalla de 50" en nave central. Estado en vivo de las estaciones Tombstone, ritmo Takt Time (42s) y avance hora por hora. |
 | **2. ⚙️ Terminal Puesto / Prensas** | Operarios de Estación | Simulador de **Pedal Mecánico de Prensas** (+1 Texana Tombstone OK). Selector de catálogo (Denver, Viejonón, Laredo, Frontier), reporte de mermas y paros de máquina (cambio de horma SMED, vapor). *Atajo: Tecla ESPACIO o ENTER.* |
 | **3. 📊 Consola de Ingeniería** | Ingeniero de Producción | Métricas OEE desagregadas (A: 94.2%, P: 91.8%, Q: 97.8%), visualizador de cuellos de botella (WIP) y bitácora de minutos perdidos por paro. |
 | **4. 💼 Dashboard Ejecutivo** | Edmundo (Dirección) | Métricas directivas en tiempo real: valor del lote ($801,720 MXN), cumplimiento de pedidos B2B mayoristas y propuesta comercial por fases. |
+| **5. 🛠️ Configuración & Planta** | Admin & Ingeniero | Parámetros generales, gestión RBAC, padrón de operadores, catálogo departamental, registro de filtros de calidad y secuencias de rutas por modelo. |
 
 ---
 
@@ -49,13 +50,21 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 
 ## 💻 Acceso Directo y Ejecución
 
-- **Link para Tablet / Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
+- **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
 - **Documentación Ejecutiva:** Consulta la carpeta `docs/` con las guías de descubrimiento y banco de proyectos adaptadas a Tombstone Hats.
 
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### [2.9.0] - 2026-09-24
+- **Mapa de Proceso Interactivo y Rastreador de Lote para Supervisores:** Nueva sub-pestaña `🗺️ Mapa de Proceso & Rastreador de Lote` en Terminal para consultar al instante la ubicación física de cualquier lote (`49,633`, `49,386`, `49,842`).
+- **Línea de Tiempo Visual (Value Stream Map):** Despliegue secuencial de todas las estaciones y filtros de calidad según el modelo de sombrero, indicando pasos completados (✅), estación activa con indicador pulsante (**📍 AQUÍ ESTÁ EL LOTE**), operador a cargo, tiempo de ciclo y próximas paradas.
+- **Acciones Operativas de Desplazamiento:** Controles para avanzar (`⏩`) o retroceder (`⏮️`) el lote a lo largo de la línea de tiempo, o reubicarlo directamente haciendo clic sobre cualquier nodo del mapa.
+- **Rutas de Fabricación y Secuencias Configurables por Modelo:** Nueva pestaña en Configuración (`📐 Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos y filtros de calidad (subir `▲`, bajar `▼`, agregar y remover pasos) según el modelo de sombrero (1000X Telar, Campana Preformada, Laqueados Especiales).
+- **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta estaciones de inspección de calidad (`C-01`, `C-02`, `C-03`, `C-04`...) con criterios de tolerancia, inspector responsable y tiempo de ciclo, integrándose tanto a la tabla de departamentos como a las rutas de producto.
+- **Ampliación de Permisos de Ingeniería:** Concesión de acceso al módulo de Configuración para el rol Ingeniero (`Ing. Carlos Ortiz`) para modelar flujos de planta y criterios de calidad.
 
 ### [2.8.4] - 2026-09-24
 - **Corrección de Navegación por Sub-Pestañas en Todos los Módulos:** Corrección de colisión entre selectores CSS `.sub-tab-content.d-none` y `.active`. Limpieza de clases inactivas y enlace robusto de eventos de click en todos los módulos (Andon, Terminal, Ingeniería, Dirección y Configuración).

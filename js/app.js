@@ -94,7 +94,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.8.4',
+  version: '2.9.0',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -124,7 +124,7 @@ const UanifyState = {
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
       roleName: 'Ingeniero de Procesos',
-      permissions: ['andon', 'terminal', 'engineer'],
+      permissions: ['andon', 'terminal', 'engineer', 'config'],
       assignedDepartments: ['*'],
       badge: '⚙️ Ingeniero'
     },
@@ -212,6 +212,8 @@ const UanifyState = {
     {
       lotId: '49,633',
       route: 'TARJETA HIDRAULICAS - ADORNO',
+      routeId: 'route-telar-1000x',
+      currentStepIndex: 5, // Paso 6: D-05 Prensas de Hormado
       model: 'VIEJONON',
       oProd: '15071',
       clase: '1,000X MASTER TELAR',
@@ -221,10 +223,11 @@ const UanifyState = {
       size: '55',
       pieces: 15,
       totalPieces: 60,
-      currentStation: 'Almacén Hidráulicas → Adorno',
+      currentStation: 'Prensas de Hormado (Fraccionamiento Rampa)',
+      currentStationCode: 'D-05',
       operator: 'Jorge',
       operatorSticker: 'JORGE',
-      status: 'Fraccionado en 4 sublotes de 15 pzas',
+      status: 'En Prensas de Hormado · Sublote #3 Fraccionado',
       isSubdivided: true,
       sublots: [
         { id: '49633-1', sublotNum: 1, pieces: 15, station: 'Prensas Hidráulicas', status: 'En Proceso', operator: 'Jorge', operatorSticker: 'JORGE' },
@@ -236,6 +239,8 @@ const UanifyState = {
     {
       lotId: '49,386',
       route: 'TARJETA HIDRAULICAS - ADORNO',
+      routeId: 'route-telar-1000x',
+      currentStepIndex: 4, // Paso 5: C-01 Calidad 1
       model: 'CHAPARRAL',
       oProd: '15068',
       clase: '1,000X MASTER TELAR',
@@ -245,16 +250,19 @@ const UanifyState = {
       size: '56',
       pieces: 15,
       totalPieces: 60,
-      currentStation: 'Prensas Hidráulicas Michelagnoli',
+      currentStation: 'Calidad 1 (Post-Dope)',
+      currentStationCode: 'C-01',
       operator: 'Pedro Morales',
       operatorSticker: null,
-      status: 'Lote Madre en Proceso',
+      status: 'En Inspección de Calidad 1 (Post-Dope)',
       isSubdivided: false,
       sublots: []
     },
     {
       lotId: '49,842',
       route: 'TARJETA PRENSAS - PATIO',
+      routeId: 'route-campana-preformada',
+      currentStepIndex: 2, // Paso 3: D-05 Prensas de Hormado
       model: 'MAGNUM',
       oProd: '15377',
       clase: '1,000X MASTER',
@@ -264,13 +272,113 @@ const UanifyState = {
       size: '52',
       pieces: 60,
       totalPieces: 60,
-      currentStation: 'Prensas Hidráulicas → Patio',
+      currentStation: 'Prensas de Hormado (Moldeo)',
+      currentStationCode: 'D-05',
       operator: 'Melany',
       operatorSticker: 'MELANY',
       stickerType: 'magenta',
-      status: 'Lote Madre de 60 pzas en Patio',
+      status: 'Lote Madre 60 pzas en Prensas de Patio',
       isSubdivided: false,
       sublots: []
+    }
+  ],
+
+  // ─── ÁREAS DE CONTROL DE CALIDAD (PARADAS DE INSPECCIÓN) ───────────────────
+  qualityAreas: [
+    {
+      code: 'C-01',
+      name: 'Calidad 1 (Post-Dope / Refuerzos)',
+      desc: '1er punto de inspección. Libera o rechaza el lote tras sellado y secado en camas.',
+      criteria: 'Rigidez uniforme de telares, sin burbujas de dope, sellado perimetral.',
+      inspector: 'Inspectora de Calidad (Turno)',
+      cycleTime: '18s',
+      status: 'Activo'
+    },
+    {
+      code: 'C-02',
+      name: 'Calidad 2 (Post-Pintura)',
+      desc: '2do punto de inspección. Verifica uniformidad y tono de pintura antes de brillo.',
+      criteria: 'Tono según muestra patrón, sin escurrimientos, recubrimiento parejo.',
+      inspector: 'Inspectora de Calidad (Turno)',
+      cycleTime: '16s',
+      status: 'Activo'
+    },
+    {
+      code: 'C-03',
+      name: 'Calidad 3 (Producto Terminado)',
+      desc: '3er punto de inspección previo a empaque y embarque final.',
+      criteria: 'Alineación de copa y ala, costura de tafilete, toquilla y herrajes firmes.',
+      inspector: 'Ing. Carlos Ortiz / Inspectora',
+      cycleTime: '25s',
+      status: 'Activo'
+    }
+  ],
+
+  // ─── RUTAS Y SECUENCIAS PRODUCTIVAS POR MODELO DE SOMBRERO ─────────────────
+  productionRoutes: [
+    {
+      id: 'route-telar-1000x',
+      name: '1000X Master Telar (Viejonón, Denver, Chaparral)',
+      modelKeyword: '1000X Master Telar',
+      category: 'Sombrero 2 Piezas (Copa y Falda)',
+      desc: 'Ruta completa con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-campana-preformada',
+      name: 'Campana Preformada / Fieltro (Magnum, Frontier)',
+      modelKeyword: 'Campana Preformada / Fieltro',
+      category: 'Sombrero 1 Pieza (Moldeo Directo)',
+      desc: 'Ruta directa sin corte de cuadros ni alambrado. Ingresa directo a sellado y prensas.',
+      steps: [
+        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '⚙️' },
+        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-laqueado-premium',
+      name: 'Laqueados Premium Especiales (Laredo, Bullrider, Sonora)',
+      modelKeyword: 'Laqueados Especiales',
+      category: 'Sombrero Especial Alta Densidad',
+      desc: 'Ruta con doble fijado térmico en prensas hidráulicas, barniz poliéster y control riguroso.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
+        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+      ]
     }
   ],
 
@@ -490,6 +598,60 @@ const UanifyState = {
     invoiceStatus: 'Pre-factura generada en COMPAC',
     compacContact: 'Ingeniera externa (membresía anual)',
     note: 'Verificar tipo de licencia COMPAC para determinar viabilidad de integración API.'
+  },
+
+  // ─── MÉTODOS DE TRAZABILIDAD DE LOTES Y MAPA DE PROCESO ────────────────────
+  getLotRoute(lotId) {
+    const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
+    if (!lot) return this.productionRoutes[0];
+    const route = this.productionRoutes.find(r => r.id === lot.routeId) || this.productionRoutes[0];
+    return route;
+  },
+
+  moveLotToStep(lotId, targetStepIndex) {
+    const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
+    if (!lot) return null;
+    const route = this.getLotRoute(lotId);
+    if (!route || !route.steps) return null;
+
+    targetStepIndex = Math.max(0, Math.min(targetStepIndex, route.steps.length - 1));
+    const targetStep = route.steps[targetStepIndex];
+    lot.currentStepIndex = targetStepIndex;
+    lot.currentStationCode = targetStep.code;
+    lot.currentStation = targetStep.name;
+    lot.status = `En ${targetStep.name} (${targetStep.code})`;
+
+    // Sincronizar sub-lotes si existen
+    if (lot.sublots && lot.sublots.length > 0) {
+      lot.sublots.forEach(sl => {
+        sl.station = targetStep.name;
+      });
+    }
+
+    try {
+      localStorage.setItem('uanify_active_lots', JSON.stringify(this.activeLots));
+    } catch (e) {
+      console.warn('Error saving activeLots:', e);
+    }
+
+    if (typeof EventBus !== 'undefined') {
+      EventBus.emit('lot-moved', { lot, targetStep, route });
+    }
+    return { lot, targetStep, route };
+  },
+
+  advanceLot(lotId) {
+    const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
+    if (!lot) return null;
+    const nextIdx = (typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0) + 1;
+    return this.moveLotToStep(lotId, nextIdx);
+  },
+
+  rewindLot(lotId) {
+    const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
+    if (!lot) return null;
+    const prevIdx = (typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0) - 1;
+    return this.moveLotToStep(lotId, prevIdx);
   }
 };
 
@@ -691,6 +853,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch (e) {
     console.warn('Error al restaurar departamentos:', e);
+  }
+
+  // Restaurar áreas de calidad personalizadas si existen
+  try {
+    const savedQuality = localStorage.getItem('uanify_quality_areas');
+    if (savedQuality) {
+      const parsed = JSON.parse(savedQuality);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        UanifyState.qualityAreas = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar áreas de calidad:', e);
+  }
+
+  // Restaurar rutas y secuencias por modelo si existen
+  try {
+    const savedRoutes = localStorage.getItem('uanify_production_routes');
+    if (savedRoutes) {
+      const parsed = JSON.parse(savedRoutes);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        UanifyState.productionRoutes = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar rutas de producción:', e);
+  }
+
+  // Restaurar estado dinámico de lotes activos si existe
+  try {
+    const savedLots = localStorage.getItem('uanify_active_lots');
+    if (savedLots) {
+      const parsed = JSON.parse(savedLots);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        UanifyState.activeLots = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar lotes activos:', e);
   }
 
   // Control de Barra Lateral Plegable (Icon-Only Mode para maximizar espacio de piso)

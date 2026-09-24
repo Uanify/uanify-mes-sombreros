@@ -32,8 +32,8 @@ window.initConfigView = function() {
     if (!tableBody || !UanifyState || !UanifyState.stations) return;
 
     tableBody.innerHTML = UanifyState.stations.map((st, idx) => {
-      const isQuality = st.id.startsWith('calidad') || st.id.includes('calidad');
-      const isLogistics = st.id.includes('almacen') || st.id.includes('logistica');
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad') || st.id.includes('calidad');
+      const isLogistics = st.type === 'logistica' || st.id.includes('almacen') || st.id.includes('logistica') || st.code === 'D-11';
       let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
       let typeLabel = 'Proceso Productivo';
       if (isQuality) {
@@ -638,6 +638,286 @@ window.initConfigView = function() {
       );
     });
   }
+
+  // ── 6. ALTA DE ÁREA DE CONTROL DE CALIDAD ──────────────────────────────────
+  const modalCreateQuality = document.getElementById('modalCreateQualityArea');
+  const btnOpenCreateQuality = document.getElementById('btnOpenCreateQualityModal');
+  const btnCloseCreateQuality = document.getElementById('btnCloseCreateQualityModal');
+  const btnCancelCreateQuality = document.getElementById('btnCancelCreateQuality');
+  const formCreateQuality = document.getElementById('formCreateQualityArea');
+
+  if (btnOpenCreateQuality && modalCreateQuality) {
+    btnOpenCreateQuality.addEventListener('click', () => {
+      // Sugerir siguiente código C-0X
+      const existingQualityCodes = (UanifyState.stations || [])
+        .filter(s => s.code && s.code.startsWith('C-'))
+        .map(s => parseInt(s.code.replace('C-', ''), 10))
+        .filter(n => !isNaN(n));
+      const nextNum = existingQualityCodes.length > 0 ? Math.max(...existingQualityCodes) + 1 : 4;
+      const nextCode = `C-${String(nextNum).padStart(2, '0')}`;
+      const codeInput = document.getElementById('newQualityCode');
+      if (codeInput) codeInput.value = nextCode;
+
+      modalCreateQuality.classList.add('active');
+    });
+  }
+
+  function closeQualityModal() {
+    if (modalCreateQuality) modalCreateQuality.classList.remove('active');
+  }
+
+  if (btnCloseCreateQuality) btnCloseCreateQuality.addEventListener('click', closeQualityModal);
+  if (btnCancelCreateQuality) btnCancelCreateQuality.addEventListener('click', closeQualityModal);
+
+  if (formCreateQuality) {
+    formCreateQuality.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = (document.getElementById('newQualityCode')?.value || 'C-04').trim().toUpperCase();
+      const name = (document.getElementById('newQualityName')?.value || '').trim();
+      const desc = (document.getElementById('newQualityDesc')?.value || '').trim();
+      const inspector = document.getElementById('newQualityInspector')?.value || 'Inspectora de Calidad';
+      const cycleTime = document.getElementById('newQualityCycleTime')?.value || '18s';
+
+      if (!name) {
+        window.UanifyUI.toast('Ingresa el nombre del filtro de calidad.', 'warning');
+        return;
+      }
+
+      const newQualityStation = {
+        id: 'calidad-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        code: code,
+        name: name,
+        desc: desc || `Filtro de calidad de planta: ${name}`,
+        criteria: desc,
+        target: 850,
+        produced: 0,
+        scrap: 0,
+        wipWaiting: 0,
+        cycleTime: cycleTime,
+        status: 'running',
+        operator: inspector,
+        type: 'calidad',
+        isQualityStop: true,
+        note: `Área de Calidad registrada. Auditor responsable: ${inspector}.`
+      };
+
+      if (!UanifyState.stations) UanifyState.stations = [];
+      UanifyState.stations.push(newQualityStation);
+
+      if (!UanifyState.qualityAreas) UanifyState.qualityAreas = [];
+      UanifyState.qualityAreas.push({
+        code: code,
+        name: name,
+        desc: desc,
+        criteria: desc,
+        inspector: inspector,
+        cycleTime: cycleTime,
+        status: 'Activo'
+      });
+
+      try {
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+        localStorage.setItem('uanify_quality_areas', JSON.stringify(UanifyState.qualityAreas));
+      } catch (err) {
+        console.warn('Error saving quality areas:', err);
+      }
+
+      renderDepartmentsConfig();
+      populateAddStepStations();
+
+      if (typeof EventBus !== 'undefined') {
+        EventBus.emit('stations-updated', UanifyState.stations);
+      }
+
+      closeQualityModal();
+      formCreateQuality.reset();
+
+      window.UanifyUI.toast(
+        `Área de Control de Calidad ${code} "${name}" registrada exitosamente. Ya puedes integrarla en las secuencias de rutas de fabricación.`,
+        'success',
+        '🔍 Área de Calidad Creada'
+      );
+    });
+  }
+
+  // ── 7. RUTAS Y SECUENCIAS POR MODELO (INGENIERO & ADMIN) ────────────────────
+  const cfgRouteModelSelect = document.getElementById('cfgRouteModelSelect');
+  const cfgRouteCategoryBadge = document.getElementById('cfgRouteCategoryBadge');
+  const cfgRouteStepsCountBadge = document.getElementById('cfgRouteStepsCountBadge');
+  const cfgRouteDesc = document.getElementById('cfgRouteDesc');
+  const addStepStationSelect = document.getElementById('addStepStationSelect');
+  const btnAddStepToRoute = document.getElementById('btnAddStepToRoute');
+  const btnSaveRouteSequence = document.getElementById('btnSaveRouteSequence');
+  const routeSequenceList = document.getElementById('routeSequenceList');
+
+  let activeRouteId = 'route-telar-1000x';
+
+  function populateRouteModels() {
+    if (!cfgRouteModelSelect || !UanifyState.productionRoutes) return;
+    cfgRouteModelSelect.innerHTML = UanifyState.productionRoutes.map(r => `
+      <option value="${r.id}" ${r.id === activeRouteId ? 'selected' : ''}>
+        ${r.name} (${r.category})
+      </option>
+    `).join('');
+  }
+
+  function populateAddStepStations() {
+    if (!addStepStationSelect || !UanifyState.stations) return;
+    addStepStationSelect.innerHTML = UanifyState.stations.map(st => {
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad');
+      const icon = isQuality ? '🔍' : '🏭';
+      const typeTxt = isQuality ? 'Control de Calidad' : 'Manufactura';
+      return `<option value="${st.code}">${icon} ${st.code} - ${st.name} [${typeTxt}]</option>`;
+    }).join('');
+  }
+
+  function renderRouteSequence() {
+    if (!routeSequenceList || !UanifyState.productionRoutes) return;
+    const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId) || UanifyState.productionRoutes[0];
+    if (!route) return;
+
+    if (cfgRouteCategoryBadge) cfgRouteCategoryBadge.textContent = route.category;
+    if (cfgRouteStepsCountBadge) cfgRouteStepsCountBadge.textContent = `${route.steps.length} Pasos`;
+    if (cfgRouteDesc) cfgRouteDesc.textContent = route.desc;
+
+    // Verificar permisos: Ingeniero y Admin tienen permiso de edición
+    const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const canEdit = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
+
+    if (!canEdit) {
+      if (btnSaveRouteSequence) btnSaveRouteSequence.disabled = true;
+      if (btnAddStepToRoute) btnAddStepToRoute.disabled = true;
+    } else {
+      if (btnSaveRouteSequence) btnSaveRouteSequence.disabled = false;
+      if (btnAddStepToRoute) btnAddStepToRoute.disabled = false;
+    }
+
+    routeSequenceList.innerHTML = route.steps.map((st, idx) => {
+      const isQuality = st.type === 'calidad' || st.isQualityStop || (st.code && st.code.startsWith('C-'));
+      const isFirst = idx === 0;
+      const isLast = idx === route.steps.length - 1;
+      const typeTag = isQuality 
+        ? `<span class="badge-quality">🔍 Filtro de Calidad</span>`
+        : `<span class="badge-subtle" style="font-size:10.5px;">🏭 Manufactura</span>`;
+
+      return `
+        <div class="sequence-builder-item ${isQuality ? 'is-quality-step' : ''}" data-index="${idx}">
+          <div class="sequence-item-info">
+            <span class="sequence-order-badge">#${idx + 1}</span>
+            <strong style="font-family:var(--font-mono); color:var(--color-brand); font-size:12.5px; min-width:44px;">${st.code}</strong>
+            <span style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${st.name}</span>
+            ${typeTag}
+          </div>
+          ${canEdit ? `
+          <div class="sequence-controls">
+            <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir paso">▲</button>
+            <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar paso">▼</button>
+            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Eliminar paso de la ruta">🗑️</button>
+          </div>
+          ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
+        </div>
+      `;
+    }).join('');
+
+    // Handlers para reordenar y eliminar
+    routeSequenceList.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.getAttribute('data-action');
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        if (action === 'up' && idx > 0) {
+          const temp = route.steps[idx];
+          route.steps[idx] = route.steps[idx - 1];
+          route.steps[idx - 1] = temp;
+          renderRouteSequence();
+        } else if (action === 'down' && idx < route.steps.length - 1) {
+          const temp = route.steps[idx];
+          route.steps[idx] = route.steps[idx + 1];
+          route.steps[idx + 1] = temp;
+          renderRouteSequence();
+        } else if (action === 'delete') {
+          if (route.steps.length <= 2) {
+            window.UanifyUI.toast('Una ruta debe tener al menos 2 pasos.', 'warning');
+            return;
+          }
+          const removed = route.steps.splice(idx, 1)[0];
+          renderRouteSequence();
+          window.UanifyUI.toast(`Paso "${removed.code} ${removed.name}" removido de la ruta. Guarda los cambios para aplicar en planta.`, 'info');
+        }
+      });
+    });
+  }
+
+  if (cfgRouteModelSelect) {
+    cfgRouteModelSelect.addEventListener('change', (e) => {
+      activeRouteId = e.target.value;
+      renderRouteSequence();
+    });
+  }
+
+  if (btnAddStepToRoute) {
+    btnAddStepToRoute.addEventListener('click', () => {
+      const code = addStepStationSelect ? addStepStationSelect.value : null;
+      if (!code) return;
+      const st = UanifyState.stations.find(s => s.code === code);
+      if (!st) return;
+
+      const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
+      if (!route) return;
+
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad');
+      const newStep = {
+        order: route.steps.length + 1,
+        code: st.code,
+        name: st.name,
+        type: isQuality ? 'calidad' : (st.code === 'D-11' ? 'logistica' : 'manufactura'),
+        icon: isQuality ? '🔍' : '🏭',
+        isQualityStop: isQuality,
+        cycleTime: st.cycleTime || '30s'
+      };
+
+      route.steps.push(newStep);
+      renderRouteSequence();
+      window.UanifyUI.toast(`Estación "${st.code} ${st.name}" agregada a la ruta. Recuerda presionar "Guardar Secuencia de Ruta".`, 'success');
+    });
+  }
+
+  if (btnSaveRouteSequence) {
+    btnSaveRouteSequence.addEventListener('click', () => {
+      const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
+      if (!route) return;
+
+      // Normalizar número de órdenes
+      route.steps.forEach((st, idx) => {
+        st.order = idx + 1;
+      });
+
+      try {
+        localStorage.setItem('uanify_production_routes', JSON.stringify(UanifyState.productionRoutes));
+      } catch (e) {
+        console.warn('Error saving production routes:', e);
+      }
+
+      if (typeof EventBus !== 'undefined') {
+        EventBus.emit('production-routes-updated', route);
+      }
+
+      window.UanifyUI.toast(
+        `Secuencia de ruta para "${route.name}" guardada exitosamente (${route.steps.length} pasos). Los lotes asociados a este modelo seguirán este nuevo flujo de manufactura y calidad.`,
+        'success',
+        '📐 Ruta Guardada'
+      );
+    });
+  }
+
+  // Inicializar selectores y secuencia
+  populateRouteModels();
+  populateAddStepStations();
+  renderRouteSequence();
+
+  // Actualizar si el usuario activo cambia en el sidebar
+  EventBus.on('user-switched', () => {
+    renderRouteSequence();
+  });
 };
 
 if (document.readyState === 'loading') {

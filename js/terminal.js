@@ -623,6 +623,250 @@ window.initTerminalView = function() {
     });
   });
 
+  // ── 7. MAPA DE PROCESO & RASTREADOR DE LOTES (VALUE STREAM TIMELINE) ───────
+  const trackerLotSelect = document.getElementById('trackerLotSelect');
+  const trackerLotSearch = document.getElementById('trackerLotSearch');
+  const trackerRouteNameBadge = document.getElementById('trackerRouteNameBadge');
+  const trackerCurrentStationBadge = document.getElementById('trackerCurrentStationBadge');
+  const trackerNextStationText = document.getElementById('trackerNextStationText');
+  const trackerModelName = document.getElementById('trackerModelName');
+  const trackerOProd = document.getElementById('trackerOProd');
+  const trackerPiecesInfo = document.getElementById('trackerPiecesInfo');
+  const trackerOperatorName = document.getElementById('trackerOperatorName');
+  const trackerProgressPct = document.getElementById('trackerProgressPct');
+  const trackerProgressBar = document.getElementById('trackerProgressBar');
+  const processTimelineContainer = document.getElementById('processTimelineContainer');
+
+  const btnAdvanceLotStep = document.getElementById('btnAdvanceLotStep');
+  const btnRewindLotStep = document.getElementById('btnRewindLotStep');
+  const btnApproveQualityStep = document.getElementById('btnApproveQualityStep');
+
+  let activeTrackedLotId = '49,633';
+
+  function populateTrackerLotSelect() {
+    if (!trackerLotSelect || !UanifyState.activeLots) return;
+    trackerLotSelect.innerHTML = UanifyState.activeLots.map(lot => {
+      const subInfo = lot.isSubdivided ? ' · Sublote 3' : ' · Lote Completo';
+      return `<option value="${lot.lotId}" ${lot.lotId === activeTrackedLotId ? 'selected' : ''}>
+        Lote ${lot.lotId} · ${lot.model} (${lot.pieces} pzas${subInfo}) · ${lot.currentStation || 'Piso'}
+      </option>`;
+    }).join('');
+  }
+
+  function renderProcessTimeline(lotId) {
+    if (!processTimelineContainer) return;
+    activeTrackedLotId = lotId || activeTrackedLotId;
+    const lot = UanifyState.activeLots.find(l => l.lotId === activeTrackedLotId || l.lotId.replace(/,/g,'') === String(activeTrackedLotId).replace(/,/g,'')) || UanifyState.activeLots[0];
+    if (!lot) return;
+
+    const route = UanifyState.getLotRoute(lot.lotId);
+    if (!route || !route.steps) return;
+
+    const currentIdx = typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0;
+    const currentStep = route.steps[currentIdx] || route.steps[0];
+    const nextStep = route.steps[currentIdx + 1] || null;
+    const totalSteps = route.steps.length;
+    const progressPercent = Math.round(((currentIdx + 1) / totalSteps) * 100);
+
+    // Actualizar Encabezado y Badges
+    if (trackerRouteNameBadge) {
+      trackerRouteNameBadge.textContent = `Ruta: ${route.name} (${totalSteps} Pasos)`;
+    }
+    if (trackerCurrentStationBadge) {
+      trackerCurrentStationBadge.innerHTML = `📍 UBICACIÓN ACTUAL: ${currentStep.code} ${currentStep.name}`;
+      if (currentStep.type === 'calidad' || currentStep.isQualityStop) {
+        trackerCurrentStationBadge.style.background = '#D97706';
+      } else {
+        trackerCurrentStationBadge.style.background = 'var(--color-brand)';
+      }
+    }
+    if (trackerNextStationText) {
+      trackerNextStationText.innerHTML = nextStep 
+        ? `Próxima Parada: <strong>${nextStep.code} ${nextStep.name}</strong>`
+        : `<strong style="color:var(--color-green);">🏁 Ruta Finalizada · Listo para Entrega</strong>`;
+    }
+    if (trackerModelName) trackerModelName.textContent = `${lot.clase || 'Sombrero'} (${lot.model})`;
+    if (trackerOProd) trackerOProd.textContent = `#${lot.oProd || '15000'}`;
+    if (trackerPiecesInfo) {
+      const subTxt = lot.isSubdivided ? ' (Sublote 3 de 4)' : ` (Lote Madre ${lot.pieces} pzas)`;
+      trackerPiecesInfo.textContent = `${lot.pieces} pzas${subTxt}`;
+    }
+    if (trackerOperatorName) trackerOperatorName.textContent = `${lot.operatorSticker || lot.operator} (${currentStep.code})`;
+    if (trackerProgressPct) trackerProgressPct.textContent = `${progressPercent}% (Paso ${currentIdx + 1} de ${totalSteps})`;
+    if (trackerProgressBar) trackerProgressBar.style.width = `${progressPercent}%`;
+
+    // Botón de Calidad
+    if (btnApproveQualityStep) {
+      if (currentStep.type === 'calidad' || currentStep.isQualityStop || currentStep.code.startsWith('C-')) {
+        btnApproveQualityStep.style.display = 'inline-block';
+        btnApproveQualityStep.textContent = `✅ Liberar ${currentStep.code} (Calidad OK)`;
+      } else {
+        btnApproveQualityStep.style.display = 'none';
+      }
+    }
+
+    // Botones de Avance y Retroceso
+    if (btnAdvanceLotStep) {
+      btnAdvanceLotStep.disabled = currentIdx >= totalSteps - 1;
+    }
+    if (btnRewindLotStep) {
+      btnRewindLotStep.disabled = currentIdx <= 0;
+    }
+
+    // Renderizar Nodos de la Línea de Tiempo
+    processTimelineContainer.innerHTML = route.steps.map((st, idx) => {
+      let stateClass = 'is-pending';
+      let stateFooter = '⏳ En espera';
+      if (idx < currentIdx) {
+        stateClass = 'is-completed';
+        stateFooter = '✅ Superado';
+      } else if (idx === currentIdx) {
+        stateClass = 'is-current';
+        stateFooter = `<span class="timeline-current-pill">📍 AQUÍ (${lot.pieces} pz)</span>`;
+      }
+
+      const isQuality = st.type === 'calidad' || st.isQualityStop || st.code.startsWith('C-');
+      const isLogistics = st.type === 'logistica' || st.code === 'D-11';
+      let typeClass = 'type-mfg';
+      let typeLabel = '🏭 Manufactura';
+      if (isQuality) {
+        typeClass = 'type-quality';
+        typeLabel = '🔍 Calidad';
+      } else if (isLogistics) {
+        typeClass = 'type-logistics';
+        typeLabel = '🚚 Logística';
+      }
+
+      return `
+        <div class="timeline-step-node ${stateClass} ${isQuality ? 'is-quality' : ''}" 
+             data-step-index="${idx}"
+             title="Clic para reubicar Lote ${lot.lotId} en ${st.name}">
+          <div class="timeline-step-head">
+            <span class="timeline-step-number">#${idx + 1}</span>
+            <span class="timeline-step-type-badge ${typeClass}">${typeLabel}</span>
+          </div>
+          <div class="timeline-step-body">
+            <div class="timeline-step-code">${st.icon || (isQuality ? '🔍' : '🏭')} ${st.code}</div>
+            <div class="timeline-step-name">${st.name}</div>
+          </div>
+          <div class="timeline-step-footer">
+            ${stateFooter}
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${st.cycleTime || '30s'}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Listener para clic en cada nodo para reubicar el lote
+    processTimelineContainer.querySelectorAll('.timeline-step-node').forEach(node => {
+      node.addEventListener('click', () => {
+        const stepIdx = parseInt(node.getAttribute('data-step-index'), 10);
+        const res = UanifyState.moveLotToStep(lot.lotId, stepIdx);
+        if (res) {
+          renderProcessTimeline(lot.lotId);
+          populateTrackerLotSelect();
+          window.UanifyUI.toast(
+            `Lote ${lot.lotId} reubicado en Paso #${stepIdx + 1}: ${res.targetStep.code} - ${res.targetStep.name}.`,
+            'info',
+            '📍 Lote Actualizado'
+          );
+        }
+      });
+    });
+
+    // Auto-scroll para centrar el nodo activo
+    setTimeout(() => {
+      const activeNode = processTimelineContainer.querySelector('.timeline-step-node.is-current');
+      if (activeNode) {
+        activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }, 150);
+  }
+
+  if (trackerLotSelect) {
+    trackerLotSelect.addEventListener('change', (e) => {
+      activeTrackedLotId = e.target.value;
+      renderProcessTimeline(activeTrackedLotId);
+    });
+  }
+
+  if (trackerLotSearch) {
+    trackerLotSearch.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) return;
+      const matched = UanifyState.activeLots.find(l => 
+        l.lotId.toLowerCase().includes(q) || 
+        l.model.toLowerCase().includes(q) || 
+        (l.oProd && l.oProd.includes(q))
+      );
+      if (matched) {
+        activeTrackedLotId = matched.lotId;
+        if (trackerLotSelect) trackerLotSelect.value = matched.lotId;
+        renderProcessTimeline(matched.lotId);
+      }
+    });
+  }
+
+  if (btnAdvanceLotStep) {
+    btnAdvanceLotStep.addEventListener('click', () => {
+      const res = UanifyState.advanceLot(activeTrackedLotId);
+      if (res) {
+        renderProcessTimeline(activeTrackedLotId);
+        populateTrackerLotSelect();
+        window.UanifyUI.toast(
+          `Lote ${res.lot.lotId} avanzó a ${res.targetStep.code} "${res.targetStep.name}".`,
+          'success',
+          '⏩ Lote Avanzado'
+        );
+      }
+    });
+  }
+
+  if (btnRewindLotStep) {
+    btnRewindLotStep.addEventListener('click', () => {
+      const res = UanifyState.rewindLot(activeTrackedLotId);
+      if (res) {
+        renderProcessTimeline(activeTrackedLotId);
+        populateTrackerLotSelect();
+        window.UanifyUI.toast(
+          `Lote ${res.lot.lotId} retrocedió a ${res.targetStep.code} "${res.targetStep.name}" para ajuste/reproceso.`,
+          'warning',
+          '⏮️ Lote Reubicado'
+        );
+      }
+    });
+  }
+
+  if (btnApproveQualityStep) {
+    btnApproveQualityStep.addEventListener('click', () => {
+      const lot = UanifyState.activeLots.find(l => l.lotId === activeTrackedLotId);
+      const res = UanifyState.advanceLot(activeTrackedLotId);
+      if (res) {
+        renderProcessTimeline(activeTrackedLotId);
+        populateTrackerLotSelect();
+        window.UanifyUI.toast(
+          `Filtro de Calidad APROBADO sin defectos para Lote ${lot.lotId}. El lote avanzó a ${res.targetStep.code} "${res.targetStep.name}".`,
+          'success',
+          '✅ Inspección de Calidad Liberada'
+        );
+      }
+    });
+  }
+
+  // Inicializar tracker de lotes
+  populateTrackerLotSelect();
+  renderProcessTimeline(activeTrackedLotId);
+
+  EventBus.on('lot-moved', (data) => {
+    if (data && data.lot && data.lot.lotId === activeTrackedLotId) {
+      renderProcessTimeline(activeTrackedLotId);
+    }
+  });
+
+  EventBus.on('production-routes-updated', () => {
+    renderProcessTimeline(activeTrackedLotId);
+  });
+
   // Reaccionar cuando se cambie de usuario en el sidebar
   EventBus.on('user-switched', () => {
     syncDepartmentScope();
