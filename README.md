@@ -57,11 +57,10 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 
 ## 📜 Historial de Versiones (Changelog)
 
-### [2.8.2] - 2026-09-23
-- **Tarjeta Celeste de Lote Completo (Prensas - Patio · 60 Pzas):** Modelado de la tarjeta viajera de la fase de prensado hacia patio exterior (Lote `49,842`, O. Prod `15877`, Falda `7 1/2`, Doblado `ARRIBA`, Talla `# 52`, Modelo `MAGNUM` rotulado verticalmente con nota `D-120`), operadora con sticker fucsia/rojo (`MELANY`) y cantidad completa de **60 Piezas**.
-- **Confirmación Visual de Lote vs. Sublote:**
-  - Ambas tarjetas de Lote Madre (`49,386` Chaparral y `49,842` Magnum) **NO tienen número** abajo a la derecha.
-  - La tarjeta de Sublote (`49,633-3` Viejonón) **SÍ tiene el número `3`** abajo a la derecha.
+### [2.8.2] - 2026-09-24
+- **Corrección Estructural Crítica del Frontend:** Eliminación de etiqueta `</div>` sobrante en el sidebar que provocaba cierre prematuro del `<aside>`, ruptura de la cuadrícula principal y desplazamiento vertical masivo del contenido.
+- **Ajuste de Margen y Clearance en Tarjeta Viajera:** Corrección del espaciado del encabezado departamental (`TARJETA HIDRAULICAS - ADORNO` y `TARJETA PRENSAS - PATIO`) para que el sticker del operador (`JORGE`, `MELANY`) no se superponga sobre el texto.
+- **Incorporación de Lote Madre 60 Pzas (Magnum · Melany):** Integración del Lote `49,842` (Ruta Prensas a Patio, 60 piezas completas, sticker magenta de Melany y recuadro inferior derecho vacío).
 
 ### [2.8.1] - 2026-09-23
 - **Réplica Física de Tarjeta Viajera (Validada con Fotos de Planta):** Implementación de la vista idéntica de la tarjeta con mica protectora, orificio para cordel, sticker de operador (`JORGE`), ruta departamental `TARJETA HIDRÁULICAS - ADORNO`, lote y especificaciones (`FALDA: 9.0 Cm` / `9 1/2`, `DOBLADO: ABAJO` / `ARRIBA`).

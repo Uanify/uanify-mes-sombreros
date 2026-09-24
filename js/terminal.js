@@ -166,27 +166,15 @@ window.initTerminalView = function() {
 
   // ── RENDERIZADOR DE RÉPLICA DE TARJETA VIAJERA FÍSICA TOMBSTONE ───────────
   const travelerCardContainer = document.getElementById('travelerCardVisualContainer');
-  const btnPreviewPrensasPatio = document.getElementById('btnPreviewPrensasPatio');
   const btnPreviewSublot3 = document.getElementById('btnPreviewSublot3');
   const btnPreviewLoteMother = document.getElementById('btnPreviewLoteMother');
+  const btnPreviewLoteMagnum = document.getElementById('btnPreviewLoteMagnum');
 
   function renderPhysicalTravelerCard(data) {
     if (!travelerCardContainer) return;
 
     const isSublot = typeof data.sublotNum === 'number' && data.sublotNum > 0;
-    const isBlueCard = data.cardColor === 'blue' || (data.route && data.route.includes('PRENSAS - PATIO'));
-    const isPinkSticker = data.operatorColor === 'pink' || (data.operatorSticker && data.operatorSticker.includes('MELANY'));
-
-    let verticalHtml = '';
-    if (data.verticalText) {
-      const chars = data.verticalText.replace(/\s+/g, '').split('');
-      verticalHtml = `
-        <div class="traveler-vertical-watermark">
-          ${chars.map(c => `<span>${c}</span>`).join('')}
-          ${data.penNote ? `<span class="traveler-pen-note">${data.penNote}</span>` : ''}
-        </div>
-      `;
-    }
+    const stickerClass = data.stickerType === 'magenta' ? 'sticker-magenta' : 'sticker-blue';
 
     travelerCardContainer.innerHTML = `
       <div class="tombstone-traveler-sleeve">
@@ -194,9 +182,8 @@ window.initTerminalView = function() {
           <div class="traveler-string-indicator"></div>
           <div class="traveler-hole-punch"></div>
         </div>
-        <div class="traveler-paper-tag ${isBlueCard ? 'color-blue' : ''}">
-          ${data.operatorSticker ? `<div class="traveler-operator-sticker ${isPinkSticker ? 'sticker-pink' : ''}">${data.operatorSticker}</div>` : ''}
-          ${verticalHtml}
+        <div class="traveler-paper-tag">
+          ${data.operatorSticker ? `<div class="traveler-operator-sticker ${stickerClass}">${data.operatorSticker}</div>` : ''}
           <div class="traveler-route-title">${data.route || 'TARJETA HIDRAULICAS - ADORNO'}</div>
           <div class="traveler-model-name">${data.model}</div>
           <div class="traveler-oprod-row">
@@ -249,33 +236,18 @@ window.initTerminalView = function() {
     operatorSticker: 'JORGE'
   });
 
-  if (btnPreviewPrensasPatio) {
-    btnPreviewPrensasPatio.addEventListener('click', () => {
-      const lot = UanifyState.activeLots.find(l => l.lotId.includes('49,842') || l.lotId.includes('49842')) || UanifyState.activeLots[1];
-      renderPhysicalTravelerCard({
-        ...lot,
-        sublotNum: null
-      });
-      if (manualQrInput) manualQrInput.value = '49842';
-      window.UanifyUI.toast(
-        'Tarjeta Celeste "PRENSAS - PATIO" (Lote 49,842 · 60 Pzas · Melany) cargada en visor. Representa el lote madre completo en patio sin fraccionar.',
-        'info',
-        '🏷️ Tarjeta Prensas - Patio (60 Pzas)'
-      );
-    });
-  }
-
   if (btnPreviewSublot3) {
     btnPreviewSublot3.addEventListener('click', () => {
       const lot = UanifyState.activeLots[0];
       renderPhysicalTravelerCard({
         ...lot,
         sublotNum: 3,
-        operatorSticker: 'JORGE'
+        operatorSticker: 'JORGE',
+        stickerType: 'blue'
       });
       if (manualQrInput) manualQrInput.value = '49633-3';
       window.UanifyUI.toast(
-        'Tarjeta Amarilla/Pistache "HIDRAULICAS - ADORNO" (Sublote 3 · Jorge · Lote 49,633). Nota el número "3" en el recuadro inferior derecho.',
+        'Tarjeta de Sublote 3 (Viejonón · Jorge · Lote 49,633) cargada en visor. Nota el número "3" en el recuadro inferior derecho.',
         'info',
         '🏷️ Tarjeta de Sublote'
       );
@@ -284,7 +256,7 @@ window.initTerminalView = function() {
 
   if (btnPreviewLoteMother) {
     btnPreviewLoteMother.addEventListener('click', () => {
-      const lot = UanifyState.activeLots.find(l => l.lotId.includes('49,386') || l.lotId.includes('49386')) || UanifyState.activeLots[2];
+      const lot = UanifyState.activeLots[1] || UanifyState.activeLots[0];
       renderPhysicalTravelerCard({
         ...lot,
         sublotNum: null,
@@ -295,6 +267,19 @@ window.initTerminalView = function() {
         'Tarjeta de Lote Madre (Chaparral · Lote 49,386) cargada en visor. Nota que el recuadro inferior derecho NO tiene número.',
         'info',
         '🏷️ Tarjeta de Lote'
+      );
+    });
+  }
+
+  if (btnPreviewLoteMagnum) {
+    btnPreviewLoteMagnum.addEventListener('click', () => {
+      const lot = UanifyState.activeLots.find(l => l.lotId.includes('49,842') || l.lotId.includes('49842')) || UanifyState.activeLots[2];
+      renderPhysicalTravelerCard(lot);
+      if (manualQrInput) manualQrInput.value = '49842';
+      window.UanifyUI.toast(
+        'Tarjeta de Lote 60 Pzas (Magnum · Melany · Lote 49,842 · Prensas a Patio) cargada. Lote completo de 60 pzas sin número abajo a la derecha.',
+        'info',
+        '🏷️ Tarjeta Lote 60 Pzas'
       );
     });
   }
