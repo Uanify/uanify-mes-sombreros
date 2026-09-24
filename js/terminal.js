@@ -1111,18 +1111,119 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 11. FRACCIONAR EN RAMPA & MODALES DE SCRAP / PAROS ─────────────────────
-  if (btnSubdivideLot) {
-    btnSubdivideLot.addEventListener('click', () => {
-      if (!activeScannedLot) return;
-      activeScannedLot.isSubdivided = true;
-      activeScannedLot.sublotNum = 1;
-      activeScannedLot.pieces = 15;
+  // ── 11. MODO FRACCIONAMIENTO EN RAMPA (RF-08 & GAP-11) ────────────────────
+  const btnActivateRampaMode           = document.getElementById('btnActivateRampaMode');
+  const modalRampaFraccionamiento      = document.getElementById('modalRampaFraccionamiento');
+  const btnCloseRampaModal             = document.getElementById('btnCloseRampaModal');
+  const btnCancelRampaModal            = document.getElementById('btnCancelRampaModal');
+  const btnExecuteRampaFraccionamiento = document.getElementById('btnExecuteRampaFraccionamiento');
+  const btnRampaScanAnotherMother      = document.getElementById('btnRampaScanAnotherMother');
+  const rampaMotherLotId               = document.getElementById('rampaMotherLotId');
+  const rampaMotherLotPieces           = document.getElementById('rampaMotherLotPieces');
+  const rampaMotherLotModel            = document.getElementById('rampaMotherLotModel');
+  const rampaSub1Folio                 = document.getElementById('rampaSub1Folio');
+  const rampaSub2Folio                 = document.getElementById('rampaSub2Folio');
+  const rampaSub3Folio                 = document.getElementById('rampaSub3Folio');
+  const rampaSub4Folio                 = document.getElementById('rampaSub4Folio');
+  const rampaOperatorSelect            = document.getElementById('rampaOperatorSelect');
+
+  let currentRampaMotherId = '49386';
+
+  function setupRampaModalForLot(mId) {
+    currentRampaMotherId = mId;
+    const cleanId = mId.split('-')[0];
+    if (rampaMotherLotId) rampaMotherLotId.textContent = cleanId;
+    if (rampaMotherLotPieces) rampaMotherLotPieces.textContent = '60 piezas totales';
+    
+    // Asignar modelo de lote madre
+    let mName = '1000X Chaparral';
+    if (cleanId === '49633') mName = '1000X Master Telar · Viejonón';
+    else if (cleanId === '49842') mName = 'Magnum Tradicional';
+    if (rampaMotherLotModel) rampaMotherLotModel.textContent = mName;
+
+    // Actualizar los 4 folios de sublotes
+    if (rampaSub1Folio) rampaSub1Folio.textContent = `${cleanId}-1`;
+    if (rampaSub2Folio) rampaSub2Folio.textContent = `${cleanId}-2`;
+    if (rampaSub3Folio) rampaSub3Folio.textContent = `${cleanId}-3`;
+    if (rampaSub4Folio) rampaSub4Folio.textContent = `${cleanId}-4`;
+  }
+
+  window.openRampaFraccionamientoMode = function(optionalLotId) {
+    let targetId = optionalLotId;
+    if (!targetId && activeScannedLot) {
+      targetId = activeScannedLot.lotId.split('-')[0];
+    }
+    if (!targetId) targetId = '49386';
+    setupRampaModalForLot(targetId);
+
+    if (modalRampaFraccionamiento) {
+      modalRampaFraccionamiento.style.display = 'flex';
+    }
+  };
+
+  if (btnActivateRampaMode) {
+    btnActivateRampaMode.addEventListener('click', () => {
+      window.openRampaFraccionamientoMode();
+    });
+  }
+
+  function closeRampaModal() {
+    if (modalRampaFraccionamiento) {
+      modalRampaFraccionamiento.style.display = 'none';
+    }
+  }
+
+  if (btnCloseRampaModal) btnCloseRampaModal.addEventListener('click', closeRampaModal);
+  if (btnCancelRampaModal) btnCancelRampaModal.addEventListener('click', closeRampaModal);
+
+  if (btnRampaScanAnotherMother) {
+    btnRampaScanAnotherMother.addEventListener('click', () => {
+      const nextId = currentRampaMotherId === '49386' ? '49633' : '49386';
+      setupRampaModalForLot(nextId);
+      window.UanifyUI.toast(`Cambiado a Lote Madre ${nextId} (${rampaMotherLotModel.textContent}) para fraccionamiento.`, 'info');
+    });
+  }
+
+  if (btnExecuteRampaFraccionamiento) {
+    btnExecuteRampaFraccionamiento.addEventListener('click', () => {
+      const cleanId = currentRampaMotherId.split('-')[0];
+      const selectedOp = rampaOperatorSelect ? rampaOperatorSelect.value : 'JORGE';
+      const mName = rampaMotherLotModel ? rampaMotherLotModel.textContent : '1000X Chaparral';
+
+      // Cargar Sublote #1 como activo en la terminal
+      activeScannedLot = {
+        lotId: `${cleanId}-1`,
+        motherLotId: cleanId,
+        sublotNum: 1,
+        pieces: 15,
+        modelName: mName,
+        horma: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
+        brim: '9 1/2 cm',
+        size: '55',
+        orderNumber: '#15071',
+        operator: `${selectedOp} (Prensas)`,
+        operatorSticker: selectedOp,
+        currentStationCode: 'D-04',
+        currentStationName: 'D-04 Ensamble y Rampa',
+        targetStationCode: 'D-05',
+        targetStationName: 'D-05 Prensas de Hormado',
+        hasScrap: false,
+        isSubdivided: true
+      };
+
+      // Si existe en UanifyState marcar lote madre como subdividido
+      const existing = UanifyState.lots.find(l => l.lotId === cleanId);
+      if (existing) {
+        existing.isSubdivided = true;
+      }
+
       renderActiveScannedLotCard(activeScannedLot);
+      closeRampaModal();
+
       window.UanifyUI.toast(
-        `Lote ${activeScannedLot.lotId} fraccionado en 4 torres de 15 sombreros. Cargando Sublote #1 en la terminal.`,
+        `Lote Madre ${cleanId} fraccionado en 4 sublotes de 15 piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de D-05 Prensas de Hormado.`,
         'success',
-        '✂️ Fraccionamiento en Rampa'
+        '⚡ Fraccionamiento en Rampa Completado'
       );
     });
   }

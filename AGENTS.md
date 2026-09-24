@@ -473,4 +473,18 @@ Excepciones permitidas con style="":
 4. **Prohibición Estricta de Estilos Inline Reductivos:**
    - Queda terminantemente prohibido sobreescribir botones con atributos inline del estilo `style="padding:2px 4px; font-size:10px;"` o alturas reducidas en cualquier módulo.
 
+---
+
+## REGLA 0.34: Semáforos de Alta Intensidad, Modo Rampa y Estatus de Bitácora de Paros (MANDATORIA)
+
+1. **Semáforos de Estado Departamental de Alta Intensidad:**
+   - En el Tablero Andon y cuadrículas de departamentos, los semáforos de estado deben proyectar colores sólidos y saturados (Verde `#16A34A`, Ámbar `#D97706`, Rojo `#DC2626`) con texto blanco puro (`#FFFFFF`) y puntos pulsantes (`.pulse-dot`), garantizando legibilidad nítida a más de 15 metros en nave central y bajo luz de fábrica o reflejos en Smart TVs.
+2. **Modo Fraccionamiento en Rampa (Activable Bajo Demanda):**
+   - El fraccionamiento del Lote Madre de 60 piezas en 4 sublotes de 15 piezas se ejecuta exclusivamente a través de la activación formal del **"Modo Rampa (Fraccionamiento)"** (`#modalRampaFraccionamiento`).
+   - El sistema proyecta la visualización de las 4 torres generadas (`[Lote]-1` al `[Lote]-4`), asigna el operador de prensas y emite notificación táctil al culminar la división.
+   - Puntos documentados para mesa técnica con cliente: 1) Destino de la mica física original del Lote Madre; 2) Momento y lugar de impresión física de las 4 micas de sublote (`GAP-11`).
+3. **Estatus de la Bitácora de Paros e Incidencias (`GAP-10`):**
+   - La bitácora de paros permanece marcada como **Bajo Revisión / Pendiente de Aprobación de Cliente** para evaluar si en la operación real de Tombstone aporta valor o si genera fricción administrativa innecesaria en piso.
+
+
 

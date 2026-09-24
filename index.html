@@ -556,8 +556,8 @@
 
                 <!-- Acciones Rápidas Complementarias -->
                 <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnSubdivideLot" style="flex:1;">
-                    ✂️ Fraccionar Lote Madre
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="flex:1; border:1.5px solid var(--color-brand); font-weight:700;">
+                    ⚡ Modo Rampa (Fraccionar Lote Madre)
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnReportScrap" style="color:var(--color-amber);">
                     ⚠️ Reportar Merma
@@ -2528,6 +2528,112 @@
       <div class="modal-footer">
         <button type="button" class="btn-secondary btn-touch-lg" id="btnDismissDeptWarehouseModal" style="width:100%;">
           Cerrar Consulta de Almacén
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: MODO FRACCIONAMIENTO EN RAMPA (RF-08 & GAP-11)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalRampaFraccionamiento" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:760px;">
+      <div class="modal-header">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">ESTACIÓN D-04 · RAMPA DE ENSAMBLE</span>
+            <span class="badge-subtle" style="font-weight:700;">Modo Operativo Especial</span>
+          </div>
+          <h3 style="margin-top:4px;">⚡ Modo Fraccionamiento de Lote Madre (60 pzas ➔ 4 Sublotes de 15 pzas)</h3>
+          <p class="modal-header-sub">División oficial de torres de sombreros ensamblados para su ingreso a Prensas Hidráulicas</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseRampaModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:22px;">
+        <!-- Banner de Selección de Lote Madre -->
+        <div style="background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px; margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span style="font-size:11px; text-transform:uppercase; font-weight:800; color:var(--text-muted);">Lote Madre a Fraccionar en Rampa:</span>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                <strong style="font-family:'JetBrains Mono'; font-size:18px; color:var(--color-brand);" id="rampaMotherLotId">49,386</strong>
+                <span class="badge-status" style="background:var(--color-brand-light); color:var(--color-brand); border:1px solid var(--color-brand-border);" id="rampaMotherLotPieces">60 piezas totales</span>
+                <span class="badge-subtle" id="rampaMotherLotModel">1000X Chaparral</span>
+              </div>
+            </div>
+            <div>
+              <button type="button" class="btn-secondary btn-touch-lg" id="btnRampaScanAnotherMother" style="font-size:12.5px;">
+                🔍 Seleccionar / Cambiar Lote Madre
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explicación Visual de la Conversión -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary); margin-bottom:8px;">
+            📦 Generación de las 4 Torres de Sublote (15 pzas c/u):
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
+            <!-- Sublote 1 -->
+            <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
+              <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #1</span>
+              <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub1Folio">49386-1</div>
+              <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "1"</div>
+            </div>
+            <!-- Sublote 2 -->
+            <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
+              <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #2</span>
+              <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub2Folio">49386-2</div>
+              <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "2"</div>
+            </div>
+            <!-- Sublote 3 -->
+            <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
+              <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #3</span>
+              <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub3Folio">49386-3</div>
+              <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "3"</div>
+            </div>
+            <!-- Sublote 4 -->
+            <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
+              <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #4</span>
+              <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub4Folio">49386-4</div>
+              <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "4"</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Asignación de Operador Responsable -->
+        <div style="margin-bottom:16px;">
+          <label class="field-label" style="font-size:12px;">Operador Responsable de las Torres:</label>
+          <select id="rampaOperatorSelect" class="custom-select" style="min-height:48px;">
+            <option value="JORGE">Jorge Ramírez · Prensas y Rampa</option>
+            <option value="MELANY">Melany Gómez · Rampa Ensamble</option>
+            <option value="JUAN">Juan Pablo Torres · Prensas Secas</option>
+            <option value="CARLOS">Carlos Mendoza · Hormado</option>
+          </select>
+        </div>
+
+        <!-- Banner de Puntos Operativos Pendientes (GAP-11) -->
+        <div style="background:#FEF3C7; border:1.5px solid #FCD34D; border-radius:10px; padding:12px 16px; margin-bottom:10px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:800; color:#92400E; margin-bottom:4px;">
+            <span>📌 Puntos Operativos Pendientes de Validar con Tombstone (GAP-11):</span>
+          </div>
+          <ul style="margin:0; padding-left:18px; font-size:11.5px; color:#B45309; line-height:1.45;">
+            <li><strong>¿Qué pasa con la tarjeta del Lote Madre?</strong> Se definirá con el cliente si se archiva en Rampa o acompaña al primer sublote.</li>
+            <li><strong>¿En qué momento se imprimen las tarjetas de los sublotes?</strong> Se definirá si ya vienen impresas desde compras o si Rampa imprimirá las 4 micas en este instante.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelRampaModal" style="flex:1;">
+          Cancelar / Salir del Modo
+        </button>
+        <button type="button" class="btn-primary btn-touch-hero" id="btnExecuteRampaFraccionamiento" style="flex:1.4; background:linear-gradient(135deg, #8B5E3C 0%, #6E4426 100%);">
+          ✂️ Ejecutar Fraccionamiento a 4 Sublotes
         </button>
       </div>
     </div>
