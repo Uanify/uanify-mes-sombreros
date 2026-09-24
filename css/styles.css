@@ -126,57 +126,103 @@ body.industrial-theme {
   left: 0;
   z-index: 100;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 /* Sidebar Header */
 .sidebar-header {
-  padding: 20px 18px 16px;
+  padding: 16px 14px 14px;
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  transition: padding 0.25s ease;
 }
 
 .brand-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
+  min-height: 38px;
+}
+
+.brand-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .brand-logo {
-  height: 40px;
+  height: 34px;
   width: auto;
+  max-width: 124px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
+/* Versión Oficial del Sistema MES - Alta Visibilidad & Alto Contraste */
 .system-version-pill {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  font-weight: 700;
-  color: var(--color-brand);
-  background: var(--color-brand-light);
-  border: 1px solid var(--color-brand-border);
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: var(--color-brand);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 3px 9px;
+  border-radius: 9999px;
   letter-spacing: 0.5px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   user-select: none;
+  box-shadow: 0 1px 3px rgba(139, 94, 60, 0.35);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Botón Toggle Colapsar / Expandir Sidebar */
+.sidebar-toggle-btn {
+  background: #F1F5F9;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--color-brand-light);
+  color: var(--color-brand);
+  border-color: var(--color-brand-border);
+  transform: scale(1.05);
+}
+
+.sidebar-toggle-btn .toggle-icon {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .footer-version-tag {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: var(--color-brand);
-  background: var(--color-brand-light);
-  border: 1px solid var(--color-brand-border);
-  padding: 1px 5px;
-  border-radius: 4px;
+  color: #FFFFFF;
+  background: var(--color-brand);
+  border: 1px solid var(--color-brand-dark);
+  padding: 2px 6px;
+  border-radius: 6px;
   font-size: 10px;
+  display: inline-block;
 }
 
 .sidebar-plant-meta {
@@ -408,6 +454,7 @@ body.industrial-theme {
   min-width: 0;
   max-width: 1600px;
   width: calc(100% - var(--sidebar-width));
+  transition: margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .view-panel {
@@ -457,41 +504,144 @@ body.industrial-theme {
   box-shadow: var(--shadow-card);
 }
 
-/* Mobile & Tablet Responsive */
+/* ==========================================================================
+   SIDEBAR COLLAPSED STATE (MODO PLEAGADO / ICON-ONLY)
+   ========================================================================== */
+.app-layout.sidebar-collapsed .app-sidebar {
+  width: var(--sidebar-collapsed-width);
+}
+
+.app-layout.sidebar-collapsed .sidebar-header {
+  padding: 14px 6px;
+}
+
+.app-layout.sidebar-collapsed .brand-container {
+  justify-content: center;
+}
+
+.app-layout.sidebar-collapsed .brand-left {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .sidebar-toggle-btn .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.app-layout.sidebar-collapsed .sidebar-plant-meta,
+.app-layout.sidebar-collapsed .sidebar-user-box,
+.app-layout.sidebar-collapsed .nav-group-title,
+.app-layout.sidebar-collapsed .tab-label,
+.app-layout.sidebar-collapsed .tab-badge,
+.app-layout.sidebar-collapsed .sidebar-device-pill,
+.app-layout.sidebar-collapsed .shift-text {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .sidebar-nav {
+  padding: 12px 6px;
+  gap: 8px;
+}
+
+.app-layout.sidebar-collapsed .nav-tabs {
+  gap: 6px;
+}
+
+.app-layout.sidebar-collapsed .nav-btn {
+  justify-content: center;
+  padding: 10px 0;
+  width: 46px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.app-layout.sidebar-collapsed .nav-btn .tab-icon {
+  font-size: 22px;
+  min-width: auto;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer {
+  padding: 10px 4px;
+}
+
+.app-layout.sidebar-collapsed .sidebar-shift-info {
+  justify-content: center;
+  padding: 4px;
+}
+
+.app-layout.sidebar-collapsed .shift-clock {
+  font-size: 9.5px;
+  padding: 2px;
+  text-align: center;
+}
+
+.app-layout.sidebar-collapsed .app-content {
+  margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* ==========================================================================
+   TABLET-FIRST RESPONSIVE OPTIMIZATIONS (PANTALLAS TÁCTILES 768px A 1024px)
+   ========================================================================== */
 @media (max-width: 1024px) {
-  .app-sidebar {
-    width: var(--sidebar-collapsed-width);
+  :root {
+    --sidebar-width: 230px;
   }
-  .app-sidebar .tab-label,
-  .app-sidebar .nav-group-title,
-  .app-sidebar .sidebar-plant-meta,
-  .app-sidebar .shift-text,
-  .app-sidebar .sidebar-device-pill,
-  .app-sidebar .tab-badge {
-    display: none;
-  }
-  .app-sidebar .brand-container {
-    justify-content: center;
-  }
-  .app-sidebar .brand-logo {
-    height: 32px;
-  }
-  .app-sidebar .nav-btn {
-    justify-content: center;
-    padding: 12px 0;
-  }
-  .app-sidebar .sidebar-shift-info {
-    justify-content: center;
-    padding: 4px;
-  }
-  .app-sidebar .shift-clock {
-    font-size: 10px;
-    padding: 2px 4px;
-  }
+
   .app-content {
-    margin-left: var(--sidebar-collapsed-width);
-    width: calc(100% - var(--sidebar-collapsed-width));
-    padding: 16px 20px;
+    padding: 16px 18px 40px;
+  }
+
+  .view-hero-bar {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    gap: 12px;
+  }
+
+  .view-title {
+    font-size: 20px;
+  }
+
+  .view-subtitle {
+    font-size: 12.5px;
+  }
+
+  /* Zonas táctiles cómodas para dedos (mínimo 42-44px) */
+  button, .btn, .btn-primary, .btn-secondary, .nav-btn, .sub-tab-btn, .custom-select, input {
+    min-height: 42px;
+  }
+
+  /* Sub-navegación por pestañas con deslizamiento horizontal táctil */
+  .sub-nav-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 6px;
+    gap: 8px;
+  }
+
+  .sub-tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 12.5px;
+    padding: 8px 14px;
+  }
+
+  /* Contenedores de tablas con scroll táctil suave */
+  .data-table-wrapper, .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  /* Adaptación de grids a columnas flexibles */
+  .kpi-banner {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .banner-stat {
+    min-width: 110px;
+    padding: 8px 12px;
   }
 }
 
@@ -501,10 +651,19 @@ body.industrial-theme {
   }
   .app-sidebar {
     position: relative;
-    width: 100%;
+    width: 100% !important;
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
     height: auto;
+  }
+  .sidebar-header {
+    padding: 12px 16px;
+  }
+  .sidebar-toggle-btn {
+    display: none;
+  }
+  .brand-left {
+    display: flex !important;
   }
   .sidebar-nav {
     flex-direction: row;
@@ -516,15 +675,16 @@ body.industrial-theme {
     flex-direction: row;
   }
   .app-sidebar .tab-label {
-    display: inline;
+    display: inline !important;
     font-size: 12px;
   }
   .app-sidebar .nav-btn {
     padding: 8px 12px;
+    width: auto;
   }
   .app-content {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 0 !important;
+    width: 100% !important;
     padding: 16px;
   }
   .sidebar-footer {

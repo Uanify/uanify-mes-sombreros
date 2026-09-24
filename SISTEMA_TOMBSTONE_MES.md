@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.8.2` | **Fecha de Actualización:** 24 de Septiembre de 2026  
+> **Versión Actual:** `v2.8.3` | **Fecha de Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -174,12 +174,18 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.2`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.3`.
 
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
 
+- **`v2.8.3` (2026-09-24):**
+  - **Barra Lateral Plegable (Icon-Only Mode):** Integración de botón toggle en encabezado del sidebar para colapsar la barra lateral a 72px, ganando espacio horizontal en piso y persistiendo en `localStorage`.
+  - **Versión del Sistema Prominente y de Alto Contraste:** Rediseño del badge `.system-version-pill` con fondo sólido de marca `#8B5E3C` y texto `#FFFFFF` en negrita, garantizando total visibilidad en el navbar.
+  - **Enfoque de Diseño Tablet-First y 100% Responsivo:** Adaptación ergonómica integral para pantallas táctiles de 768px a 1024px, zonas táctiles mínimas de 44px para dedos, y desplazamiento horizontal táctil suave en tablas de datos y sub-pestañas.
+  - **Supresión de Menciones de Hardware Específico:** Eliminación de los términos "iPad" y "Tablet" en la interfaz gráfica, estandarizando la terminología industrial neutra (*Terminal de Planta*, *Cámara de tu dispositivo*).
+  - **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso no muestran candados ni advertencias disuasorias; se ocultan completamente del menú de navegación.
 - **`v2.8.2` (2026-09-24):**
   - **Corrección de Cuadrícula Principal (Frontend):** Remoción de etiqueta `</div>` sobrante en el sidebar que provocaba la ruptura del layout principal y el desplazamiento vertical hacia abajo.
   - **Ajuste de Superposición en Tarjetas Viajeras:** Modificación del margen del encabezado departamental (`padding: 0 46px 6px`) para garantizar total legibilidad cuando está presente el sticker circular del operador.

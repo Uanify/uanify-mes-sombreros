@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.2-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.3-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -56,6 +56,13 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### [2.8.3] - 2026-09-24
+- **Barra Lateral Plegable (Icon-Only Mode):** Incorporación de botón toggle en encabezado del sidebar para colapsar la barra lateral a 72px, expandiendo el área útil de trabajo en planta; persistencia automática en `localStorage` y colapso por defecto en resoluciones de tableta.
+- **Versión del Sistema Visible y Prominente:** Rediseño del badge `.system-version-pill` con fondo sólido de marca `#8B5E3C`, texto blanco en negrita y alto contraste para visibilidad instantánea.
+- **Enfoque de Diseño Tablet-First y 100% Responsivo:** Optimización completa para pantallas táctiles de 768px a 1024px (touch targets >= 44px, desplazamiento horizontal táctil suave en tablas y tabs sin desbordamiento lateral).
+- **Supresión de Menciones de Hardware Específico:** Eliminación total de las palabras "iPad" y "Tablet" en la interfaz de usuario, empleando términos profesionales neutros (Terminal de Planta, Cámara de tu dispositivo).
+- **Seguridad RBAC por Ocultamiento Estricto:** Eliminación de iconos de candados 🔒; los módulos no autorizados se ocultan completamente de la barra de navegación para un entorno más limpio y seguro.
 
 ### [2.8.2] - 2026-09-24
 - **Corrección Estructural Crítica del Frontend:** Eliminación de etiqueta `</div>` sobrante en el sidebar que provocaba cierre prematuro del `<aside>`, ruptura de la cuadrícula principal y desplazamiento vertical masivo del contenido.

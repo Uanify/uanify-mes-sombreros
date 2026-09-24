@@ -81,7 +81,7 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 2. **Seguridad Basada en Roles (RBAC):**
    - **Administrador (👑 Admin):** Acceso a todos los módulos y capacidad exclusiva de gestionar usuarios y editar permisos.
    - **Ingeniero de Producción (⚡ Ingeniero):** Acceso a Tablero Andon, Ingeniería & Subensambles y Dirección & COMPAC.
-   - **Supervisor de Línea (📱 Supervisor):** Acceso a Tablero Andon y Terminal iPad de Lotes y Almacenes; pestañas restringidas bloqueadas con candado y aviso de seguridad.
+   - **Supervisor de Línea (📱 Supervisor):** Acceso a Tablero Andon y Lotes, QR & Almacenes; pestañas restringidas OCULTAS por completo (sin candados ni opciones deshabilitadas).
 
 ---
 
@@ -127,5 +127,51 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 3. **Privilegios de Ingeniería:** Los usuarios Ingenieros pueden ver y auditar todos los departamentos, y tienen la facultad de dar de alta nuevos Supervisores de Planta, pero **NO pueden crear otros Ingenieros ni Administradores** (facultad exclusiva de Dirección/Admin).
 4. **Acceso Exclusivo a KPIs de Rendimiento:** La sección de métricas y KPIs de rendimiento de Supervisores y Departamentos es de acceso exclusivo para Ingeniería y Dirección.
 5. **Catálogo de Hormas y Moldes:** Registro centralizado de hormas de aluminio fundido (Denver, Bullrider, Viejonón, Laredo, Frontier, Chaparral) con especificación de copa, falda, máquina asignada y estado.
-6. **Lector QR de Pantalla Completa con Cámara Web:** La terminal de piso despliega directamente el flujo de video en vivo de la cámara del dispositivo mediante la API estándar `navigator.mediaDevices.getUserMedia()`, garantizando compatibilidad universal en iPads, tablets Android, laptops y teléfonos.
+6. **Lector QR de Pantalla Completa con Cámara Web:** La terminal de piso despliega directamente el flujo de video en vivo de la cámara del dispositivo mediante la API estándar `navigator.mediaDevices.getUserMedia()`, garantizando compatibilidad universal en dispositivos móviles, laptops y terminales de piso.
+
+---
+
+## REGLA 0.11: Enfoque de Diseño Tablet-First y 100% Responsivo (MANDATORIA)
+
+**Todo el sistema debe estar concebido y optimizado primordialmente con enfoque Tablet-First.**
+1. **Optimización para Pantallas Táctiles (768px a 1024px):** Las vistas principales (Andon, Terminal de Almacenes, Fichas de Hormas, Vales de Pago y Configuración) deben funcionar de forma fluida y ergonómica en pantallas táctiles de planta, tanto en orientación horizontal como vertical.
+2. **Dimensiones de Toque Ergonómicas:** Todo botón, selector, input y pestaña debe tener una altura táctil mínima de 42-44px para permitir una interacción rápida y precisa con los dedos sin errores de puntería.
+3. **Tablas y Pestañas Adaptables:** Toda tabla de datos debe estar encapsulada en contenedores con desplazamiento táctil suave (`-webkit-overflow-scrolling: touch;`), y los encabezados de sub-pestañas deben desplazarse horizontalmente sin deformar la estructura de la aplicación.
+4. **Cero Desbordamiento Horizontal:** La interfaz nunca debe desbordarse involuntariamente a los lados ni cortar información crítica.
+
+---
+
+## REGLA 0.12: Prohibición Estricta de Palabras "iPad" o "Tablet/Tableta" en la Interfaz de Usuario
+
+**Queda terminantemente prohibido colocar explícitamente las palabras "iPad", "Tablet" o "Tableta" en la interfaz de usuario.**
+- No deben aparecer en textos, encabezados, títulos, badges, tooltips, opciones de formularios ni placeholders.
+- En su lugar, utilizar siempre términos profesionales neutros:
+  - *Terminal de Planta* o *Terminal de Piso*
+  - *Lotes, QR & Almacenes*
+  - *Supervisor de Piso y Almacenes*
+  - *Cámara de tu dispositivo* o *Dispositivo móvil*
+
+---
+
+## REGLA 0.13: Seguridad RBAC por Ocultamiento Estricto (Sin Candados Visuales)
+
+**Las restricciones de acceso NO deben mostrar iconos de candados 🔒 ni botones bloqueados.**
+1. **Ocultamiento Total:** Si un usuario no cuenta con autorización para un módulo o pestaña según su matriz de permisos, dicha opción simplemente **NO DEBE APARECER** en la barra lateral ni en los menús (`display: none`).
+2. **Cero Frustración de Usuario:** El operador o supervisor únicamente visualiza las herramientas a las que tiene acceso legítimo, evitando distracciones o sensación de bloqueo.
+3. **Agrupadores Limpios:** Si todos los elementos de un grupo de navegación están restringidos, el título de la sección (`.nav-group-title`) también debe ocultarse automáticamente.
+
+---
+
+## REGLA 0.14: Barra Lateral Plegable (Collapsible Sidebar) & Versión Prominente
+
+1. **Barra Lateral Plegable:** La barra de navegación lateral izquierda debe contar con un botón toggle accesible para alternar entre modo completo y modo icono/plegado (~72px), liberando el máximo espacio de visualización para tarjetas y tablas operativas.
+2. **Persistencia y Adaptación:** El estado plegado se almacena en `localStorage` (`uanify_sidebar_collapsed`) y se inicializa colapsado en pantallas táctiles (resolución <= 1024px) por ergonomía de planta.
+3. **Versión SemVer Visible y Prominente:** El badge de versión (`.system-version-pill`) en el encabezado del sidebar debe ser de alto contraste, nítido y siempre legible (`color: #FFF`, fondo cuero de marca `#8B5E3C`).
+
+---
+
+## REGLA 0.15: Trazabilidad QR y Generación en Tarjetas Viajeras
+
+1. **Información Embebida:** El código QR de cada tarjeta viajera contiene la información operativa estructurada del lote madre (60 pzas) o sublote (15 pzas), incluyendo modelo, orden de producción, talla, calidad y tramo departamental.
+2. **Generación Física:** La generación e impresión formal de estos códigos QR se realiza en el departamento de Ingeniería al momento de emitir las tarjetas viajeras oficiales de planta.
 

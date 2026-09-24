@@ -432,6 +432,7 @@
   gap: 20px;
 }
 
+.station-status-banner,
 .ipad-banner {
   display: flex;
   justify-content: space-between;
@@ -442,12 +443,14 @@
   border-radius: 10px;
 }
 
+.station-status-banner-left,
 .ipad-banner-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+.station-status-badge,
 .ipad-badge {
   background: var(--color-brand);
   color: #FFFFFF;
@@ -458,6 +461,7 @@
   letter-spacing: 0.5px;
 }
 
+.station-status-banner-title,
 .ipad-banner-title {
   font-size: 13px;
   font-weight: 700;
@@ -1368,18 +1372,10 @@
   cursor: pointer;
 }
 
-.nav-btn-restricted {
-  opacity: 0.6;
-  background: rgba(0, 0, 0, 0.02);
-}
-
-.nav-btn-restricted:hover {
-  opacity: 0.85;
-}
-
+/* Regla UX RBAC: Opciones restringidas se ocultan completamente */
+.nav-btn-restricted,
 .tab-lock-icon {
-  font-size: 12px;
-  margin-left: auto;
+  display: none !important;
 }
 
 /* ==========================================================================

@@ -21,7 +21,7 @@ window.initConfigView = function() {
 
   const AvailableModules = [
     { id: 'andon',     name: 'Tablero Andon (Piso)' },
-    { id: 'terminal',  name: 'Lotes, QR & Almacenes (iPad)' },
+    { id: 'terminal',  name: 'Lotes, QR & Almacenes' },
     { id: 'engineer',  name: 'Ingeniería & Subensambles' },
     { id: 'executive', name: 'Dirección & COMPAC' },
     { id: 'config',    name: 'Configuración de Planta' }

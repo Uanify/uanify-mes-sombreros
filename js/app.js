@@ -94,7 +94,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.8.2',
+  version: '2.8.3',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
@@ -515,13 +515,14 @@ function getCurrentUser() {
 // Nombres descriptivos de los 5 módulos
 const ModuleNames = {
   andon: 'Tablero Andon (Piso)',
-  terminal: 'Lotes, QR & Almacenes (iPad)',
+  terminal: 'Lotes, QR & Almacenes',
   engineer: 'Ingeniería & Subensambles',
   executive: 'Dirección & COMPAC',
   config: 'Configuración de Planta & Usuarios'
 };
 
 // Actualizar visualmente la barra lateral según los permisos del usuario activo
+// REGLA UX RBAC: Opciones no permitidas se OCULTAN por completo (sin candados ni bloqueos visibles)
 function updateUserInterface() {
   const user = getCurrentUser();
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -539,20 +540,22 @@ function updateUserInterface() {
     const tab = btn.getAttribute('data-tab');
     const isAllowed = user.permissions.includes(tab);
     
-    // Indicador visual de bloqueo
-    let lockIcon = btn.querySelector('.tab-lock-icon');
-    if (!isAllowed) {
-      btn.classList.add('nav-btn-restricted');
-      if (!lockIcon) {
-        lockIcon = document.createElement('span');
-        lockIcon.className = 'tab-lock-icon';
-        lockIcon.textContent = '🔒';
-        lockIcon.title = `Acceso restringido para rol: ${user.roleName}`;
-        btn.appendChild(lockIcon);
-      }
-    } else {
-      btn.classList.remove('nav-btn-restricted');
-      if (lockIcon) lockIcon.remove();
+    // Regla UX RBAC: Jamás mostrar candado 🔒; simplemente ocultar la opción de navegación
+    const lockIcon = btn.querySelector('.tab-lock-icon');
+    if (lockIcon) lockIcon.remove();
+    btn.classList.remove('nav-btn-restricted');
+
+    // Mostrar u ocultar completamente la opción
+    btn.style.display = isAllowed ? 'flex' : 'none';
+  });
+
+  // Ocultar también títulos de grupo si todos sus botones están ocultos
+  document.querySelectorAll('.nav-tabs').forEach(group => {
+    const buttons = group.querySelectorAll('.nav-btn');
+    const hasVisible = Array.from(buttons).some(b => b.style.display !== 'none');
+    const groupTitle = group.previousElementSibling;
+    if (groupTitle && groupTitle.classList.contains('nav-group-title')) {
+      groupTitle.style.display = hasVisible ? 'block' : 'none';
     }
   });
 }
@@ -646,6 +649,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   setInterval(updateClock, 1000);
   updateClock();
+
+  // Control de Barra Lateral Plegable (Icon-Only Mode para maximizar espacio de piso)
+  const appLayout = document.querySelector('.app-layout');
+  const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+
+  // Restaurar estado previo o colapsar automáticamente en tabletas si no hay preferencia
+  const savedSidebar = localStorage.getItem('uanify_sidebar_collapsed');
+  if (savedSidebar !== null) {
+    if (savedSidebar === 'true') {
+      appLayout.classList.add('sidebar-collapsed');
+    } else {
+      appLayout.classList.remove('sidebar-collapsed');
+    }
+  } else if (window.innerWidth <= 1024) {
+    appLayout.classList.add('sidebar-collapsed');
+  }
+
+  if (btnToggleSidebar) {
+    btnToggleSidebar.addEventListener('click', () => {
+      appLayout.classList.toggle('sidebar-collapsed');
+      const isCollapsed = appLayout.classList.contains('sidebar-collapsed');
+      localStorage.setItem('uanify_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+    });
+  }
 
   initSubTabs();
   updateUserInterface();

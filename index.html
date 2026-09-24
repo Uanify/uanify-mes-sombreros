@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.8.2">
-  <link rel="stylesheet" href="css/components.css?v=2.8.2">
+  <link rel="stylesheet" href="css/styles.css?v=2.8.3">
+  <link rel="stylesheet" href="css/components.css?v=2.8.3">
 </head>
 <body class="industrial-theme">
   <div class="app-layout">
@@ -19,8 +19,15 @@
       <!-- Sidebar Brand Header -->
       <div class="sidebar-header">
         <div class="brand-container">
-          <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
-          <span class="system-version-pill" title="Versión Oficial del Sistema MES">v2.8.2</span>
+          <div class="brand-left">
+            <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
+            <span class="system-version-pill" id="systemVersionPill" title="Versión Oficial del Sistema MES v2.8.3">v2.8.3</span>
+          </div>
+          <button id="btnToggleSidebar" class="sidebar-toggle-btn" title="Plegar / Expandir Barra Lateral" aria-label="Alternar barra lateral">
+            <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
         </div>
         <div class="sidebar-plant-meta">
           <span class="plant-tag">Planta Matriz · San Francisco del Rincón</span>
@@ -54,7 +61,6 @@
           <button class="nav-btn" data-tab="terminal">
             <span class="tab-icon">🏷️</span>
             <span class="tab-label">Lotes, QR & Almacenes</span>
-            <span class="tab-badge" style="background:#FEF3C7; color:#B45309;">iPad</span>
           </button>
         </div>
 
@@ -90,7 +96,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-shift-info">
           <div class="shift-text">
-            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.0</span></span>
+            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.3</span></span>
             <span class="shift-title">Turno Único (07:00 - 15:30)</span>
           </div>
           <span class="shift-clock" id="liveClock">00:00:00</span>
@@ -172,8 +178,8 @@
       </section>
 
       <!-- ======================================================================
-           TAB 2: TERMINAL DE SUPERVISOR / iPAD (LOTES, SUBLOTES & QR)
-           (Sin pedal. Diseñado para iPad en Almacenes Intermedios)
+           TAB 2: TERMINAL DE SUPERVISOR (LOTES, SUBLOTES & QR)
+           (Control de Almacenes Intermedios y Estaciones de Trabajo)
            ====================================================================== -->
       <section class="view-panel" id="view-terminal">
         <div class="view-hero-bar">
@@ -181,10 +187,10 @@
             <h1 class="view-title">Terminal de Planta · Lotes, Máquinas & Almacenes</h1>
             <p class="view-subtitle">Control de flujo departamental: máquinas, operadores, almacenes intermedios y recolección para siguiente depto</p>
           </div>
-          <div class="ipad-banner">
-            <div class="ipad-banner-left">
-              <span class="ipad-badge">PISO INDUSTRIAL</span>
-              <span class="ipad-banner-title" id="terminalSupervisorBanner">Supervisor Activo: Juan Manuel Pérez</span>
+          <div class="station-status-banner">
+            <div class="station-status-banner-left">
+              <span class="station-status-badge">PISO INDUSTRIAL</span>
+              <span class="station-status-banner-title" id="terminalSupervisorBanner">Supervisor Activo: Juan Manuel Pérez</span>
             </div>
             <span class="badge-subtle" style="font-weight:700;">Lote Activo: 1094</span>
           </div>
@@ -251,7 +257,7 @@
                 <div class="camera-placeholder-msg" id="cameraPlaceholderMsg">
                   <span style="font-size:42px;">📷</span>
                   <strong style="color:#FFFFFF; font-size:15px;">Cámara de Dispositivo Apagada</strong>
-                  <span style="font-size:12px;">Haz clic en "Activar Cámara Web" para escanear directamente con la cámara de tu laptop, iPad o tablet.</span>
+                  <span style="font-size:12px;">Haz clic en "Activar Cámara Web" para escanear directamente con la cámara de tu dispositivo.</span>
                 </div>
                 <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none;">
                   <div class="camera-target-box">
@@ -1050,7 +1056,7 @@
         <div class="form-group">
           <label class="field-label">Rol del Usuario:</label>
           <select id="newRoleSelect" class="custom-select">
-            <option value="supervisor" selected>📋 Supervisor (Piso / iPad en Almacenes)</option>
+            <option value="supervisor" selected>📋 Supervisor de Piso y Almacenes</option>
             <option value="ingeniero">⚙️ Ingeniero (Procesos, OEE y Subensambles)</option>
             <option value="admin">👑 Administrador (Acceso y Configuración Total)</option>
           </select>
@@ -1064,7 +1070,7 @@
             </label>
             <label class="perm-check-item">
               <input type="checkbox" class="new-perm-cb" value="terminal" checked>
-              <span>🏷️ Lotes, QR & Almacenes (iPad)</span>
+              <span>🏷️ Lotes, QR & Almacenes</span>
             </label>
             <label class="perm-check-item">
               <input type="checkbox" class="new-perm-cb" value="engineer">
@@ -1113,7 +1119,7 @@
           </label>
           <label class="perm-check-item">
             <input type="checkbox" class="edit-perm-cb" value="terminal">
-            <span>🏷️ Lotes, QR & Almacenes (iPad)</span>
+            <span>🏷️ Lotes, QR & Almacenes</span>
           </label>
           <label class="perm-check-item">
             <input type="checkbox" class="edit-perm-cb" value="engineer">
@@ -1254,11 +1260,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.8.2"></script>
-  <script src="js/andon.js?v=2.8.2"></script>
-  <script src="js/terminal.js?v=2.8.2"></script>
-  <script src="js/engineer.js?v=2.8.2"></script>
-  <script src="js/executive.js?v=2.8.2"></script>
-  <script src="js/config.js?v=2.8.2"></script>
+  <script src="js/app.js?v=2.8.3"></script>
+  <script src="js/andon.js?v=2.8.3"></script>
+  <script src="js/terminal.js?v=2.8.3"></script>
+  <script src="js/engineer.js?v=2.8.3"></script>
+  <script src="js/executive.js?v=2.8.3"></script>
+  <script src="js/config.js?v=2.8.3"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /**
- * UANIFY MES · TERMINAL DE PLANTA & ESCÁNER DE TARJETA VIAJERA (iPAD / WEB)
+ * UANIFY MES · TERMINAL DE PLANTA & ESCÁNER DE TARJETA VIAJERA
  *
  * REGLAS DE NEGOCIO INDUSTRIALES (Tombstone Hats · San Francisco del Rincón):
  * ─ Tarjetas viajeras impresas en Ingeniería. Lotes fraccionados de 60 a 15 piezas.
