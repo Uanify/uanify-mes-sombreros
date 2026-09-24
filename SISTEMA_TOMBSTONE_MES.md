@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.7.0` | **Fecha de Actualización:** 23 de Septiembre de 2026  
+> **Versión Actual:** `v2.8.0` | **Fecha de Actualización:** 23 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -159,6 +159,16 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 
 ## 📜 8. Historial de Versiones (SemVer)
 
+- **`v2.8.0` (2026-09-23):**
+  - **Navegación Interna por Sub-Pestañas:** Implementación de sub-tabs en los 5 módulos para una navegación limpia sin saturación visual.
+  - **Meta Semanal:** Reemplazo de meta diaria rígida por Meta Semanal (4,250 pzas/semana) editable desde configuración y visible en Andon.
+  - **Flujo de Planta Departamental:** Modelo de trabajo en máquina por operadores, depósito en almacén intermedio de salida y recolección para traspaso al siguiente departamento.
+  - **Lector QR de Pantalla Completa:** Visor en vivo con cámara web mediante `getUserMedia` y retícula visual industrial compatible con cualquier dispositivo.
+  - **Asignación Departamental por Supervisor:** Los supervisores solo operan en sus departamentos asignados (D-01 a D-04 o D-05 a D-08). Ingeniería tiene alcance global y puede crear supervisores (pero no ingenieros).
+  - **Padrón de Operadores de Planta:** Registro de mano de obra con número de nómina, departamento y máquina asignada (sin acceso/login al sistema).
+  - **Catálogo de Hormas y Moldes:** Registro de hormas (Denver, Bullrider, Viejonón, Laredo, etc.) con asignación a prensas de vapor.
+  - **KPIs Exclusivos:** Panel de rendimiento restringido a Ingeniería y Dirección.
+  - **Prohibición de Alertas Nativas:** Supresión total de `alert()`, `confirm()` y `prompt()`; estandarización con notificaciones toast y modales in-app `UanifyUI`.
 - **`v2.7.0` (2026-09-23):**
   - Estandarización total a Turno Único (07:00 a 15:30 hrs).
   - Incorporación de insignias visibles de versión `v2.7.0` en sidebar y footer.

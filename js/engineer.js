@@ -2,24 +2,23 @@
  * UANIFY MES · CONSOLA DE INGENIERÍA
  * Tombstone Hats — Planta Matriz San Francisco del Rincón
  *
- * VALIDADO EN AUDIO:
- * ─ Pipeline de WIP por departamento. Cuello de botella real: Prensas de Vapor.
- * ─ Subensambles de Tafilete por Talla (55-60). Coordinación actual: verbal/a gritos.
- * ─ Hormas: Roper, Chaparral, Viejón, Laredo, Frontier — identificadas por color.
- * ─ Meta semanal dividida por día. Ingeniería genera e imprime las tarjetas viajeras.
- * ─ Catálogo de materiales con cambio masivo (ej. Pintura Taiwan 1125 → nuevo proveedor).
- * ─ Operador asignado a máquina por supervisor. Futura planeación (PPSP) con hormas.
- * ─ Calidad: 4 puntos fijos. Rechazo → regresa al dpto. con error.
- * ─ Destajo/rendimiento por operador: Fase 2/3 futura (actualmente sueldos fijos).
- * ─ Accesorios (carteras, cintos, mariconeras, bolsitas, horquillas): fichas técnicas + costeo.
+ * VALIDADO EN AUDIO & DIRECTRICES DE INGENIERÍA:
+ * ─ Pipeline de WIP por departamento. Detección de cuellos de botella.
+ * ─ Subensambles de Tafilete por Talla (55-60) con semáforos de stock.
+ * ─ Catálogo de Hormas y Moldes (Denver, Bullrider, Viejonón, Laredo, Frontier) con registro.
+ * ─ Matriz de materiales con cambio masivo por proveedor.
+ * ─ KPIs de rendimiento exclusivos para Ingenieros y Dirección.
+ * ─ Notificaciones visuales in-app estandarizadas con UanifyUI.toast y confirm.
  */
 
 window.initEngineerView = function() {
   renderPipeline();
   renderTafileteStock();
-  renderHormasInventory();
+  renderMoldsCatalog();
   renderMaterialMatrix();
+  renderDowntimes();
   updateOeeScores();
+  setupMoldsModal();
 
   EventBus.on('piece-registered', () => {
     renderPipeline();
@@ -30,9 +29,13 @@ window.initEngineerView = function() {
   });
   EventBus.on('status-updated', () => {
     renderPipeline();
+    renderDowntimes();
+  });
+  EventBus.on('user-switched', () => {
+    checkKpisAccess();
   });
 
-  // Simular avance de 1 hora en todos los departamentos
+  // Simular avance de 1 hora de producción
   const btnSimulate = document.getElementById('btnSimulateShift');
   if (btnSimulate) {
     btnSimulate.addEventListener('click', () => {
@@ -41,39 +44,163 @@ window.initEngineerView = function() {
         st.produced += added;
         UanifyState.producedTotal += added;
       });
-      const currentH = UanifyState.hourlyData.find(h => h.produced < h.target);
-      if (currentH) currentH.produced += Math.floor(Math.random() * 20) + 40;
       EventBus.emit('piece-registered');
-      alert('⚡ Simulación: Se procesó 1 hora de producción en todos los departamentos de Tombstone.');
-    });
-  }
-
-  const btnReset = document.getElementById('btnResetSimulation');
-  if (btnReset) {
-    btnReset.addEventListener('click', () => {
-      if (confirm('¿Reiniciar métricas del Turno Único de demostración?')) location.reload();
-    });
-  }
-
-  // Botón de cambio masivo de material
-  const btnMassChange = document.getElementById('btnMassChange');
-  if (btnMassChange) {
-    btnMassChange.addEventListener('click', () => {
-      alert(
-        '🔄 CAMBIO MASIVO DE MATERIAL\n\n' +
-        'Material anterior: Pintura Taiwan 1125 (Proveedor A)\n' +
-        'Material nuevo:    Pintura Premium X200 (Proveedor B)\n\n' +
-        'Afecta a: 47 fichas técnicas que usaban Taiwan 1125.\n' +
-        'Actualización completada en 1 clic. Sin necesidad de editar ficha por ficha.\n\n' +
-        '✅ Cambio masivo aplicado en la Matriz de Materiales.'
+      window.UanifyUI.toast(
+        'Se simularon 60 minutos de operación industrial en las 14 estaciones de San Francisco del Rincón.',
+        'success',
+        '⚡ Simulación Completada'
       );
     });
   }
+
+  // Reiniciar datos del turno
+  const btnReset = document.getElementById('btnResetSimulation');
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      window.UanifyUI.confirm(
+        '¿Reiniciar Simulación de Turno?',
+        'Esta acción restablecerá los contadores de piezas y lotes a sus valores de inicio de turno. ¿Deseas continuar?',
+        () => {
+          location.reload();
+        },
+        'Sí, Reiniciar',
+        'Cancelar'
+      );
+    });
+  }
+
+  // Cambio masivo de material
+  const btnMassChange = document.getElementById('btnMassChange');
+  if (btnMassChange) {
+    btnMassChange.addEventListener('click', () => {
+      window.UanifyUI.toast(
+        'Material actualizado en 47 fichas técnicas: "Pintura Taiwan 1125" reemplazada exitosamente por "Pintura Premium X200" sin edición manual.',
+        'success',
+        '🔄 Cambio Masivo de Material'
+      );
+    });
+  }
+
+  checkKpisAccess();
 };
 
+// ── CATÁLOGO DE HORMAS Y MOLDES ──────────────────────────────────────────────
+function renderMoldsCatalog() {
+  const container = document.getElementById('moldsCatalogTableBody');
+  if (!container) return;
+
+  if (!UanifyState.molds) return;
+
+  container.innerHTML = UanifyState.molds.map(m => {
+    const isUsed = m.status === 'En Uso';
+    const isMaintenance = m.status === 'En Mantenimiento';
+    const statusColor = isUsed ? 'var(--color-green)' : isMaintenance ? 'var(--color-red)' : 'var(--color-brand)';
+    const statusBg = isUsed ? 'var(--color-green-bg)' : isMaintenance ? 'var(--color-red-bg)' : 'var(--color-brand-light)';
+
+    return `
+      <tr>
+        <td><strong style="font-family:'JetBrains Mono'; font-size:12px; color:var(--color-brand);">${m.code}</strong></td>
+        <td><strong>${m.name}</strong></td>
+        <td>${m.material || 'Aluminio Templado'}</td>
+        <td>${m.size || '4 1/4"'}</td>
+        <td>${m.tipo || 'Roper'}</td>
+        <td>${m.machine || 'Prensa Vapor Matriz #1'}</td>
+        <td>
+          <span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">
+            ● ${m.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function setupMoldsModal() {
+  const modal = document.getElementById('modalRegisterMold');
+  const btnOpen = document.getElementById('btnOpenRegisterMoldModal');
+  const btnClose = document.getElementById('btnCloseRegisterMoldModal');
+  const form = document.getElementById('formRegisterMold');
+
+  if (btnOpen && modal) {
+    btnOpen.addEventListener('click', () => {
+      modal.classList.add('active');
+    });
+  }
+
+  if (btnClose && modal) {
+    btnClose.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newMoldName')?.value.trim();
+      const code = document.getElementById('newMoldCode')?.value.trim();
+      const brim = document.getElementById('newMoldBrim')?.value;
+      const crown = document.getElementById('newMoldCrown')?.value.trim();
+      const location = document.getElementById('newMoldLocation')?.value;
+
+      if (!name || !code) return;
+
+      const newMold = {
+        code,
+        name,
+        tipo: crown || 'Roper',
+        material: 'Aluminio Templado',
+        size: brim || '4 1/4"',
+        machine: location || 'Prensa Vapor Matriz #1',
+        status: 'Disponible'
+      };
+
+      if (!UanifyState.molds) UanifyState.molds = [];
+      UanifyState.molds.unshift(newMold);
+
+      renderMoldsCatalog();
+      form.reset();
+      if (modal) modal.classList.remove('active');
+
+      window.UanifyUI.toast(
+        `Horma "${name}" (${code}) registrada en el catálogo y disponible para asignación en PPSP.`,
+        'success',
+        '🎩 Horma Registrada'
+      );
+    });
+  }
+}
+
+// ── RESTRICCIÓN DE ACCESO A SUBTAB KPIS (SOLO INGENIEROS Y ADMIN) ────────────
+function checkKpisAccess() {
+  const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+  const kpisBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-kpis"]');
+  const kpisContent = document.getElementById('subtab-engineer-kpis');
+
+  const canAccess = (user.role === 'admin' || user.role === 'ingeniero');
+
+  if (kpisBtn) {
+    if (!canAccess) {
+      kpisBtn.style.opacity = '0.5';
+      kpisBtn.title = 'Exclusivo para Ingenieros y Administradores';
+    } else {
+      kpisBtn.style.opacity = '1';
+      kpisBtn.title = '';
+    }
+  }
+
+  if (kpisContent && !canAccess && kpisContent.classList.contains('active')) {
+    // Si el usuario no tiene acceso y está visualizando esta subtab, regresarlo a la primera
+    const firstBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-oee"]');
+    if (firstBtn) firstBtn.click();
+    window.UanifyUI.toast(
+      'El apartado de KPIs de Supervisores y Departamentos es de acceso exclusivo para Ingeniería y Dirección.',
+      'error',
+      'Acceso Restringido'
+    );
+  }
+}
+
 // ── PIPELINE DE WIP ──────────────────────────────────────────────────────────
-// Visualiza la acumulación en almacenes intermedios de cada departamento.
-// El cuello de botella real (Prensas) tiene wipWaiting >= 30.
 function renderPipeline() {
   const container = document.getElementById('pipelineViz');
   if (!container) return;
@@ -86,8 +213,8 @@ function renderPipeline() {
 
     return `
       <div class="pipe-row">
-        <span class="pipe-name" style="${isQuality ? 'color:#FACC15;' : ''}">
-          ${isQuality ? '✅ ' : ''}${st.name}
+        <span class="pipe-name" style="${isQuality ? 'color:#B45309;' : ''}">
+          ${isQuality ? '🔍 ' : ''}${st.name}
         </span>
         <div class="pipe-track">
           <div class="pipe-fill ${isBottleneck ? 'bottleneck' : ''}" style="width: ${barWidth}%;"></div>
@@ -101,22 +228,20 @@ function renderPipeline() {
 }
 
 // ── STOCK DE TAFILETES (SUBENSAMBLE) ────────────────────────────────────────
-// Audio Carlos: "¿tienes de esta talla? Sí, tengo 150." → supervisoras se comunican a gritos.
-// Uanify proporciona visibilidad en tiempo real por talla 55-60 cm.
 function renderTafileteStock() {
   const container = document.getElementById('tafileteStockTable');
   if (!container) return;
 
   container.innerHTML = UanifyState.tafileteStock.map(t => {
     const semaforo = t.available > 60 ? 'Verde' : t.available > 25 ? 'Amarillo' : 'Rojo';
-    const semaforoColor = t.available > 60 ? '#22c55e' : t.available > 25 ? '#F59E0B' : '#EF4444';
+    const semaforoColor = t.available > 60 ? 'var(--color-green)' : t.available > 25 ? 'var(--color-amber)' : 'var(--color-red)';
     const icon = t.available > 60 ? '🟢' : t.available > 25 ? '🟡' : '🔴';
     return `
       <tr>
         <td><strong>Talla ${t.size} cm</strong></td>
         <td>${t.stock} pzas</td>
-        <td><span style="color:#F59E0B;">${t.reserved} pzas</span></td>
-        <td><strong style="color:#00E676;">${t.available} pzas</strong></td>
+        <td><span style="color:var(--color-amber);">${t.reserved} pzas</span></td>
+        <td><strong style="color:var(--color-green);">${t.available} pzas</strong></td>
         <td>
           <span style="color:${semaforoColor}; font-size:12px; font-weight:600;">
             ${icon} ${semaforo}
@@ -127,33 +252,7 @@ function renderTafileteStock() {
   }).join('');
 }
 
-// ── INVENTARIO DE HORMAS / MOLDES ─────────────────────────────────────────
-// Audio: "tienen sus nombres: Chaparral, Roper, Viejón, van cambiando la forma del sombrero."
-// Plan: vincularlas a máquinas en el módulo de planeación (PPSP) del sistema.
-function renderHormasInventory() {
-  const container = document.getElementById('hormasInventoryTable');
-  if (!container) return;
-
-  if (!UanifyState.hormas) return;
-
-  container.innerHTML = UanifyState.hormas.map(h => {
-    const statusColor = h.status === 'En uso' ? '#22c55e' :
-                        h.status === 'En espera' ? '#F59E0B' :
-                        h.status === 'En mantenimiento' ? '#EF4444' : '#64748B';
-    return `
-      <tr>
-        <td><strong style="color:#00E5FF;">${h.name}</strong></td>
-        <td><span style="background:${h.color}; color:#000; padding:2px 8px; border-radius:4px; font-size:11px;">${h.color}</span></td>
-        <td>${h.prensa}</td>
-        <td><span style="color:${statusColor}; font-size:12px; font-weight:600;">● ${h.status}</span></td>
-      </tr>
-    `;
-  }).join('');
-}
-
 // ── MATRIZ DE MATERIALES ────────────────────────────────────────────────────
-// Audio Carlos: "pintura Taiwan 1125 → voy a cambiar de proveedor → cambio masivo en mi matriz
-//   de materiales → no ficha por ficha"
 function renderMaterialMatrix() {
   const container = document.getElementById('materialMatrixBody');
   if (!container) return;
@@ -173,15 +272,31 @@ function renderMaterialMatrix() {
   container.innerHTML = materials.map(m => `
     <tr>
       <td><strong>${m.name}</strong></td>
-      <td><span style="color:#94A3B8; font-size:11px;">${m.cat}</span></td>
+      <td><span style="color:var(--text-muted); font-size:11px;">${m.cat}</span></td>
       <td style="text-align:center;">${m.usedIn}</td>
       <td>${m.unit}</td>
-      <td style="color:#64748B; font-size:11px;">${m.notes}</td>
+      <td style="color:var(--text-secondary); font-size:11px;">${m.notes}</td>
     </tr>
   `).join('');
 }
 
-// ── OEE ─────────────────────────────────────────────────────────────────────
+// ── BITÁCORA DE PAROS ────────────────────────────────────────────────────────
+function renderDowntimes() {
+  const container = document.getElementById('downtimeTbody');
+  if (!container || !UanifyState.downtimes) return;
+
+  container.innerHTML = UanifyState.downtimes.map(d => `
+    <tr>
+      <td><span style="font-family:'JetBrains Mono'; font-weight:700;">${d.time}</span></td>
+      <td><strong>${d.station}</strong></td>
+      <td>${d.cause}</td>
+      <td><span style="color:var(--color-red); font-weight:600;">${d.duration}</span></td>
+      <td><span class="badge-subtle">${d.impact}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ── OEE GLOBAL ──────────────────────────────────────────────────────────────
 function updateOeeScores() {
   const avail = 94.2;
   const perf  = Math.min(99.0, Math.round((UanifyState.producedTotal / 650) * 91.8 * 10) / 10);

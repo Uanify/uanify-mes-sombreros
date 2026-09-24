@@ -99,7 +99,7 @@ function renderHourlyProgress() {
 }
 
 function renderDowntimes() {
-  const container = document.getElementById('downtimeList');
+  const container = document.getElementById('downtimeListAndon') || document.getElementById('downtimeList');
   if (!container) return;
 
   if (!UanifyState.downtimes.length) {

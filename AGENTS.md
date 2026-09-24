@@ -89,3 +89,43 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 - **Validación previa obligatoria:** Verificar que no existan errores de sintaxis, imports rotos ni inconsistencias de DOM antes de desplegar.
 - **Despliegue a Producción:** Tras confirmar los cambios, realizar commit y push a la rama `main` en `https://github.com/Uanify/uanify-mes-sombreros.git` y verificar con el subagente de navegación en `https://uanify.github.io/uanify-mes-sombreros/`.
+
+---
+
+## REGLA 0.7: Prohibición Estricta de Diálogos Nativos del Navegador (`alert`, `confirm`, `prompt`)
+
+**Queda estrictamente prohibido el uso de ventanas modales nativas del navegador (`alert()`, `confirm()`, `prompt()`).**
+1. **Componentes In-App Estandarizados:** Todas las notificaciones de éxito, error, advertencia o confirmación deben renderizarse con la capa de interfaz estandarizada `UanifyUI`:
+   - Notificaciones y toasts: `UanifyUI.toast(mensaje, tipo, titulo)` con tipo `'success'`, `'warning'`, `'error'` o `'info'`.
+   - Modales de confirmación interactivos: `UanifyUI.confirm(titulo, mensaje, onConfirm, okText, cancelText)`.
+2. **Cero Bloqueo de Hilo:** Las alertas in-app no congelan la ejecución del hilo principal del navegador ni alteran la experiencia visual de piso.
+
+---
+
+## REGLA 0.8: Navegación Interna por Sub-Pestañas (Sub-tabs)
+
+**La navegación entre secciones dentro de un mismo módulo debe resolverse mediante sub-pestañas (.sub-nav-tabs).**
+- Queda prohibido el scroll infinito vertical o apilar múltiples tablas complejas en una sola vista.
+- Cada vista cuenta con botones `.sub-tab-btn` que activan su respectivo contenedor `.sub-tab-content`, manteniendo la interfaz limpia, rápida y organizada para operadores y directivos.
+
+---
+
+## REGLA 0.9: Flujo Operativo Departamental (Máquinas → Almacén Intermedio → Recolección)
+
+**El sistema refleja el flujo físico real de la nave industrial de Tombstone Hats:**
+1. **Padrón de Operadores (Sin Login):** Los operadores de planta son registrados con su número de nómina, departamento y máquina asignada. **No son usuarios del sistema** (no tienen credenciales ni acceso a la app); son gestionados por Supervisores, Ingenieros y Admins.
+2. **Operación en Máquina:** El operador asignado procesa el lote o sublote en su máquina (ej. Prensas Hidráulicas, Cabina de Pintura, Ribeteado).
+3. **Depósito en Almacén Intermedio:** Al concluir el trabajo, el lote se registra y se deposita físicamente en el almacén intermedio de salida de ese departamento.
+4. **Recolección y Traspaso:** El auxiliar o recolector del siguiente departamento acude físicamente al almacén de salida, recoge las piezas y las traslada al almacén de entrada de su departamento para reiniciar el ciclo en sus propias máquinas.
+
+---
+
+## REGLA 0.10: Matriz de Asignaciones, Hormas y Métricas Clave
+
+1. **Meta Semanal Rectora:** La meta rectora de la planta se define como **Meta Semanal (4,250 piezas/semana)** correspondiente al Turno Único de Lunes a Viernes (~850 pzas/día).
+2. **Asignación Departamental para Supervisores:** Cada usuario con rol Supervisor únicamente tiene visibilidad y capacidad de acción sobre los departamentos que tiene asignados (un supervisor puede tener múltiples departamentos a cargo, ej. D-05 a D-08).
+3. **Privilegios de Ingeniería:** Los usuarios Ingenieros pueden ver y auditar todos los departamentos, y tienen la facultad de dar de alta nuevos Supervisores de Planta, pero **NO pueden crear otros Ingenieros ni Administradores** (facultad exclusiva de Dirección/Admin).
+4. **Acceso Exclusivo a KPIs de Rendimiento:** La sección de métricas y KPIs de rendimiento de Supervisores y Departamentos es de acceso exclusivo para Ingeniería y Dirección.
+5. **Catálogo de Hormas y Moldes:** Registro centralizado de hormas de aluminio fundido (Denver, Bullrider, Viejonón, Laredo, Frontier, Chaparral) con especificación de copa, falda, máquina asignada y estado.
+6. **Lector QR de Pantalla Completa con Cámara Web:** La terminal de piso despliega directamente el flujo de video en vivo de la cámara del dispositivo mediante la API estándar `navigator.mediaDevices.getUserMedia()`, garantizando compatibilidad universal en iPads, tablets Android, laptops y teléfonos.
+

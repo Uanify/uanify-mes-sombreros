@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.7.0">
-  <link rel="stylesheet" href="css/components.css?v=2.7.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.8.0">
+  <link rel="stylesheet" href="css/components.css?v=2.8.0">
 </head>
 <body class="industrial-theme">
   <div class="app-layout">
@@ -20,19 +20,12 @@
       <div class="sidebar-header">
         <div class="brand-container">
           <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
-          <span class="system-version-pill" title="Versión Oficial del Sistema MES">v2.7.0</span>
+          <span class="system-version-pill" title="Versión Oficial del Sistema MES">v2.8.0</span>
         </div>
         <div class="sidebar-plant-meta">
           <span class="plant-tag">Planta Matriz · San Francisco del Rincón</span>
-          <div class="sidebar-status-pills">
-            <span class="live-pill active">
-              <span class="pulse-dot"></span> EN VIVO
-            </span>
-            <span class="sync-pill">
-              🔗 COMPAC SYNC OK
-            </span>
-          </div>
         </div>
+      </div>
 
         <!-- Selector de Perfil / Rol Activo (Simulador de Sesión) -->
         <div class="sidebar-user-box">
@@ -41,9 +34,10 @@
             <span id="sidebarUserRoleBadge" class="role-badge role-badge-admin">👑 Admin</span>
           </div>
           <select id="sidebarUserSelect" class="custom-select" style="margin-top:6px; font-size:11.5px; padding:6px 8px;">
-            <option value="admin-1">Edmundo González (Administrador)</option>
-            <option value="ing-1">Ing. Carlos Ortiz (Ingeniero)</option>
-            <option value="sup-1">Juan Manuel Pérez (Supervisor)</option>
+            <option value="admin-1">Edmundo González (Administrador · Todos los Depts)</option>
+            <option value="ing-1">Ing. Carlos Ortiz (Ingeniero · Todos los Depts)</option>
+            <option value="sup-1">Juan Manuel Pérez (Supervisor · Depts D-05 a D-08)</option>
+            <option value="sup-2">Roberto Méndez (Supervisor · Depts D-01 a D-04)</option>
           </select>
         </div>
       </div>
@@ -97,14 +91,10 @@
       <div class="sidebar-footer">
         <div class="sidebar-shift-info">
           <div class="shift-text">
-            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.7.0</span></span>
+            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.0</span></span>
             <span class="shift-title">Turno Único (07:00 - 15:30)</span>
           </div>
           <span class="shift-clock" id="liveClock">00:00:00</span>
-        </div>
-        <div class="sidebar-device-pill">
-          <span>📱</span>
-          <span>Modo Supervisor Tablet / iPad</span>
         </div>
       </div>
     </aside>
@@ -123,8 +113,8 @@
           </div>
           <div class="kpi-banner">
             <div class="banner-stat">
-              <span class="stat-caption">Meta Turno Único</span>
-              <span class="stat-val" id="andonGoalTotal">850 pzas</span>
+              <span class="stat-caption">Meta Semanal</span>
+              <span class="stat-val" id="andonGoalTotal">4,250 pzas</span>
             </div>
             <div class="banner-stat">
               <span class="stat-caption">Texanas & Sombreros</span>
@@ -141,19 +131,43 @@
           </div>
         </div>
 
-        <!-- Grid de Estaciones de la Planta Tombstone (14 Departamentos Reales) -->
-        <div class="stations-grid" id="stationsGrid">
-          <!-- Generado dinámicamente en JS -->
+        <!-- Sub-navegación por Pestañas del Tablero Andon -->
+        <div class="sub-nav-tabs" data-module="andon">
+          <button class="sub-tab-btn active" data-subtab="subtab-andon-stations">🏭 14 Departamentos & Semáforos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">⏱️ Progreso Hora por Hora</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-stops">🛑 Bitácora de Paros & Eventos</button>
         </div>
 
-        <!-- Hora por Hora Breakdown -->
-        <div class="hourly-strip card-glass">
-          <div class="strip-header">
-            <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
-            <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
+        <!-- Pestaña 1: Grid de Estaciones -->
+        <div class="sub-tab-content" id="subtab-andon-stations">
+          <div class="stations-grid" id="stationsGrid">
+            <!-- Generado dinámicamente en JS -->
           </div>
-          <div class="hourly-bars" id="hourlyBars">
-            <!-- Horas generadas por JS -->
+        </div>
+
+        <!-- Pestaña 2: Avance Hora por Hora -->
+        <div class="sub-tab-content d-none" id="subtab-andon-hourly">
+          <div class="hourly-strip card-glass">
+            <div class="strip-header">
+              <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
+              <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
+            </div>
+            <div class="hourly-bars" id="hourlyBars">
+              <!-- Horas generadas por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Bitácora de Paros -->
+        <div class="sub-tab-content d-none" id="subtab-andon-stops">
+          <div class="card-glass" style="padding: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <h3 style="font-size:15px; font-weight:700;">Bitácora de Paros e Incidencias en Turno Único</h3>
+              <span class="badge-subtle">Monitoreo continuo en nave central</span>
+            </div>
+            <div id="downtimeListAndon">
+              <!-- Llenado dinámico -->
+            </div>
           </div>
         </div>
       </section>
@@ -165,145 +179,214 @@
       <section class="view-panel" id="view-terminal">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Terminal de Supervisor · Escaneo de Tarjetas Viajeras</h1>
-            <p class="view-subtitle">Estación móvil para iPad en almacenes intermedios y rampa de división (Lotes de 60 / Sublotes de 15 pzas)</p>
+            <h1 class="view-title">Terminal de Planta · Lotes, Máquinas & Almacenes</h1>
+            <p class="view-subtitle">Control de flujo departamental: máquinas, operadores, almacenes intermedios y recolección para siguiente depto</p>
           </div>
           <div class="ipad-banner">
             <div class="ipad-banner-left">
-              <span class="ipad-badge">iPAD STATION</span>
-              <span class="ipad-banner-title">Auxiliar / Supervisor en Almacén Alineado</span>
+              <span class="ipad-badge">PISO INDUSTRIAL</span>
+              <span class="ipad-banner-title" id="terminalSupervisorBanner">Supervisor Activo: Juan Manuel Pérez</span>
             </div>
             <span class="badge-subtle" style="font-weight:700;">Lote Activo: 1094</span>
           </div>
         </div>
 
-        <div class="terminal-layout">
-          <!-- Panel Izquierdo: Gestión de Lote y Tarjetas Viajeras -->
-          <div class="terminal-sidebar card-glass">
-            <div class="model-badge-box">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="model-badge-tag">LOTE MADRE (60 PIEZAS)</span>
-                <span style="font-size:11px; color:var(--color-amber); font-weight:700;">Lote 1094 · Horma: Roper</span>
-              </div>
-              <label class="field-label" style="margin-top:8px;">Modelo en Fabricación:</label>
-              <select id="tombstoneModelSelect" class="custom-select">
-                <option value="0">1000X Master Telar Denver</option>
-                <option value="1">1000X Master Telar El Viejonón</option>
-                <option value="2">1000X Master Telar Laredo F10</option>
-                <option value="3">1000X Master Telar Frontier F9</option>
-                <option value="4">1000X Master Telar Chaparral</option>
-              </select>
-              <p class="model-sku" id="terminalModelSku" style="margin-top:6px;">SKU: TB-1000X-DNV-58 | Talla: 58 (7 1/4) | Horma: Denver | Telar Fino 1000X</p>
-            </div>
+        <!-- Sub-navegación por Pestañas del Módulo Terminal -->
+        <div class="sub-nav-tabs" data-module="terminal">
+          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Cámara Web en Vivo</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Almacén de Salida</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">🚚 Recolección & Traspaso entre Depts</button>
+        </div>
 
-            <div class="station-selector">
-              <label class="field-label">Departamento / Almacén Intermedio Actual:</label>
-              <select id="terminalStationSelect" class="custom-select">
-                <option value="corte">D-01 · Corte de Cuadros</option>
-                <option value="alambrado">D-02 · Alambrado de Ala</option>
-                <option value="dope">D-03 · Englopado / Baño de Dope (Camas)</option>
-                <option value="refuerzos">D-04 · Refuerzos (Pintola / Brocha)</option>
-                <option value="calidad1">C-01 · Calidad 1 (Post-Dope / Refuerzos)</option>
-                <option value="prensas" selected>D-05 · Prensas Hormado (Copa y Falda)</option>
-                <option value="recortes">D-06 · Recorte y Refaldeado</option>
-                <option value="pintura">D-07 · Pintura y Secado</option>
-                <option value="calidad2">C-02 · Calidad 2 (Post-Pintura)</option>
-                <option value="brillo">D-08 · Brillo / Acabado</option>
-                <option value="temperado">D-09 · Temperado / Refaldear</option>
-                <option value="adorno">D-10 · Adorno 1 (Tafilete + Toquilla)</option>
-                <option value="calidad3">C-03 · Calidad 3 (Producto Terminado)</option>
-                <option value="embarque">D-11 · Embarque y Vale COMPAC</option>
-              </select>
-            </div>
+        <!-- Pestaña 1: Lector QR y Cámara Web Completa -->
+        <div class="sub-tab-content" id="subtab-terminal-scanner">
+          <div class="terminal-layout">
+            <div class="terminal-sidebar card-glass">
+              <div class="model-badge-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="model-badge-tag">LOTE MADRE (60 PIEZAS)</span>
+                  <span style="font-size:11px; color:var(--color-amber); font-weight:700;">Lote 1094 · Horma: Roper</span>
+                </div>
+                <label class="field-label" style="margin-top:8px;">Modelo en Fabricación:</label>
+                <select id="tombstoneModelSelect" class="custom-select">
+                  <option value="0">1000X Master Telar Denver</option>
+                  <option value="1">1000X Master Telar El Viejonón</option>
+                  <option value="2">1000X Master Telar Laredo F10</option>
+                  <option value="3">1000X Master Telar Frontier F9</option>
+                  <option value="4">1000X Master Telar Chaparral</option>
+                </select>
+                <p class="model-sku" id="terminalModelSku" style="margin-top:6px;">SKU: TB-1000X-DNV-58 | Talla: 58 (7 1/4) | Horma: Denver | Telar Fino 1000X</p>
+              </div>
 
-            <!-- Sublotes Fraccionados en Rampa -->
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                <label class="field-label" style="margin-bottom:0;">Sublotes en Rampa (15 pzas c/u):</label>
-                <span class="badge-subtle" id="sublotsCountBadge">4 activos</span>
-              </div>
-              <div id="sublotsContainer" style="max-height:200px; overflow-y:auto;">
-                <!-- Inyectado por JS -->
-              </div>
-            </div>
-
-            <div class="station-live-indicators">
-              <div class="indicator-row">
-                <span>Operador Asignado:</span>
-                <strong id="terminalOperator">Juan Manuel Pérez (P-04)</strong>
-              </div>
-              <div class="indicator-row">
-                <span>Procesadas en Estación:</span>
-                <strong style="color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
-              </div>
-              <div class="indicator-row">
-                <span>Mermas / Scrap:</span>
-                <strong style="color:var(--color-red);" id="terminalScrap">4 pzas</strong>
-              </div>
-              <div class="indicator-row">
-                <span>Segundas (Venta Viernes):</span>
-                <strong style="color:var(--color-amber);" id="terminalSecondGrade">26 pzas</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Panel Derecho: Estación de Escaneo iPad (Sin pedal) -->
-          <div class="terminal-main card-glass">
-            <!-- Viewfinder de Escáner QR de Tarjeta Viajera -->
-            <div class="qr-scanner-station">
-              <div class="scanner-viewfinder">
-                <span class="reticle-icon">📷</span>
-                <div class="scan-laser-line"></div>
-                <span style="font-size:10px; font-weight:800; color:var(--color-brand); letter-spacing:1px;">VISOR QR ACTIVO</span>
-              </div>
+              <!-- Sublotes Fraccionados en Rampa -->
               <div>
-                <p class="scanner-instruction">Apunta el iPad o Pistola QR al código de la Tarjeta Viajera</p>
-                <p class="scanner-subtext">El sistema registra la entrada o salida en 0.2 segundos y actualiza el Tablero Andon</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label class="field-label" style="margin-bottom:0;">Sublotes en Rampa (15 pzas c/u):</label>
+                  <span class="badge-subtle" id="sublotsCountBadge">4 activos</span>
+                </div>
+                <div id="sublotsContainer" style="max-height:220px; overflow-y:auto;">
+                  <!-- Inyectado por JS -->
+                </div>
+              </div>
+
+              <div class="station-live-indicators">
+                <div class="indicator-row">
+                  <span>Procesadas Hoy:</span>
+                  <strong style="color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
+                </div>
+                <div class="indicator-row">
+                  <span>Mermas / Scrap:</span>
+                  <strong style="color:var(--color-red);" id="terminalScrap">4 pzas</strong>
+                </div>
+                <div class="indicator-row">
+                  <span>Segundas (Venta Viernes):</span>
+                  <strong style="color:var(--color-amber);" id="terminalSecondGrade">26 pzas</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="terminal-main card-glass">
+              <!-- Cámara Web / Visor QR Completo -->
+              <div class="camera-scanner-wrapper" id="cameraScannerWrapper">
+                <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted></video>
+                <div class="camera-placeholder-msg" id="cameraPlaceholderMsg">
+                  <span style="font-size:42px;">📷</span>
+                  <strong style="color:#FFFFFF; font-size:15px;">Cámara de Dispositivo Apagada</strong>
+                  <span style="font-size:12px;">Haz clic en "Activar Cámara Web" para escanear directamente con la cámara de tu laptop, iPad o tablet.</span>
+                </div>
+                <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none;">
+                  <div class="camera-target-box">
+                    <div class="camera-scan-laser"></div>
+                  </div>
+                  <span style="color:#FFFFFF; font-size:11px; margin-top:10px; font-weight:700; background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:4px;">APUNTA AL CÓDIGO QR DE LA TARJETA VIAJERA</span>
+                </div>
+              </div>
+
+              <div class="camera-controls-bar">
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn-primary" id="btnToggleCamera">
+                    ▶️ Activar Cámara Web
+                  </button>
+                  <button type="button" class="btn-secondary" id="btnFlipCamera" style="display:none;">
+                    🔄 Cambiar Cámara
+                  </button>
+                </div>
+                <span class="badge-subtle" id="cameraStatusBadge">Cámara inactiva</span>
               </div>
 
               <!-- Entrada manual de código para pruebas o fallas de cámara -->
-              <div class="manual-qr-entry">
+              <div class="manual-qr-entry" style="margin-top:16px;">
                 <input type="text" id="manualQrInput" class="qr-text-input" placeholder="Escanea o escribe código ej. 1094 o 1094-01" value="1094-01">
                 <button class="btn-primary" id="btnScanQr" style="padding:10px 18px;">
-                  📸 Escanear
+                  ⚡ Procesar Tarjeta
                 </button>
               </div>
 
-              <!-- Botones de Acción Táctil para iPad -->
-              <div class="scanner-actions-grid">
-                <button class="action-card-btn primary-action" id="btnRegisterEntry">
-                  <span class="action-icon">📥</span>
-                  <span class="action-label">Registrar Entrada</span>
-                  <span class="action-desc">Ingreso a Almacén Intermedio</span>
+              <!-- Acciones de Rampa y Paros -->
+              <div style="display:flex; gap:10px; margin-top:16px;">
+                <button class="btn-secondary" id="btnSubdivideLot" style="flex:1;">
+                  ✂️ Fraccionar Lote Madre (60 a 15 pzas)
                 </button>
-                <button class="action-card-btn primary-action" id="btnRegisterExit">
-                  <span class="action-icon">📤</span>
-                  <span class="action-label">Registrar Salida</span>
-                  <span class="action-desc">Pase al siguiente departamento</span>
+                <button class="btn-secondary" id="btnReportScrap" style="color:var(--color-amber);">
+                  ⚠️ Reportar Segunda / Merma
                 </button>
-                <button class="action-card-btn secondary-action" id="btnSubdivideLot">
-                  <span class="action-icon">✂️</span>
-                  <span class="action-label">Fraccionar en Rampa</span>
-                  <span class="action-desc">Dividir Lote Madre de 60 a 15 pzas</span>
+                <button class="btn-secondary" id="btnReportStop" style="color:var(--color-red);">
+                  🛑 Reportar Paro de Línea
                 </button>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Botones de Acción Secundaria: Calidad y Paros -->
-            <div class="secondary-actions">
-              <button class="action-btn btn-scrap" id="btnReportScrap">
-                <span class="action-icon" style="font-size:24px;">⚠️</span>
-                <span>
-                  <strong>Reportar Defecto / Segunda</strong>
-                  <small>Separar al almacén de saldos (Venta de Viernes) o merma</small>
-                </span>
+        <!-- Pestaña 2: Operación en Máquina & Almacén de Salida -->
+        <div class="sub-tab-content d-none" id="subtab-terminal-workflow">
+          <div class="card-glass" style="padding:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
+              <div>
+                <h3 style="font-size:16px; font-weight:700;">⚙️ Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
+                <p class="section-desc">El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.</p>
+              </div>
+              <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: D-05 a D-08</span>
+            </div>
+
+            <div class="config-grid" style="margin-bottom:20px;">
+              <div class="form-group">
+                <label class="field-label">1. Departamento Asignado al Supervisor:</label>
+                <select id="workflowDeptSelect" class="custom-select">
+                  <!-- Llenado dinámico según usuario activo -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="field-label">2. Máquina / Puesto Específico:</label>
+                <select id="workflowMachineSelect" class="custom-select">
+                  <!-- Llenado según departamento seleccionado -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="field-label">3. Operador a Cargo de la Máquina:</label>
+                <select id="workflowOperatorSelect" class="custom-select">
+                  <!-- Llenado según operadores registrados -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="field-label">4. Sublote Activo en Proceso (15 pzas):</label>
+                <input type="text" id="workflowSublotInput" class="form-input" value="1094-01" readonly style="background:#F1F5F9; font-weight:700; font-family:'JetBrains Mono';">
+              </div>
+            </div>
+
+            <div style="background:var(--color-brand-light); border:1px solid var(--color-brand-border); border-radius:10px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div>
+                <div style="font-weight:700; color:var(--color-brand); font-size:14px;">Estado del Lote en la Máquina:</div>
+                <div style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">15 piezas conformadas y listas para avanzar al almacén de salida.</div>
+              </div>
+              <button class="btn-primary" id="btnCompleteMachineRun" style="padding:12px 24px; font-size:13.5px;">
+                📥 Finalizar Piezas y Depositar en Almacén Intermedio de Salida
               </button>
-              <button class="action-btn btn-stop" id="btnReportStop">
-                <span class="action-icon" style="font-size:24px;">🛑</span>
-                <span>
-                  <strong>Reportar Paro de Almacén / Prensa</strong>
-                  <small>Cambio de horma Roper/Viejón, caldera, falta de tafiletes</small>
-                </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Recolección y Traspaso entre Departamentos -->
+        <div class="sub-tab-content d-none" id="subtab-terminal-transfer">
+          <div class="card-glass" style="padding:24px;">
+            <div style="margin-bottom:18px;">
+              <h3 style="font-size:16px; font-weight:700;">🚚 Recolección y Traspaso al Siguiente Departamento</h3>
+              <p class="section-desc">La persona encargada o recolectora del siguiente departamento acude al almacén de salida de la estación anterior, recoge los sombreros y se los lleva a su departamento para iniciar su fase.</p>
+            </div>
+
+            <div class="config-grid" style="margin-bottom:20px;">
+              <div class="form-group">
+                <label class="field-label">Almacén Intermedio de Origen (Sombreros Listos):</label>
+                <select id="transferOriginDept" class="custom-select">
+                  <!-- Departamentos origen -->
+                </select>
+                <small style="color:var(--color-brand); font-weight:600; font-size:11px;" id="transferPiecesWaiting">30 piezas esperando recolección</small>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Departamento Destino Receptor:</label>
+                <select id="transferDestDept" class="custom-select">
+                  <!-- Departamentos destino -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Persona Encargada de la Recolección / Traslado:</label>
+                <input type="text" id="transferCollectorName" class="form-input" value="Recolector de Recorte & Refaldeado" placeholder="Nombre de quien recoge">
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Cantidad de Piezas a Recoger:</label>
+                <input type="number" id="transferQtyInput" class="form-input" value="15" step="15" min="15">
+              </div>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="font-size:12.5px; color:var(--text-secondary);">
+                Al confirmar, las piezas salen del almacén de origen y se ingresan al almacén de entrada del departamento receptor para distribuirse a sus operadores.
+              </div>
+              <button class="btn-primary" id="btnExecuteTransfer" style="padding:12px 24px;">
+                🚚 Confirmar Recolección y Traspaso de Sombreros
               </button>
             </div>
           </div>
@@ -325,48 +408,128 @@
           </div>
         </div>
 
-        <!-- OEE Breakdown -->
-        <div class="oee-summary-grid">
-          <div class="oee-card card-glass">
-            <div class="oee-header">
-              <span>DISPONIBILIDAD (A)</span>
-              <span class="oee-badge" id="oeeAvailBadge">94.2%</span>
+        <!-- Sub-navegación por Pestañas del Módulo Ingeniería -->
+        <div class="sub-nav-tabs" data-module="engineer">
+          <button class="sub-tab-btn active" data-subtab="subtab-engineer-oee">📊 OEE & Eficiencia Global</button>
+          <button class="sub-tab-btn" data-subtab="subtab-engineer-molds">🎩 Catálogo de Hormas & Moldes</button>
+          <button class="sub-tab-btn" data-subtab="subtab-engineer-materials">🧵 Stock de Tafiletes & Materiales</button>
+          <button class="sub-tab-btn" data-subtab="subtab-engineer-kpis">🏆 KPIs de Rendimiento (Supervisores y Depts)</button>
+        </div>
+
+        <!-- Pestaña 1: OEE & Eficiencia Global -->
+        <div class="sub-tab-content" id="subtab-engineer-oee">
+          <!-- OEE Breakdown -->
+          <div class="oee-summary-grid">
+            <div class="oee-card card-glass">
+              <div class="oee-header">
+                <span>DISPONIBILIDAD (A)</span>
+                <span class="oee-badge" id="oeeAvailBadge">94.2%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill fill-brand" style="width: 94.2%;"></div></div>
+              <p class="oee-detail">Tiempo productivo real vs. programado (Cambio de hormas SMED: 14 min)</p>
             </div>
-            <div class="progress-track"><div class="progress-fill fill-brand" style="width: 94.2%;"></div></div>
-            <p class="oee-detail">Tiempo productivo real vs. programado (Cambio de hormas SMED: 14 min)</p>
+
+            <div class="oee-card card-glass">
+              <div class="oee-header">
+                <span>RENDIMIENTO / EFICIENCIA (P)</span>
+                <span class="oee-badge" id="oeePerfBadge">91.8%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill fill-green" style="width: 91.8%;"></div></div>
+              <p class="oee-detail">Velocidad real de ciclo vs. tiempo estándar de ingeniería (Takt: 42s)</p>
+            </div>
+
+            <div class="oee-card card-glass">
+              <div class="oee-header">
+                <span>CALIDAD (Q)</span>
+                <span class="oee-badge" id="oeeQualBadge">97.8%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill fill-amber" style="width: 97.8%;"></div></div>
+              <p class="oee-detail">Primeras calidades sin retrabajo (14 mermas de 626 piezas procesadas)</p>
+            </div>
+
+            <div class="oee-card card-glass oee-master">
+              <div class="oee-header">
+                <span class="master-title">OEE GLOBAL TOMBSTONE</span>
+                <span class="oee-score" id="oeeGlobalScore">84.5%</span>
+              </div>
+              <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
+            </div>
           </div>
 
-          <div class="oee-card card-glass">
-            <div class="oee-header">
-              <span>RENDIMIENTO / EFICIENCIA (P)</span>
-              <span class="oee-badge" id="oeePerfBadge">91.8%</span>
+          <!-- Detección de Cuellos de Botella -->
+          <div class="card-glass bottleneck-card" style="margin-top:20px; padding:20px;">
+            <div class="card-head">
+              <h3>Detección de Cuellos de Botella (WIP en Espera)</h3>
+              <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
             </div>
-            <div class="progress-track"><div class="progress-fill fill-green" style="width: 91.8%;"></div></div>
-            <p class="oee-detail">Velocidad real de ciclo vs. tiempo estándar de ingeniería (Takt: 42s)</p>
+            <p class="section-desc">Acumulación de piezas esperando entre cada almacén para balancear personal.</p>
+            <div class="pipeline-viz" id="pipelineViz">
+              <!-- Renderizado dinámico -->
+            </div>
           </div>
 
-          <div class="oee-card card-glass">
-            <div class="oee-header">
-              <span>CALIDAD (Q)</span>
-              <span class="oee-badge" id="oeeQualBadge">97.8%</span>
+          <!-- Bitácora de Paros Recientes -->
+          <div class="card-glass downtime-card" style="margin-top:20px; padding:20px;">
+            <div class="card-head">
+              <h3>Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
+              <span class="badge-subtle">Cálculo de minutos perdidos en planta</span>
             </div>
-            <div class="progress-track"><div class="progress-fill fill-amber" style="width: 97.8%;"></div></div>
-            <p class="oee-detail">Primeras calidades sin retrabajo (14 mermas de 626 piezas procesadas)</p>
-          </div>
-
-          <div class="oee-card card-glass oee-master">
-            <div class="oee-header">
-              <span class="master-title">OEE GLOBAL TOMBSTONE</span>
-              <span class="oee-score" id="oeeGlobalScore">84.5%</span>
+            <div class="downtime-table-wrapper">
+              <table class="data-table" id="downtimeTable">
+                <thead>
+                  <tr>
+                    <th>Hora</th>
+                    <th>Estación</th>
+                    <th>Causa de Paro</th>
+                    <th>Duración</th>
+                    <th>Impacto</th>
+                  </tr>
+                </thead>
+                <tbody id="downtimeTbody">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
             </div>
-            <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
           </div>
         </div>
 
-        <!-- Grid con Stock de Tafiletes y Cuellos de Botella -->
-        <div class="engineer-grid">
+        <!-- Pestaña 2: Catálogo de Hormas & Moldes -->
+        <div class="sub-tab-content d-none" id="subtab-engineer-molds">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3>🎩 Catálogo de Hormas y Moldes de Sombreros (Tombstone)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Registro de hormas de aluminio termo-fundido para prensas de vapor y troquelado de falda.</p>
+              </div>
+              <button class="btn-primary" id="btnOpenRegisterMoldModal">
+                + Registrar Nueva Horma
+              </button>
+            </div>
+            <div class="downtime-table-wrapper" style="margin-top:16px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre de Horma / Modelo</th>
+                    <th>Material</th>
+                    <th>Ancho Falda</th>
+                    <th>Tipo Copa</th>
+                    <th>Prensa Asignada</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="moldsCatalogTableBody">
+                  <!-- Inyectado dinámicamente por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Stock de Tafiletes & Materiales -->
+        <div class="sub-tab-content d-none" id="subtab-engineer-materials">
           <!-- Stock de Subensambles (Tafiletes) -->
-          <div class="card-glass" style="padding:20px;">
+          <div class="card-glass" style="padding:20px; margin-bottom:20px;">
             <div class="card-head">
               <h3>Disponibilidad de Subensambles: Tafiletes por Talla</h3>
               <span class="badge-subtle">Listo para pegado en Adorno 1</span>
@@ -390,80 +553,79 @@
             </div>
           </div>
 
-          <!-- Detección de Cuellos de Botella -->
-          <div class="card-glass bottleneck-card" style="padding:20px;">
+          <!-- Matriz de Materiales con Cambio Masivo -->
+          <div class="card-glass" style="padding:20px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:10px;">
+              <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+              <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
+                🔄 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
+              </button>
+            </div>
+            <p class="section-desc">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic.</p>
+            <div class="downtime-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
+                </thead>
+                <tbody id="materialMatrixBody">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: KPIs de Rendimiento (Supervisores y Depts) - EXCLUSIVO INGENIEROS Y ADMIN -->
+        <div class="sub-tab-content d-none" id="subtab-engineer-kpis">
+          <div class="card-glass" style="padding:22px;">
             <div class="card-head">
-              <h3>Detección de Cuellos de Botella (WIP en Espera)</h3>
-              <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
+              <div>
+                <h3>🏆 KPIs de Rendimiento por Departamento & Supervisores</h3>
+                <span class="badge-subtle" style="color:var(--color-brand); font-weight:700;">ACCESO EXCLUSIVO: INGENIERÍA Y DIRECCIÓN</span>
+              </div>
             </div>
-            <p class="section-desc">Acumulación de piezas esperando entre cada almacén para balancear personal.</p>
-            <div class="pipeline-viz" id="pipelineViz">
-              <!-- Renderizado dinámico -->
+            <p class="section-desc">Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.</p>
+            
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Supervisor a Cargo</th>
+                    <th>Departamentos Asignados</th>
+                    <th>Takt Promedio</th>
+                    <th>Cumplimiento Meta</th>
+                    <th>Merma Scrap</th>
+                    <th>Calificación de Turno</th>
+                  </tr>
+                </thead>
+                <tbody id="supervisorKpisTableBody">
+                  <tr>
+                    <td><strong>Juan Manuel Pérez</strong></td>
+                    <td><span class="badge-subtle">D-05 Prensas a D-08 Brillo</span></td>
+                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">41.2s</span></td>
+                    <td><strong style="color:var(--color-green);">94.8%</strong></td>
+                    <td>1.8%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Roberto Méndez</strong></td>
+                    <td><span class="badge-subtle">D-01 Corte a D-04 Refuerzos</span></td>
+                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">36.4s</span></td>
+                    <td><strong style="color:var(--color-brand);">91.2%</strong></td>
+                    <td>2.1%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Sobresaliente (A)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Auxiliar de Rampa</strong></td>
+                    <td><span class="badge-subtle">D-05 Rampa Fraccionamiento</span></td>
+                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">14.8s</span></td>
+                    <td><strong style="color:var(--color-green);">98.0%</strong></td>
+                    <td>0.2%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </div>
-        </div>
-
-        <!-- Inventario de Hormas / Moldes -->
-        <div class="card-glass" style="margin-top:20px; padding:20px;">
-          <div class="card-head">
-            <h3>📋 Inventario de Hormas / Moldes (Roper, Chaparral, Viejón, Laredo, Frontier)</h3>
-            <span class="badge-subtle">Vinculación a Prensas para Planeación (PPSP)</span>
-          </div>
-          <p class="section-desc">Identificadas por color y forma. Se asignan a prensas de vapor e hidráulicas según el modelo en fabricación.</p>
-          <div class="downtime-table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr><th>Nombre de Horma</th><th>Color ID</th><th>Prensa Asignada</th><th>Estado</th></tr>
-              </thead>
-              <tbody id="hormasInventoryTable">
-                <!-- Inyectado por JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Matriz de Materiales con Cambio Masivo -->
-        <div class="card-glass" style="margin-top:20px; padding:20px;">
-          <div class="card-head" style="flex-wrap:wrap; gap:10px;">
-            <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
-            <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
-              🔄 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
-            </button>
-          </div>
-          <p class="section-desc">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic. Sin editar ficha por ficha.</p>
-          <div class="downtime-table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
-              </thead>
-              <tbody id="materialMatrixBody">
-                <!-- Inyectado por JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Bitácora de Paros Recientes -->
-        <div class="card-glass downtime-card" style="margin-top:20px; padding:20px;">
-          <div class="card-head">
-            <h3>Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
-            <span class="badge-subtle">Cálculo de minutos perdidos en planta</span>
-          </div>
-          <div class="downtime-table-wrapper">
-            <table class="data-table" id="downtimeTable">
-              <thead>
-                <tr>
-                  <th>Hora</th>
-                  <th>Estación</th>
-                  <th>Causa de Paro</th>
-                  <th>Duración</th>
-                  <th>Impacto</th>
-                </tr>
-              </thead>
-              <tbody id="downtimeTbody">
-                <!-- Inyectado por JS -->
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
@@ -480,92 +642,108 @@
           <div class="badge-executive">Dirección General Tombstone · Confidencial</div>
         </div>
 
-        <!-- Tarjetas Financieras -->
-        <div class="exec-kpi-grid">
-          <div class="exec-card card-glass">
-            <span class="exec-label">VALOR DE PRODUCCIÓN DEL DÍA</span>
-            <div class="exec-metric color-green" id="execRevenueValue">$801,720 MXN</div>
-            <span class="exec-trend">↑ 612 texanas terminadas @ $1,310 prom. (Catálogo Tombstone)</span>
-          </div>
+        <!-- Sub-navegación por Pestañas del Módulo Dirección -->
+        <div class="sub-nav-tabs" data-module="executive">
+          <button class="sub-tab-btn active" data-subtab="subtab-executive-summary">💰 Resumen Financiero & Valor de Producción</button>
+          <button class="sub-tab-btn" data-subtab="subtab-executive-b2b">📦 Pedidos B2B Mayoristas & COMPAC</button>
+          <button class="sub-tab-btn" data-subtab="subtab-executive-roi">🚀 Retorno de Inversión (ROI) & Fases</button>
+        </div>
 
-          <div class="exec-card card-glass">
-            <span class="exec-label">CUMPLIMIENTO DE PEDIDOS B2B</span>
-            <div class="exec-metric color-brand" id="execFulfillment">94.8%</div>
-            <span class="exec-trend">14 pedidos mayoristas en ruta a tiempo</span>
-          </div>
+        <!-- Pestaña 1: Resumen Financiero -->
+        <div class="sub-tab-content" id="subtab-executive-summary">
+          <!-- Tarjetas Financieras -->
+          <div class="exec-kpi-grid">
+            <div class="exec-card card-glass">
+              <span class="exec-label">VALOR DE PRODUCCIÓN DEL DÍA</span>
+              <div class="exec-metric color-green" id="execRevenueValue">$801,720 MXN</div>
+              <span class="exec-trend">↑ 612 texanas terminadas @ $1,310 prom. (Catálogo Tombstone)</span>
+            </div>
 
-          <div class="exec-card card-glass">
-            <span class="exec-label">SEGUNDAS / SALDOS (VENTA VIERNES)</span>
-            <div class="exec-metric color-amber" id="execSecondGradeValue">$17,030 MXN</div>
-            <span class="exec-trend">26 piezas regulares para remate (50% desc.)</span>
-          </div>
+            <div class="exec-card card-glass">
+              <span class="exec-label">CUMPLIMIENTO DE PEDIDOS B2B</span>
+              <div class="exec-metric color-brand" id="execFulfillment">94.8%</div>
+              <span class="exec-trend">14 pedidos mayoristas en ruta a tiempo</span>
+            </div>
 
-          <div class="exec-card card-glass">
-            <span class="exec-label">COSTO DE MERMA / DESPERDICIO</span>
-            <div class="exec-metric color-red" id="execScrapCost">$18,340 MXN</div>
-            <span class="exec-trend">14 piezas con daño total (2.2% merma)</span>
+            <div class="exec-card card-glass">
+              <span class="exec-label">SEGUNDAS / SALDOS (VENTA VIERNES)</span>
+              <div class="exec-metric color-amber" id="execSecondGradeValue">$17,030 MXN</div>
+              <span class="exec-trend">26 piezas regulares para remate (50% desc.)</span>
+            </div>
+
+            <div class="exec-card card-glass">
+              <span class="exec-label">COSTO DE MERMA / DESPERDICIO</span>
+              <div class="exec-metric color-red" id="execScrapCost">$18,340 MXN</div>
+              <span class="exec-trend">14 piezas con daño total (2.2% merma)</span>
+            </div>
           </div>
         </div>
 
-        <!-- Enlace con CONTPAQi / COMPAC -->
-        <div class="card-glass" style="padding:22px; margin-bottom:20px; border-left: 4px solid var(--color-brand);">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div>
-              <span class="badge-subtle" style="color:var(--color-brand); background:var(--color-brand-light); border:1px solid var(--color-brand-border);">MÓDULO DE INTEGRACIÓN COMPAC (CONTPAQi)</span>
-              <h3 style="font-family:'Outfit'; font-size:18px; margin-top:8px;">Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)</h3>
-              <p style="font-size:12.5px; color:var(--text-secondary); margin-top:4px;">Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes</p>
+        <!-- Pestaña 2: Pedidos B2B y COMPAC -->
+        <div class="sub-tab-content d-none" id="subtab-executive-b2b">
+          <!-- Enlace con CONTPAQi / COMPAC -->
+          <div class="card-glass" style="padding:22px; margin-bottom:20px; border-left: 4px solid var(--color-brand);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <span class="badge-subtle" style="color:var(--color-brand); background:var(--color-brand-light); border:1px solid var(--color-brand-border);">MÓDULO DE INTEGRACIÓN COMPAC (CONTPAQi)</span>
+                <h3 style="font-family:'Outfit'; font-size:18px; margin-top:8px;">Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)</h3>
+                <p style="font-size:12.5px; color:var(--text-secondary); margin-top:4px;">Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes</p>
+              </div>
+              <button class="btn-primary" id="btnEmitDeliverySlip" style="padding:10px 18px; font-size:13px;">
+                🚚 Emitir Vale de Entrega para Camioneta
+              </button>
             </div>
-            <button class="btn-primary" onclick="emitirValeEntrega()" style="padding:10px 18px; font-size:13px;">
-              🚚 Emitir Vale de Entrega para Camioneta
-            </button>
           </div>
         </div>
 
-        <!-- Comparativa Business Case Uanify MES -->
-        <div class="exec-insights-grid">
-          <div class="card-glass roi-comparison">
-            <h3>Retorno de Inversión (ROI) Estimado para Tombstone Hats</h3>
-            <div class="roi-columns">
-              <div class="roi-col before">
-                <h4>Antes (Papel, Pizarrones y Tarjetas a Mano)</h4>
-                <ul>
-                  <li>❌ Lotes de 60 fraccionados en Excel y cambiados a mano</li>
-                  <li>❌ Supervisores preguntando a gritos por tafiletes</li>
-                  <li>❌ Paros en prensas no analizados (caldera y hormas)</li>
-                  <li>❌ Doble captura manual entre almacén y COMPAC</li>
-                  <li>❌ 15 hrs semanales de oficina pasando notas</li>
-                </ul>
-              </div>
-              <div class="roi-col after">
-                <h4>Con Uanify MES (Digitalización de Planta)</h4>
-                <ul>
-                  <li>✅ <strong>Tarjetas Viajeras con QR</strong> escaneadas en 0.2 seg</li>
-                  <li>✅ Fraccionamiento de 60 a 15 pzas automático</li>
-                  <li>✅ <strong>Stock de tafiletes por talla</strong> visible en pantalla</li>
-                  <li>✅ Generación de vales de entrega directo a COMPAC</li>
-                  <li>✅ <strong>Payback estimado de implementación: 2.1 meses</strong></li>
-                </ul>
+        <!-- Pestaña 3: ROI y Fases -->
+        <div class="sub-tab-content d-none" id="subtab-executive-roi">
+          <!-- Comparativa Business Case Uanify MES -->
+          <div class="exec-insights-grid">
+            <div class="card-glass roi-comparison">
+              <h3>Retorno de Inversión (ROI) Estimado para Tombstone Hats</h3>
+              <div class="roi-columns">
+                <div class="roi-col before">
+                  <h4>Antes (Papel, Pizarrones y Tarjetas a Mano)</h4>
+                  <ul>
+                    <li>❌ Lotes de 60 fraccionados en Excel y cambiados a mano</li>
+                    <li>❌ Supervisores preguntando a gritos por tafiletes</li>
+                    <li>❌ Paros en prensas no analizados (caldera y hormas)</li>
+                    <li>❌ Doble captura manual entre almacén y COMPAC</li>
+                    <li>❌ 15 hrs semanales de oficina pasando notas</li>
+                  </ul>
+                </div>
+                <div class="roi-col after">
+                  <h4>Con Uanify MES (Digitalización de Planta)</h4>
+                  <ul>
+                    <li>✅ <strong>Tarjetas Viajeras con QR</strong> escaneadas en 0.2 seg</li>
+                    <li>✅ Fraccionamiento de 60 a 15 pzas automático</li>
+                    <li>✅ <strong>Stock de tafiletes por talla</strong> visible en pantalla</li>
+                    <li>✅ Generación de vales de entrega directo a COMPAC</li>
+                    <li>✅ <strong>Payback estimado de implementación: 2.1 meses</strong></li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="card-glass quote-summary">
-            <h3>Propuesta Modular para Tombstone Hats</h3>
-            <div class="tier-pill-box">
-              <div class="tier-item">
-                <span class="tier-badge">FASE 1 · QUICK WIN (4 Semanas)</span>
-                <strong>MES de Piso + QR en Tarjetas Viajeras + Prensas</strong>
-                <p>Escaneo de lotes de 60 pzas, fraccionamiento a 15 pzas en rampa, pantallas Andon y tiempos de ciclo.</p>
-              </div>
-              <div class="tier-item highlight">
-                <span class="tier-badge">FASE 2 · CONTROL TOTAL (8 Semanas)</span>
-                <strong>Control de Subensambles (Tafiletes) + Inventarios</strong>
-                <p>Balanceo de stock de tafiletes por talla y descuento automático de telares y químicos.</p>
-              </div>
-              <div class="tier-item">
-                <span class="tier-badge">FASE 3 · ECOSISTEMA B2B (12 Semanas)</span>
-                <strong>Enlace Directo con COMPAC + Portal Mayoristas</strong>
-                <p>Sincronización de pedidos B2B, facturación automática y vales de camioneta digitales.</p>
+            <div class="card-glass quote-summary">
+              <h3>Propuesta Modular para Tombstone Hats</h3>
+              <div class="tier-pill-box">
+                <div class="tier-item">
+                  <span class="tier-badge">FASE 1 · QUICK WIN (4 Semanas)</span>
+                  <strong>MES de Piso + QR en Tarjetas Viajeras + Prensas</strong>
+                  <p>Escaneo de lotes de 60 pzas, fraccionamiento a 15 pzas en rampa, pantallas Andon y tiempos de ciclo.</p>
+                </div>
+                <div class="tier-item highlight">
+                  <span class="tier-badge">FASE 2 · CONTROL TOTAL (8 Semanas)</span>
+                  <strong>Control de Subensambles (Tafiletes) + Inventarios</strong>
+                  <p>Balanceo de stock de tafiletes por talla y descuento automático de telares y químicos.</p>
+                </div>
+                <div class="tier-item">
+                  <span class="tier-badge">FASE 3 · ECOSISTEMA B2B (12 Semanas)</span>
+                  <strong>Enlace Directo con COMPAC + Portal Mayoristas</strong>
+                  <p>Sincronización de pedidos B2B, facturación automática y vales de camioneta digitales.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -584,124 +762,178 @@
           <button class="btn-primary" id="btnSaveConfig">💾 Guardar Configuración</button>
         </div>
 
-        <div class="config-grid">
-          <!-- Parámetros Generales de Turno -->
-          <div class="config-card card-glass">
-            <h3>⏰ Horario de Planta · Turno Único</h3>
-            <div class="form-group">
-              <label class="field-label">Régimen Operativo:</label>
-              <input type="text" class="form-input" id="cfgShiftSelect" value="Turno Único · 07:00 a 15:30 hrs (Lunes a Viernes)" readonly style="background:#F1F5F9; font-weight:600; color:var(--text-main);">
-              <small style="color:var(--text-muted); font-size:11px;">Operación consolidada a un solo turno productivo de 8.5 hrs (45 min comida)</small>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Meta Diaria del Turno Único (Piezas):</label>
-              <input type="number" class="form-input" id="cfgShiftGoal" value="850">
-            </div>
-            <div class="form-group">
-              <label class="field-label">Takt Time Estándar (Segundos por Pieza):</label>
-              <input type="number" class="form-input" id="cfgTaktTime" value="42">
-            </div>
-            <div class="form-group">
-              <label class="field-label">Tamaño Estándar de Lote Madre:</label>
-              <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
-              <small style="color:var(--text-muted); font-size:11px;">Fraccionado en rampa a sublotes de 15 pzas</small>
-            </div>
-          </div>
+        <!-- Sub-navegación por Pestañas del Módulo Configuración -->
+        <div class="sub-nav-tabs" data-module="config">
+          <button class="sub-tab-btn active" data-subtab="subtab-config-params">⏰ Parámetros & Meta Semanal</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-users">👥 Usuarios del Sistema (RBAC)</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-operators">👷 Padrón de Operadores de Planta</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-depts">🏢 Departamentos & Asignación</button>
+        </div>
 
-          <!-- Alertas Andon & Umbrales WIP -->
-          <div class="config-card card-glass">
-            <h3>🚨 Umbrales de Alerta Andon (WIP)</h3>
-            <div class="form-group">
-              <label class="field-label">Alerta de Acumulación en Almacén Intermedio:</label>
-              <input type="number" class="form-input" value="70" id="cfgWipAlert">
-              <small style="color:var(--text-muted); font-size:11px;">Piezas en espera para marcar almacén en amarillo</small>
+        <!-- Pestaña 1: Parámetros Generales & Meta Semanal -->
+        <div class="sub-tab-content" id="subtab-config-params">
+          <div class="config-grid">
+            <!-- Parámetros Generales de Turno -->
+            <div class="config-card card-glass">
+              <h3>⏰ Horario de Planta · Turno Único</h3>
+              <div class="form-group">
+                <label class="field-label">Régimen Operativo:</label>
+                <input type="text" class="form-input" id="cfgShiftSelect" value="Turno Único · 07:00 a 15:30 hrs (Lunes a Viernes)" readonly style="background:#F1F5F9; font-weight:600; color:var(--text-main);">
+                <small style="color:var(--text-muted); font-size:11px;">Operación consolidada a un solo turno productivo de 8.5 hrs (45 min comida)</small>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Meta Semanal de Planta (Piezas):</label>
+                <input type="number" class="form-input" id="cfgShiftGoal" value="4250">
+                <small style="color:var(--text-muted); font-size:11px;">Meta base semanal para los 14 departamentos de la planta</small>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Takt Time Estándar (Segundos por Pieza):</label>
+                <input type="number" class="form-input" id="cfgTaktTime" value="42">
+                <small style="color:var(--text-muted); font-size:11px;">Ritmo de salida requerido para cumplir la meta semanal</small>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Tamaño Estándar de Lote Madre:</label>
+                <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
+                <small style="color:var(--text-muted); font-size:11px;">Fraccionado en rampa a sublotes de 15 pzas para puestos de adorno</small>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="field-label">Umbral de Paro Crítico (Rojo):</label>
-              <input type="number" class="form-input" value="95" id="cfgWipCritical">
-            </div>
-            <div class="form-group">
-              <label class="field-label">Modo Supervisor iPad:</label>
-              <select class="custom-select">
-                <option>Permitir fraccionamiento en Rampa</option>
-                <option>Solo lectura y escaneo</option>
-              </select>
-            </div>
-          </div>
 
-          <!-- Integración COMPAC / CONTPAQi -->
-          <div class="config-card card-glass">
-            <h3>🔗 Enlace con CONTPAQi (COMPAC)</h3>
-            <div class="form-group">
-              <label class="field-label">Servidor / Gateway Local:</label>
-              <input type="text" class="form-input" value="192.168.1.120:8080/compac-api">
+            <!-- Alertas Andon & Umbrales WIP -->
+            <div class="config-card card-glass">
+              <h3>🚨 Umbrales de Alerta Andon (WIP)</h3>
+              <div class="form-group">
+                <label class="field-label">Alerta de Acumulación en Almacén Intermedio:</label>
+                <input type="number" class="form-input" value="70" id="cfgWipAlert">
+                <small style="color:var(--text-muted); font-size:11px;">Piezas en espera para marcar almacén en amarillo</small>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Umbral de Paro Crítico (Rojo):</label>
+                <input type="number" class="form-input" value="95" id="cfgWipCritical">
+                <small style="color:var(--text-muted); font-size:11px;">Piezas en espera para marcar alerta crítica en Andon</small>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Modo Operativo de Rampa:</label>
+                <select class="custom-select">
+                  <option>Permitir fraccionamiento de 60 a 15 piezas</option>
+                  <option>Lote directo sin fraccionar</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="field-label">Intervalo de Sincronización:</label>
-              <select class="custom-select">
-                <option>Cada 5 minutos</option>
-                <option>Cada 15 minutos</option>
-                <option>Tiempo real (Webhooks)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Contacto Soporte COMPAC:</label>
-              <input type="text" class="form-input" value="Ingeniera Externa (Membresía Anual)" readonly style="background:#F1F5F9;">
+
+            <!-- Integración COMPAC / CONTPAQi -->
+            <div class="config-card card-glass">
+              <h3>🔗 Enlace con CONTPAQi (COMPAC)</h3>
+              <div class="form-group">
+                <label class="field-label">Servidor / Gateway Local:</label>
+                <input type="text" class="form-input" value="192.168.1.120:8080/compac-api">
+              </div>
+              <div class="form-group">
+                <label class="field-label">Intervalo de Sincronización:</label>
+                <select class="custom-select">
+                  <option>Cada 5 minutos</option>
+                  <option>Cada 15 minutos</option>
+                  <option>Tiempo real (Webhooks)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Contacto Soporte COMPAC:</label>
+                <input type="text" class="form-input" value="Ingeniera Externa (Membresía Anual)" readonly style="background:#F1F5F9;">
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Gestión de Usuarios y Permisos Modulares (RBAC) -->
-        <div class="card-glass" style="padding:22px; margin-bottom:24px;">
-          <div class="card-head" style="flex-wrap:wrap; gap:12px;">
-            <div>
-              <h3>👥 Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
-              <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear ingenieros, supervisores y administradores, y definir el acceso a cada módulo.</p>
+        <!-- Pestaña 2: Gestión de Usuarios del Sistema (RBAC) -->
+        <div class="sub-tab-content d-none" id="subtab-config-users">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3>👥 Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
+                <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear administradores, ingenieros y supervisores. Ingeniería puede crear supervisores.</p>
+              </div>
+              <button class="btn-primary" id="btnOpenCreateUserModal">
+                + Crear Nuevo Usuario
+              </button>
             </div>
-            <button class="btn-primary" id="btnOpenCreateUserModal">
-              + Crear Nuevo Usuario
-            </button>
-          </div>
-          <div class="downtime-table-wrapper" style="margin-top:14px;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Usuario & Correo</th>
-                  <th>Rol</th>
-                  <th>Permisos Modulares Asignados</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="usersTableBody">
-                <!-- Llenado dinámico en config.js -->
-              </tbody>
-            </table>
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Usuario & Correo</th>
+                    <th>Rol</th>
+                    <th>Departamentos Asignados</th>
+                    <th>Permisos Modulares</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- Tabla de Configuración de Departamentos -->
-        <div class="card-glass" style="padding:22px;">
-          <div class="card-head">
-            <h3>Configuración de los 14 Departamentos y Almacenes</h3>
-            <span class="badge-subtle">Tiempos estándar y supervisores asignados</span>
+        <!-- Pestaña 3: Padrón de Operadores de Planta (No acceden al sistema) -->
+        <div class="sub-tab-content d-none" id="subtab-config-operators">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3>👷 Padrón de Operadores de Planta (Mano de Obra)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Registro de operadores que trabajan máquinas en cada departamento. No son usuarios con acceso al sistema; son gestionados por Supervisores, Ingenieros y Administradores.</p>
+              </div>
+              <button class="btn-primary" id="btnOpenCreateOperatorModal">
+                + Registrar Operador
+              </button>
+            </div>
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No. Nómina</th>
+                    <th>Nombre del Operador</th>
+                    <th>Departamento</th>
+                    <th>Máquina / Puesto Asignado</th>
+                    <th>Piezas Procesadas Hoy</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="operatorsTableBody">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="downtime-table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Departamento</th>
-                  <th>Tipo</th>
-                  <th>Takt Time Std</th>
-                  <th>Capacidad Turno Único</th>
-                  <th>Supervisor Asignado</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody id="cfgDepartmentsTable">
-                <!-- Llenado dinámico en config.js -->
-              </tbody>
-            </table>
+        </div>
+
+        <!-- Pestaña 4: Departamentos & Asignación a Supervisores -->
+        <div class="sub-tab-content d-none" id="subtab-config-depts">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head">
+              <div>
+                <h3>Configuración de los 14 Departamentos y Asignación de Supervisores</h3>
+                <p class="section-desc" style="margin-bottom:0;">Un supervisor puede tener asignados múltiples departamentos. Las terminales se adaptan automáticamente a sus áreas asignadas.</p>
+              </div>
+            </div>
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Departamento</th>
+                    <th>Tipo</th>
+                    <th>Takt Time Std</th>
+                    <th>Capacidad Semanal</th>
+                    <th>Supervisor Asignado</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="cfgDepartmentsTable">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -880,12 +1112,129 @@
     </div>
   </div>
 
+  <!-- ======================================================================
+       MODAL: REGISTRAR NUEVA HORMA / MOLDE (INGENIERÍA)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalRegisterMold">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <h3>🎩 Registrar Nueva Horma / Molde de Sombrero</h3>
+        <button class="modal-close" id="btnCloseRegisterMoldModal">&times;</button>
+      </div>
+      <form id="formRegisterMold" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="form-group">
+          <label class="field-label">Nombre del Modelo / Horma:</label>
+          <input type="text" id="newMoldName" class="form-input" placeholder="Ej. Laredo F10 o Rodeo Master" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Código de Identificación (Grabado):</label>
+          <input type="text" id="newMoldCode" class="form-input" placeholder="Ej. HRM-LRD-450" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Ancho de Falda:</label>
+          <select id="newMoldBrim" class="custom-select">
+            <option value='4.00"'>4" (Falda Corta Tradicional)</option>
+            <option value='4.25"' selected>4 1/4" (Falda Estándar Tombstone)</option>
+            <option value='4.50"'>4 1/2" (Falda Ancha Texana)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Tipo de Copa:</label>
+          <input type="text" id="newMoldCrown" class="form-input" placeholder="Ej. Roper, Gota de Agua, Viejón" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Prensa / Ubicación Asignada:</label>
+          <select id="newMoldLocation" class="custom-select">
+            <option value="Prensa Vapor Matriz #1">Prensa Vapor Matriz #1</option>
+            <option value="Prensa Vapor Matriz #2">Prensa Vapor Matriz #2</option>
+            <option value="Prensa Vapor Matriz #3">Prensa Vapor Matriz #3</option>
+            <option value="Estante de Hormas A-1">Estante de Hormas A-1 (Disponible)</option>
+            <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+          </select>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('modalRegisterMold').classList.remove('active')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Horma</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: REGISTRAR OPERADOR DE PLANTA (NO USUARIO DE SISTEMA)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalRegisterOperator">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <h3>👷 Registrar Operador de Planta (Mano de Obra)</h3>
+        <button class="modal-close" id="btnCloseRegisterOperatorModal">&times;</button>
+      </div>
+      <form id="formRegisterOperator" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">
+          Los operadores son registrados para asignación a puestos y máquinas. No son usuarios que ingresen a la plataforma.
+        </p>
+        <div class="form-group">
+          <label class="field-label">Nombre del Operador:</label>
+          <input type="text" id="newOperatorName" class="form-input" placeholder="Ej. Salvador Macías" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Número de Nómina / Empleado:</label>
+          <input type="text" id="newOperatorPayroll" class="form-input" placeholder="Ej. EMP-0110" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Departamento Productivo:</label>
+          <select id="newOperatorDept" class="custom-select">
+            <option value="corte">D-01 · Corte de Cuadros</option>
+            <option value="alambrado">D-02 · Alambrado de Ala</option>
+            <option value="dope">D-03 · Englopado / Baño de Dope</option>
+            <option value="refuerzos">D-04 · Refuerzos (Pintola / Brocha)</option>
+            <option value="prensas" selected>D-05 · Prensas Hormado (Copa y Falda)</option>
+            <option value="recortes">D-06 · Recorte y Refaldeado</option>
+            <option value="pintura">D-07 · Pintura y Secado</option>
+            <option value="brillo">D-08 · Brillo / Acabado</option>
+            <option value="adorno">D-10 · Adorno 1 (Tafilete + Toquilla)</option>
+            <option value="calidad3">C-03 · Calidad 3 (Auditoría Final)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Máquina o Puesto Asignado:</label>
+          <input type="text" id="newOperatorMachine" class="form-input" placeholder="Ej. Prensa Vapor Matriz #2" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('modalRegisterOperator').classList.remove('active')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Operador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: CONFIRMACIÓN ESTANDARIZADA IN-APP (SIN ALERT / CONFIRM NATIVO)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="uanifyConfirmModal">
+    <div class="modal-box card-glass" style="max-width:440px;">
+      <div class="modal-header">
+        <h3 id="confirmModalTitle">Confirmar Acción</h3>
+      </div>
+      <div class="modal-body" style="padding:14px 0;">
+        <p id="confirmModalMessage" style="color:var(--text-secondary); font-size:13.5px; line-height:1.5;"></p>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+        <button type="button" class="btn-secondary" id="confirmModalBtnCancel">Cancelar</button>
+        <button type="button" class="btn-primary" id="confirmModalBtnOk">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Global de Notificaciones Toast -->
+  <div id="uanifyToastContainer" class="uanify-toast-container"></div>
+
   <!-- Scripts -->
-  <script src="js/app.js?v=2.7.0"></script>
-  <script src="js/andon.js?v=2.7.0"></script>
-  <script src="js/terminal.js?v=2.7.0"></script>
-  <script src="js/engineer.js?v=2.7.0"></script>
-  <script src="js/executive.js?v=2.7.0"></script>
-  <script src="js/config.js?v=2.7.0"></script>
+  <script src="js/app.js?v=2.8.0"></script>
+  <script src="js/andon.js?v=2.8.0"></script>
+  <script src="js/terminal.js?v=2.8.0"></script>
+  <script src="js/engineer.js?v=2.8.0"></script>
+  <script src="js/executive.js?v=2.8.0"></script>
+  <script src="js/config.js?v=2.8.0"></script>
 </body>
 </html>

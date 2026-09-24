@@ -1,16 +1,24 @@
 /**
- * UANIFY MES · CONFIGURACIÓN DE PLANTA & GESTIÓN DE USUARIOS Y ROLES (RBAC)
+ * UANIFY MES · CONFIGURACIÓN DE PLANTA & GESTIÓN DE USUARIOS Y OPERADORES (RBAC)
  * Tombstone Hats · San Francisco del Rincón, Guanajuato
+ *
+ * REGLAS DE NEGOCIO VALIDADAS:
+ * ─ Meta semanal como métrica central de producción de planta.
+ * ─ Operadores de planta: Padrón de mano de obra asignados a máquina. No son usuarios del sistema.
+ * ─ Gestión de usuarios:
+ *   - Administradores pueden crear Admins, Ingenieros y Supervisores.
+ *   - Ingenieros pueden crear Supervisores únicamente (no otros ingenieros ni administradores).
+ * ─ Todos los diálogos usan UanifyUI.toast y UanifyUI.confirm (prohibido alert nativo).
  */
 
 window.initConfigView = function() {
   const tableBody = document.getElementById('cfgDepartmentsTable');
   const usersTableBody = document.getElementById('usersTableBody');
+  const operatorsTableBody = document.getElementById('operatorsTableBody');
   const btnSaveConfig = document.getElementById('btnSaveConfig');
   const cfgShiftGoal = document.getElementById('cfgShiftGoal');
   const cfgTaktTime = document.getElementById('cfgTaktTime');
 
-  // Módulos del sistema con etiquetas legibles
   const AvailableModules = [
     { id: 'andon',     name: 'Tablero Andon (Piso)' },
     { id: 'terminal',  name: 'Lotes, QR & Almacenes (iPad)' },
@@ -57,6 +65,10 @@ window.initConfigView = function() {
         return `<span class="perm-pill">${mod ? mod.name : p}</span>`;
       }).join(' ');
 
+      const deptsInfo = (u.assignedDepartments && u.assignedDepartments[0] !== '*') 
+        ? `<div style="font-size:10.5px; color:var(--color-brand); margin-top:3px; font-weight:600;">Depts: ${u.assignedDepartments.join(', ')}</div>` 
+        : `<div style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">Acceso Global</div>`;
+
       return `
         <tr>
           <td>
@@ -65,6 +77,7 @@ window.initConfigView = function() {
           </td>
           <td>
             <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
+            ${deptsInfo}
           </td>
           <td>
             <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:420px;">
@@ -90,6 +103,21 @@ window.initConfigView = function() {
     syncSidebarUserSelector();
   }
 
+  // ── 3. RENDER DE PADRÓN DE OPERADORES DE PLANTA ──────────────────────────
+  function renderOperatorsTable() {
+    if (!operatorsTableBody || !UanifyState || !UanifyState.operators) return;
+
+    operatorsTableBody.innerHTML = UanifyState.operators.map(op => `
+      <tr>
+        <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand); font-size:12px;">${op.empId}</strong></td>
+        <td><strong>${op.name}</strong></td>
+        <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
+        <td>${op.machine}</td>
+        <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); font-weight:700;">● ${op.status}</span></td>
+      </tr>
+    `).join('');
+  }
+
   // Sincronizar el selector de usuario del sidebar
   function syncSidebarUserSelector() {
     const userSelect = document.getElementById('sidebarUserSelect');
@@ -104,6 +132,7 @@ window.initConfigView = function() {
 
   renderDepartmentsConfig();
   renderUsersTable();
+  renderOperatorsTable();
 
   // Escuchar cambio de pestañas para re-renderizar
   if (typeof EventBus !== 'undefined') {
@@ -111,43 +140,63 @@ window.initConfigView = function() {
       if (tab === 'config') {
         renderDepartmentsConfig();
         renderUsersTable();
+        renderOperatorsTable();
       }
     });
   }
 
-  // ── 3. GUARDAR PARÁMETROS GENERALES ──────────────────────────────────────
+  // ── 4. GUARDAR PARÁMETROS GENERALES (META SEMANAL) ───────────────────────
   if (btnSaveConfig) {
     btnSaveConfig.addEventListener('click', () => {
-      const newGoal = parseInt(cfgShiftGoal ? cfgShiftGoal.value : 850, 10);
+      const newWeeklyGoal = parseInt(cfgShiftGoal ? cfgShiftGoal.value : 4250, 10);
       const newTakt = parseInt(cfgTaktTime ? cfgTaktTime.value : 42, 10);
       
-      UanifyState.metaShiftTotal = newGoal;
+      UanifyState.metaWeeklyTotal = newWeeklyGoal;
+      UanifyState.metaShiftTotal = Math.round(newWeeklyGoal / 5);
       UanifyState.taktTimeSec = newTakt;
 
       const goalEl = document.getElementById('andonGoalTotal');
       const taktEl = document.getElementById('andonTaktTime');
-      if (goalEl) goalEl.textContent = `${newGoal} pzas`;
+      if (goalEl) goalEl.textContent = `${newWeeklyGoal.toLocaleString()} pzas/sem`;
       if (taktEl) taktEl.textContent = `${newTakt} seg/pza`;
 
-      alert(
-        `💾 CONFIGURACIÓN DE PLANTA GUARDADA\n\n` +
-        `• Régimen: Turno Único (07:00 - 15:30 · Lunes a Viernes)\n` +
-        `• Meta Diaria del Turno Único: ${newGoal} pzas\n` +
-        `• Takt Time Estándar: ${newTakt} seg/pza\n` +
-        `• 14 Departamentos y Almacenes sincronizados con Tablero Andon.\n` +
-        `• Políticas de acceso y usuarios vigentes.`
+      window.UanifyUI.toast(
+        `Meta Semanal fijada en ${newWeeklyGoal.toLocaleString()} piezas (~${UanifyState.metaShiftTotal} pzas/día en Turno Único). Takt Time: ${newTakt}s. Sincronizado con Tablero Andon.`,
+        'success',
+        '⚙️ Parámetros de Planta Guardados'
       );
     });
   }
 
-  // ── 4. MODAL: CREAR NUEVO USUARIO ─────────────────────────────────────────
+  // ── 5. MODAL: CREAR NUEVO USUARIO (CON REGLA INGENIERO / ADMIN) ───────────
   const modalCreateUser = document.getElementById('modalCreateUser');
   const btnOpenCreate = document.getElementById('btnOpenCreateUserModal');
   const btnCloseCreate = document.getElementById('btnCloseCreateUserModal');
   const formCreateUser = document.getElementById('formCreateUser');
+  const selectNewRole = document.getElementById('newRoleSelect');
+
+  function configureUserRoleOptions() {
+    const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    if (!selectNewRole) return;
+
+    if (activeUser.role === 'ingeniero') {
+      // Ingenieros solo pueden crear supervisores
+      selectNewRole.innerHTML = `
+        <option value="supervisor" selected>Supervisor de Piso / Nave (Permitido para Ingeniería)</option>
+      `;
+    } else {
+      // Admins pueden crear cualquier rol
+      selectNewRole.innerHTML = `
+        <option value="supervisor" selected>Supervisor de Nave (Acceso Piso & Terminal)</option>
+        <option value="ingeniero">Ingeniero de Procesos (Acceso Piso, Terminal & Consola)</option>
+        <option value="admin">Administrador General (Acceso Total)</option>
+      `;
+    }
+  }
 
   if (btnOpenCreate && modalCreateUser) {
     btnOpenCreate.addEventListener('click', () => {
+      configureUserRoleOptions();
       modalCreateUser.classList.add('active');
     });
   }
@@ -158,8 +207,6 @@ window.initConfigView = function() {
     });
   }
 
-  // Pre-configurar permisos por defecto al cambiar de rol en el modal de creación
-  const selectNewRole = document.getElementById('newRoleSelect');
   if (selectNewRole) {
     selectNewRole.addEventListener('change', (e) => {
       const role = e.target.value;
@@ -180,12 +227,19 @@ window.initConfigView = function() {
   if (formCreateUser) {
     formCreateUser.addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = document.getElementById('newUserName').value.trim();
-      const email = document.getElementById('newUserEmail').value.trim();
-      const role = document.getElementById('newRoleSelect').value;
+      const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+      const name = document.getElementById('newUserName')?.value.trim();
+      const email = document.getElementById('newUserEmail')?.value.trim();
+      const role = selectNewRole ? selectNewRole.value : 'supervisor';
 
       if (!name || !email) {
-        alert('Por favor completa todos los campos del usuario.');
+        window.UanifyUI.toast('Por favor completa todos los campos del usuario.', 'warning', 'Campos Incompletos');
+        return;
+      }
+
+      // Restricción: Los ingenieros no pueden crear otros ingenieros ni administradores
+      if (activeUser.role === 'ingeniero' && (role === 'ingeniero' || role === 'admin')) {
+        window.UanifyUI.toast('Los Ingenieros de Procesos únicamente tienen autorización para crear usuarios con rol Supervisor.', 'error', 'Permiso Denegado');
         return;
       }
 
@@ -196,12 +250,16 @@ window.initConfigView = function() {
 
       let roleName = 'Supervisor de Nave';
       let badge = '📋 Supervisor';
+      let assignedDepts = ['D-05', 'D-06'];
+
       if (role === 'admin') {
         roleName = 'Administrador General';
         badge = '👑 Admin';
+        assignedDepts = ['*'];
       } else if (role === 'ingeniero') {
         roleName = 'Ingeniero de Procesos';
         badge = '⚙️ Ingeniero';
+        assignedDepts = ['*'];
       }
 
       const newUser = {
@@ -211,7 +269,8 @@ window.initConfigView = function() {
         role,
         roleName,
         badge,
-        permissions: selectedPerms.length > 0 ? selectedPerms : ['andon']
+        assignedDepartments: assignedDepts,
+        permissions: selectedPerms.length > 0 ? selectedPerms : ['andon', 'terminal']
       };
 
       UanifyState.users.push(newUser);
@@ -219,17 +278,75 @@ window.initConfigView = function() {
       modalCreateUser.classList.remove('active');
       formCreateUser.reset();
 
-      alert(
-        `✅ USUARIO CREADO EXITOSAMENTE\n\n` +
-        `Nombre: ${name}\n` +
-        `Rol: ${roleName}\n` +
-        `Permisos activos: ${newUser.permissions.join(', ')}\n\n` +
-        `El usuario ya está disponible en el selector de perfiles del sistema.`
+      window.UanifyUI.toast(
+        `Usuario "${name}" (${roleName}) creado exitosamente con permisos: ${newUser.permissions.join(', ')}.`,
+        'success',
+        '✅ Usuario Creado'
       );
     });
   }
 
-  // ── 5. MODAL: EDITAR PERMISOS DE USUARIO ──────────────────────────────────
+  // ── 6. MODAL: REGISTRAR OPERADOR DE PLANTA ────────────────────────────────
+  const modalOperator = document.getElementById('modalRegisterOperator');
+  const btnOpenOperator = document.getElementById('btnOpenRegisterOperatorModal');
+  const btnCloseOperator = document.getElementById('btnCloseRegisterOperatorModal');
+  const formOperator = document.getElementById('formRegisterOperator');
+
+  if (btnOpenOperator && modalOperator) {
+    btnOpenOperator.addEventListener('click', () => {
+      modalOperator.classList.add('active');
+    });
+  }
+
+  if (btnCloseOperator && modalOperator) {
+    btnCloseOperator.addEventListener('click', () => {
+      modalOperator.classList.remove('active');
+    });
+  }
+
+  if (formOperator) {
+    formOperator.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newOperatorName')?.value.trim();
+      const empId = document.getElementById('newOperatorPayroll')?.value.trim();
+      const deptCode = document.getElementById('newOperatorDept')?.value || 'D-05';
+      const machine = document.getElementById('newOperatorMachine')?.value.trim();
+
+      if (!name || !empId) {
+        window.UanifyUI.toast('Por favor ingresa nombre y número de nómina del operador.', 'warning', 'Datos Incompletos');
+        return;
+      }
+
+      const st = UanifyState.stations.find(s => s.id === deptCode || s.code === deptCode);
+      const deptName = st ? st.name : 'Prensas Hidráulicas';
+      const resolvedCode = st ? st.code : 'D-05';
+
+      const newOp = {
+        empId,
+        name,
+        deptCode: resolvedCode,
+        deptName,
+        machine: machine || 'Máquina de Línea',
+        shift: 'Turno Único',
+        status: 'Activo'
+      };
+
+      if (!UanifyState.operators) UanifyState.operators = [];
+      UanifyState.operators.push(newOp);
+
+      renderOperatorsTable();
+      modalOperator.classList.remove('active');
+      formOperator.reset();
+
+      window.UanifyUI.toast(
+        `Operador ${name} (${empId}) incorporado a ${deptName} (${newOp.machine}).`,
+        'success',
+        '👷 Operador Registrado'
+      );
+    });
+  }
+
+  // ── 7. MODAL: EDITAR PERMISOS DE USUARIO ──────────────────────────────────
   const modalEditPerms = document.getElementById('modalEditPermissions');
   const btnCloseEditPerms = document.getElementById('btnCloseEditPermsModal');
   const formEditPerms = document.getElementById('formEditPermissions');
@@ -271,42 +388,45 @@ window.initConfigView = function() {
       renderUsersTable();
       modalEditPerms.classList.remove('active');
 
-      // Si se modificaron los permisos del usuario activo en sesión, refrescar UI
       if (UanifyState.currentUser === user.id) {
         if (typeof window.switchActiveUser === 'function') {
           window.switchActiveUser(user.id);
         }
       }
 
-      alert(
-        `✅ PERMISOS ACTUALIZADOS\n\n` +
-        `Usuario: ${user.name} (${user.roleName})\n` +
-        `Nuevos permisos: ${user.permissions.join(', ')}\n\n` +
-        `Los cambios tienen efecto inmediato en la barra lateral.`
+      window.UanifyUI.toast(
+        `Permisos actualizados para ${user.name}: ${user.permissions.join(', ')}.`,
+        'success',
+        '✅ Permisos Actualizados'
       );
     });
   }
 
-  // ── 6. ELIMINAR USUARIO ──────────────────────────────────────────────────
+  // ── 8. ELIMINAR USUARIO ──────────────────────────────────────────────────
   window.deleteUser = function(userId) {
     const user = UanifyState.users.find(u => u.id === userId);
     if (!user) return;
 
-    if (confirm(`¿Estás seguro de eliminar el usuario "${user.name}" (${user.roleName})?`)) {
-      UanifyState.users = UanifyState.users.filter(u => u.id !== userId);
-      if (UanifyState.currentUser === userId) {
-        UanifyState.currentUser = 'admin-1';
-        if (typeof window.switchActiveUser === 'function') {
-          window.switchActiveUser('admin-1');
+    window.UanifyUI.confirm(
+      '¿Eliminar Usuario del Sistema?',
+      `¿Confirmas la baja de acceso para "${user.name}" (${user.roleName})? Ya no podrá ingresar a la terminal ni a los tableros.`,
+      () => {
+        UanifyState.users = UanifyState.users.filter(u => u.id !== userId);
+        if (UanifyState.currentUser === userId) {
+          UanifyState.currentUser = 'admin-1';
+          if (typeof window.switchActiveUser === 'function') {
+            window.switchActiveUser('admin-1');
+          }
         }
-      }
-      renderUsersTable();
-      alert(`🗑️ Usuario "${user.name}" eliminado del sistema.`);
-    }
+        renderUsersTable();
+        window.UanifyUI.toast(`Usuario "${user.name}" eliminado del sistema.`, 'info', 'Usuario Eliminado');
+      },
+      'Sí, Eliminar',
+      'Cancelar'
+    );
   };
 };
 
-// Auto-inicializar independientemente del orden de carga de scripts
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => window.initConfigView());
 } else {

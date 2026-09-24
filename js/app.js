@@ -19,8 +19,82 @@
  * ─ Sombreros de 2 piezas (copa + falda pegadas con calor) y 1 pieza. Campana preformada = proceso corto.
  */
 
+// ─── SISTEMA ESTANDARIZADO DE NOTIFICACIONES Y MODALES (PROHIBIDO ALERT/CONFIRM) ───
+window.UanifyUI = {
+  toast(message, type = 'info', title = '') {
+    const container = document.getElementById('uanifyToastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `uanify-toast toast-${type}`;
+
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'warning') icon = '⚠️';
+    if (type === 'error')   icon = '🚨';
+
+    toast.innerHTML = `
+      <div class="toast-icon">${icon}</div>
+      <div class="toast-body">
+        ${title ? `<div class="toast-title">${title}</div>` : ''}
+        <div class="toast-msg">${message}</div>
+      </div>
+      <button class="toast-close" aria-label="Cerrar">&times;</button>
+    `;
+
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', () => {
+      toast.classList.add('removing');
+      setTimeout(() => toast.remove(), 250);
+    });
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      if (toast.isConnected) {
+        toast.classList.add('removing');
+        setTimeout(() => toast.remove(), 250);
+      }
+    }, 4500);
+  },
+
+  confirm(title, message, onConfirm, okText = 'Confirmar', cancelText = 'Cancelar') {
+    const modal = document.getElementById('uanifyConfirmModal');
+    if (!modal) {
+      if (onConfirm) onConfirm();
+      return;
+    }
+    const titleEl = document.getElementById('uanifyConfirmTitle');
+    const msgEl = document.getElementById('uanifyConfirmMessage');
+    const okBtn = document.getElementById('uanifyConfirmOkBtn');
+    const cancelBtn = document.getElementById('uanifyConfirmCancelBtn');
+
+    if (titleEl) titleEl.textContent = title || 'Confirmación Requerida';
+    if (msgEl) msgEl.textContent = message || '¿Está seguro de realizar esta acción?';
+    if (okBtn) okBtn.textContent = okText;
+    if (cancelBtn) cancelBtn.textContent = cancelText;
+
+    const cleanup = () => {
+      modal.classList.remove('active');
+      okBtn.onclick = null;
+      cancelBtn.onclick = null;
+    };
+
+    okBtn.onclick = () => {
+      cleanup();
+      if (typeof onConfirm === 'function') onConfirm();
+    };
+
+    cancelBtn.onclick = () => {
+      cleanup();
+    };
+
+    modal.classList.add('active');
+  }
+};
+
 const UanifyState = {
-  version: '2.7.0',
+  version: '2.8.0',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
@@ -34,6 +108,7 @@ const UanifyState = {
       role: 'admin',
       roleName: 'Administrador General',
       permissions: ['andon', 'terminal', 'engineer', 'executive', 'config'],
+      assignedDepartments: ['*'],
       badge: '👑 Admin'
     },
     {
@@ -43,6 +118,7 @@ const UanifyState = {
       role: 'ingeniero',
       roleName: 'Ingeniero de Procesos',
       permissions: ['andon', 'terminal', 'engineer'],
+      assignedDepartments: ['*'],
       badge: '⚙️ Ingeniero'
     },
     {
@@ -50,20 +126,64 @@ const UanifyState = {
       name: 'Juan Manuel Pérez',
       email: 'jperez@tombstone.mx',
       role: 'supervisor',
-      roleName: 'Supervisor de Nave y Almacenes',
+      roleName: 'Supervisor de Nave y Almacenes (Depts 05-08)',
       permissions: ['andon', 'terminal'],
+      assignedDepartments: ['D-05', 'D-06', 'D-07', 'D-08'],
+      badge: '📋 Supervisor'
+    },
+    {
+      id: 'sup-2',
+      name: 'Roberto Méndez',
+      email: 'rmendez@tombstone.mx',
+      role: 'supervisor',
+      roleName: 'Supervisor de Preparación y Corte (Depts 01-04)',
+      permissions: ['andon', 'terminal'],
+      assignedDepartments: ['D-01', 'D-02', 'D-03', 'D-04'],
       badge: '📋 Supervisor'
     }
   ],
   
   // Métricas Generales Tombstone Hats
-  metaShiftTotal: 850,       // Meta semanal dividida en días (definida manualmente por ingeniería)
+  metaWeeklyTotal: 4250,     // Meta Semanal de Producción (5 días x 850 pzas/día)
+  metaShiftTotal: 850,       // Meta estimada por turno único diario
   producedTotal: 612,
   scrapTotal: 14,
   secondGradeTotal: 26,      // Sombreros Regulares/Segunda → almacén dedicado → venta de viernes
   taktTimeSec: 42,
   unitPriceMxn: 1310,
   
+  // Padrón de Operadores de Planta (NO acceden al sistema, gestionados por supervisores/ingenieros)
+  operators: [
+    { empId: 'EMP-101', name: 'Pedro Morales', deptCode: 'D-01', deptName: 'Corte de Telar', machine: 'Cortadora Automática C-01', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-102', name: 'Mateo Sánchez', deptCode: 'D-02', deptName: 'Englopado y Camas', machine: 'Englopadora Térmica E-01', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-103', name: 'Rosa Ibarra', deptCode: 'D-03', deptName: 'Refuerzos de Corona', machine: 'Prensa de Forros R-01', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-104', name: 'Javier Luna', deptCode: 'D-05', deptName: 'Prensas Hidráulicas', machine: 'Prensa Hidráulica P-01', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-105', name: 'Martín Delgado', deptCode: 'D-05', deptName: 'Prensas Hidráulicas', machine: 'Prensa Hidráulica P-02', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-106', name: 'Guadalupe Torres', deptCode: 'D-09', deptName: 'Pintura y Matizado', machine: 'Cabina de Aspersión PT-01', shift: 'Turno Único', status: 'Activo' },
+    { empId: 'EMP-107', name: 'Esteban Rocha', deptCode: 'D-12', deptName: 'Adorno (Tafilete y Toquilla)', machine: 'Mesa de Ribeteado M-01', shift: 'Turno Único', status: 'Activo' }
+  ],
+
+  // Catálogo Oficial de Hormas y Moldes de San Francisco del Rincón
+  molds: [
+    { code: 'HRM-DNV-58', name: 'Denver Master 58', tipo: 'Roper', material: 'Aluminio Templado', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-01', status: 'En Uso' },
+    { code: 'HRM-VJN-57', name: 'El Viejonón 57', tipo: 'Viejón', material: 'Aluminio Templado', size: '57 (7 1/8)', machine: 'Prensa Hidráulica P-02', status: 'En Uso' },
+    { code: 'HRM-LRD-58', name: 'Laredo Falda 4"', tipo: 'Laredo', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-03', status: 'Disponible' },
+    { code: 'HRM-FRN-59', name: 'Frontier Gota', tipo: 'Frontier', material: 'Aluminio Templado', size: '59 (7 3/8)', machine: 'Prensa Hidráulica P-04', status: 'En Mantenimiento' },
+    { code: 'HRM-CHP-56', name: 'Chaparral Texana', tipo: 'Chaparral', material: 'Aluminio Templado', size: '56 (7)', machine: 'Prensa Hidráulica P-01', status: 'Disponible' },
+    { code: 'HRM-BLR-58', name: 'Bullrider Rodeo', tipo: 'Bullrider', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-02', status: 'Disponible' }
+  ],
+
+  // Verificar si el usuario activo tiene acceso a operar sobre un departamento
+  canCurrentUserAccessDept(deptCode) {
+    const user = this.users.find(u => u.id === this.currentUser);
+    if (!user) return false;
+    if (user.role === 'admin' || user.role === 'ingeniero') return true;
+    if (user.assignedDepartments && (user.assignedDepartments.includes('*') || user.assignedDepartments.includes(deptCode))) {
+      return true;
+    }
+    return false;
+  },
+
   // Catálogo Oficial Tombstone (con hormas reales: Roper, Chaparral, Viejón, Laredo, Frontier)
   activeModels: [
     { id: 'denver',    name: '1000X Master Telar Denver',     sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel',     size: '58 (7 1/4)', crownHorma: 'Roper',    tipo: '2 piezas' },
@@ -434,6 +554,33 @@ window.switchActiveUser = function(userId) {
   EventBus.emit('user-switched', user);
 };
 
+// Manejador de navegación de sub-pestañas internas en cada módulo
+function initSubTabs() {
+  document.querySelectorAll('.sub-nav-tabs').forEach(tabBar => {
+    const buttons = tabBar.querySelectorAll('.sub-tab-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-subtab');
+        const parentView = btn.closest('.view-panel');
+        if (!parentView) return;
+
+        // Desactivar botones hermanos
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Mostrar solo el subtab target dentro de este panel
+        parentView.querySelectorAll('.sub-tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+  });
+}
+
 // Inicialización de la aplicación
 document.addEventListener('DOMContentLoaded', () => {
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -446,13 +593,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Validación de Permisos por Rol (RBAC)
       if (!user.permissions.includes(targetTab)) {
-        alert(
-          `🔒 ACCESO RESTRINGIDO POR ROL\n\n` +
-          `Usuario activo: ${user.name}\n` +
-          `Rol: ${user.roleName}\n\n` +
-          `Este perfil NO tiene permisos asignados para el módulo:\n` +
-          `"${ModuleNames[targetTab] || targetTab}"\n\n` +
-          `Solo un Administrador puede crear o modificar permisos desde el módulo de Configuración de Planta.`
+        UanifyUI.toast(
+          `Tu usuario (${user.name} - ${user.roleName}) no tiene permisos para acceder a "${ModuleNames[targetTab] || targetTab}". Solicita acceso a un Administrador en Configuración.`,
+          'error',
+          'Acceso Restringido por Rol'
         );
         return;
       }
@@ -483,6 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateClock, 1000);
   updateClock();
 
+  initSubTabs();
   updateUserInterface();
 
   if (window.initAndonView)     window.initAndonView();
