@@ -23,6 +23,38 @@ const UanifyState = {
   activeTab: 'andon',
   currentShift: 'Turno 1 (Matutino · 07:00 - 15:30)',
   
+  // ─── GESTIÓN DE USUARIOS Y ROLES (RBAC) ──────────────────────────────────
+  currentUser: 'admin-1',
+  users: [
+    {
+      id: 'admin-1',
+      name: 'Edmundo González',
+      email: 'egonzalez@tombstone.mx',
+      role: 'admin',
+      roleName: 'Administrador General',
+      permissions: ['andon', 'terminal', 'engineer', 'executive', 'config'],
+      badge: '👑 Admin'
+    },
+    {
+      id: 'ing-1',
+      name: 'Ing. Carlos Ortiz',
+      email: 'cortiz@tombstone.mx',
+      role: 'ingeniero',
+      roleName: 'Ingeniero de Procesos',
+      permissions: ['andon', 'terminal', 'engineer'],
+      badge: '⚙️ Ingeniero'
+    },
+    {
+      id: 'sup-1',
+      name: 'Juan Manuel Pérez',
+      email: 'jperez@tombstone.mx',
+      role: 'supervisor',
+      roleName: 'Supervisor de Nave y Almacenes',
+      permissions: ['andon', 'terminal'],
+      badge: '📋 Supervisor'
+    }
+  ],
+  
   // Métricas Generales Tombstone Hats
   metaShiftTotal: 850,       // Meta semanal dividida en días (definida manualmente por ingeniería)
   producedTotal: 612,
@@ -334,6 +366,73 @@ const IndustrialAudio = {
   playAlert() {}
 };
 
+// Helper para obtener el usuario activo
+function getCurrentUser() {
+  return UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+}
+
+// Nombres descriptivos de los 5 módulos
+const ModuleNames = {
+  andon: 'Tablero Andon (Piso)',
+  terminal: 'Lotes, QR & Almacenes (iPad)',
+  engineer: 'Ingeniería & Subensambles',
+  executive: 'Dirección & COMPAC',
+  config: 'Configuración de Planta & Usuarios'
+};
+
+// Actualizar visualmente la barra lateral según los permisos del usuario activo
+function updateUserInterface() {
+  const user = getCurrentUser();
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const userSelect = document.getElementById('sidebarUserSelect');
+  const userRoleBadge = document.getElementById('sidebarUserRoleBadge');
+
+  if (userSelect && userSelect.value !== user.id) {
+    userSelect.value = user.id;
+  }
+  if (userRoleBadge) {
+    userRoleBadge.textContent = user.badge;
+  }
+
+  navBtns.forEach(btn => {
+    const tab = btn.getAttribute('data-tab');
+    const isAllowed = user.permissions.includes(tab);
+    
+    // Indicador visual de bloqueo
+    let lockIcon = btn.querySelector('.tab-lock-icon');
+    if (!isAllowed) {
+      btn.classList.add('nav-btn-restricted');
+      if (!lockIcon) {
+        lockIcon = document.createElement('span');
+        lockIcon.className = 'tab-lock-icon';
+        lockIcon.textContent = '🔒';
+        lockIcon.title = `Acceso restringido para rol: ${user.roleName}`;
+        btn.appendChild(lockIcon);
+      }
+    } else {
+      btn.classList.remove('nav-btn-restricted');
+      if (lockIcon) lockIcon.remove();
+    }
+  });
+}
+
+// Cambiar de usuario activo (Simulación de login / perfiles para demo)
+window.switchActiveUser = function(userId) {
+  const user = UanifyState.users.find(u => u.id === userId);
+  if (!user) return;
+  UanifyState.currentUser = userId;
+  updateUserInterface();
+  
+  // Si el usuario actual no tiene permiso a la pestaña activa, moverlo a la primera permitida
+  if (!user.permissions.includes(UanifyState.activeTab)) {
+    const fallbackTab = user.permissions[0] || 'andon';
+    const fallbackBtn = document.querySelector(`.nav-btn[data-tab="${fallbackTab}"]`);
+    if (fallbackBtn) fallbackBtn.click();
+  }
+
+  EventBus.emit('user-switched', user);
+};
+
 // Inicialización de la aplicación
 document.addEventListener('DOMContentLoaded', () => {
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -342,6 +441,21 @@ document.addEventListener('DOMContentLoaded', () => {
   navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetTab = btn.getAttribute('data-tab');
+      const user = getCurrentUser();
+
+      // Validación de Permisos por Rol (RBAC)
+      if (!user.permissions.includes(targetTab)) {
+        alert(
+          `🔒 ACCESO RESTRINGIDO POR ROL\n\n` +
+          `Usuario activo: ${user.name}\n` +
+          `Rol: ${user.roleName}\n\n` +
+          `Este perfil NO tiene permisos asignados para el módulo:\n` +
+          `"${ModuleNames[targetTab] || targetTab}"\n\n` +
+          `Solo un Administrador puede crear o modificar permisos desde el módulo de Configuración de Planta.`
+        );
+        return;
+      }
+
       UanifyState.activeTab = targetTab;
       navBtns.forEach(b => b.classList.remove('active'));
       viewPanels.forEach(p => p.classList.remove('active'));
@@ -352,6 +466,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Selector de usuario activo en el sidebar
+  const userSelect = document.getElementById('sidebarUserSelect');
+  if (userSelect) {
+    userSelect.addEventListener('change', (e) => {
+      window.switchActiveUser(e.target.value);
+    });
+  }
+
   function updateClock() {
     const now = new Date();
     const clockEl = document.getElementById('liveClock');
@@ -359,6 +481,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   setInterval(updateClock, 1000);
   updateClock();
+
+  updateUserInterface();
 
   if (window.initAndonView)     window.initAndonView();
   if (window.initTerminalView)  window.initTerminalView();

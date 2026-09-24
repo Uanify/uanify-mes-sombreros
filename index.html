@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.5.0">
-  <link rel="stylesheet" href="css/components.css?v=2.5.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.6.0">
+  <link rel="stylesheet" href="css/components.css?v=2.6.0">
 </head>
 <body class="industrial-theme">
   <div class="app-layout">
@@ -31,6 +31,19 @@
               🔗 COMPAC SYNC OK
             </span>
           </div>
+        </div>
+
+        <!-- Selector de Perfil / Rol Activo (Simulador de Sesión) -->
+        <div class="sidebar-user-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="user-box-label">Usuario Activo:</span>
+            <span id="sidebarUserRoleBadge" class="role-badge role-badge-admin">👑 Admin</span>
+          </div>
+          <select id="sidebarUserSelect" class="custom-select" style="margin-top:6px; font-size:11.5px; padding:6px 8px;">
+            <option value="admin-1">Edmundo González (Administrador)</option>
+            <option value="ing-1">Ing. Carlos Ortiz (Ingeniero)</option>
+            <option value="sup-1">Juan Manuel Pérez (Supervisor)</option>
+          </select>
         </div>
       </div>
 
@@ -639,6 +652,34 @@
           </div>
         </div>
 
+        <!-- Gestión de Usuarios y Permisos Modulares (RBAC) -->
+        <div class="card-glass" style="padding:22px; margin-bottom:24px;">
+          <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3>👥 Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
+              <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear ingenieros, supervisores y administradores, y definir el acceso a cada módulo.</p>
+            </div>
+            <button class="btn-primary" id="btnOpenCreateUserModal">
+              + Crear Nuevo Usuario
+            </button>
+          </div>
+          <div class="downtime-table-wrapper" style="margin-top:14px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Usuario & Correo</th>
+                  <th>Rol</th>
+                  <th>Permisos Modulares Asignados</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <!-- Llenado dinámico en config.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- Tabla de Configuración de Departamentos -->
         <div class="card-glass" style="padding:22px;">
           <div class="card-head">
@@ -730,6 +771,113 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: CREAR NUEVO USUARIO (ADMIN ONLY)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalCreateUser">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <h3>👤 Crear Nuevo Usuario de Planta</h3>
+        <button class="modal-close" id="btnCloseCreateUserModal">&times;</button>
+      </div>
+      <form id="formCreateUser" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="form-group">
+          <label class="field-label">Nombre Completo:</label>
+          <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Correo Electrónico / Identificador:</label>
+          <input type="email" id="newUserEmail" class="form-input" placeholder="rsanchez@tombstone.mx" required>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Rol del Usuario:</label>
+          <select id="newRoleSelect" class="custom-select">
+            <option value="supervisor" selected>📋 Supervisor (Piso / iPad en Almacenes)</option>
+            <option value="ingeniero">⚙️ Ingeniero (Procesos, OEE y Subensambles)</option>
+            <option value="admin">👑 Administrador (Acceso y Configuración Total)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Permisos de Acceso por Módulo:</label>
+          <div class="permissions-checklist">
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="andon" checked>
+              <span>📺 Tablero Andon (Piso)</span>
+            </label>
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="terminal" checked>
+              <span>🏷️ Lotes, QR & Almacenes (iPad)</span>
+            </label>
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="engineer">
+              <span>📊 Ingeniería & Subensambles (Tafiletes, Hormas)</span>
+            </label>
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="executive">
+              <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+            </label>
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="config">
+              <span>⚙️ Configuración de Planta & Usuarios</span>
+            </label>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('modalCreateUser').classList.remove('active')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Usuario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: EDITAR PERMISOS DE USUARIO (RBAC)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalEditPermissions">
+    <div class="modal-box card-glass">
+      <div class="modal-header">
+        <div>
+          <h3>✏️ Configurar Permisos Modulares</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+            Usuario: <strong id="editUserNameTitle" style="color:var(--text-primary);">-</strong>
+            <span id="editUserRoleBadge" class="role-badge" style="margin-left:6px;">-</span>
+          </p>
+        </div>
+        <button class="modal-close" id="btnCloseEditPermsModal">&times;</button>
+      </div>
+      <form id="formEditPermissions" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <input type="hidden" id="editUserId">
+        <p style="font-size:12.5px; color:var(--text-secondary);">Selecciona los módulos a los que este usuario tendrá autorización de ingreso:</p>
+        <div class="permissions-checklist">
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="andon">
+            <span>📺 Tablero Andon (Piso)</span>
+          </label>
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="terminal">
+            <span>🏷️ Lotes, QR & Almacenes (iPad)</span>
+          </label>
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="engineer">
+            <span>📊 Ingeniería & Subensambles (Tafiletes, Hormas)</span>
+          </label>
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="executive">
+            <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+          </label>
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="config">
+            <span>⚙️ Configuración de Planta & Usuarios</span>
+          </label>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('modalEditPermissions').classList.remove('active')">Cancelar</button>
+          <button type="submit" class="btn-primary">Actualizar Permisos</button>
+        </div>
+      </form>
     </div>
   </div>
 

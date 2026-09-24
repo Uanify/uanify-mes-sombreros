@@ -1283,3 +1283,101 @@
   background: #F1F5F9;
   border-color: var(--border-medium);
 }
+
+/* 10. GESTIÓN DE USUARIOS Y ROLES (RBAC) */
+.sidebar-user-box {
+  background: var(--bg-core);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.user-box-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.role-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.role-badge-admin {
+  background: var(--color-brand-light);
+  color: var(--color-brand);
+  border: 1px solid var(--color-brand-border);
+}
+
+.role-badge-ingeniero {
+  background: var(--color-blue-bg);
+  color: var(--color-blue);
+  border: 1px solid var(--color-blue-border);
+}
+
+.role-badge-supervisor {
+  background: var(--color-green-bg);
+  color: var(--color-green);
+  border: 1px solid var(--color-green-border);
+}
+
+.perm-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  background: var(--bg-core);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.permissions-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-core);
+  border: 1px solid var(--border-subtle);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.perm-check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.perm-check-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+.nav-btn-restricted {
+  opacity: 0.6;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.nav-btn-restricted:hover {
+  opacity: 0.85;
+}
+
+.tab-lock-icon {
+  font-size: 12px;
+  margin-left: auto;
+}
