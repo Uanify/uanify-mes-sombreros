@@ -8,10 +8,68 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.9.0">
-  <link rel="stylesheet" href="css/components.css?v=2.9.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.10.0">
+  <link rel="stylesheet" href="css/components.css?v=2.10.0">
 </head>
 <body class="industrial-theme">
+
+  <!-- ======================================================================
+       PANTALLA DE LOGIN FORMAL CON SELECTOR DE USUARIOS (RBAC TOMBSTONE)
+       ====================================================================== -->
+  <div id="loginScreen" class="login-screen-overlay" style="display:none;">
+    <div class="login-modal-box">
+      <!-- Header de Login con Identidad Oficial Tombstone Hats -->
+      <div class="login-brand-header">
+        <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="login-logo-img">
+        <div class="login-brand-titles">
+          <h1 class="login-app-title">Tombstone Hats MES</h1>
+          <p class="login-app-sub">Control de Planta, Andon & Trazabilidad de Piso · San Francisco del Rincón, Gto.</p>
+          <span class="system-version-pill" style="margin-top:4px; display:inline-block;">v2.10.0</span>
+        </div>
+      </div>
+
+      <!-- Contenido del Card de Login -->
+      <div class="login-card-content">
+        <div class="login-intro-banner">
+          <div class="login-intro-icon">🏭</div>
+          <div>
+            <strong>Acceso Operativo a Planta Matriz</strong>
+            <p>Selecciona tu perfil de usuario para ingresar al sistema y cargar tus permisos departamentales (RBAC).</p>
+          </div>
+        </div>
+
+        <label class="field-label" style="font-size:12.5px; font-weight:700; margin-bottom:10px; display:block;">Seleccione su Usuario y Rol de Operación:</label>
+
+        <!-- Grid de Tarjetas de Selección de Usuario -->
+        <div class="login-users-grid" id="loginUsersGrid">
+          <!-- Inyectado dinámicamente o estructurado por JS -->
+        </div>
+
+        <!-- Tarjeta de Resumen del Usuario Seleccionado -->
+        <div class="login-user-detail-card" id="loginUserDetailCard">
+          <div class="login-detail-left">
+            <div class="login-detail-avatar" id="loginDetailAvatar">👑</div>
+            <div class="login-detail-info">
+              <h4 id="loginDetailName">Edmundo González</h4>
+              <p id="loginDetailRole">Administrador General · Planta Matriz</p>
+            </div>
+          </div>
+          <span class="role-badge role-badge-admin" id="loginDetailBadge">👑 Admin</span>
+        </div>
+
+        <!-- Botón de Ingreso Principal -->
+        <button type="button" class="btn-primary login-submit-btn" id="btnLoginSubmit">
+          🚀 Ingresar a Planta Tombstone
+        </button>
+
+        <div class="login-footer-info">
+          <span>⏱️ Turno Único (07:00 - 15:30)</span>
+          <span>🔒 Acceso Protegido por Roles RBAC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="app-layout">
     
     <!-- LEFT VERTICAL SIDEBAR -->
@@ -21,7 +79,7 @@
         <div class="brand-container">
           <div class="brand-left">
             <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
-            <span class="system-version-pill" id="systemVersionPill" title="Versión Oficial del Sistema MES v2.9.0">v2.9.0</span>
+            <span class="system-version-pill" id="systemVersionPill" title="Versión Oficial del Sistema MES v2.10.0">v2.10.0</span>
           </div>
           <button id="btnToggleSidebar" class="sidebar-toggle-btn" title="Plegar / Expandir Barra Lateral" aria-label="Alternar barra lateral">
             <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -46,6 +104,9 @@
             <option value="sup-1">Juan Manuel Pérez (Supervisor · Depts D-05 a D-08)</option>
             <option value="sup-2">Roberto Méndez (Supervisor · Depts D-01 a D-04)</option>
           </select>
+          <button id="btnSidebarLogout" class="sidebar-logout-btn" type="button" title="Cerrar sesión y volver al login">
+            🚪 Cerrar Sesión / Cambiar Usuario
+          </button>
         </div>
 
       <!-- Sidebar Navigation Groups -->
@@ -53,29 +114,37 @@
         <!-- Grupo 1: Piso y Operaciones -->
         <div class="nav-group-title">Operación en Piso</div>
         <div class="nav-tabs">
-          <button class="nav-btn active" data-tab="andon">
+          <button class="nav-btn active" data-tab="terminal">
+            <span class="tab-icon">🏷️</span>
+            <span class="tab-label">Terminal de Supervisor</span>
+          </button>
+          <button class="nav-btn" data-tab="andon">
             <span class="tab-icon">📺</span>
             <span class="tab-label">Tablero Andon (Piso)</span>
             <span class="tab-badge">En Vivo</span>
           </button>
-          <button class="nav-btn" data-tab="terminal">
-            <span class="tab-icon">🏷️</span>
-            <span class="tab-label">Lotes, QR & Almacenes</span>
+        </div>
+
+        <!-- Grupo 2: Inventarios & Mano de Obra -->
+        <div class="nav-group-title">Almacén & Personal</div>
+        <div class="nav-tabs">
+          <button class="nav-btn" data-tab="inventory">
+            <span class="tab-icon">📦</span>
+            <span class="tab-label">Almacenes & Hormas</span>
+          </button>
+          <button class="nav-btn" data-tab="operators">
+            <span class="tab-icon">👷</span>
+            <span class="tab-label">Padrón de Operadores</span>
           </button>
         </div>
 
-        <!-- Grupo 2: Ingeniería y Calidad -->
-        <div class="nav-group-title">Ingeniería & Calidad</div>
+        <!-- Grupo 3: Ingeniería y Rendimiento -->
+        <div class="nav-group-title">Ingeniería & Rendimiento</div>
         <div class="nav-tabs">
           <button class="nav-btn" data-tab="engineer">
             <span class="tab-icon">📊</span>
-            <span class="tab-label">Ingeniería & Subensambles</span>
+            <span class="tab-label">Consola de Ingeniería</span>
           </button>
-        </div>
-
-        <!-- Grupo 3: Dirección y Negocio -->
-        <div class="nav-group-title">Gestión & Finanzas</div>
-        <div class="nav-tabs">
           <button class="nav-btn" data-tab="executive">
             <span class="tab-icon">💼</span>
             <span class="tab-label">Dirección & COMPAC</span>
@@ -96,7 +165,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-shift-info">
           <div class="shift-text">
-            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.4</span></span>
+            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.10.0</span></span>
             <span class="shift-title">Turno Único (07:00 - 15:30)</span>
           </div>
           <span class="shift-clock" id="liveClock">00:00:00</span>
@@ -198,10 +267,11 @@
 
         <!-- Sub-navegación por Pestañas del Módulo Terminal -->
         <div class="sub-nav-tabs" data-module="terminal">
-          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Cámara Web en Vivo</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Almacén de Salida</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Visor Tarjeta</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">🗺️ Operación Actual & Rastreador</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">📦 Almacenes Intermedios & Lotes Listos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Almacén Salida</button>
           <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">🚚 Recolección & Traspaso entre Depts</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">🗺️ Mapa de Proceso & Rastreador de Lote</button>
         </div>
 
         <!-- Pestaña 1: Lector QR y Cámara Web Completa -->
@@ -519,6 +589,268 @@
             <div id="processTimelineContainer" class="process-timeline-container">
               <!-- Nodos inyectados dinámicamente por terminal.js -->
             </div>
+          </div>
+        </div>
+
+        <!-- ======================================================================
+             SUBPESTAÑA 3: MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS
+             (Para saber si el departamento anterior ya tiene listos lotes para recoger)
+             ====================================================================== -->
+        <div class="sub-tab-content" id="subtab-terminal-buffer-ready">
+          <div class="card-glass" style="padding:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
+                  📦 Monitor de Almacenes Intermedios · Lotes Listos para Recolección
+                </h3>
+                <p class="section-desc" style="margin-bottom:0;">
+                  Consulta los almacenes de salida de los demás departamentos para saber cuándo terminaron sus lotes y recogerlos de inmediato para que tu departamento empiece su labor.
+                </p>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge-subtle" id="bufferReadyCountBadge">6 lotes en espera de recolección</span>
+                <button class="btn-secondary" id="btnRefreshBufferMonitor" style="padding:6px 12px; font-size:12px;">🔄 Actualizar</button>
+              </div>
+            </div>
+
+            <!-- Filtros de Almacén Intermedio -->
+            <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle);">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <label class="field-label" style="margin-bottom:0; font-size:12px;">Filtrar:</label>
+                <select id="bufferFilterScope" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+                  <option value="all">Ver Todos los Almacenes de Salida</option>
+                  <option value="my-depts">Solo Lotes Listos para Mis Departamentos</option>
+                  <option value="D-01">Almacén Salida D-01 Corte</option>
+                  <option value="D-02">Almacén Salida D-02 Englopado y Camas</option>
+                  <option value="D-05">Almacén Salida D-05 Prensas Hidráulicas</option>
+                  <option value="D-06">Almacén Salida D-06 Recorte y Alambrado</option>
+                  <option value="D-09">Almacén Salida D-09 Pintura y Matizado</option>
+                  <option value="D-12">Almacén Salida D-12 Adorno (Tafilete y Toquilla)</option>
+                </select>
+              </div>
+              <span style="font-size:11.5px; color:var(--text-muted); margin-left:auto;">
+                💡 Presiona "Recoger Lote" para trasladarlo físicamente a tu estación de trabajo y registrar la custodia en tiempo real.
+              </span>
+            </div>
+
+            <!-- Grid de Lotes Listos en Buffers de Salida -->
+            <div class="buffer-ready-grid" id="bufferReadyLotsGrid">
+              <!-- Renderizado dinámicamente por terminal.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECCIÓN: ALMACÉN E INVENTARIO (ALMACENES FÍSICOS & HORMAS)
+           ====================================================================== -->
+      <section class="view-panel" id="view-inventory">
+        <div class="view-hero-bar">
+          <div>
+            <h1 class="view-title">Almacén, Inventarios & Moldes de Hormas</h1>
+            <p class="view-subtitle">Registro central de almacenes físicos, inventario WIP, catálogo maestro de hormas de aluminio maquinado y subensambles</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-primary" onclick="document.getElementById('modalRegisterMold').classList.add('active')">🎩 + Registrar Horma</button>
+          </div>
+        </div>
+
+        <!-- Sub-navegación de Almacenes e Inventarios -->
+        <div class="sub-nav-tabs" data-module="inventory">
+          <button class="sub-tab-btn active" data-subtab="subtab-inventory-warehouses">🏭 Almacenes Físicos de Planta & WIP</button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-molds">🎩 Catálogo Maestro de Hormas & Moldes</button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-subassemblies">🧵 Subensambles (Tafiletes por Talla)</button>
+        </div>
+
+        <!-- Subpestaña 1: Almacenes Físicos de Planta & WIP -->
+        <div class="sub-tab-content active" id="subtab-inventory-warehouses">
+          <!-- Overview Cards de Almacenes -->
+          <div class="warehouses-overview-grid" id="warehousesOverviewGrid">
+            <!-- Renderizado dinámicamente por app.js -->
+          </div>
+
+          <!-- Tabla de Detalle de Almacenes y Stocks -->
+          <div class="card-glass" style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
+                📋 Registro Oficial de Almacenes de Nave Central
+              </h3>
+              <span class="badge-subtle">5 Almacenes Físicos · Tombstone Hats San Francisco del Rincón</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre del Almacén</th>
+                    <th>Tipo / Ubicación</th>
+                    <th>Stock Actual</th>
+                    <th>Materiales y Lotes en Custodia</th>
+                    <th>Capacidad</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="warehousesTableBody">
+                  <!-- Llenado dinámico -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subpestaña 2: Catálogo de Hormas & Moldes -->
+        <div class="sub-tab-content" id="subtab-inventory-molds">
+          <div class="card-glass" style="padding:22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+                  🎩 Catálogo Maestro de Moldes de Hormas de Aluminio (Prensas de Vapor)
+                </h3>
+                <p class="section-desc" style="margin-bottom:0;">
+                  Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas de San Francisco del Rincón.
+                </p>
+              </div>
+              <button class="btn-primary" onclick="document.getElementById('modalRegisterMold').classList.add('active')">
+                + Agregar Nueva Horma
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código Molde</th>
+                    <th>Modelo / Nombre de Horma</th>
+                    <th>Tipo de Horma</th>
+                    <th>Talla (US/MX)</th>
+                    <th>Material</th>
+                    <th>Prensa Asignada</th>
+                    <th>Estatus Operativo</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryMoldsTableBody">
+                  <!-- Inyectado dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subpestaña 3: Subensambles (Tafiletes por Talla) -->
+        <div class="sub-tab-content" id="subtab-inventory-subassemblies">
+          <div class="card-glass" style="padding:22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+                  🧵 Inventario de Subensambles & Tafiletes de Piel por Talla
+                </h3>
+                <p class="section-desc" style="margin-bottom:0;">
+                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Departamento D-12.
+                </p>
+              </div>
+            </div>
+            <div class="tafilete-grid" id="inventoryTafileteGrid">
+              <!-- Renderizado de tafiletes -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECCIÓN: PADRÓN DE OPERADORES DE PLANTA
+           (Consulta de Personal, Puestos y Máquinas para Ingeniería y Supervisión)
+           ====================================================================== -->
+      <section class="view-panel" id="view-operators">
+        <div class="view-hero-bar">
+          <div>
+            <h1 class="view-title">Padrón de Operadores de Planta · Mano de Obra</h1>
+            <p class="view-subtitle">Directorio oficial de personal de piso, máquinas asignadas, piezas procesadas en el turno único y estatus operativo</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-primary" onclick="document.getElementById('modalRegisterOperator').classList.add('active')">👷 + Registrar Operador</button>
+          </div>
+        </div>
+
+        <!-- Estadísticas Rápidas de Operadores -->
+        <div class="operators-stats-banner">
+          <div class="op-stat-card">
+            <span class="op-stat-lbl">Total Operadores en Padrón</span>
+            <div class="op-stat-val" id="opStatTotal">48</div>
+            <small style="color:var(--text-muted); font-size:11px;">Mano de obra registrada</small>
+          </div>
+          <div class="op-stat-card">
+            <span class="op-stat-lbl">Operadores en Turno Hoy</span>
+            <div class="op-stat-val" style="color:var(--color-green);" id="opStatActive">36</div>
+            <small style="color:var(--text-muted); font-size:11px;">100% cobertura de estaciones</small>
+          </div>
+          <div class="op-stat-card">
+            <span class="op-stat-lbl">Piezas Promedio / Operador</span>
+            <div class="op-stat-val" style="color:#2563EB;" id="opStatAvgPzas">87.4</div>
+            <small style="color:var(--text-muted); font-size:11px;">Cadencia del turno</small>
+          </div>
+          <div class="op-stat-card">
+            <span class="op-stat-lbl">Eficiencia Global de Mano de Obra</span>
+            <div class="op-stat-val" style="color:var(--color-brand);" id="opStatEfficiency">92.3%</div>
+            <small style="color:var(--text-muted); font-size:11px;">Rendimiento vs estándar</small>
+          </div>
+        </div>
+
+        <!-- Barra de Filtros y Búsqueda -->
+        <div class="operators-filter-bar">
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; flex:1;">
+            <div style="position:relative; min-width:240px; flex:1;">
+              <input type="text" id="operatorSearchInput" class="form-input" placeholder="🔍 Buscar por nombre, número de nómina o máquina..." style="padding-left:12px;">
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label class="field-label" style="margin-bottom:0; font-size:12px;">Departamento:</label>
+              <select id="operatorDeptFilter" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+                <option value="all">Todos los Departamentos</option>
+                <option value="D-01">D-01 Corte de Telar</option>
+                <option value="D-02">D-02 Englopado y Camas</option>
+                <option value="D-03">D-03 Refuerzos de Corona</option>
+                <option value="D-05">D-05 Prensas Hidráulicas</option>
+                <option value="D-06">D-06 Recorte y Alambrado</option>
+                <option value="D-09">D-09 Pintura y Matizado</option>
+                <option value="D-12">D-12 Adorno (Tafilete y Toquilla)</option>
+              </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label class="field-label" style="margin-bottom:0; font-size:12px;">Estatus:</label>
+              <select id="operatorStatusFilter" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+                <option value="all">Todos los Estatus</option>
+                <option value="Activo">Activos</option>
+                <option value="Incapacidad">Incapacidad</option>
+                <option value="Capacitación">En Capacitación</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Directorio y Tabla de Operadores -->
+        <div class="card-glass" style="padding:22px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
+              👷 Directorio de Operadores de Planta Matriz
+            </h3>
+            <span class="badge-subtle" id="operatorsFilteredCountBadge">Mostrando 7 operadores</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No. Nómina</th>
+                  <th>Nombre Completo</th>
+                  <th>Departamento Asignado</th>
+                  <th>Máquina / Puesto</th>
+                  <th>Turno</th>
+                  <th>Pzas Procesadas Hoy</th>
+                  <th>Estatus</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="operatorsDirectoryTableBody">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -1259,16 +1591,24 @@
           <label class="field-label">Permisos de Acceso por Módulo:</label>
           <div class="permissions-checklist">
             <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="terminal" checked>
+              <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+            </label>
+            <label class="perm-check-item">
               <input type="checkbox" class="new-perm-cb" value="andon" checked>
               <span>📺 Tablero Andon (Piso)</span>
             </label>
             <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="terminal" checked>
-              <span>🏷️ Lotes, QR & Almacenes</span>
+              <input type="checkbox" class="new-perm-cb" value="inventory">
+              <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+            </label>
+            <label class="perm-check-item">
+              <input type="checkbox" class="new-perm-cb" value="operators">
+              <span>👷 Padrón de Operadores de Planta</span>
             </label>
             <label class="perm-check-item">
               <input type="checkbox" class="new-perm-cb" value="engineer">
-              <span>📊 Ingeniería & Subensambles (Tafiletes, Hormas)</span>
+              <span>📊 Consola de Ingeniería & Rendimiento</span>
             </label>
             <label class="perm-check-item">
               <input type="checkbox" class="new-perm-cb" value="executive">
@@ -1308,16 +1648,24 @@
         <p style="font-size:12.5px; color:var(--text-secondary);">Selecciona los módulos a los que este usuario tendrá autorización de ingreso:</p>
         <div class="permissions-checklist">
           <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="terminal">
+            <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+          </label>
+          <label class="perm-check-item">
             <input type="checkbox" class="edit-perm-cb" value="andon">
             <span>📺 Tablero Andon (Piso)</span>
           </label>
           <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="terminal">
-            <span>🏷️ Lotes, QR & Almacenes</span>
+            <input type="checkbox" class="edit-perm-cb" value="inventory">
+            <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+          </label>
+          <label class="perm-check-item">
+            <input type="checkbox" class="edit-perm-cb" value="operators">
+            <span>👷 Padrón de Operadores de Planta</span>
           </label>
           <label class="perm-check-item">
             <input type="checkbox" class="edit-perm-cb" value="engineer">
-            <span>📊 Ingeniería & Subensambles (Tafiletes, Hormas)</span>
+            <span>📊 Consola de Ingeniería & Rendimiento</span>
           </label>
           <label class="perm-check-item">
             <input type="checkbox" class="edit-perm-cb" value="executive">
@@ -1580,11 +1928,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.9.0"></script>
-  <script src="js/andon.js?v=2.9.0"></script>
-  <script src="js/terminal.js?v=2.9.0"></script>
-  <script src="js/engineer.js?v=2.9.0"></script>
-  <script src="js/executive.js?v=2.9.0"></script>
-  <script src="js/config.js?v=2.9.0"></script>
+  <script src="js/app.js?v=2.10.0"></script>
+  <script src="js/andon.js?v=2.10.0"></script>
+  <script src="js/terminal.js?v=2.10.0"></script>
+  <script src="js/engineer.js?v=2.10.0"></script>
+  <script src="js/executive.js?v=2.10.0"></script>
+  <script src="js/config.js?v=2.10.0"></script>
 </body>
 </html>

@@ -20,9 +20,11 @@ window.initConfigView = function() {
   const cfgTaktTime = document.getElementById('cfgTaktTime');
 
   const AvailableModules = [
+    { id: 'terminal',  name: 'Terminal de Supervisor' },
     { id: 'andon',     name: 'Tablero Andon (Piso)' },
-    { id: 'terminal',  name: 'Lotes, QR & Almacenes' },
-    { id: 'engineer',  name: 'Ingeniería & Subensambles' },
+    { id: 'inventory', name: 'Almacenes & Hormas' },
+    { id: 'operators', name: 'Padrón de Operadores' },
+    { id: 'engineer',  name: 'Consola de Ingeniería' },
     { id: 'executive', name: 'Dirección & COMPAC' },
     { id: 'config',    name: 'Configuración de Planta' }
   ];

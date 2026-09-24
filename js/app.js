@@ -94,8 +94,8 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.9.0',
-  activeTab: 'andon',
+  version: '2.10.0',
+  activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
     start: '07:00',
@@ -114,7 +114,7 @@ const UanifyState = {
       email: 'egonzalez@tombstone.mx',
       role: 'admin',
       roleName: 'Administrador General',
-      permissions: ['andon', 'terminal', 'engineer', 'executive', 'config'],
+      permissions: ['terminal', 'andon', 'inventory', 'operators', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
       badge: '👑 Admin'
     },
@@ -124,7 +124,7 @@ const UanifyState = {
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
       roleName: 'Ingeniero de Procesos',
-      permissions: ['andon', 'terminal', 'engineer', 'config'],
+      permissions: ['terminal', 'andon', 'inventory', 'operators', 'engineer', 'config'],
       assignedDepartments: ['*'],
       badge: '⚙️ Ingeniero'
     },
@@ -133,8 +133,8 @@ const UanifyState = {
       name: 'Juan Manuel Pérez',
       email: 'jperez@tombstone.mx',
       role: 'supervisor',
-      roleName: 'Supervisor de Nave y Almacenes (Depts 05-08)',
-      permissions: ['andon', 'terminal'],
+      roleName: 'Supervisor de Nave (Depts 05-08)',
+      permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-05', 'D-06', 'D-07', 'D-08'],
       badge: '📋 Supervisor'
     },
@@ -143,10 +143,167 @@ const UanifyState = {
       name: 'Roberto Méndez',
       email: 'rmendez@tombstone.mx',
       role: 'supervisor',
-      roleName: 'Supervisor de Preparación y Corte (Depts 01-04)',
-      permissions: ['andon', 'terminal'],
+      roleName: 'Supervisor de Preparación (Depts 01-04)',
+      permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-01', 'D-02', 'D-03', 'D-04'],
       badge: '📋 Supervisor'
+    }
+  ],
+
+  // ─── REGISTRO CENTRAL DE ALMACENES DE PLANTA (FÍSICOS & WIP) ─────────────
+  warehouses: [
+    {
+      id: 'wh-raw',
+      code: 'ALM-01',
+      name: 'Almacén 1: Materia Prima & Rollos',
+      type: 'Materia Prima / Corte',
+      location: 'Nave A - Acceso Proveedores',
+      stock: '1,850 m²',
+      items: 'Rollos de Telar 1000X Blanco, Hilo de Unión, Alambre Galvanizado Cal. 19',
+      capPercent: 82,
+      status: 'Óptimo',
+      statusClass: 'badge-status-green'
+    },
+    {
+      id: 'wh-rampa',
+      code: 'ALM-02',
+      name: 'Almacén 2: Rampa WIP & Pulmón de Fraccionamiento',
+      type: 'WIP Intermedio',
+      location: 'Rampa Central (Paso a Prensas)',
+      stock: '240 sombreros',
+      items: '4 Lotes Madre (60 pzas) y 8 Sublotes (15 pzas) en ensamblado',
+      capPercent: 65,
+      status: 'Flujo Normal',
+      statusClass: 'badge-status-blue'
+    },
+    {
+      id: 'wh-press',
+      code: 'ALM-03',
+      name: 'Almacén 3: Pulmón Pre-Prensas & Vapor',
+      type: 'Pulmón de Proceso',
+      location: 'Batería de Prensas Michelagnoli',
+      stock: '75 sombreros',
+      items: 'Sublotes en espera de ciclo de vapor caliente y prensado hidráulico',
+      capPercent: 50,
+      status: 'Normal',
+      statusClass: 'badge-status-green'
+    },
+    {
+      id: 'wh-finish',
+      code: 'ALM-04',
+      name: 'Almacén 4: Producto Terminado & Embarque',
+      type: 'Producto Terminado',
+      location: 'Nave B - Andén de Carga',
+      stock: '520 sombreros',
+      items: 'Sombreros 1000X inspeccionados, con toquilla y tafilete listos para distribución',
+      capPercent: 70,
+      status: 'Listo para Entrega',
+      statusClass: 'badge-status-green'
+    },
+    {
+      id: 'wh-scrap',
+      code: 'ALM-05',
+      name: 'Almacén 5: Merma & Segundas (Venta de Viernes)',
+      type: 'Saldos y Merma',
+      location: 'Área de Segregación Almacén 5',
+      stock: '26 sombreros',
+      items: 'Sombreros regulares con detalles cosméticos leves para remate al mayoreo cada viernes',
+      capPercent: 26,
+      status: 'Venta Programada Viernes',
+      statusClass: 'badge-status-amber'
+    }
+  ],
+
+  // ─── MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS (BUFFER READY) ───────
+  // Permite saber a cualquier supervisor si el departamento previo ya concluyó y colocó lotes en su almacén de salida
+  bufferReadyLots: [
+    {
+      id: 'buf-101',
+      lotId: '1094',
+      isSublot: false,
+      pieces: 60,
+      model: '1000X Master Telar Denver',
+      originDeptCode: 'D-01',
+      originDeptName: 'Corte de Telar',
+      targetDeptCode: 'D-02',
+      targetDeptName: 'Englopado y Camas',
+      waitingMinutes: 8,
+      status: 'Listo para Recoger',
+      notes: '60 lienzos cortados con troquel de precisión listos para baño térmico.'
+    },
+    {
+      id: 'buf-102',
+      lotId: '1093',
+      isSublot: false,
+      pieces: 60,
+      model: '1000X Master Telar El Viejonón',
+      originDeptCode: 'D-02',
+      originDeptName: 'Englopado y Camas',
+      targetDeptCode: 'D-03',
+      targetDeptName: 'Refuerzos de Corona',
+      waitingMinutes: 14,
+      status: 'Listo para Recoger',
+      notes: 'Camas terminadas y englopadas listas para refuerzo de corona.'
+    },
+    {
+      id: 'buf-103',
+      lotId: '49,633-1',
+      isSublot: true,
+      sublotNumber: '1',
+      pieces: 15,
+      model: '1000X Master Telar El Viejonón',
+      originDeptCode: 'D-05',
+      originDeptName: 'Prensas de Hormado',
+      targetDeptCode: 'D-06',
+      targetDeptName: 'Recorte y Alambrado',
+      waitingMinutes: 5,
+      status: 'Listo para Recoger',
+      notes: 'Prensado en Michelagnoli P-02 con horma #55 Viejonón completado.'
+    },
+    {
+      id: 'buf-104',
+      lotId: '49,633-2',
+      isSublot: true,
+      sublotNumber: '2',
+      pieces: 15,
+      model: '1000X Master Telar El Viejonón',
+      originDeptCode: 'D-06',
+      originDeptName: 'Recorte y Alambrado',
+      targetDeptCode: 'D-09',
+      targetDeptName: 'Pintura y Matizado',
+      waitingMinutes: 11,
+      status: 'Listo para Recoger',
+      notes: 'Falda perfilada a 4 1/4" con alambre calibre 19 engarzado.'
+    },
+    {
+      id: 'buf-105',
+      lotId: '49,633-3',
+      isSublot: true,
+      sublotNumber: '3',
+      pieces: 15,
+      model: '1000X Master Telar Chaparral',
+      originDeptCode: 'D-09',
+      originDeptName: 'Pintura y Matizado',
+      targetDeptCode: 'D-10',
+      targetDeptName: 'Brillo y Acabado',
+      waitingMinutes: 19,
+      status: 'Listo para Recoger',
+      notes: 'Matizado blanco aplicado y curado en túnel infrarrojo.'
+    },
+    {
+      id: 'buf-106',
+      lotId: '49,633-4',
+      isSublot: true,
+      sublotNumber: '4',
+      pieces: 15,
+      model: '1000X Master Telar Denver',
+      originDeptCode: 'D-12',
+      originDeptName: 'Adorno (Tafilete y Toquilla)',
+      targetDeptCode: 'C-03',
+      targetDeptName: 'Calidad 3 (Auditoría Final)',
+      waitingMinutes: 6,
+      status: 'Listo para Recoger',
+      notes: 'Tafilete de piel fina talla 58 y toquilla con herraje níquel montados.'
     }
   ],
   
@@ -681,11 +838,13 @@ function getCurrentUser() {
   return UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
 }
 
-// Nombres descriptivos de los 5 módulos
+// Nombres descriptivos de los 7 módulos de planta
 const ModuleNames = {
+  terminal: 'Terminal de Supervisor & Lotes',
   andon: 'Tablero Andon (Piso)',
-  terminal: 'Lotes, QR & Almacenes',
-  engineer: 'Ingeniería & Subensambles',
+  inventory: 'Almacenes & Hormas',
+  operators: 'Padrón de Operadores',
+  engineer: 'Consola de Ingeniería & Rendimiento',
   executive: 'Dirección & COMPAC',
   config: 'Configuración de Planta & Usuarios'
 };
@@ -918,8 +1077,288 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── 1. CONTROL DE PANTALLA DE LOGIN CON SELECTOR DE USUARIO (RBAC) ────────
+  function initLoginScreen() {
+    const loginScreen = document.getElementById('loginScreen');
+    const usersGrid = document.getElementById('loginUsersGrid');
+    const btnSubmit = document.getElementById('btnLoginSubmit');
+    const btnSidebarLogout = document.getElementById('btnSidebarLogout');
+    const detailAvatar = document.getElementById('loginDetailAvatar');
+    const detailName = document.getElementById('loginDetailName');
+    const detailRole = document.getElementById('loginDetailRole');
+    const detailBadge = document.getElementById('loginDetailBadge');
+
+    let selectedUserId = localStorage.getItem('uanify_logged_user') || UanifyState.currentUser || 'admin-1';
+
+    function renderUserGrid() {
+      if (!usersGrid) return;
+      usersGrid.innerHTML = UanifyState.users.map(u => {
+        const isSel = u.id === selectedUserId;
+        let icon = '📋';
+        if (u.role === 'admin') icon = '👑';
+        if (u.role === 'ingeniero') icon = '⚙️';
+        const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts (*)' : u.assignedDepartments.join(', ');
+
+        return `
+          <div class="login-user-card ${isSel ? 'selected' : ''}" data-user-id="${u.id}">
+            <div class="login-user-card-head">
+              <span style="font-size:20px;">${icon}</span>
+              <div class="login-user-card-check">✓</div>
+            </div>
+            <div>
+              <div class="login-user-name">${u.name}</div>
+              <div class="login-user-role">${u.roleName}</div>
+            </div>
+            <div class="login-user-depts">
+              <span>📍</span> <span>${deptsText}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      usersGrid.querySelectorAll('.login-user-card').forEach(card => {
+        card.addEventListener('click', () => {
+          selectedUserId = card.getAttribute('data-user-id');
+          renderUserGrid();
+          updateDetailCard();
+        });
+      });
+    }
+
+    function updateDetailCard() {
+      const u = UanifyState.users.find(x => x.id === selectedUserId) || UanifyState.users[0];
+      if (!u) return;
+
+      let icon = '📋';
+      let badgeClass = 'role-badge-supervisor';
+      if (u.role === 'admin') { icon = '👑'; badgeClass = 'role-badge-admin'; }
+      if (u.role === 'ingeniero') { icon = '⚙️'; badgeClass = 'role-badge-ingeniero'; }
+
+      if (detailAvatar) detailAvatar.textContent = icon;
+      if (detailName) detailName.textContent = u.name;
+      if (detailRole) detailRole.textContent = `${u.roleName} · ${u.email}`;
+      if (detailBadge) {
+        detailBadge.textContent = u.badge;
+        detailBadge.className = `role-badge ${badgeClass}`;
+      }
+    }
+
+    if (btnSubmit) {
+      btnSubmit.addEventListener('click', () => {
+        const user = UanifyState.users.find(u => u.id === selectedUserId);
+        if (!user) return;
+
+        UanifyState.currentUser = selectedUserId;
+        localStorage.setItem('uanify_logged_user', selectedUserId);
+        sessionStorage.setItem('uanify_logged_in', 'true');
+
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (appLayout) appLayout.style.display = 'flex';
+
+        window.switchActiveUser(selectedUserId);
+
+        window.UanifyUI.toast(
+          `¡Bienvenido a Planta Tombstone, ${user.name}! Sesión activa en rol: ${user.roleName}.`,
+          'success',
+          'Acceso Concedido'
+        );
+      });
+    }
+
+    if (btnSidebarLogout) {
+      btnSidebarLogout.addEventListener('click', () => {
+        sessionStorage.removeItem('uanify_logged_in');
+        if (appLayout) appLayout.style.display = 'none';
+        if (loginScreen) {
+          loginScreen.style.display = 'flex';
+          selectedUserId = UanifyState.currentUser;
+          renderUserGrid();
+          updateDetailCard();
+        }
+        window.UanifyUI.toast('Sesión cerrada. Selecciona tu perfil para ingresar.', 'info', 'Cierre de Sesión');
+      });
+    }
+
+    // Inicializar grid y detalle
+    renderUserGrid();
+    updateDetailCard();
+
+    // Comprobación de estado de sesión
+    const isLoggedIn = sessionStorage.getItem('uanify_logged_in') === 'true';
+    if (!isLoggedIn && loginScreen && appLayout) {
+      loginScreen.style.display = 'flex';
+      appLayout.style.display = 'none';
+    } else if (loginScreen && appLayout) {
+      loginScreen.style.display = 'none';
+      appLayout.style.display = 'flex';
+    }
+  }
+
+  // ── 2. RENDER DE SECCIÓN ALMACÉN E INVENTARIO ────────────────────────────
+  function renderInventorySection() {
+    const overviewGrid = document.getElementById('warehousesOverviewGrid');
+    const tableBody = document.getElementById('warehousesTableBody');
+    const moldsTableBody = document.getElementById('inventoryMoldsTableBody');
+    const tafileteGrid = document.getElementById('inventoryTafileteGrid');
+
+    // Cards resumen de almacenes
+    if (overviewGrid && UanifyState.warehouses) {
+      overviewGrid.innerHTML = UanifyState.warehouses.map(wh => `
+        <div class="warehouse-card">
+          <div class="warehouse-card-header">
+            <div>
+              <span class="warehouse-code-badge">${wh.code}</span>
+              <h4 style="font-size:14px; font-weight:700; margin:6px 0 2px 0;">${wh.name}</h4>
+              <span style="font-size:11px; color:var(--text-muted);">${wh.location}</span>
+            </div>
+            <span class="badge-status ${wh.statusClass}">${wh.status}</span>
+          </div>
+          <div class="warehouse-stock-big">${wh.stock}</div>
+          <div class="warehouse-items-desc">${wh.items}</div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px; font-weight:600;">
+              <span>Ocupación de Capacidad:</span>
+              <span style="color:var(--color-brand);">${wh.capPercent}%</span>
+            </div>
+            <div class="progress-track" style="height:6px;">
+              <div class="progress-fill fill-brand" style="width:${wh.capPercent}%;"></div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Tabla de almacenes
+    if (tableBody && UanifyState.warehouses) {
+      tableBody.innerHTML = UanifyState.warehouses.map(wh => `
+        <tr>
+          <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${wh.code}</strong></td>
+          <td><strong>${wh.name}</strong><br><small style="color:var(--text-muted); font-size:11px;">${wh.location}</small></td>
+          <td><span class="badge-subtle">${wh.type}</span></td>
+          <td><strong style="font-size:13.5px;">${wh.stock}</strong></td>
+          <td style="font-size:12px; max-width:280px; color:var(--text-secondary);">${wh.items}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:11.5px; font-weight:700;">${wh.capPercent}%</span>
+              <div class="progress-track" style="width:60px; height:5px;">
+                <div class="progress-fill fill-brand" style="width:${wh.capPercent}%;"></div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge-status ${wh.statusClass}">● ${wh.status}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Tabla de moldes y hormas de aluminio
+    if (moldsTableBody && UanifyState.molds) {
+      moldsTableBody.innerHTML = UanifyState.molds.map(m => {
+        let statusBadge = '<span class="badge-status" style="background:#ECFDF5; color:#047857; font-weight:700;">● Disponible</span>';
+        if (m.status === 'En Uso') {
+          statusBadge = '<span class="badge-status" style="background:#FEF3C7; color:#B45309; font-weight:700;">⚙️ En Uso</span>';
+        }
+        return `
+          <tr>
+            <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${m.code}</strong></td>
+            <td><strong>${m.name}</strong></td>
+            <td><span class="badge-subtle">${m.tipo}</span></td>
+            <td><strong>${m.size}</strong></td>
+            <td style="font-size:12px;">${m.material}</td>
+            <td><span style="font-size:12px; font-family:'JetBrains Mono';">${m.machine}</span></td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Inventario de subensambles (Tafiletes)
+    if (tafileteGrid) {
+      const tafiletes = [
+        { size: '54', name: 'Talla 54 (6 3/4)', stock: 48, min: 25, status: 'Óptimo' },
+        { size: '55', name: 'Talla 55 (6 7/8)', stock: 92, min: 30, status: 'Óptimo' },
+        { size: '56', name: 'Talla 56 (7)', stock: 114, min: 40, status: 'Óptimo' },
+        { size: '57', name: 'Talla 57 (7 1/8)', stock: 86, min: 35, status: 'Óptimo' },
+        { size: '58', name: 'Talla 58 (7 1/4)', stock: 135, min: 45, status: 'Óptimo' },
+        { size: '59', name: 'Talla 59 (7 3/8)', stock: 64, min: 25, status: 'Óptimo' },
+        { size: '60', name: 'Talla 60 (7 1/2)', stock: 32, min: 20, status: 'Alerta Stock' }
+      ];
+
+      tafileteGrid.innerHTML = tafiletes.map(t => `
+        <div class="tafilete-card card-glass" style="padding:14px; border:1px solid var(--border-subtle); border-radius:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="font-size:14px; color:var(--text-primary);">${t.name}</strong>
+            <span class="badge-status ${t.status === 'Óptimo' ? 'badge-status-green' : 'badge-status-amber'}">${t.status}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div>
+              <span style="font-size:11px; color:var(--text-muted); display:block;">Stock Listo para Adorno:</span>
+              <strong style="font-size:20px; font-family:var(--font-display); color:var(--color-brand);">${t.stock} pzas</strong>
+            </div>
+            <span style="font-size:11px; color:var(--text-muted);">Mínimo: ${t.min}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // ── 3. RENDER DE PADRÓN DE OPERADORES DIRECTORY ──────────────────────────
+  function renderOperatorsDirectory() {
+    const tableBody = document.getElementById('operatorsDirectoryTableBody');
+    const searchInput = document.getElementById('operatorSearchInput');
+    const deptFilter = document.getElementById('operatorDeptFilter');
+    const statusFilter = document.getElementById('operatorStatusFilter');
+    const badgeCount = document.getElementById('operatorsFilteredCountBadge');
+    if (!tableBody || !UanifyState.operators) return;
+
+    function doRender() {
+      const q = (searchInput ? searchInput.value.toLowerCase().trim() : '');
+      const dept = (deptFilter ? deptFilter.value : 'all');
+      const st = (statusFilter ? statusFilter.value : 'all');
+
+      const filtered = UanifyState.operators.filter(op => {
+        const matchSearch = !q || op.name.toLowerCase().includes(q) || op.empId.toLowerCase().includes(q) || op.machine.toLowerCase().includes(q);
+        const matchDept = dept === 'all' || op.deptCode === dept;
+        const matchStatus = st === 'all' || op.status === st;
+        return matchSearch && matchDept && matchStatus;
+      });
+
+      if (badgeCount) {
+        badgeCount.textContent = `Mostrando ${filtered.length} de ${UanifyState.operators.length} operadores`;
+      }
+
+      tableBody.innerHTML = filtered.map(op => {
+        const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+        return `
+          <tr>
+            <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${op.empId}</strong></td>
+            <td><strong>${op.name}</strong></td>
+            <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
+            <td style="font-size:12px;">${op.machine}</td>
+            <td><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
+            <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
+            <td><span class="badge-status" style="background:#ECFDF5; color:#047857; font-weight:700;">● ${op.status}</span></td>
+            <td>
+              <button class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="window.UanifyUI.toast('Operador ${op.name} asignado en ${op.machine}.', 'info', 'Ficha Operativa')">
+                👁️ Ficha
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (searchInput) searchInput.addEventListener('input', doRender);
+    if (deptFilter) deptFilter.addEventListener('change', doRender);
+    if (statusFilter) statusFilter.addEventListener('change', doRender);
+
+    doRender();
+  }
+
+  initLoginScreen();
   initSubTabs();
   updateUserInterface();
+  renderInventorySection();
+  renderOperatorsDirectory();
 
   if (window.initAndonView)     window.initAndonView();
   if (window.initTerminalView)  window.initTerminalView();

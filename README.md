@@ -1,11 +1,11 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.9.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.10.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
-Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)** para la reunión de diagnóstico y levantamiento técnico con **Dirección (Edmundo)** y el **Ingeniero de Producción**.
+Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)** para la digitalización integral de Planta Matriz Tombstone Hats en San Francisco del Rincón, Guanajuato.
 
 - **Web Oficial del Cliente:** [Tombstone Hats](https://tombstone.mx/)
 - **Demostración en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -13,27 +13,20 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## 🎯 Caso de Uso Tombstone Hats
+## 🎯 Arquitectura Funcional Tombstone Hats (v2.10.0)
 
-Tombstone Hats es una de las marcas insignia de sombreros, texanas y moda vaquera en México y EE.UU., fabricados en el clúster de San Francisco del Rincón.
+El sistema MES está estructurado en 7 módulos especializados con autenticación visual por roles (RBAC):
 
-Este prototipo MES resuelve el dolor operativo central identificado en el piso:
-1. **Prensas de Hormado térmico y vapor:** Conteo automático e infalible con pedales/pulsadores Poka-Yoke de ciclos de prensado para modelos emblemáticos (*1000X Master Telar Denver, El Viejonón, Laredo, Frontier*).
-2. **Sustitución de pizarrones manuales:** Pantallas Smart TV en la nave central con avance hora por hora, métricas de cumplimiento y Takt Time.
-3. **Consola para el Ingeniero de Producción:** Detección de cuellos de botella entre hormado y ribeteado de tafilete, y cálculo automático del **OEE** (*Disponibilidad × Rendimiento × Calidad*).
-4. **Visibilidad Financiera para Edmundo:** Conversión instantánea de texanas terminadas a valor monetario ($801,720+ MXN en lote del turno @ $1,310 catálogo Tombstone), costo de merma y payback proyectado en **2.1 meses**.
-
----
-
-## 🚀 Módulos del Sistema
-
-| Módulo | Usuario | Funcionalidad Clave |
+| Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
-| **1. 📺 Tablero Andon (Piso)** | Supervisores y Operarios | Pantalla de 50" en nave central. Estado en vivo de las estaciones Tombstone, ritmo Takt Time (42s) y avance hora por hora. |
-| **2. ⚙️ Terminal Puesto / Prensas** | Operarios de Estación | Simulador de **Pedal Mecánico de Prensas** (+1 Texana Tombstone OK). Selector de catálogo (Denver, Viejonón, Laredo, Frontier), reporte de mermas y paros de máquina (cambio de horma SMED, vapor). *Atajo: Tecla ESPACIO o ENTER.* |
-| **3. 📊 Consola de Ingeniería** | Ingeniero de Producción | Métricas OEE desagregadas (A: 94.2%, P: 91.8%, Q: 97.8%), visualizador de cuellos de botella (WIP) y bitácora de minutos perdidos por paro. |
-| **4. 💼 Dashboard Ejecutivo** | Edmundo (Dirección) | Métricas directivas en tiempo real: valor del lote ($801,720 MXN), cumplimiento de pedidos B2B mayoristas y propuesta comercial por fases. |
-| **5. 🛠️ Configuración & Planta** | Admin & Ingeniero | Parámetros generales, gestión RBAC, padrón de operadores, catálogo departamental, registro de filtros de calidad y secuencias de rutas por modelo. |
+| **0. 🔐 Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04) con persistencia de sesión y logout. |
+| **1. 🏷️ Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, **Monitor de Almacenes Intermedios** (lotes listos para recolección entre departamentos) y recolección/traspaso. |
+| **2. 📺 Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s) y comparación hora por hora de producción. |
+| **3. 📦 Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | Registro de 5 almacenes físicos (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Terminado, Merma de Viernes), catálogo maestro de moldes de hormas de aluminio maquinado y stock de tafiletes por talla. |
+| **4. 👷 Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos. |
+| **5. 📊 Consola de Ingeniería** | Ingeniero de Procesos | Análisis de OEE desagregado (Disponibilidad, Rendimiento, Calidad), gráficas horarias de avance, bitácora de paros SMED y balanceo de líneas. |
+| **6. 💼 Dirección & COMPAC** | Edmundo (Dirección) | Métricas ejecutivas, valorización del lote en catálogo ($1,310 MXN), vales de entrega digital y enlace con CONTPAQi. |
+| **7. ⚙️ Configuración de Planta** | Admin & Ingeniero | Horario de turno (informativo), meta semanal (4,250 pzas), alta de departamentos con operadores, áreas de calidad y secuencias de rutas por modelo. |
 
 ---
 

@@ -853,6 +853,139 @@ window.initTerminalView = function() {
     });
   }
 
+  // ── 8. MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS (BUFFER MONITOR) ───
+  // "para poder consultar los demás almacenes y así saber si el otro ya tiene listo lotes para que yo lo agarre"
+  const bufferGrid = document.getElementById('bufferReadyLotsGrid');
+  const bufferFilterScope = document.getElementById('bufferFilterScope');
+  const bufferCountBadge = document.getElementById('bufferReadyCountBadge');
+  const btnRefreshBuffer = document.getElementById('btnRefreshBufferMonitor');
+
+  function renderBufferReadyLots() {
+    if (!bufferGrid || !UanifyState.bufferReadyLots) return;
+    const filter = bufferFilterScope ? bufferFilterScope.value : 'all';
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const myDepts = user.assignedDepartments || ['*'];
+
+    const filtered = UanifyState.bufferReadyLots.filter(item => {
+      if (filter === 'my-depts') {
+        if (myDepts.includes('*')) return true;
+        return myDepts.includes(item.targetDeptCode);
+      }
+      if (filter !== 'all') {
+        return item.originDeptCode === filter;
+      }
+      return true;
+    });
+
+    if (bufferCountBadge) {
+      bufferCountBadge.textContent = `${filtered.length} lotes en espera de recolección`;
+    }
+
+    if (filtered.length === 0) {
+      bufferGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding:30px; text-align:center; background:#F8FAFC; border-radius:12px; border:1px dashed var(--border-subtle);">
+          <span style="font-size:32px;">📭</span>
+          <h4 style="margin:8px 0 4px 0; color:var(--text-primary);">No hay lotes en espera en este almacén</h4>
+          <p style="margin:0; font-size:12px; color:var(--text-muted);">Los departamentos previos están procesando piezas o no han depositado en su almacén de salida.</p>
+        </div>
+      `;
+      return;
+    }
+
+    bufferGrid.innerHTML = filtered.map(item => {
+      const isTargetForMe = myDepts.includes('*') || myDepts.includes(item.targetDeptCode);
+
+      return `
+        <div class="buffer-ready-card ${isTargetForMe ? 'ready-for-me' : ''}">
+          <div class="buffer-card-header">
+            <div>
+              <div class="buffer-route-flow">
+                <span>Almacén Salida: <strong>${item.originDeptCode}</strong></span>
+                <span class="buffer-route-arrow">➔</span>
+                <span>Destino: <strong style="color:var(--color-brand);">${item.targetDeptCode}</strong></span>
+              </div>
+              <span class="buffer-lot-tag">Folio ${item.lotId}</span>
+            </div>
+            <span class="buffer-time-badge">⏳ Esperando ${item.waitingMinutes}m</span>
+          </div>
+
+          <div class="buffer-lot-meta">
+            <div><strong>${item.pieces} Sombreros</strong> · ${item.model}</div>
+            <div style="color:var(--text-muted); font-size:11.5px; margin-top:2px;">
+              De: ${item.originDeptName} ➔ Para: ${item.targetDeptName}
+            </div>
+            <div style="margin-top:6px; font-size:11px; background:rgba(0,0,0,0.03); padding:6px 8px; border-radius:6px; font-style:italic;">
+              "${item.notes}"
+            </div>
+          </div>
+
+          <div class="buffer-actions-row">
+            <button class="btn-primary" style="flex:1; padding:8px 12px; font-size:12px;" onclick="window.collectBufferLot('${item.id}')">
+              🚚 Recoger Lote (${item.pieces} pzas)
+            </button>
+            <button class="btn-secondary" style="padding:8px 10px; font-size:12px;" onclick="window.previewBufferLot('${item.lotId}')" title="Ver en Rastreador">
+              👁️
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.collectBufferLot = function(bufferId) {
+    const itemIndex = UanifyState.bufferReadyLots.findIndex(b => b.id === bufferId);
+    if (itemIndex === -1) return;
+    const item = UanifyState.bufferReadyLots[itemIndex];
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+
+    window.UanifyUI.confirm(
+      'Confirmar Recolección de Lote',
+      `¿Deseas recolectar el Lote ${item.lotId} (${item.pieces} pzas) desde el almacén de salida de "${item.originDeptName}" para trasladarlo a tu departamento "${item.targetDeptName}"?`,
+      () => {
+        UanifyState.bufferReadyLots.splice(itemIndex, 1);
+        renderBufferReadyLots();
+
+        const cleanLotId = item.lotId.split('-')[0].replace(',', '');
+        const targetLot = UanifyState.activeLots.find(l => l.lotId.replace(',', '') === cleanLotId || l.lotId === item.lotId);
+        if (targetLot) {
+          UanifyState.advanceLot(targetLot.lotId);
+          renderProcessTimeline(targetLot.lotId);
+        }
+
+        window.UanifyUI.toast(
+          `¡Lote ${item.lotId} recogido con éxito! Custodia trasladada a ${item.targetDeptName}. Traslado registrado por ${user.name}.`,
+          'success',
+          '🚚 Lote Recolectado'
+        );
+      },
+      'Sí, Recoger Lote',
+      'Cancelar'
+    );
+  };
+
+  window.previewBufferLot = function(lotId) {
+    activeTrackedLotId = lotId;
+    if (trackerLotSelect) trackerLotSelect.value = lotId;
+    renderProcessTimeline(lotId);
+    
+    const trackerBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-terminal-tracker"]');
+    if (trackerBtn) trackerBtn.click();
+    
+    window.UanifyUI.toast(`Mostrando trazabilidad en vivo de Lote ${lotId}.`, 'info', 'Rastreador');
+  };
+
+  if (bufferFilterScope) {
+    bufferFilterScope.addEventListener('change', renderBufferReadyLots);
+  }
+  if (btnRefreshBuffer) {
+    btnRefreshBuffer.addEventListener('click', () => {
+      renderBufferReadyLots();
+      window.UanifyUI.toast('Almacenes intermedios actualizados en tiempo real.', 'info', 'Monitor Actualizado');
+    });
+  }
+
+  renderBufferReadyLots();
+
   // Inicializar tracker de lotes
   populateTrackerLotSelect();
   renderProcessTimeline(activeTrackedLotId);
@@ -870,6 +1003,7 @@ window.initTerminalView = function() {
   // Reaccionar cuando se cambie de usuario en el sidebar
   EventBus.on('user-switched', () => {
     syncDepartmentScope();
+    renderBufferReadyLots();
   });
 
   syncDepartmentScope();

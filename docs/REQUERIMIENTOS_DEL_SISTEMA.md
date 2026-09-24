@@ -1,7 +1,7 @@
 # 📋 ESPECIFICACIÓN DE REQUERIMIENTOS DE SOFTWARE (SRS / PRD)
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.9.0` | **Versión:** `v2.9.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.10.0` | **Versión:** `v2.10.0`  
 > **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -101,12 +101,29 @@ Este documento formaliza y cataloga la totalidad de **Requerimientos Funcionales
 
 ---
 
-### Bloque G: Consola de Ingeniería, OEE & Dirección
-- **`RF-36` Desglose Matemático de OEE:** Cálculo dinámico de Disponibilidad ($A$), Rendimiento ($P$) y Calidad ($Q$) con OEE global de planta.
-- **`RF-37` Control de Subensambles (Tafiletes por Talla):** Monitoreo de stock de badanas de piel por tallas (55 a 60 cm), existencias reservadas y disponibles.
-- **`RF-38` Catálogo de Hormas y Moldes:** Registro de hormas de aluminio fundido (Roper, Chaparral, Viejón, Laredo, Frontier) vinculadas a prensas de vapor e hidráulicas.
+### Bloque G: Consola Especializada de Ingeniería & Rendimiento
+- **`RF-36` Desglose Matemático de OEE de Planta:** Cálculo dinámico y en tiempo real de Disponibilidad ($A$), Rendimiento ($P$) y Calidad ($Q$) con OEE global Tombstone (>80% clase mundial).
+- **`RF-37` Gráficas de Avance Horario vs Takt Time:** Visualización de producción real hora a hora contra la meta programada de 850 pzas/turno para identificar desviaciones y fatiga de línea.
+- **`RF-38` Bitácora de Paros e Incidencias SMED:** Registro de minutos perdidos por cambio de moldes de horma, mantenimiento mecánico o fallas de vapor.
 - **`RF-39` Valorización Financiera en Tiempo Real:** Conversión automática de piezas producidas a valor monetario de catálogo Tombstone ($1,310 MXN/pza), costo de merma y valor de segundas.
 - **`RF-40` Enlace e Integración con COMPAC (CONTPAQi):** Generación de vales de entrega digitales y preparación de pre-facturas para mayoristas sincronizables con CONTPAQi.
+
+---
+
+### Bloque H: Acceso, Autenticación Visual & Sesión de Planta (Login RBAC)
+- **`RF-41` Pantalla de Login Formal con Selector de Usuario:** Interfaz dedicada de acceso inicial (`#loginScreen`) que no exige contraseñas por teclado sino que despliega una cuadrícula interactiva con las tarjetas de los usuarios de planta (Edmundo González - Admin, Ing. Carlos Ortiz - Ingeniero, Juan Manuel Pérez - Supervisor Depts 05-08, Roberto Méndez - Supervisor Depts 01-04), visualizando avatar, rol, badge y departamentos asignados, con botón "Ingresar a Planta Tombstone" y persistencia de sesión.
+- **`RF-42` Cierre de Sesión y Conmutación Rápida:** Botón en la barra lateral "Cerrar Sesión / Cambiar Usuario" que suspende la sesión activa y retorna a la pantalla de login para conmutar de rol entre turnos o auditorías.
+
+---
+
+### Bloque I: Almacenes Físicos, Hormas & Personal de Planta
+- **`RF-43` Monitor de Almacenes Intermedios & Lotes Listos para Recolección:** Subpestaña en la Terminal de Supervisor para consultar los almacenes de salida de todos los departamentos en tiempo real y conocer qué lotes han sido concluidos por el departamento previo y están esperando a ser recogidos por el siguiente departamento, con botón de recolección directa "Recoger Lote".
+- **`RF-44` Módulo Centralizado de Almacenes e Inventarios (`inventory`):** Módulo dedicado en la barra lateral para el control de:
+  - Almacenes físicos de planta (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Producto Terminado y Merma de Segundas para Venta de Viernes) con capacidades y stocks.
+  - Catálogo maestro de moldes de hormas de aluminio maquinado (Johnson, Sonora, Chaparral, Viejonón, Denver, Bullrider, Laredo, Frontier) con estatus y prensa vinculada.
+  - Subensambles de tafiletes de piel por talla (55 a 60).
+- **`RF-45` Padrón de Operadores para Consulta de Ingeniería y Supervisión (`operators`):** Módulo dedicado en la barra lateral para la consulta y auditoría de la mano de obra de nave, con buscador en vivo, filtros por departamento y estatus, métricas de piezas procesadas hoy por operador y botón de registro de operador.
+- **`RF-46` Consola Especializada de Rendimiento e Ingeniería (`engineer`):** Módulo reestructurado para análisis exclusivo de KPIs de ingeniería: OEE desagregado, gráficas horarias vs Takt Time, bitácora de paros e incidencias y balanceo de estaciones.
 
 ---
 
@@ -169,7 +186,13 @@ Este documento formaliza y cataloga la totalidad de **Requerimientos Funcionales
 | **RF-34** | Ocultamiento Estricto de Módulos (Sin Candados) | Navegación General | `v2.8.3` | ✅ En Producción |
 | **RF-35** | Barra Lateral Plegable con Persistencia | Navegación General | `v2.8.3` | ✅ En Producción |
 | **RF-36** | Desglose Matemático de OEE de Planta | Ingeniería | `v2.0.0` | ✅ En Producción |
-| **RF-37** | Stock de Tafiletes por Talla (55-60) | Ingeniería | `v2.0.0` | ✅ En Producción |
-| **RF-38** | Catálogo de Hormas y Moldes de Aluminio | Ingeniería | `v2.8.0` | ✅ En Producción |
+| **RF-37** | Gráficas de Avance Horario vs Takt Time | Ingeniería | `v2.10.0` | ✅ En Producción |
+| **RF-38** | Bitácora de Paros e Incidencias SMED | Ingeniería | `v2.10.0` | ✅ En Producción |
 | **RF-39** | Valorización Financiera en Tiempo Real | Dirección | `v2.0.0` | ✅ En Producción |
 | **RF-40** | Enlace y Vales de Entrega COMPAC | Dirección | `v2.5.0` | ✅ En Producción |
+| **RF-41** | Pantalla de Login Formal con Selector de Usuario | Acceso / Login | `v2.10.0` | ✅ En Producción |
+| **RF-42** | Cierre de Sesión y Conmutación Rápida | Barra Lateral / Login | `v2.10.0` | ✅ En Producción |
+| **RF-43** | Monitor de Almacenes Intermedios & Lotes Listos | Terminal de Planta | `v2.10.0` | ✅ En Producción |
+| **RF-44** | Módulo Central de Almacenes & Hormas (`inventory`) | Almacenes e Inventarios | `v2.10.0` | ✅ En Producción |
+| **RF-45** | Módulo de Padrón de Operadores (`operators`) | Padrón de Mano de Obra | `v2.10.0` | ✅ En Producción |
+| **RF-46** | Consola Especializada de Ingeniería (`engineer`) | Consola de Ingeniería | `v2.10.0` | ✅ En Producción |
