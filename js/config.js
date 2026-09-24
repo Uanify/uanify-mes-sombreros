@@ -32,19 +32,35 @@ window.initConfigView = function() {
     if (!tableBody || !UanifyState || !UanifyState.stations) return;
 
     tableBody.innerHTML = UanifyState.stations.map((st, idx) => {
-      const isQuality = st.id.startsWith('calidad');
-      const badgeStyle = isQuality 
-        ? 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);'
-        : 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
+      const isQuality = st.id.startsWith('calidad') || st.id.includes('calidad');
+      const isLogistics = st.id.includes('almacen') || st.id.includes('logistica');
+      let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
+      let typeLabel = 'Proceso Productivo';
+      if (isQuality) {
+        badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
+        typeLabel = 'Control de Calidad';
+      } else if (isLogistics) {
+        badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
+        typeLabel = 'Logística y Almacén';
+      }
+
+      // Buscar operadores asignados a este departamento
+      const deptOps = (UanifyState.operators || []).filter(op => 
+        op.deptCode === st.code || op.department === st.name || (op.deptName && op.deptName === st.name)
+      );
+      const opsBadges = deptOps.length > 0
+        ? deptOps.map(o => `<span class="badge-subtle" style="font-size:10.5px; margin-right:4px; display:inline-block; margin-bottom:2px;" title="${o.machine || ''}">👤 ${o.name.split(' ')[0]}</span>`).join('')
+        : `<span style="color:var(--text-muted); font-size:11px;">1 asignado (${st.operator})</span>`;
 
       return `
         <tr>
           <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</strong></td>
           <td><strong>${st.name}</strong></td>
-          <td><span class="badge-subtle">${isQuality ? 'Control de Calidad' : 'Proceso Productivo'}</span></td>
+          <td><span class="badge-subtle">${typeLabel}</span></td>
           <td><span style="font-family:'JetBrains Mono';">${st.cycleTime || '35s'}</span></td>
           <td>${st.target || 850} pzas</td>
-          <td>${st.operator}</td>
+          <td><strong>${st.operator}</strong></td>
+          <td>${opsBadges}</td>
           <td><span class="badge-status" style="${badgeStyle}">Activo</span></td>
         </tr>
       `;
@@ -145,7 +161,36 @@ window.initConfigView = function() {
     });
   }
 
-  // ── 4. GUARDAR PARÁMETROS GENERALES (META SEMANAL) ───────────────────────
+  // ── Sincronización en vivo de los inputs del Horario de Turno
+  const cfgShiftStart = document.getElementById('cfgShiftStart');
+  const cfgShiftEnd = document.getElementById('cfgShiftEnd');
+  const cfgShiftLunch = document.getElementById('cfgShiftLunch');
+  const cfgShiftDays = document.getElementById('cfgShiftDays');
+  const cfgShiftSummary = document.getElementById('cfgShiftSummary');
+
+  function updateShiftSummaryPreview() {
+    const start = cfgShiftStart?.value || '07:00';
+    const end = cfgShiftEnd?.value || '15:30';
+    const days = cfgShiftDays?.value || 'Lunes a Viernes';
+    if (cfgShiftSummary) {
+      cfgShiftSummary.value = `Turno Único (${start} - ${end} · ${days})`;
+    }
+  }
+
+  [cfgShiftStart, cfgShiftEnd, cfgShiftDays].forEach(input => {
+    if (input) input.addEventListener('input', updateShiftSummaryPreview);
+  });
+
+  // Cargar valores iniciales si están en UanifyState
+  if (UanifyState.shiftSchedule) {
+    if (cfgShiftStart) cfgShiftStart.value = UanifyState.shiftSchedule.start;
+    if (cfgShiftEnd) cfgShiftEnd.value = UanifyState.shiftSchedule.end;
+    if (cfgShiftLunch) cfgShiftLunch.value = UanifyState.shiftSchedule.lunch;
+    if (cfgShiftDays) cfgShiftDays.value = UanifyState.shiftSchedule.days;
+    updateShiftSummaryPreview();
+  }
+
+  // ── 4. GUARDAR PARÁMETROS GENERALES & HORARIO DE TURNO ───────────────────
   if (btnSaveConfig) {
     btnSaveConfig.addEventListener('click', () => {
       const newWeeklyGoal = parseInt(cfgShiftGoal ? cfgShiftGoal.value : 4250, 10);
@@ -155,15 +200,38 @@ window.initConfigView = function() {
       UanifyState.metaShiftTotal = Math.round(newWeeklyGoal / 5);
       UanifyState.taktTimeSec = newTakt;
 
+      // Guardar Horario Informativo del Turno
+      const shiftStart = cfgShiftStart ? cfgShiftStart.value : '07:00';
+      const shiftEnd = cfgShiftEnd ? cfgShiftEnd.value : '15:30';
+      const shiftLunch = cfgShiftLunch ? cfgShiftLunch.value : '12:00 a 12:45 hrs';
+      const shiftDays = cfgShiftDays ? cfgShiftDays.value : 'Lunes a Viernes';
+      const shiftSummary = `Turno Único (${shiftStart} - ${shiftEnd} · ${shiftDays})`;
+
+      UanifyState.shiftSchedule = {
+        start: shiftStart,
+        end: shiftEnd,
+        lunch: shiftLunch,
+        days: shiftDays,
+        summary: shiftSummary
+      };
+      UanifyState.currentShift = shiftSummary;
+      localStorage.setItem('uanify_shift_schedule', JSON.stringify(UanifyState.shiftSchedule));
+
+      // Actualizar pie de barra lateral
+      const shiftTitleEl = document.querySelector('.shift-title');
+      if (shiftTitleEl) {
+        shiftTitleEl.textContent = `Turno Único (${shiftStart} - ${shiftEnd})`;
+      }
+
       const goalEl = document.getElementById('andonGoalTotal');
       const taktEl = document.getElementById('andonTaktTime');
       if (goalEl) goalEl.textContent = `${newWeeklyGoal.toLocaleString()} pzas/sem`;
       if (taktEl) taktEl.textContent = `${newTakt} seg/pza`;
 
       window.UanifyUI.toast(
-        `Meta Semanal fijada en ${newWeeklyGoal.toLocaleString()} piezas (~${UanifyState.metaShiftTotal} pzas/día en Turno Único). Takt Time: ${newTakt}s. Sincronizado con Tablero Andon.`,
+        `Horario guardado: ${shiftStart} a ${shiftEnd} hrs (${shiftDays}). Meta Semanal: ${newWeeklyGoal.toLocaleString()} pzas (~${UanifyState.metaShiftTotal} pzas/día). Takt: ${newTakt}s.`,
         'success',
-        '⚙️ Parámetros de Planta Guardados'
+        '⏰ Horario y Configuración Guardados'
       );
     });
   }
@@ -288,7 +356,7 @@ window.initConfigView = function() {
 
   // ── 6. MODAL: REGISTRAR OPERADOR DE PLANTA ────────────────────────────────
   const modalOperator = document.getElementById('modalRegisterOperator');
-  const btnOpenOperator = document.getElementById('btnOpenRegisterOperatorModal');
+  const btnOpenOperator = document.getElementById('btnOpenRegisterOperatorModal') || document.getElementById('btnOpenCreateOperatorModal');
   const btnCloseOperator = document.getElementById('btnCloseRegisterOperatorModal');
   const formOperator = document.getElementById('formRegisterOperator');
 
@@ -425,6 +493,151 @@ window.initConfigView = function() {
       'Cancelar'
     );
   };
+
+  // ── 9. MODAL: DAR DE ALTA DEPARTAMENTO (CON SUPERVISOR Y VARIOS OPERADORES) ─
+  const modalCreateDept = document.getElementById('modalCreateDepartment');
+  const btnOpenCreateDept = document.getElementById('btnOpenCreateDeptModal');
+  const btnCloseCreateDept = document.getElementById('btnCloseCreateDeptModal');
+  const btnCancelCreateDept = document.getElementById('btnCancelCreateDept');
+  const formCreateDept = document.getElementById('formCreateDepartment');
+  const newDeptSupervisor = document.getElementById('newDeptSupervisor');
+  const newDeptOperatorsList = document.getElementById('newDeptOperatorsList');
+
+  function openCreateDeptModal() {
+    if (!modalCreateDept) return;
+
+    // Sugerir código D-XX
+    const newDeptCodeInput = document.getElementById('newDeptCode');
+    if (newDeptCodeInput) {
+      const nextNum = UanifyState.stations.length + 1;
+      newDeptCodeInput.value = `D-${String(nextNum).padStart(2, '0')}`;
+    }
+
+    // Poblar supervisores
+    if (newDeptSupervisor && UanifyState.users) {
+      const supervisors = UanifyState.users.filter(u => u.role === 'supervisor' || u.role === 'admin' || u.role === 'ingeniero');
+      newDeptSupervisor.innerHTML = supervisors.map(s => `
+        <option value="${s.id}">${s.name} (${s.roleName})</option>
+      `).join('');
+    }
+
+    // Poblar lista de operadores existentes con checkboxes
+    if (newDeptOperatorsList && UanifyState.operators) {
+      newDeptOperatorsList.innerHTML = UanifyState.operators.map(op => `
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:3px 0;">
+          <input type="checkbox" class="dept-op-cb" value="${op.id}" style="cursor:pointer; accent-color:var(--color-brand);">
+          <span><strong>${op.name}</strong> · ${op.deptCode || 'Sin Depto'} (${op.machine || 'Puesto'})</span>
+        </label>
+      `).join('');
+    }
+
+    modalCreateDept.classList.add('active');
+  }
+
+  if (btnOpenCreateDept) btnOpenCreateDept.addEventListener('click', openCreateDeptModal);
+  if (btnCloseCreateDept) btnCloseCreateDept.addEventListener('click', () => modalCreateDept.classList.remove('active'));
+  if (btnCancelCreateDept) btnCancelCreateDept.addEventListener('click', () => modalCreateDept.classList.remove('active'));
+
+  if (formCreateDept) {
+    formCreateDept.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('newDeptCode')?.value.trim() || 'D-15';
+      const name = document.getElementById('newDeptName')?.value.trim();
+      const desc = document.getElementById('newDeptDesc')?.value.trim() || 'Proceso de fabricación en planta';
+      const type = document.getElementById('newDeptType')?.value || 'proceso';
+      const cycleTime = document.getElementById('newDeptCycleTime')?.value.trim() || '35s';
+      const supUserId = newDeptSupervisor?.value;
+      const supervisor = UanifyState.users.find(u => u.id === supUserId) || UanifyState.users[0];
+
+      if (!name) {
+        window.UanifyUI.toast('Por favor ingresa el nombre del departamento.', 'warning', 'Campo Requerido');
+        return;
+      }
+
+      // Si se especificó un operador rápido, crearlo
+      const quickOpName = document.getElementById('newDeptQuickOpName')?.value.trim();
+      const quickOpMachine = document.getElementById('newDeptQuickOpMachine')?.value.trim();
+      if (quickOpName) {
+        if (!UanifyState.operators) UanifyState.operators = [];
+        UanifyState.operators.push({
+          id: 'op-' + Date.now(),
+          empId: 'TB-' + (8000 + UanifyState.operators.length + 1),
+          payrollNo: 'TB-' + (8000 + UanifyState.operators.length + 1),
+          name: quickOpName,
+          deptCode: code,
+          department: name,
+          deptName: name,
+          machine: quickOpMachine || 'Estación Principal',
+          shift: 'Turno Único',
+          producedToday: 0,
+          status: 'Activo'
+        });
+      }
+
+      // Asignar operadores seleccionados
+      const checkedOps = formCreateDept.querySelectorAll('.dept-op-cb:checked');
+      checkedOps.forEach(cb => {
+        const op = UanifyState.operators.find(o => o.id === cb.value);
+        if (op) {
+          op.deptCode = code;
+          op.department = name;
+          op.deptName = name;
+        }
+      });
+
+      // Crear nuevo departamento en stations
+      const newStation = {
+        id: 'dept-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        code: code,
+        name: name,
+        desc: desc,
+        target: 850,
+        produced: 0,
+        scrap: 0,
+        wipWaiting: 0,
+        cycleTime: cycleTime,
+        status: 'running',
+        operator: supervisor.name,
+        note: `Departamento registrado. Supervisado por ${supervisor.name}.`
+      };
+
+      if (!UanifyState.stations) UanifyState.stations = [];
+      UanifyState.stations.push(newStation);
+
+      // Asignar departamento al supervisor si no tiene acceso global '*'
+      if (supervisor.assignedDepartments && supervisor.assignedDepartments[0] !== '*') {
+        if (!supervisor.assignedDepartments.includes(code)) {
+          supervisor.assignedDepartments.push(code);
+        }
+      }
+
+      // Guardar en localStorage
+      try {
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+      } catch (err) {
+        console.warn('Error saving stations:', err);
+      }
+
+      // Re-renderizar tablas e interfaces
+      renderDepartmentsConfig();
+      renderOperatorsTable();
+      renderUsersTable();
+
+      if (typeof EventBus !== 'undefined') {
+        EventBus.emit('stations-updated', UanifyState.stations);
+      }
+
+      modalCreateDept.classList.remove('active');
+      formCreateDept.reset();
+
+      const assignedOpsCount = checkedOps.length + (quickOpName ? 1 : 0);
+      window.UanifyUI.toast(
+        `Departamento ${code} "${name}" registrado exitosamente con supervisor ${supervisor.name} y ${assignedOpsCount} operador(es) asignados.`,
+        'success',
+        '🏢 Departamento Creado'
+      );
+    });
+  }
 };
 
 if (document.readyState === 'loading') {

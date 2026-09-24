@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.8.3` | **Fecha de Actualización:** 24 de Septiembre de 2026  
+> **Versión Actual:** `v2.8.4` | **Fecha de Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -174,12 +174,17 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.3`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.4`.
 
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
 
+- **`v2.8.4` (2026-09-24):**
+  - **Corrección de Arquitectura de Sub-Pestañas en Todos los Módulos:** Resolución de conflicto de especificidad CSS entre `.sub-tab-content.d-none` y `.active`. Se garantizó la alternancia limpia e instantánea de vistas secundarias en Andon, Terminal de Almacenes, Consola de Ingeniería, Dashboard Directivo y Configuración de Planta.
+  - **Definición Informativa del Horario de Turno:** Incorporación de formulario de configuración de turno (Entrada, Salida, Horario de Comida/Descanso, Días Laborables) con previsualización en tiempo real y persistencia en almacenamiento local para sincronización con el pie de la barra lateral.
+  - **Alta Dinámica de Departamentos con Multi-Operadores y Supervisor:** Modal integral de creación de departamentos (`D-XX`) con captura de Takt Time, selección de supervisor responsable y asignación de múltiples operadores de piso mediante lista de verificación interactiva con alta rápida.
+  - **Columna de Operadores Asignados en Configuración:** Vista tabular enriquecida que muestra las insignias de todos los operadores asignados a cada estación de trabajo.
 - **`v2.8.3` (2026-09-24):**
   - **Barra Lateral Plegable (Icon-Only Mode):** Integración de botón toggle en encabezado del sidebar para colapsar la barra lateral a 72px, ganando espacio horizontal en piso y persistiendo en `localStorage`.
   - **Versión del Sistema Prominente y de Alto Contraste:** Rediseño del badge `.system-version-pill` con fondo sólido de marca `#8B5E3C` y texto `#FFFFFF` en negrita, garantizando total visibilidad en el navbar.

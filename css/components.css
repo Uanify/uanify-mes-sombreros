@@ -1424,11 +1424,12 @@
 }
 
 .sub-tab-content {
-  display: block;
+  display: none !important;
 }
 
-.sub-tab-content.d-none {
-  display: none !important;
+.sub-tab-content.active {
+  display: block !important;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ==========================================================================

@@ -175,3 +175,19 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 1. **Información Embebida:** El código QR de cada tarjeta viajera contiene la información operativa estructurada del lote madre (60 pzas) o sublote (15 pzas), incluyendo modelo, orden de producción, talla, calidad y tramo departamental.
 2. **Generación Física:** La generación e impresión formal de estos códigos QR se realiza en el departamento de Ingeniería al momento de emitir las tarjetas viajeras oficiales de planta.
 
+---
+
+## REGLA 0.16: Definición Informativa del Horario de Turno
+
+1. **Propósito Informativo:** El horario de operación del Turno Único (Entrada, Salida, Horario de Comida/Descanso y Días Laborables) se define en el módulo de Configuración como un dato maestro de referencia de planta.
+2. **Previsualización y Sincronización:** Al editar los campos en Configuración, el sistema genera automáticamente un texto resumen normalizado (ej. `07:00 a 15:30 hrs · Lunes a Viernes (Comida: 12:00 a 12:45)`) que se almacena en `localStorage` (`uanify_shift_schedule`) y actualiza dinámicamente la leyenda informativa en el pie de la barra lateral izquierda.
+
+---
+
+## REGLA 0.17: Alta Dinámica de Departamentos con Supervisor y Multi-Operadores
+
+1. **Gestión Integral de Estaciones / Departamentos:** Se debe permitir dar de alta nuevos departamentos (`D-XX`) desde la interfaz de Configuración de Planta.
+2. **Asignación de Supervisor:** Todo departamento registrado debe tener asignado un supervisor de planta responsable, vinculando bidireccionalmente el departamento a la lista de áreas a cargo del supervisor.
+3. **Asignación Múltiple de Operadores:** Al registrar un departamento, el sistema debe permitir seleccionar uno o múltiples operadores de piso existentes mediante una lista de verificación interactiva, o bien permitir dar de alta un nuevo operador de forma inmediata en el mismo flujo.
+4. **Visualización en Catálogo:** La tabla maestra de departamentos debe listar de manera explícita y mediante badges individuales los operadores asignados a cada estación de trabajo.
+

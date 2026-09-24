@@ -94,9 +94,16 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.8.3',
+  version: '2.8.4',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
+  shiftSchedule: {
+    start: '07:00',
+    end: '15:30',
+    lunch: '12:00 a 12:45 hrs',
+    days: 'Lunes a Viernes',
+    summary: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)'
+  },
   
   // ─── GESTIÓN DE USUARIOS Y ROLES (RBAC) ──────────────────────────────────
   currentUser: 'admin-1',
@@ -582,7 +589,8 @@ function initSubTabs() {
   document.querySelectorAll('.sub-nav-tabs').forEach(tabBar => {
     const buttons = tabBar.querySelectorAll('.sub-tab-btn');
     buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const targetId = btn.getAttribute('data-subtab');
         const parentView = btn.closest('.view-panel');
         if (!parentView) return;
@@ -591,13 +599,19 @@ function initSubTabs() {
         buttons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // Mostrar solo el subtab target dentro de este panel
+        // Ocultar todos los subtab contents del panel
         parentView.querySelectorAll('.sub-tab-content').forEach(content => {
           content.classList.remove('active');
+          content.classList.remove('d-none');
+          content.style.setProperty('display', 'none', 'important');
         });
+
+        // Mostrar el subtab seleccionado
         const targetContent = document.getElementById(targetId);
         if (targetContent) {
+          targetContent.classList.remove('d-none');
           targetContent.classList.add('active');
+          targetContent.style.setProperty('display', 'block', 'important');
         }
       });
     });
@@ -649,6 +663,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   setInterval(updateClock, 1000);
   updateClock();
+
+  // Restaurar horario de turno guardado si existe
+  try {
+    const savedSchedule = localStorage.getItem('uanify_shift_schedule');
+    if (savedSchedule) {
+      const parsed = JSON.parse(savedSchedule);
+      UanifyState.shiftSchedule = parsed;
+      UanifyState.currentShift = parsed.summary || `Turno Único (${parsed.start} - ${parsed.end})`;
+      const shiftTitleEl = document.querySelector('.shift-title');
+      if (shiftTitleEl) {
+        shiftTitleEl.textContent = `Turno Único (${parsed.start} - ${parsed.end})`;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar horario de turno:', e);
+  }
+
+  // Restaurar departamentos personalizados si existen
+  try {
+    const savedStations = localStorage.getItem('uanify_custom_stations');
+    if (savedStations) {
+      const parsed = JSON.parse(savedStations);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        UanifyState.stations = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar departamentos:', e);
+  }
 
   // Control de Barra Lateral Plegable (Icon-Only Mode para maximizar espacio de piso)
   const appLayout = document.querySelector('.app-layout');

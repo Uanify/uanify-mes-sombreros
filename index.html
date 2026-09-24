@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.8.3">
-  <link rel="stylesheet" href="css/components.css?v=2.8.3">
+  <link rel="stylesheet" href="css/styles.css?v=2.8.4">
+  <link rel="stylesheet" href="css/components.css?v=2.8.4">
 </head>
 <body class="industrial-theme">
   <div class="app-layout">
@@ -21,7 +21,7 @@
         <div class="brand-container">
           <div class="brand-left">
             <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
-            <span class="system-version-pill" id="systemVersionPill" title="Versión Oficial del Sistema MES v2.8.3">v2.8.3</span>
+            <span class="system-version-pill" id="systemVersionPill" title="Versión Oficial del Sistema MES v2.8.4">v2.8.4</span>
           </div>
           <button id="btnToggleSidebar" class="sidebar-toggle-btn" title="Plegar / Expandir Barra Lateral" aria-label="Alternar barra lateral">
             <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -96,7 +96,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-shift-info">
           <div class="shift-text">
-            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.3</span></span>
+            <span class="shift-label">Horario de Operación · <span class="footer-version-tag">v2.8.4</span></span>
             <span class="shift-title">Turno Único (07:00 - 15:30)</span>
           </div>
           <span class="shift-clock" id="liveClock">00:00:00</span>
@@ -144,14 +144,14 @@
         </div>
 
         <!-- Pestaña 1: Grid de Estaciones -->
-        <div class="sub-tab-content" id="subtab-andon-stations">
+        <div class="sub-tab-content active" id="subtab-andon-stations">
           <div class="stations-grid" id="stationsGrid">
             <!-- Generado dinámicamente en JS -->
           </div>
         </div>
 
         <!-- Pestaña 2: Avance Hora por Hora -->
-        <div class="sub-tab-content d-none" id="subtab-andon-hourly">
+        <div class="sub-tab-content" id="subtab-andon-hourly">
           <div class="hourly-strip card-glass">
             <div class="strip-header">
               <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
@@ -164,7 +164,7 @@
         </div>
 
         <!-- Pestaña 3: Bitácora de Paros -->
-        <div class="sub-tab-content d-none" id="subtab-andon-stops">
+        <div class="sub-tab-content" id="subtab-andon-stops">
           <div class="card-glass" style="padding: 20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
               <h3 style="font-size:15px; font-weight:700;">Bitácora de Paros e Incidencias en Turno Único</h3>
@@ -204,7 +204,7 @@
         </div>
 
         <!-- Pestaña 1: Lector QR y Cámara Web Completa -->
-        <div class="sub-tab-content" id="subtab-terminal-scanner">
+        <div class="sub-tab-content active" id="subtab-terminal-scanner">
           <div class="terminal-layout">
             <div class="terminal-sidebar card-glass">
               <div class="model-badge-box">
@@ -329,7 +329,7 @@
         </div>
 
         <!-- Pestaña 2: Operación en Máquina & Almacén de Salida -->
-        <div class="sub-tab-content d-none" id="subtab-terminal-workflow">
+        <div class="sub-tab-content" id="subtab-terminal-workflow">
           <div class="card-glass" style="padding:24px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
               <div>
@@ -377,7 +377,7 @@
         </div>
 
         <!-- Pestaña 3: Recolección y Traspaso entre Departamentos -->
-        <div class="sub-tab-content d-none" id="subtab-terminal-transfer">
+        <div class="sub-tab-content" id="subtab-terminal-transfer">
           <div class="card-glass" style="padding:24px;">
             <div style="margin-bottom:18px;">
               <h3 style="font-size:16px; font-weight:700;">🚚 Recolección y Traspaso al Siguiente Departamento</h3>
@@ -447,7 +447,7 @@
         </div>
 
         <!-- Pestaña 1: OEE & Eficiencia Global -->
-        <div class="sub-tab-content" id="subtab-engineer-oee">
+        <div class="sub-tab-content active" id="subtab-engineer-oee">
           <!-- OEE Breakdown -->
           <div class="oee-summary-grid">
             <div class="oee-card card-glass">
@@ -524,7 +524,7 @@
         </div>
 
         <!-- Pestaña 2: Catálogo de Hormas & Moldes -->
-        <div class="sub-tab-content d-none" id="subtab-engineer-molds">
+        <div class="sub-tab-content" id="subtab-engineer-molds">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
@@ -557,7 +557,7 @@
         </div>
 
         <!-- Pestaña 3: Stock de Tafiletes & Materiales -->
-        <div class="sub-tab-content d-none" id="subtab-engineer-materials">
+        <div class="sub-tab-content" id="subtab-engineer-materials">
           <!-- Stock de Subensambles (Tafiletes) -->
           <div class="card-glass" style="padding:20px; margin-bottom:20px;">
             <div class="card-head">
@@ -606,7 +606,7 @@
         </div>
 
         <!-- Pestaña 4: KPIs de Rendimiento (Supervisores y Depts) - EXCLUSIVO INGENIEROS Y ADMIN -->
-        <div class="sub-tab-content d-none" id="subtab-engineer-kpis">
+        <div class="sub-tab-content" id="subtab-engineer-kpis">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head">
               <div>
@@ -680,7 +680,7 @@
         </div>
 
         <!-- Pestaña 1: Resumen Financiero -->
-        <div class="sub-tab-content" id="subtab-executive-summary">
+        <div class="sub-tab-content active" id="subtab-executive-summary">
           <!-- Tarjetas Financieras -->
           <div class="exec-kpi-grid">
             <div class="exec-card card-glass">
@@ -710,7 +710,7 @@
         </div>
 
         <!-- Pestaña 2: Pedidos B2B y COMPAC -->
-        <div class="sub-tab-content d-none" id="subtab-executive-b2b">
+        <div class="sub-tab-content" id="subtab-executive-b2b">
           <!-- Enlace con CONTPAQi / COMPAC -->
           <div class="card-glass" style="padding:22px; margin-bottom:20px; border-left: 4px solid var(--color-brand);">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
@@ -727,7 +727,7 @@
         </div>
 
         <!-- Pestaña 3: ROI y Fases -->
-        <div class="sub-tab-content d-none" id="subtab-executive-roi">
+        <div class="sub-tab-content" id="subtab-executive-roi">
           <!-- Comparativa Business Case Uanify MES -->
           <div class="exec-insights-grid">
             <div class="card-glass roi-comparison">
@@ -800,21 +800,48 @@
           <button class="sub-tab-btn" data-subtab="subtab-config-depts">🏢 Departamentos & Asignación</button>
         </div>
 
-        <!-- Pestaña 1: Parámetros Generales & Meta Semanal -->
-        <div class="sub-tab-content" id="subtab-config-params">
+        <!-- Pestaña 1: Parámetros Generales & Horario de Turno -->
+        <div class="sub-tab-content active" id="subtab-config-params">
           <div class="config-grid">
             <!-- Parámetros Generales de Turno -->
             <div class="config-card card-glass">
-              <h3>⏰ Horario de Planta · Turno Único</h3>
-              <div class="form-group">
-                <label class="field-label">Régimen Operativo:</label>
-                <input type="text" class="form-input" id="cfgShiftSelect" value="Turno Único · 07:00 a 15:30 hrs (Lunes a Viernes)" readonly style="background:#F1F5F9; font-weight:600; color:var(--text-main);">
-                <small style="color:var(--text-muted); font-size:11px;">Operación consolidada a un solo turno productivo de 8.5 hrs (45 min comida)</small>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin-bottom:0;">⏰ Horario del Turno de Producción</h3>
+                <span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); font-size:10px; font-weight:700;">Dato Informativo</span>
               </div>
+              
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div class="form-group">
+                  <label class="field-label">Hora de Entrada:</label>
+                  <input type="time" class="form-input" id="cfgShiftStart" value="07:00">
+                </div>
+                <div class="form-group">
+                  <label class="field-label">Hora de Salida:</label>
+                  <input type="time" class="form-input" id="cfgShiftEnd" value="15:30">
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div class="form-group">
+                  <label class="field-label">Receso / Comida:</label>
+                  <input type="text" class="form-input" id="cfgShiftLunch" value="12:00 a 12:45 hrs" placeholder="12:00 a 12:45">
+                </div>
+                <div class="form-group">
+                  <label class="field-label">Días de Operación:</label>
+                  <input type="text" class="form-input" id="cfgShiftDays" value="Lunes a Viernes" placeholder="Lunes a Viernes">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Resumen Informativo del Turno:</label>
+                <input type="text" class="form-input" id="cfgShiftSummary" value="Turno Único (07:00 - 15:30 · Lunes a Viernes)" readonly style="background:#F8FAFC; font-weight:700; color:var(--color-brand); font-family:var(--font-mono);">
+                <small style="color:var(--text-muted); font-size:11px;">Este horario informativo se sincroniza con el encabezado de planta y el pie de navegación.</small>
+              </div>
+
               <div class="form-group">
                 <label class="field-label">Meta Semanal de Planta (Piezas):</label>
                 <input type="number" class="form-input" id="cfgShiftGoal" value="4250">
-                <small style="color:var(--text-muted); font-size:11px;">Meta base semanal para los 14 departamentos de la planta</small>
+                <small style="color:var(--text-muted); font-size:11px;">Meta base semanal para los 14 departamentos de la planta (~850 pzas/día)</small>
               </div>
               <div class="form-group">
                 <label class="field-label">Takt Time Estándar (Segundos por Pieza):</label>
@@ -874,7 +901,7 @@
         </div>
 
         <!-- Pestaña 2: Gestión de Usuarios del Sistema (RBAC) -->
-        <div class="sub-tab-content d-none" id="subtab-config-users">
+        <div class="sub-tab-content" id="subtab-config-users">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
@@ -905,7 +932,7 @@
         </div>
 
         <!-- Pestaña 3: Padrón de Operadores de Planta (No acceden al sistema) -->
-        <div class="sub-tab-content d-none" id="subtab-config-operators">
+        <div class="sub-tab-content" id="subtab-config-operators">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
@@ -938,24 +965,28 @@
         </div>
 
         <!-- Pestaña 4: Departamentos & Asignación a Supervisores -->
-        <div class="sub-tab-content d-none" id="subtab-config-depts">
+        <div class="sub-tab-content" id="subtab-config-depts">
           <div class="card-glass" style="padding:22px;">
-            <div class="card-head">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>Configuración de los 14 Departamentos y Asignación de Supervisores</h3>
-                <p class="section-desc" style="margin-bottom:0;">Un supervisor puede tener asignados múltiples departamentos. Las terminales se adaptan automáticamente a sus áreas asignadas.</p>
+                <h3>🏢 Configuración de Departamentos, Supervisores y Operadores</h3>
+                <p class="section-desc" style="margin-bottom:0;">Un departamento cuenta con un supervisor asignado y su plantilla de operadores de máquina.</p>
               </div>
+              <button class="btn-primary" id="btnOpenCreateDeptModal">
+                + Dar de Alta Departamento
+              </button>
             </div>
-            <div class="downtime-table-wrapper" style="margin-top:14px;">
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th>Código</th>
                     <th>Departamento</th>
                     <th>Tipo</th>
-                    <th>Takt Time Std</th>
-                    <th>Capacidad Semanal</th>
+                    <th>Takt Time</th>
+                    <th>Capacidad</th>
                     <th>Supervisor Asignado</th>
+                    <th>Operadores Asignados</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -1239,6 +1270,79 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: DAR DE ALTA DEPARTAMENTO (CON SUPERVISOR Y OPERADORES)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalCreateDepartment">
+    <div class="modal-box card-glass" style="max-width:540px;">
+      <div class="modal-header">
+        <h3>🏢 Dar de Alta Nuevo Departamento</h3>
+        <button class="modal-close" id="btnCloseCreateDeptModal">&times;</button>
+      </div>
+      <form id="formCreateDepartment" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:grid; grid-template-columns: 130px 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="field-label">Código Depto:</label>
+            <input type="text" id="newDeptCode" class="form-input" placeholder="D-15" required style="font-family:var(--font-mono); font-weight:700;">
+          </div>
+          <div class="form-group">
+            <label class="field-label">Nombre del Departamento:</label>
+            <input type="text" id="newDeptName" class="form-input" placeholder="Bordado Especial & Adornos" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label">Descripción / Estaciones de Trabajo:</label>
+          <input type="text" id="newDeptDesc" class="form-input" placeholder="Estación de costura fina y herrajes vaqueros">
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="field-label">Tipo de Departamento:</label>
+            <select id="newDeptType" class="custom-select">
+              <option value="proceso">Proceso Productivo</option>
+              <option value="calidad">Control de Calidad</option>
+              <option value="logistica">Logística y Almacén</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Takt Time Estándar:</label>
+            <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label">Supervisor de Planta Responsable:</label>
+          <select id="newDeptSupervisor" class="custom-select">
+            <!-- Llenado dinámicamente con supervisores y admins -->
+          </select>
+          <small style="color:var(--text-muted); font-size:11px;">Este departamento se agregará a los departamentos asignados a este supervisor.</small>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label">Operadores Asignados a este Departamento:</label>
+          <div id="newDeptOperatorsList" style="max-height:140px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FAFAFA; display:flex; flex-direction:column; gap:6px;">
+            <!-- Checkboxes de operadores inyectados por JS -->
+          </div>
+          <small style="color:var(--text-muted); font-size:11px;">Selecciona los operadores que trabajarán en las máquinas de este departamento.</small>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre operador (ej. Gabriel Santos)">
+            <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / Puesto (ej. Bordadora 01)">
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-secondary" id="btnCancelCreateDept">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Departamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: CONFIRMACIÓN ESTANDARIZADA IN-APP (SIN ALERT / CONFIRM NATIVO)
        ====================================================================== -->
   <div class="modal-backdrop" id="uanifyConfirmModal">
@@ -1260,11 +1364,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.8.3"></script>
-  <script src="js/andon.js?v=2.8.3"></script>
-  <script src="js/terminal.js?v=2.8.3"></script>
-  <script src="js/engineer.js?v=2.8.3"></script>
-  <script src="js/executive.js?v=2.8.3"></script>
-  <script src="js/config.js?v=2.8.3"></script>
+  <script src="js/app.js?v=2.8.4"></script>
+  <script src="js/andon.js?v=2.8.4"></script>
+  <script src="js/terminal.js?v=2.8.4"></script>
+  <script src="js/engineer.js?v=2.8.4"></script>
+  <script src="js/executive.js?v=2.8.4"></script>
+  <script src="js/config.js?v=2.8.4"></script>
 </body>
 </html>
