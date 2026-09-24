@@ -419,3 +419,31 @@ Excepciones permitidas con style="":
    - El tablero semanal debe estructurarse conforme al corte de producción de San Francisco del Rincón: Jueves, Viernes, Sábado, Lunes, Martes y Miércoles, con meta de 7,500 piezas por proceso.
 5. **Persistencia e Interactividad:**
    - Debe permitir cargar los datos originales de la fotografía (`#btnLoadPhotoData`), simular avances en línea en tiempo real (`#btnSimulateWhiteboardHour`) y mandar a imprimir el reporte oficial de la pizarra.
+
+---
+
+## REGLA 0.32: Terminal de Supervisor, Extracción QR y Almacenes Intermedios (MANDATORIA)
+
+**La experiencia operativa de los supervisores en nave debe estar optimizada para tabletas industriales, con botones táctiles gigantes, cero captura manual redundante y respeto irrestricto a la custodia departamental.**
+
+1. **Extracción Integral desde Código QR (Cero Input Manual):**
+   - Al escanear una tarjeta viajera (por cámara o pistola USB), el sistema debe extraer automáticamente modelo, horma, talla, falda, doblado, orden de producción, operador, origen y destino.
+   - Queda estrictamente prohibido obligar al supervisor a seleccionar manualmente el modelo de sombrero en el escáner.
+2. **Verificación Previa Obligatoria de Tarjeta en Mano:**
+   - Tras escanear, el sistema debe desplegar un modal de verificación previa (`#modalVerifyScannedCard`) mostrando la réplica oficial de la tarjeta viajera física.
+   - El supervisor debe poder descartar sin cambios ("❌ Tarjeta Incorrecta / Escanear de Nuevo") o confirmar ("✅ Confirmar Coincidencia y Proceder") antes de registrar cualquier movimiento.
+3. **Restricción Departamental Estricta (RBAC de Custodia):**
+   - Un supervisor **solo puede mover y depositar lotes correspondientes a sus departamentos asignados** (`assignedDepartments`).
+   - Si intenta trasladar un lote que se encuentra en una estación fuera de su asignación, el sistema debe bloquear la acción y emitir una advertencia explicativa.
+4. **Cálculo Automático de Siguiente Departamento:**
+   - El sistema debe determinar la estación destino de forma automática consultando la ruta de fabricación configurada para el tipo de sombrero (`routeId`), sin requerir selección manual.
+5. **Ergonomía Táctil y Pantalla Completa:**
+   - Botones principales con altura mínima de 48px a 52px (`.btn-touch-hero`, `.btn-touch-lg`).
+   - La tarjeta viajera oficial física se consulta mediante modal de alta visibilidad (`.btn-traveler-trigger`), suprimiendo el scroll vertical infinito en la pantalla principal.
+   - El escáner QR debe contar con modalidad táctil de Pantalla Completa (`⛶ Pantalla Completa`).
+6. **Mapa de Planta y Almacenes Intermedios Departamentales:**
+   - La supervisión macro de la fábrica se realiza mediante el mapa general de planta, permitiendo abrir el almacén intermedio de cualquier departamento (`#modalDeptWarehouse`) con filtros en tiempo real por modelo, tipo de lote y calidad.
+   - El traspaso físico entre plantas se ejecuta exclusivamente a través del escaneo del código QR.
+7. **Trazabilidad de Piezas con Merma en Tránsito:**
+   - Cuando un sombrero dentro de una torre es clasificado con merma o defecto, la pieza continúa físicamente acompañando al lote en su avance hasta el punto de segregación y auditoría final.
+

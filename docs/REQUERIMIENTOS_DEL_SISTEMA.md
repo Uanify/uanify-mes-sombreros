@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.13.0` | **Versión:** `v2.13.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.14.0` | **Versión:** `v2.14.0`  
 > **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -249,7 +249,34 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
     1. **5 Procesos Reales de Prensas:** `HORMADO`, `REPLANCHAR COPA`, `RECORTAR COPAS`, `PEGAR COPA C/FALDA` (ensamble en rampa) y `REPLANCHADO C/ALAMBRE`.
     2. **Avance Hora por Hora (08:00 a 18:00 hrs):** Cuadrícula horaria con celdas partidas en diagonal: Meta en el cuadrante inferior derecho (165 pzas en horas normales; 90 pzas en horas de comida/descanso de 10:00-11:00 y 14:00-15:00) y Real en el cuadrante superior izquierdo con semaforización condicional (**Verde** $\ge$ Meta, **Rojo** $<$ Meta). Meta diaria total: `1,500 PZS POR PROCESO`.
     3. **Avance Semanal de Ciclo Sombrerero (Jueves a Miércoles):** Matriz de avance diario de 6 días operativos (Jueves, Viernes, Sábado, Lunes, Martes, Miércoles) con meta semanal de `7,500 PZS POR PROCESO` y sumatoria acumulada de planta.
-  - **Módulos que Impacta:** Pestaña especializada en el **Tablero Andon (`andon`)** y en la **Consola de Rendimiento e Ingeniería (`engineer`)**.
+- **`RF-53` Impresión Oficial de Tarjeta Viajera (PDF/Mica):** Formato reglamentario de planta a escala 1:1 listo para corte y enmicado en porta-gafete con cordel. Reservado operativamente para las áreas de Compras y Almacén de Materia Prima.
+- **`RF-54` Ficha Técnica Visual con Fotografía Oficial de Modelo:** Consulta gráfica integrada de especificaciones, tolerancias y fotografía ilustrativa del sombrero terminado para auditorías en piso y puestos de adorno.
+
+---
+
+### Bloque L: Rediseño Ergonómico de Terminal de Supervisor, Extracción QR y Almacenes Intermedios (v2.14.0)
+
+- **`RF-55` Extracción Integral de Metadatos desde Código QR (Cero Captura Manual de Modelo):**
+  - **Problema que Resuelve:** Los supervisores en planta tenían que seleccionar manualmente el modelo o ingresar campos redundantes que ya pertenecen a la tarjeta física.
+  - **Especificación:** Al escanear el código QR (o ingresar el folio de lote/sublote), el sistema extrae automáticamente la totalidad de la información operativa: Folio de Lote Madre, Número de Sublote, Modelo Comercial, Horma de Copa, Medida de Falda, Talla numérica, Doblado, Orden de Producción, Operador Responsable, Estación de Origen y Estación de Destino. Se elimina todo selector manual de modelo en la pantalla de escaneo.
+- **`RF-56` Verificación Previa Obligatoria de Tarjeta Viajera Escaneada (Mica Física vs Payload QR):**
+  - **Flujo Operativo:** Tras disparar la lectura del código QR (mediante cámara web o pistola USB), el sistema no aplica cambios de estado inmediatamente. En su lugar, despliega un modal de verificación (`#modalVerifyScannedCard`) proyectando la réplica fiel de la tarjeta física (mica de piso) junto con los metadatos desglosados.
+  - **Control de Error en Mano:** El supervisor cuenta con dos opciones táctiles:
+    1. **"❌ Tarjeta Incorrecta / Escanear de Nuevo":** Descarta el escaneo sin registrar movimientos ni alterar el lote activo, permitiendo reintentar la lectura.
+    2. **"✅ Confirmar Coincidencia y Proceder":** Confirma la coincidencia entre la mica física en mano y el sistema, cargando el lote para su posterior depósito.
+- **`RF-57` Depósito Automático en Almacén Siguiente según Secuencia de Ruta Configurada:**
+  - **Cálculo de Destino:** Al confirmar una tarjeta verificada, el sistema consulta automáticamente la ruta de fabricación configurada para el tipo de sombrero (`routeId`). Identifica la posición actual (`currentStepIndex`) y calcula de forma inmediata el departamento siguiente (`targetStep`).
+  - **Acción Táctil:** Habilita el botón prominente: `📥 Depositar Lote en Almacén de [Siguiente Depto]`, transfiriendo la custodia al almacén de entrada de la estación subsecuente.
+- **`RF-58` Restricción Departamental Estricta de Custodia y Movimiento para Perfil Supervisor:**
+  - **Regla RBAC Industrial:** Un supervisor de planta **no puede mover libremente cualquier lote a cualquier departamento**. Únicamente está facultado para operar y trasladar los lotes correspondientes a sus departamentos asignados (`assignedDepartments`).
+  - **Seguridad en Piso:** Si un supervisor intenta transferir un lote cuya estación origen no pertenece a su alcance supervisado, el sistema bloquea la acción y emite una advertencia formal con los departamentos bajo su responsabilidad. Los perfiles Administrador e Ingeniero mantienen facultad de auditoría global (`*`).
+- **`RF-59` Mapa General de Planta y Consulta Departamental de Almacenes Intermedios con Filtros:**
+  - **Supervisión Macro de Nave:** Sustitución de la consulta restrictiva lote por lote por un mapa general de planta que despliega la totalidad de los 14 departamentos de manufactura y paradas de calidad.
+  - **Modal de Almacén Intermedio:** Cada departamento cuenta con un botón táctil `📦 Ver Almacén Intermedio`, el cual abre una ventana modal (`#modalDeptWarehouse`) listando el inventario en proceso (WIP) y sombreros almacenados en su pulmón, con filtros dinámicos por modelo de sombrero, tipo de lote (Lote Madre 60pz vs Sublote 15pz) y estado de calidad.
+  - **Regla de Traspaso:** El movimiento físico y traspaso entre plantas se efectúa exclusivamente mediante el escaneo de la tarjeta viajera física.
+- **`RF-60` Trazabilidad de Piezas con Merma en Tránsito y Escáner QR en Pantalla Completa:**
+  - **Comportamiento de Piezas con Merma:** Cuando un sombrero dentro de una torre es clasificado con merma o defecto, la pieza continúa físicamente acompañando al lote en su avance por la línea hasta el filtro de calidad/separación física final, mostrándose un banner de advertencia en el detalle del lote.
+  - **Modo Pantalla Completa:** Opción táctil `⛶ Pantalla Completa` para expandir el visor de escaneo a la totalidad de la pantalla de la tableta, optimizando ergonomía en condiciones de iluminación variable en nave industrial.
 
 ---
 
@@ -361,7 +388,7 @@ A partir del análisis del proceso productivo físico en San Francisco del Rinc�
 
 | # Gap | Dimensión / Área | Paso Físico Real / Situación en Planta | Estado Actual en el Software | Propuesta de Ajuste / Requerimiento Sugerido |
 | :---: | :--- | :--- | :--- | :--- |
-| **GAP-01** | **Impresión Inicial del QR** | Al emitir una orden de producción desde almacén o ingeniería, se debe imprimir físicamente la tarjeta viajera con su código QR para colocarla en la mica. | El sistema lee el QR y dibuja la tarjeta digital en pantalla, pero **no cuenta con botón para enviar a imprimir el formato físico en hoja o etiqueta**. | Agregar botón **"Imprimir Tarjeta Viajera (PDF/Térmica)"** en la terminal y en almacenes para emitir la tarjeta con formato oficial listo para cortar y enmicar. |
+| **GAP-01** | **Impresión de Tarjetas Viajeras (Área Compras/Almacén)** | La impresión de tarjetas viajeras se origina exclusivamente en el área de Compras y Almacén de Materia Prima al liberar una orden. **En la Terminal de Supervisor no tiene caso ni se requiere imprimir tarjetas**. | Retirado el botón de impresión del módulo Terminal de Supervisor (`v2.14.0`). Queda pendiente implementar la cola de impresión centralizada exclusivamente en los módulos de Compras / Almacén. | Posponer e implementar formalmente en el módulo de Compras/Almacén central. |
 | **GAP-02** | **Identificación de Sublotes en Tafilete** | Tras el fraccionamiento en rampa a 4 sublotes de 15 piezas, los sombreros se separan físicamente en racks o diablos rodantes. Existe riesgo de que una pieza del sublote 1 se mezcle físicamente con el sublote 3 en adorno. | La tarjeta viajera digital muestra el número 1, 2, 3 o 4, pero **las 15 piezas físicas no tienen marca individual**. | Evaluar si se requiere generar un micro-código o sello de tinta para estampar en el revés del tafilete o en el cartoncillo protector de cada pieza del sublote. |
 | **GAP-03** | **Monitoreo de Presión de Caldera de Vapor** | Las prensas hidráulicas y térmicas dependen críticamente de la caldera de vapor (60 a 80 PSI continuos). Si la caldera pierde presión, las piezas quedan mal hormadas o arrugadas. | Los paros de vapor se registran manualmente en la bitácora de paros del Tablero Andon. | Evaluar integración con transductor de presión IoT o sensor digital para registrar paros automáticos si la presión de caldera cae de 55 PSI. |
 | **GAP-04** | **Consumo de Químicos (Laca y Dope)** | En engomado y laqueado se consumen litros de laca nitrocelulósica, solventes thiner y tinas de apresto, cuyo costo impacta directamente en el costo unitario del sombrero. | El módulo `inventory` controla almacenes de piezas y hormas de aluminio, pero **no registra consumos de químicos por lote**. | Decidir si el gasto de laca y solventes se controla como insumo directo en el MES por lote o si permanece como costo indirecto de fabricación (CIF) en COMPAC. |
@@ -369,6 +396,7 @@ A partir del análisis del proceso productivo físico en San Francisco del Rinc�
 | **GAP-06** | **Cálculo de Nómina a Destajo por Operador** | En el clúster sombrerero de Guanajuato, gran parte de la mano de obra cobra a destajo (tarifa fijada por pieza producida en su máquina específica). | El módulo `operators` computa las piezas procesadas hoy por cada operador, pero **no calcula el acumulado semanal ni la tarifa en pesos por pieza**. | Evaluar si se agrega un campo de tarifa de destajo por operación ($/pza) para generar el pre-reporte de nómina de viernes exportable a Excel. |
 | **GAP-07** | **Sincronización Bidireccional CONTPAQi** | Dirección requiere que al liberarse el lote en Empaque (`C-03`), el movimiento de entrada a producto terminado impacte automáticamente el inventario fiscal de CONTPAQi Comercial. | El sistema genera el vale digital y pre-factura en pantalla (`RF-40`), pero **no escribe directamente vía ODBC/API en la base de datos de CONTPAQi**. | Definir con el contador y sistemas de Tombstone si el enlace será mediante archivo de intercambio (.CSV/.TXT) o vía servicio de integración de base de datos local. |
 | **GAP-08** | **Carga Masiva de Fichas Técnicas con Foto** | Cada temporada Tombstone lanza variantes con combinación de falda, toquilla, plumaje y color de laca. | La ruta se configura por modelo base, pero **no muestra la fotografía de referencia visual del modelo terminado** para el operador de adorno. | Permitir subir o asociar la fotografía de muestra de la ficha técnica oficial para que el supervisor y el operador de adorno vean en pantalla cómo debe quedar el sombrero. |
+| **GAP-09** | **Especificación del Payload QR y Segregación Física de Mermas** | **1) Formato QR:** Falta acordar con el cliente si sus impresoras de etiquetas pueden generar códigos 2D de alta densidad con el payload completo o si mandarán un folio simple enlazado a la base de datos.<br>**2) Segregación de Sombreros:** Se detectó que cuando una pieza de la torre se marca con merma, continúa avanzando físicamente con el lote hasta un punto indeterminado donde se extrae. | El sistema soporta ambos formatos de QR (`TB\|...` y folio simple) y mantiene la advertencia visual de pieza en tránsito (`RF-60`). | Validar en mesa técnica con Tombstone: capacidad de su hardware de impresión y estación exacta donde se extrae físicamente el sombrero de merma. |
 
 ---
 
@@ -496,3 +524,9 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-52** | Réplica Digital de Pizarra Física "1000 X M.T Prensas"      | Andon / Ingeniería           | `v2.13.0`           | ✅ En Producción |
 | **RF-53** | Impresión Oficial de Tarjeta Viajera (PDF/Mica)             | Terminal / Almacén           | `v2.13.0`           | ✅ En Producción |
 | **RF-54** | Ficha Técnica Visual con Fotografía Oficial de Modelo       | Terminal / Calidad           | `v2.13.0`           | ✅ En Producción |
+| **RF-55** | Extracción Integral de Metadatos desde QR (Sin Input Manual)| Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
+| **RF-56** | Verificación Previa Obligatoria de Tarjeta Viajera (Mica)   | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
+| **RF-57** | Depósito Automático en Almacén Siguiente por Ruta de Modelo | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
+| **RF-58** | Restricción Departamental Estricta para Supervisores        | Terminal / Seguridad RBAC    | `v2.14.0`           | ✅ En Producción |
+| **RF-59** | Mapa de Planta y Almacenes Intermedios Departamentales      | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
+| **RF-60** | Trazabilidad de Mermas en Tránsito y Escáner Fullscreen     | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |

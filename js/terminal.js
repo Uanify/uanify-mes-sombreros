@@ -2,59 +2,119 @@
  * UANIFY MES · TERMINAL DE PLANTA & ESCÁNER DE TARJETA VIAJERA
  *
  * REGLAS DE NEGOCIO INDUSTRIALES (Tombstone Hats · San Francisco del Rincón):
- * ─ Tarjetas viajeras impresas en Ingeniería. Lotes fraccionados de 60 a 15 piezas.
- * ─ Cámara web en vivo integrada mediante getUserMedia para escanear en cualquier dispositivo web.
- * ─ Supervisores operan exclusivamente en los departamentos asignados a su perfil.
- * ─ Ingeniería y Admin pueden auditar y operar en cualquier departamento.
- * ─ Flujo departamental: Operador procesa lote en Máquina X → deposita en Almacén de Salida →
- *   Recolector del siguiente departamento recoge sombreros y los lleva a su estación.
- * ─ Alertas visuales estandarizadas con UanifyUI.toast (prohibido alert nativo).
+ * ─ Extracción integral de metadatos desde código QR (Cero captura manual de modelo/talla).
+ * ─ Verificación previa obligatoria de la tarjeta física contra el código QR antes de mover o registrar.
+ * ─ Supervisores operan exclusivamente en los departamentos asignados a su perfil (RBAC estricto).
+ * ─ El sistema calcula automáticamente la estación de destino según la ruta configurada del sombrero.
+ * ─ Las piezas con merma viajan físicamente con el lote hasta el punto de segregación en control de calidad.
+ * ─ Almacenes intermedios departamentales auditables mediante modal de piso.
+ * ─ Escáner QR heroico con soporte de pantalla completa para tabletas industriales.
  */
 
 window.initTerminalView = function() {
   const terminalProduced = document.getElementById('terminalProduced');
   const terminalScrap    = document.getElementById('terminalScrap');
   const terminalSecond   = document.getElementById('terminalSecondGrade');
-  const modelSelect      = document.getElementById('tombstoneModelSelect');
-  const modelSkuEl       = document.getElementById('terminalModelSku');
 
-  const btnScanQr        = document.getElementById('btnScanQr');
-  const manualQrInput    = document.getElementById('manualQrInput');
-  const btnSubdivideLot  = document.getElementById('btnSubdivideLot');
-  const sublotsContainer = document.getElementById('sublotsContainer');
-  const sublotsCountBadge= document.getElementById('sublotsCountBadge');
-
-  // Elementos de Cámara Web
+  // Elementos de Escáner y Cámara
+  const cameraWrapper      = document.getElementById('cameraScannerWrapper');
   const videoFeed          = document.getElementById('qrCameraVideo');
   const btnToggleCamera    = document.getElementById('btnToggleCamera');
+  const btnToggleFullscreen= document.getElementById('btnToggleFullscreen');
+  const btnExitFullscreen  = document.getElementById('btnExitFullscreenScanner');
   const btnFlipCamera      = document.getElementById('btnFlipCamera');
+  const fsTopBar           = document.getElementById('fsTopBar');
   const cameraPlaceholder  = document.getElementById('cameraPlaceholderMsg');
   const cameraReticle      = document.getElementById('cameraReticleOverlay');
   const cameraStatusBadge  = document.getElementById('cameraStatusBadge');
-  let mediaStream          = null;
-  let currentFacingMode    = 'environment';
+  const manualQrInput      = document.getElementById('manualQrInput');
+  const btnScanQr          = document.getElementById('btnScanQr');
 
-  // Elementos de Operación en Máquina & Almacén
-  const workflowDeptSelect     = document.getElementById('workflowDeptSelect');
-  const workflowMachineSelect  = document.getElementById('workflowMachineSelect');
-  const workflowOperatorSelect = document.getElementById('workflowOperatorSelect');
-  const btnCompleteMachineRun  = document.getElementById('btnCompleteMachineRun');
-  const supervisorDeptsBadge   = document.getElementById('supervisorDeptsBadge');
-  const terminalSupervisorBanner = document.getElementById('terminalSupervisorBanner');
+  // Botones de Simulación Rápida
+  const btnSimSublot3      = document.getElementById('btnSimulateScanSublot3');
+  const btnSimMotherLot    = document.getElementById('btnSimulateScanMotherLot');
+  const btnSimScrapLot     = document.getElementById('btnSimulateScanScrapLot');
 
-  // Elementos de Recolección y Traspaso
-  const transferOriginDept    = document.getElementById('transferOriginDept');
-  const transferDestDept      = document.getElementById('transferDestDept');
-  const transferCollectorName = document.getElementById('transferCollectorName');
-  const transferQtyInput      = document.getElementById('transferQtyInput');
-  const btnExecuteTransfer    = document.getElementById('btnExecuteTransfer');
-  const transferPiecesWaiting = document.getElementById('transferPiecesWaiting');
+  // Trigger de Tarjeta Viajera Oficial (Mica de Piso)
+  const btnOpenTravelerModal = document.getElementById('btnOpenTravelerModal');
+  const bttActiveLotPill     = document.getElementById('bttActiveLotPill');
 
-  // ── 1. GESTIÓN DE CÁMARA WEB EN VIVO (CUALQUIER DISPOSITIVO CON NAVEGADOR) ──
+  // Ficha de Lote Activo Escaneado
+  const activeLotBadgeStatus   = document.getElementById('activeLotBadgeStatus');
+  const activeSublotTypeBadge  = document.getElementById('activeSublotTypeBadge');
+  const activeLotOProdText     = document.getElementById('activeLotOProdText');
+  const lotOriginStationText   = document.getElementById('lotOriginStationText');
+  const lotCurrentStationText  = document.getElementById('lotCurrentStationText');
+  const lotTargetStationText   = document.getElementById('lotTargetStationText');
+  const lotMetaModel           = document.getElementById('lotMetaModel');
+  const lotMetaSpecs           = document.getElementById('lotMetaSpecs');
+  const lotMetaOperator        = document.getElementById('lotMetaOperator');
+  const lotMetaPieces          = document.getElementById('lotMetaPieces');
+  const lotScrapBannerContainer= document.getElementById('lotScrapBannerContainer');
+  const btnDepositToNextBuffer = document.getElementById('btnDepositToNextBuffer');
+
+  // Acciones Rápidas
+  const btnSubdivideLot  = document.getElementById('btnSubdivideLot');
+  const btnReportScrap   = document.getElementById('btnReportScrap');
+  const btnReportStop    = document.getElementById('btnReportStop');
+
+  // Modal de Verificación de Tarjeta Escaneada
+  const modalVerifyScannedCard    = document.getElementById('modalVerifyScannedCard');
+  const btnCloseVerifyCardModal   = document.getElementById('btnCloseVerifyCardModal');
+  const btnRejectScannedCard      = document.getElementById('btnRejectScannedCard');
+  const btnConfirmScannedCard     = document.getElementById('btnConfirmScannedCard');
+  const verifyCardReplicaContainer= document.getElementById('verifyCardReplicaContainer');
+  const verifyLotId               = document.getElementById('verifyLotId');
+  const verifySublot              = document.getElementById('verifySublot');
+  const verifyModel               = document.getElementById('verifyModel');
+  const verifySpecs               = document.getElementById('verifySpecs');
+  const verifyOProd               = document.getElementById('verifyOProd');
+  const verifyOperator            = document.getElementById('verifyOperator');
+  const verifyOriginStation       = document.getElementById('verifyOriginStation');
+  const verifyTargetStation       = document.getElementById('verifyTargetStation');
+  const verifyScrapStatus         = document.getElementById('verifyScrapStatus');
+
+  // Modal de Visor de Tarjeta Viajera Oficial
+  const modalTravelerCardViewer   = document.getElementById('modalTravelerCardViewer');
+  const btnCloseTravelerCardModal = document.getElementById('btnCloseTravelerCardModal');
+  const btnDismissTravelerModal   = document.getElementById('btnDismissTravelerCardModal');
+  const travelerCardModalContent  = document.getElementById('travelerCardModalContent');
+  const btnModalViewHatSpec       = document.getElementById('btnModalViewHatSpec');
+
+  // Modal de Almacén Intermedio de Departamento
+  const modalDeptWarehouse        = document.getElementById('modalDeptWarehouse');
+  const btnCloseDeptWarehouseModal= document.getElementById('btnCloseDeptWarehouseModal');
+  const btnDismissDeptWarehouseModal= document.getElementById('btnDismissDeptWarehouseModal');
+  const deptWarehouseModalTitle   = document.getElementById('deptWarehouseModalTitle');
+  const deptWarehouseModalSub     = document.getElementById('deptWarehouseModalSub');
+  const deptWarehouseTableBody    = document.getElementById('deptWarehouseTableBody');
+  const warehouseFilterModel      = document.getElementById('warehouseFilterModel');
+  const warehouseFilterType       = document.getElementById('warehouseFilterType');
+  const warehouseFilterStatus     = document.getElementById('warehouseFilterStatus');
+
+  // Mapa de Planta de Departamentos
+  const plantDepartmentsGrid      = document.getElementById('plantDepartmentsGrid');
+  const btnFilterPlantAll         = document.getElementById('btnFilterPlantAllDepts');
+  const btnFilterPlantMyDepts     = document.getElementById('btnFilterPlantMyDepts');
+  let currentPlantMapFilter       = 'all';
+  let currentInspectedWarehouseDept = 'D-05';
+
+  // Modal de Ficha Técnica
+  const hatSpecModal              = document.getElementById('hatSpecModal');
+  const btnCloseHatSpecModal      = document.getElementById('btnCloseHatSpecModal');
+  const btnOkHatSpecModal         = document.getElementById('btnOkHatSpecModal');
+
+  // Estado Local de la Terminal
+  let mediaStream = null;
+  let currentFacingMode = 'environment';
+  let activeScannedLot = UanifyState.activeLots[0] || null;
+  let candidateScannedLot = null;
+
+  // ── 1. GESTIÓN DE CÁMARA WEB & PANTALLA COMPLETA ───────────────────────────
   async function startCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       window.UanifyUI.toast(
-        'El navegador no soporta acceso directo a la cámara. Puedes utilizar el ingreso manual por teclado o pistola USB.',
+        'El navegador no soporta acceso directo a la cámara. Puedes utilizar la pistola USB o el ingreso manual.',
         'warning',
         'Cámara no soportada'
       );
@@ -99,7 +159,7 @@ window.initTerminalView = function() {
         cameraStatusBadge.style.color = '#B91C1C';
       }
       window.UanifyUI.toast(
-        'No se pudo acceder a la cámara del dispositivo (permiso no otorgado o sin cámara disponible). Usa el campo manual abajo para ingresar el código.',
+        'No se pudo acceder a la cámara del dispositivo. Usa el campo manual o pistola USB para leer la tarjeta.',
         'warning',
         'Acceso a Cámara'
       );
@@ -140,86 +200,74 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 2. SELECTOR DE MODELOS TOMBSTONE ──
-  if (modelSelect) {
-    modelSelect.addEventListener('change', (e) => {
-      const idx = parseInt(e.target.value, 10);
-      UanifyState.selectedModelIndex = idx;
-      const model = UanifyState.activeModels[idx];
-      if (model && modelSkuEl) {
-        modelSkuEl.textContent =
-          `SKU: ${model.sku} | Talla: ${model.size} | Horma: ${model.crownHorma} | ${model.tipo} | ${model.material}`;
-      }
-    });
-  }
-
-  // Flash visual en visor del escáner
-  function flashScannerVisual(success = true) {
-    const vf = document.getElementById('cameraScannerWrapper');
-    if (vf) {
-      vf.style.outline = success ? '4px solid var(--color-green)' : '4px solid var(--color-red)';
-      setTimeout(() => {
-        vf.style.outline = 'none';
-      }, 400);
+  function enterFullscreenScanner() {
+    if (cameraWrapper) {
+      cameraWrapper.classList.add('is-fullscreen');
+      if (fsTopBar) fsTopBar.style.display = 'flex';
+      if (!mediaStream) startCamera();
     }
   }
 
-  // ── RENDERIZADOR DE RÉPLICA DE TARJETA VIAJERA FÍSICA TOMBSTONE ───────────
-  const travelerCardContainer = document.getElementById('travelerCardVisualContainer');
-  const btnPreviewSublot3 = document.getElementById('btnPreviewSublot3');
-  const btnPreviewLoteMother = document.getElementById('btnPreviewLoteMother');
-  const btnPreviewLoteMagnum = document.getElementById('btnPreviewLoteMagnum');
+  function exitFullscreenScanner() {
+    if (cameraWrapper) {
+      cameraWrapper.classList.remove('is-fullscreen');
+      if (fsTopBar) fsTopBar.style.display = 'none';
+    }
+  }
 
-  function renderPhysicalTravelerCard(data) {
-    if (!travelerCardContainer) return;
+  if (btnToggleFullscreen) btnToggleFullscreen.addEventListener('click', enterFullscreenScanner);
+  if (btnExitFullscreen)   btnExitFullscreen.addEventListener('click', exitFullscreenScanner);
 
-    const isSublot = typeof data.sublotNum === 'number' && data.sublotNum > 0;
-    const stickerClass = data.stickerType === 'magenta' ? 'sticker-magenta' : 'sticker-blue';
+  // ── 2. GENERADOR DE RÉPLICA DE TARJETA VIAJERA (HTML OFICIAL) ─────────────
+  function generateTravelerCardHtml(lotData) {
+    if (!lotData) return '';
+    const isSublot = typeof lotData.sublotNum === 'number' && lotData.sublotNum > 0;
+    const stickerClass = lotData.stickerType === 'magenta' ? 'sticker-magenta' : 'sticker-blue';
 
-    travelerCardContainer.innerHTML = `
+    return `
       <div class="tombstone-traveler-sleeve">
         <div class="traveler-sleeve-header">
           <div class="traveler-string-indicator"></div>
           <div class="traveler-hole-punch"></div>
         </div>
         <div class="traveler-paper-tag">
-          ${data.operatorSticker ? `<div class="traveler-operator-sticker ${stickerClass}">${data.operatorSticker}</div>` : ''}
-          <div class="traveler-route-title">${data.route || 'TARJETA HIDRAULICAS - ADORNO'}</div>
-          <div class="traveler-model-name">${data.model}</div>
+          ${lotData.operatorSticker ? `<div class="traveler-operator-sticker ${stickerClass}">${lotData.operatorSticker}</div>` : ''}
+          <div class="traveler-route-title">${lotData.route || 'TARJETA HIDRAULICAS - ADORNO'}</div>
+          <div class="traveler-model-name">${lotData.model}</div>
           <div class="traveler-oprod-row">
             <span>O. PROD :</span>
-            <span>${data.oProd}</span>
+            <span>${lotData.oProd}</span>
           </div>
           <div class="traveler-brand-divider">
             <div class="traveler-hat-logo">🤠 TOMBSTONE®</div>
             <div class="traveler-clase-tag">*** CLASE ***</div>
           </div>
-          <div class="traveler-quality-title">${data.clase || '1,000X MASTER TELAR'}</div>
-          <div class="traveler-finish-title">${data.finish || 'LAQUEADOS'}</div>
+          <div class="traveler-quality-title">${lotData.clase || '1,000X MASTER TELAR'}</div>
+          <div class="traveler-finish-title">${lotData.finish || 'LAQUEADOS'}</div>
           <div class="traveler-specs-grid">
             <div class="traveler-spec-row">
               <span class="traveler-spec-label">FALDA</span>
-              <span class="traveler-spec-val">${data.brim || '9 1/2'}</span>
+              <span class="traveler-spec-val">${lotData.brim || '9 1/2'}</span>
             </div>
             <div class="traveler-spec-row">
               <span class="traveler-spec-label">DOBLADO</span>
-              <span class="traveler-spec-val">${data.bend || 'ARRIBA'}</span>
+              <span class="traveler-spec-val">${lotData.bend || 'ARRIBA'}</span>
             </div>
             <div class="traveler-spec-row">
               <span class="traveler-spec-label">TALLA</span>
-              <span class="traveler-spec-val"># ${data.size}</span>
+              <span class="traveler-spec-val"># ${lotData.size}</span>
             </div>
           </div>
           <div class="traveler-qty-banner">
-            ${data.pieces || 15} Pzas
+            ${lotData.pieces || 15} Pzas
           </div>
           <div class="traveler-footer-box">
             <div class="traveler-lote-box">
-              LOTE: ${data.lotId}
+              LOTE: ${lotData.lotId}
             </div>
-            <div class="traveler-sublot-badge-box ${!isSublot ? 'is-lote-madre' : ''}" title="${isSublot ? `Tarjeta de Sublote #${data.sublotNum}` : 'Tarjeta de Lote Madre (Sin número abajo a la derecha)'}">
+            <div class="traveler-sublot-badge-box ${!isSublot ? 'is-lote-madre' : ''}" title="${isSublot ? `Tarjeta de Sublote #${lotData.sublotNum}` : 'Tarjeta de Lote Madre (Sin número abajo a la derecha)'}">
               ${isSublot 
-                ? `<span class="sublot-num">${data.sublotNum}</span><span class="sublot-label">SUBLOTE</span>` 
+                ? `<span class="sublot-num">${lotData.sublotNum}</span><span class="sublot-label">SUBLOTE</span>` 
                 : `<span style="font-size:8.5px; font-weight:800; text-align:center; color:#94A3B8; line-height:1.1;">LOTE<br>(VACÍO)</span>`}
             </div>
           </div>
@@ -228,479 +276,679 @@ window.initTerminalView = function() {
     `;
   }
 
-  // Pre-render inicial con Sublote 3 de la foto del usuario
-  const initialLot = UanifyState.activeLots[0];
-  renderPhysicalTravelerCard({
-    ...initialLot,
-    sublotNum: 3,
-    operatorSticker: 'JORGE'
-  });
+  // ── 3. PARSER Y EXTRACCIÓN INTEGRAL DE CÓDIGO QR ───────────────────────────
+  function parseQrPayload(raw) {
+    const text = String(raw || '').trim();
+    if (!text) return null;
 
-  if (btnPreviewSublot3) {
-    btnPreviewSublot3.addEventListener('click', () => {
-      const lot = UanifyState.activeLots[0];
-      renderPhysicalTravelerCard({
-        ...lot,
-        sublotNum: 3,
-        operatorSticker: 'JORGE',
-        stickerType: 'blue'
-      });
-      if (manualQrInput) manualQrInput.value = '49633-3';
-      window.UanifyUI.toast(
-        'Tarjeta de Sublote 3 (Viejonón · Jorge · Lote 49,633) cargada en visor. Nota el número "3" en el recuadro inferior derecho.',
-        'info',
-        '🏷️ Tarjeta de Sublote'
-      );
-    });
-  }
+    // A) Formato Delimitado con Pipes (e.g. TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK)
+    if (text.startsWith('TB|') || text.includes('|')) {
+      const parts = text.split('|');
+      const lotId = parts[1] || '49,633';
+      const sublotNum = parseInt(parts[2], 10) || null;
+      const model = parts[3] || 'VIEJONON';
+      const brim = parts[4] || '9 1/2';
+      const size = parts[5] || '55';
+      const oProd = parts[6] || '15071';
+      const operator = parts[7] || 'JORGE';
+      const currentStationCode = parts[8] || 'D-05';
+      const scrapFlag = parts[10] || '';
+      const hasScrap = scrapFlag.toUpperCase().includes('SCRAP');
+      const scrapReason = hasScrap ? (scrapFlag.split(':')[1] || 'Defecto marcado en inspección') : '';
 
-  if (btnPreviewLoteMother) {
-    btnPreviewLoteMother.addEventListener('click', () => {
-      const lot = UanifyState.activeLots[1] || UanifyState.activeLots[0];
-      renderPhysicalTravelerCard({
-        ...lot,
-        sublotNum: null,
-        operatorSticker: null
-      });
-      if (manualQrInput) manualQrInput.value = '49386';
-      window.UanifyUI.toast(
-        'Tarjeta de Lote Madre (Chaparral · Lote 49,386) cargada en visor. Nota que el recuadro inferior derecho NO tiene número.',
-        'info',
-        '🏷️ Tarjeta de Lote'
-      );
-    });
-  }
-
-  if (btnPreviewLoteMagnum) {
-    btnPreviewLoteMagnum.addEventListener('click', () => {
-      const lot = UanifyState.activeLots.find(l => l.lotId.includes('49,842') || l.lotId.includes('49842')) || UanifyState.activeLots[2];
-      renderPhysicalTravelerCard(lot);
-      if (manualQrInput) manualQrInput.value = '49842';
-      window.UanifyUI.toast(
-        'Tarjeta de Lote 60 Pzas (Magnum · Melany · Lote 49,842 · Prensas a Patio) cargada. Lote completo de 60 pzas sin número abajo a la derecha.',
-        'info',
-        '🏷️ Tarjeta Lote 60 Pzas'
-      );
-    });
-  }
-
-  // ── HANDLERS DE IMPRESIÓN FÍSICA Y FICHA TÉCNICA VISUAL (GAP-01 Y GAP-08) ──
-  const btnPrintPhysical = document.getElementById('btnPrintPhysicalTraveler');
-  const printModal = document.getElementById('travelerCardPrintModal');
-  const printPreviewArea = document.getElementById('printCardPreviewArea');
-  const btnClosePrintModal = document.getElementById('btnClosePrintModal');
-  const btnCancelPrintModal = document.getElementById('btnCancelPrintModal');
-  const btnExecuteCardPrint = document.getElementById('btnExecuteCardPrint');
-
-  if (btnPrintPhysical && printModal) {
-    btnPrintPhysical.addEventListener('click', () => {
-      // Clonar la tarjeta viajera actual en el área de impresión
-      if (travelerCardContainer && printPreviewArea) {
-        printPreviewArea.innerHTML = travelerCardContainer.innerHTML;
-      }
-      printModal.style.display = 'flex';
-    });
-
-    const closePrint = () => {
-      printModal.style.display = 'none';
-    };
-
-    if (btnClosePrintModal) btnClosePrintModal.addEventListener('click', closePrint);
-    if (btnCancelPrintModal) btnCancelPrintModal.addEventListener('click', closePrint);
-
-    if (btnExecuteCardPrint) {
-      btnExecuteCardPrint.addEventListener('click', () => {
-        window.print();
-        UanifyUI.toast(
-          'Se envió la tarjeta viajera a la cola de impresión de planta.',
-          'success',
-          '🖨️ Impresión Ejecutada'
-        );
-        closePrint();
+      return matchOrCreateLot({
+        lotId,
+        sublotNum,
+        model,
+        brim,
+        size,
+        oProd,
+        operator,
+        currentStationCode,
+        hasScrap,
+        scrapReason
       });
     }
+
+    // B) Formato JSON
+    if (text.startsWith('{') && text.endsWith('}')) {
+      try {
+        const obj = JSON.parse(text);
+        return matchOrCreateLot(obj);
+      } catch (e) {
+        console.warn('Error parsing JSON QR:', e);
+      }
+    }
+
+    // C) Formato Sublote Guion (e.g. 49633-3, 1094-01)
+    if (text.includes('-')) {
+      const parts = text.split('-');
+      const baseClean = parts[0].replace(/[,.]/g, '');
+      const sNum = parseInt(parts[1], 10);
+      const matched = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === baseClean);
+      if (matched) {
+        return matchOrCreateLot({
+          ...matched,
+          sublotNum: sNum,
+          operatorSticker: matched.operatorSticker || 'JORGE'
+        });
+      }
+    }
+
+    // D) Formato Número de Lote Simple (e.g. 49633, 49386, 49842, 1094)
+    const cleanNum = text.replace(/[,.]/g, '');
+    const found = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === cleanNum);
+    if (found) {
+      return matchOrCreateLot(found);
+    }
+
+    // Fallback: usar el primer lote activo
+    return matchOrCreateLot(UanifyState.activeLots[0]);
   }
 
-  // Visualizador de Ficha Técnica Visual con Fotografía
-  const btnViewSpec = document.getElementById('btnViewHatSpecSheet');
-  const specModal = document.getElementById('hatSpecModal');
-  const btnCloseSpec = document.getElementById('btnCloseHatSpecModal');
-  const btnOkSpec = document.getElementById('btnOkHatSpecModal');
+  function matchOrCreateLot(data) {
+    const rawLotId = String(data.lotId || '49,633');
+    const existing = UanifyState.activeLots.find(l => 
+      l.lotId === rawLotId || l.lotId.replace(/,/g, '') === rawLotId.replace(/,/g, '')
+    ) || UanifyState.activeLots[0];
 
-  if (btnViewSpec && specModal) {
-    btnViewSpec.addEventListener('click', () => {
-      specModal.style.display = 'flex';
-    });
+    const route = UanifyState.getLotRoute(existing.lotId);
+    let stepIndex = typeof existing.currentStepIndex === 'number' ? existing.currentStepIndex : 5;
 
-    const closeSpec = () => {
-      specModal.style.display = 'none';
+    // Si data provee un código de estación específico
+    if (data.currentStationCode && route && route.steps) {
+      const idx = route.steps.findIndex(s => s.code === data.currentStationCode);
+      if (idx !== -1) stepIndex = idx;
+    }
+
+    const currentStep = route.steps[stepIndex] || route.steps[0];
+    const prevStep = stepIndex > 0 ? route.steps[stepIndex - 1] : { code: 'D-00', name: 'Almacén de Materia Prima' };
+    const nextStep = stepIndex < route.steps.length - 1 ? route.steps[stepIndex + 1] : { code: 'D-11', name: 'Almacén de Producto Terminado' };
+
+    const isSublot = typeof data.sublotNum === 'number' && data.sublotNum > 0;
+    const pieces = isSublot ? 15 : (data.pieces || existing.pieces || 60);
+
+    return {
+      ...existing,
+      ...data,
+      lotId: existing.lotId,
+      sublotNum: isSublot ? data.sublotNum : (data.sublotNum === null ? null : (existing.isSubdivided ? 3 : null)),
+      model: data.model || existing.model,
+      brim: data.brim || existing.brim,
+      size: data.size || existing.size,
+      bend: data.bend || existing.bend || 'ARRIBA',
+      clase: data.clase || existing.clase || '1,000X MASTER TELAR',
+      finish: data.finish || existing.finish || 'LAQUEADOS',
+      oProd: data.oProd || existing.oProd,
+      pieces: pieces,
+      operator: data.operator || existing.operator,
+      operatorSticker: data.operatorSticker || (isSublot ? (data.operator || 'JORGE') : null),
+      currentStepIndex: stepIndex,
+      currentStationCode: currentStep.code,
+      currentStationName: currentStep.name,
+      originStationCode: prevStep.code,
+      originStationName: prevStep.name,
+      targetStationCode: nextStep.code,
+      targetStationName: nextStep.name,
+      hasScrap: Boolean(data.hasScrap || existing.hasScrap),
+      scrapReason: data.scrapReason || existing.scrapReason || (existing.hasScrap ? 'Quemado por prensa de vapor' : '')
     };
-
-    if (btnCloseSpec) btnCloseSpec.addEventListener('click', closeSpec);
-    if (btnOkSpec) btnOkSpec.addEventListener('click', closeSpec);
-  }
-  if (btnScanQr) {
-    btnScanQr.addEventListener('click', () => {
-      const query = (manualQrInput ? manualQrInput.value.trim() : '') || '49633-3';
-      flashScannerVisual(true);
-
-      let matchedLot = UanifyState.activeLots[0];
-      let sublotNum = null;
-
-      if (query.includes('-')) {
-        const parts = query.split('-');
-        const base = parts[0].replace(/[,.]/g, '');
-        sublotNum = parseInt(parts[1], 10);
-        const found = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === base);
-        if (found) matchedLot = found;
-      } else {
-        const clean = query.replace(/[,.]/g, '');
-        const found = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === clean);
-        if (found) {
-          matchedLot = found;
-          sublotNum = null;
-        }
-      }
-
-      renderPhysicalTravelerCard({
-        ...matchedLot,
-        sublotNum: sublotNum,
-        operatorSticker: sublotNum ? (matchedLot.operatorSticker || 'JORGE') : null
-      });
-
-      if (sublotNum) {
-        window.UanifyUI.toast(
-          `Sublote #${sublotNum} validado | Lote: ${matchedLot.lotId} | Horma: ${matchedLot.model} | Talla: #${matchedLot.size} | Falda: ${matchedLot.brim} | Operador: ${matchedLot.operatorSticker || matchedLot.operator} | Número en recuadro derecho: [${sublotNum}]`,
-          'success',
-          '🏷️ Tarjeta Viajera de Sublote'
-        );
-      } else {
-        window.UanifyUI.toast(
-          `Tarjeta de LOTE validada | Lote: ${matchedLot.lotId} | Horma: ${matchedLot.model} | Talla: #${matchedLot.size} | Falda: ${matchedLot.brim} | Sin número en recuadro derecho (Lote)`,
-          'success',
-          '🏷️ Tarjeta Viajera de Lote'
-        );
-      }
-    });
   }
 
-  // ── 4. FRACCIONAR LOTE EN RAMPA (60 → 15 pzas) ──
-  if (btnSubdivideLot) {
-    btnSubdivideLot.addEventListener('click', () => {
-      flashScannerVisual(true);
-      const lot = UanifyState.activeLots[0];
-      lot.isSubdivided = true;
-      renderSublots();
-      EventBus.emit('lot-subdivided', lot);
-      window.UanifyUI.toast(
-        `Lote ${lot.lotId} fraccionado en 4 tarjetas de 15 piezas (49633-1 al 49633-4). Cada tarjeta de sublote incluye su número identificador (1, 2, 3 o 4) en la esquina inferior derecha.`,
-        'success',
-        '✂️ Fraccionamiento en Rampa'
-      );
-    });
-  }
-
-  function renderSublots() {
-    if (!sublotsContainer) return;
-    const lot = UanifyState.activeLots[0];
-    if (!lot.isSubdivided) {
-      sublotsContainer.innerHTML = `
-        <div style="font-size:12px; color:var(--text-muted); padding:10px; background:var(--bg-core); border-radius:8px; border:1px solid var(--border-subtle);">
-          Lote <strong style="color:var(--color-brand);">${lot.lotId}</strong> en proceso de 60 pzas (sin número en esquina inferior derecha).
-          Presiona <strong>"Fraccionar Lote Madre"</strong> para generar las tarjetas de sublote con su número asignado (1 al 4).
-        </div>`;
-      if (sublotsCountBadge) sublotsCountBadge.textContent = 'Madre (60 pzas)';
+  // ── 4. FLUJO DE VERIFICACIÓN PREVIA TRAS ESCANEO QR (RF-56) ───────────────
+  function triggerScanEvaluation(query) {
+    const lot = parseQrPayload(query);
+    if (!lot) {
+      window.UanifyUI.toast('No se pudo interpretar el código leído. Intenta de nuevo.', 'error', 'Error de Lectura QR');
       return;
     }
 
-    if (sublotsCountBadge) sublotsCountBadge.textContent = `${lot.sublots.length} activos (15 pzas c/u)`;
+    candidateScannedLot = lot;
 
-    sublotsContainer.innerHTML = lot.sublots.map(sl => `
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); padding:10px 12px; border-radius:8px; margin-bottom:6px; box-shadow:var(--shadow-sm); cursor:pointer;"
-        onclick="previewSpecificSublot('${sl.id}', ${sl.sublotNum})">
-        <div>
-          <strong style="color:var(--color-brand); font-family:'JetBrains Mono'; font-size:12.5px;">${sl.id}</strong>
-          <span class="badge-subtle" style="margin-left:4px; font-weight:700;">Sublote #${sl.sublotNum}</span>
-          <span style="font-size:11.5px; color:var(--text-primary); margin-left:4px; font-weight:600;">${sl.pieces} pzas</span>
-          <small style="display:block; font-size:10.5px; color:var(--text-muted); margin-top:2px;">
-            Estación: ${sl.station} | Op: ${sl.operatorSticker || sl.operator || 'Sin asignar'}
-          </small>
-          <small style="display:block; font-size:10px; font-weight:700; color:${sl.status === 'Listo para Recolección' ? 'var(--color-brand)' : sl.status === 'En Proceso' ? 'var(--color-green)' : 'var(--color-amber)'}; margin-top:2px;">
-            ● ${sl.status}
-          </small>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
-          <button class="btn-secondary" style="padding:4px 8px; font-size:11px;"
-            onclick="event.stopPropagation(); previewSpecificSublot('${sl.id}', ${sl.sublotNum})">
-            👁️ Ver
-          </button>
-          <button class="btn-secondary" style="padding:4px 8px; font-size:11px;"
-            onclick="event.stopPropagation(); darAvanceSublote('${sl.id}')">
-            📤 Avance
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-  renderSublots();
-
-  window.previewSpecificSublot = function(id, sublotNum) {
-    const lot = UanifyState.activeLots[0];
-    renderPhysicalTravelerCard({
-      ...lot,
-      sublotNum: sublotNum,
-      operatorSticker: lot.operatorSticker || 'JORGE'
-    });
-    if (manualQrInput) manualQrInput.value = id;
-    window.UanifyUI.toast(
-      `Mostrando tarjeta física del Sublote #${sublotNum} (Lote ${lot.lotId}). Con el número [${sublotNum}] en la esquina inferior derecha.`,
-      'info',
-      'Tarjeta Viajera'
-    );
-  };
-
-  window.darAvanceSublote = function(sublotId) {
-    flashScannerVisual(true);
-    const lot = UanifyState.activeLots[0];
-    const sl  = lot.sublots.find(s => s.id === sublotId);
-    if (sl) {
-      sl.station = 'Almacén Intermedio de Salida';
-      sl.status  = 'Listo en Almacén';
-      renderSublots();
-      EventBus.emit('piece-registered');
-      window.UanifyUI.toast(
-        `Sublote ${sublotId} (15 pzas) colocado en Almacén Intermedio de Salida para recolección del siguiente departamento.`,
-        'success',
-        'Depósito en Almacén'
-      );
+    // Llenar datos en el Modal de Verificación
+    if (verifyCardReplicaContainer) {
+      verifyCardReplicaContainer.innerHTML = generateTravelerCardHtml(lot);
     }
-  };
-
-  // ── 5. ASIGNACIÓN DE DEPARTAMENTOS POR ROL Y SUPERVISOR ──
-  function syncDepartmentScope() {
-    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
-    if (terminalSupervisorBanner) {
-      terminalSupervisorBanner.textContent = `Usuario Activo: ${user.name} (${user.roleName})`;
+    if (verifyLotId) verifyLotId.textContent = lot.lotId;
+    if (verifySublot) {
+      verifySublot.textContent = lot.sublotNum ? `Sublote #${lot.sublotNum} (15 piezas)` : `Lote Completo Madre (${lot.pieces} piezas)`;
     }
-
-    // Filtrar departamentos según asignación del usuario
-    let allowedStations = UanifyState.stations;
-    if (user.role === 'supervisor') {
-      allowedStations = UanifyState.stations.filter(st => {
-        return user.assignedDepartments && user.assignedDepartments.includes(st.code);
-      });
-      if (supervisorDeptsBadge) {
-        supervisorDeptsBadge.textContent = `Mis Depts Asignados: ${user.assignedDepartments.join(', ')}`;
-      }
-    } else {
-      if (supervisorDeptsBadge) {
-        supervisorDeptsBadge.textContent = `Acceso Global: Todos los Depts (D-01 a D-14)`;
-      }
-    }
-
-    // Llenar selector de departamento en subtab de máquina
-    if (workflowDeptSelect) {
-      workflowDeptSelect.innerHTML = allowedStations.map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
-      `).join('');
-      populateMachinesAndOperators();
-    }
-
-    // Llenar selectores de transferencia departamental
-    if (transferOriginDept) {
-      transferOriginDept.innerHTML = UanifyState.stations.map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
-      `).join('');
-    }
-    if (transferDestDept) {
-      transferDestDept.innerHTML = UanifyState.stations.slice(1).map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
-      `).join('');
-    }
-  }
-
-  function populateMachinesAndOperators() {
-    if (!workflowDeptSelect) return;
-    const deptCode = workflowDeptSelect.value;
-    const st = UanifyState.stations.find(s => s.code === deptCode);
-
-    // Máquinas
-    if (workflowMachineSelect) {
-      workflowMachineSelect.innerHTML = `
-        <option value="M-01">${st ? st.name : 'Estación'} - Máquina Principal 01</option>
-        <option value="M-02">${st ? st.name : 'Estación'} - Máquina Principal 02</option>
-        <option value="M-03">${st ? st.name : 'Estación'} - Mesa de Soporte 03</option>
-      `;
-    }
-
-    // Operadores registrados en este departamento
-    if (workflowOperatorSelect) {
-      const deptOps = UanifyState.operators.filter(op => op.deptCode === deptCode);
-      if (deptOps.length > 0) {
-        workflowOperatorSelect.innerHTML = deptOps.map(op => `
-          <option value="${op.empId}">${op.empId} · ${op.name} (${op.machine})</option>
-        `).join('');
+    if (verifyModel) verifyModel.textContent = `${lot.clase} · ${lot.model}`;
+    if (verifySpecs) verifySpecs.textContent = `Talla #${lot.size} | Falda ${lot.brim} | Doblado ${lot.bend}`;
+    if (verifyOProd) verifyOProd.textContent = `#${lot.oProd}`;
+    if (verifyOperator) verifyOperator.textContent = lot.operatorSticker || lot.operator || 'Sin Asignar';
+    if (verifyOriginStation) verifyOriginStation.textContent = `${lot.originStationCode} ${lot.originStationName}`;
+    if (verifyTargetStation) verifyTargetStation.textContent = `${lot.targetStationCode} ${lot.targetStationName}`;
+    
+    if (verifyScrapStatus) {
+      if (lot.hasScrap) {
+        verifyScrapStatus.innerHTML = `<span style="color:#B91C1C; font-weight:800;">⚠️ Contiene 1 Sombrero con Merma (${lot.scrapReason})</span>`;
       } else {
-        workflowOperatorSelect.innerHTML = `
-          <option value="OP-GENERIC">${st ? st.operator : 'Operador de Turno Único'}</option>
+        verifyScrapStatus.innerHTML = `<span style="color:#15803D; font-weight:700;">✅ Sin Mermas (15 pzas íntegras)</span>`;
+      }
+    }
+
+    // Salir de pantalla completa si estaba activa para mostrar modal
+    exitFullscreenScanner();
+
+    // Abrir modal de verificación
+    if (modalVerifyScannedCard) {
+      modalVerifyScannedCard.style.display = 'flex';
+    }
+  }
+
+  // Eventos de Verificación de Tarjeta
+  if (btnScanQr) {
+    btnScanQr.addEventListener('click', () => {
+      const q = manualQrInput ? manualQrInput.value.trim() : '';
+      triggerScanEvaluation(q || '49633-3');
+    });
+  }
+
+  if (manualQrInput) {
+    manualQrInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        triggerScanEvaluation(manualQrInput.value.trim());
+      }
+    });
+  }
+
+  // Botones de Simulación Rápida
+  if (btnSimSublot3) {
+    btnSimSublot3.addEventListener('click', () => {
+      if (manualQrInput) manualQrInput.value = '49633-3';
+      triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
+    });
+  }
+
+  if (btnSimMotherLot) {
+    btnSimMotherLot.addEventListener('click', () => {
+      if (manualQrInput) manualQrInput.value = '49386';
+      triggerScanEvaluation('TB|49386|0|CHAPARRAL|9.0 Cm|56|15068|SIN_OPERADOR|D-04|D-05|OK');
+    });
+  }
+
+  if (btnSimScrapLot) {
+    btnSimScrapLot.addEventListener('click', () => {
+      if (manualQrInput) manualQrInput.value = '49842';
+      triggerScanEvaluation('TB|49842|0|MAGNUM|9 1/2|57|15075|MELANY|D-05|D-06|SCRAP:Quemado por prensa de vapor');
+    });
+  }
+
+  // Cancelar Verificación
+  const closeVerifyModal = () => {
+    if (modalVerifyScannedCard) modalVerifyScannedCard.style.display = 'none';
+    candidateScannedLot = null;
+  };
+
+  if (btnCloseVerifyCardModal) btnCloseVerifyCardModal.addEventListener('click', closeVerifyModal);
+  if (btnRejectScannedCard) {
+    btnRejectScannedCard.addEventListener('click', () => {
+      closeVerifyModal();
+      window.UanifyUI.toast(
+        'Escaneo descartado sin aplicar cambios. Puedes escanear la tarjeta correcta.',
+        'info',
+        'Verificación Cancelada'
+      );
+    });
+  }
+
+  // Confirmar Coincidencia
+  if (btnConfirmScannedCard) {
+    btnConfirmScannedCard.addEventListener('click', () => {
+      if (!candidateScannedLot) return;
+      activeScannedLot = candidateScannedLot;
+      closeVerifyModal();
+
+      renderActiveScannedLotCard(activeScannedLot);
+
+      window.UanifyUI.toast(
+        `Tarjeta viajera verificada. Lote ${activeScannedLot.lotId}${activeScannedLot.sublotNum ? '-' + activeScannedLot.sublotNum : ''} cargado en la terminal. Siguiente paso: depositar en ${activeScannedLot.targetStationName}.`,
+        'success',
+        '✅ Tarjeta Confirmada'
+      );
+    });
+  }
+
+  // ── 5. RENDERIZADO DE LA FICHA DEL LOTE ACTIVO EN TERMINAL ─────────────────
+  function renderActiveScannedLotCard(lot) {
+    if (!lot) return;
+
+    if (activeLotBadgeStatus) {
+      activeLotBadgeStatus.textContent = `LOTE ACTIVO: ${lot.lotId}${lot.sublotNum ? '-' + lot.sublotNum : ''}`;
+    }
+    if (activeSublotTypeBadge) {
+      activeSublotTypeBadge.textContent = lot.sublotNum ? `Sublote #${lot.sublotNum} (15 pzas)` : `Lote Madre (${lot.pieces} pzas)`;
+    }
+    if (bttActiveLotPill) {
+      bttActiveLotPill.textContent = `Lote ${lot.lotId}${lot.sublotNum ? '-' + lot.sublotNum : ''}`;
+    }
+    if (activeLotOProdText) {
+      activeLotOProdText.textContent = `O. Prod: #${lot.oProd}`;
+    }
+
+    if (lotOriginStationText) {
+      lotOriginStationText.textContent = `${lot.originStationCode} ${lot.originStationName}`;
+    }
+    if (lotCurrentStationText) {
+      lotCurrentStationText.textContent = `${lot.currentStationCode} ${lot.currentStationName}`;
+    }
+    if (lotTargetStationText) {
+      lotTargetStationText.textContent = `${lot.targetStationCode} ${lot.targetStationName}`;
+    }
+
+    if (lotMetaModel) lotMetaModel.textContent = `${lot.clase} · ${lot.model}`;
+    if (lotMetaSpecs) lotMetaSpecs.textContent = `Talla #${lot.size} | Falda ${lot.brim} | ${lot.bend}`;
+    if (lotMetaOperator) lotMetaOperator.textContent = lot.operatorSticker || lot.operator || 'Jorge (Prensas)';
+    if (lotMetaPieces) lotMetaPieces.textContent = `${lot.pieces} piezas`;
+
+    if (lotScrapBannerContainer) {
+      if (lot.hasScrap) {
+        lotScrapBannerContainer.innerHTML = `
+          <div class="lot-scrap-alert-banner">
+            <span style="font-size:18px;">⚠️</span>
+            <div>
+              <strong>Contiene 1 sombrero marcado como merma (${lot.scrapReason || 'Defecto en proceso'}):</strong>
+              <div style="font-size:11.5px; margin-top:2px; color:#7F1D1D;">
+                La pieza defectuosa continúa físicamente en la torre de 15 sombreros y acompaña al lote hasta el punto de segregación y auditoría física final.
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        lotScrapBannerContainer.innerHTML = `
+          <div class="lot-clean-banner">
+            <span style="font-size:16px;">✅</span>
+            <span><strong>Lote íntegro:</strong> 15 sombreros conformados sin mermas registradas.</span>
+          </div>
         `;
       }
     }
+
+    // Botón Principal de Depósito
+    if (btnDepositToNextBuffer) {
+      btnDepositToNextBuffer.textContent = `📥 Depositar Lote en Almacén de ${lot.targetStationCode} ${lot.targetStationName}`;
+    }
   }
 
-  if (workflowDeptSelect) {
-    workflowDeptSelect.addEventListener('change', populateMachinesAndOperators);
-  }
+  // ── 6. DEPÓSITO CON VALIDACIÓN DE PERMISOS DE SUPERVISOR (RF-57 & RF-58) ────
+  if (btnDepositToNextBuffer) {
+    btnDepositToNextBuffer.addEventListener('click', () => {
+      if (!activeScannedLot) return;
 
-  // ── 6. FINALIZAR PIEZAS EN MÁQUINA Y DEPOSITAR EN ALMACÉN INTERMEDIO ──
-  if (btnCompleteMachineRun) {
-    btnCompleteMachineRun.addEventListener('click', () => {
-      const deptCode = workflowDeptSelect ? workflowDeptSelect.value : 'D-05';
-      const st = UanifyState.stations.find(s => s.code === deptCode) || UanifyState.stations[4];
-      const opText = workflowOperatorSelect ? workflowOperatorSelect.selectedOptions[0]?.text : 'Operador';
-      const machineText = workflowMachineSelect ? workflowMachineSelect.selectedOptions[0]?.text : 'Máquina';
+      const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+      const isSuperUser = user.role === 'admin' || user.role === 'ingeniero' || 
+                          (user.assignedDepartments && user.assignedDepartments.includes('*'));
 
-      // Incrementar producción
-      st.produced += 15;
-      UanifyState.producedTotal += 15;
-      if (terminalProduced) terminalProduced.textContent = `${st.produced} pzas`;
+      const currentStationCode = activeScannedLot.currentStationCode || 'D-05';
 
-      const andonTotalEl = document.getElementById('andonProducedTotal');
-      if (andonTotalEl) andonTotalEl.textContent = `${UanifyState.producedTotal} pzas`;
-
-      flashScannerVisual(true);
-      EventBus.emit('piece-registered', { station: st, total: UanifyState.producedTotal });
-
-      window.UanifyUI.toast(
-        `Sublote 1094-01 (15 pzas) procesado en ${machineText} por ${opText}. Depositado en Almacén Intermedio de Salida de ${st.name}.`,
-        'success',
-        '⚙️ Trabajo en Máquina Concluido'
-      );
-    });
-  }
-
-  // ── 7. RECOLECCIÓN Y TRASPASO AL SIGUIENTE DEPARTAMENTO ──
-  if (btnExecuteTransfer) {
-    btnExecuteTransfer.addEventListener('click', () => {
-      const originCode = transferOriginDept ? transferOriginDept.value : 'D-05';
-      const destCode   = transferDestDept ? transferDestDept.value : 'D-06';
-      const collector  = (transferCollectorName ? transferCollectorName.value.trim() : '') || 'Recolector de Turno';
-      const qty        = transferQtyInput ? parseInt(transferQtyInput.value, 10) : 15;
-
-      const originSt = UanifyState.stations.find(s => s.code === originCode) || { name: originCode };
-      const destSt   = UanifyState.stations.find(s => s.code === destCode) || { name: destCode };
-
-      flashScannerVisual(true);
-      window.UanifyUI.toast(
-        `Se recolectaron ${qty} sombreros del Almacén de ${originSt.name} y se trasladaron al Almacén de ${destSt.name}. Responsable de traslado: ${collector}.`,
-        'success',
-        '🚚 Recolección y Traspaso Confirmado'
-      );
-    });
-  }
-
-  // ── 8. MODALES DE SCRAP Y PAROS ──
-  const modalScrap     = document.getElementById('modalScrap');
-  const btnReportScrap = document.getElementById('btnReportScrap');
-  const btnCloseScrap  = document.getElementById('btnCloseScrapModal');
-  const modalStop      = document.getElementById('modalStop');
-  const btnReportStop  = document.getElementById('btnReportStop');
-  const btnCloseStop   = document.getElementById('btnCloseStopModal');
-
-  if (btnReportScrap && modalScrap) btnReportScrap.addEventListener('click', () => modalScrap.classList.add('active'));
-  if (btnCloseScrap  && modalScrap) btnCloseScrap.addEventListener('click',  () => modalScrap.classList.remove('active'));
-  if (btnReportStop  && modalStop)  btnReportStop.addEventListener('click',  () => modalStop.classList.add('active'));
-  if (btnCloseStop   && modalStop)  btnCloseStop.addEventListener('click',   () => modalStop.classList.remove('active'));
-
-  // Registro de Merma o Segunda
-  document.querySelectorAll('.scrap-opt-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const reason    = btn.getAttribute('data-reason');
-      const isSeconda = btn.getAttribute('data-type') === 'segunda';
-      flashScannerVisual(false);
-
-      const deptCode = workflowDeptSelect ? workflowDeptSelect.value : 'D-05';
-      const station  = UanifyState.stations.find(s => s.code === deptCode) || UanifyState.stations[4];
-
-      if (isSeconda) {
-        UanifyState.secondGradeTotal++;
-        if (terminalSecond) terminalSecond.textContent = `${UanifyState.secondGradeTotal} pzas`;
+      // Validación de Restricción Departamental
+      if (!isSuperUser && (!user.assignedDepartments || !user.assignedDepartments.includes(currentStationCode))) {
         window.UanifyUI.toast(
-          `Pieza regular con detalle ("${reason}") enviada al almacén de saldo para la venta de viernes. Total semanal: ${UanifyState.secondGradeTotal} pzas.`,
+          `No tienes autorización para trasladar este lote. Se encuentra en ${activeScannedLot.currentStationName} (${currentStationCode}), pero tus departamentos asignados son: ${user.assignedDepartments.join(', ')}.`,
           'warning',
-          '📦 Segunda / Saldo Registrado'
+          '🔒 Restricción de Supervisor'
         );
-      } else {
-        station.scrap++;
-        UanifyState.scrapTotal++;
-        if (terminalScrap) terminalScrap.textContent = `${station.scrap} pzas`;
-        window.UanifyUI.toast(
-          `Merma irrecuperable por "${reason}" en ${station.name}. Se sustituyó con pieza de respaldo para mantener el lote completo de 60 pzas.`,
-          'error',
-          '⚠️ Merma Registrada'
-        );
+        return;
       }
 
-      if (modalScrap) modalScrap.classList.remove('active');
-      EventBus.emit('scrap-registered', { station, reason });
+      // Proceder con el avance automático al siguiente almacén
+      const res = UanifyState.advanceLot(activeScannedLot.lotId);
+      if (res) {
+        // Incrementar piezas procesadas
+        const st = UanifyState.stations.find(s => s.code === currentStationCode);
+        if (st) st.produced += (activeScannedLot.pieces || 15);
+        UanifyState.producedTotal += (activeScannedLot.pieces || 15);
+        if (terminalProduced) terminalProduced.textContent = `${UanifyState.producedTotal} pzas`;
+
+        // Registrar en buffer del siguiente departamento
+        const bufferItem = {
+          id: 'buf-' + Date.now(),
+          lotId: `${activeScannedLot.lotId}${activeScannedLot.sublotNum ? '-' + activeScannedLot.sublotNum : ''}`,
+          pieces: activeScannedLot.pieces || 15,
+          model: `${activeScannedLot.model} (${activeScannedLot.size})`,
+          originDeptCode: currentStationCode,
+          originDeptName: activeScannedLot.currentStationName,
+          targetDeptCode: activeScannedLot.targetStationCode,
+          targetDeptName: activeScannedLot.targetStationName,
+          waitingMinutes: 1,
+          notes: activeScannedLot.hasScrap ? `1 Sombrero con merma (${activeScannedLot.scrapReason})` : 'Lote íntegro listo para recolección'
+        };
+
+        if (!UanifyState.bufferReadyLots) UanifyState.bufferReadyLots = [];
+        UanifyState.bufferReadyLots.unshift(bufferItem);
+
+        // Actualizar datos del lote activo
+        activeScannedLot = matchOrCreateLot({
+          ...activeScannedLot,
+          currentStationCode: activeScannedLot.targetStationCode
+        });
+        renderActiveScannedLotCard(activeScannedLot);
+
+        // Refrescar mapa de planta y almacenes
+        renderPlantDepartmentsGrid();
+
+        window.UanifyUI.toast(
+          `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}". Movimiento registrado por ${user.name}.`,
+          'success',
+          '📥 Depósito en Almacén Concluido'
+        );
+      }
     });
-  });
+  }
 
-  // Registro de Paro
-  document.querySelectorAll('.stop-opt-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const stopReason = btn.getAttribute('data-stop');
-      flashScannerVisual(false);
+  // ── 7. MODAL DE VISUALIZACIÓN DE TARJETA VIAJERA OFICIAL ───────────────────
+  if (btnOpenTravelerModal) {
+    btnOpenTravelerModal.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      if (travelerCardModalContent) {
+        travelerCardModalContent.innerHTML = generateTravelerCardHtml(activeScannedLot);
+      }
+      if (modalTravelerCardViewer) {
+        modalTravelerCardViewer.style.display = 'flex';
+      }
+    });
+  }
 
-      const deptCode = workflowDeptSelect ? workflowDeptSelect.value : 'D-05';
-      const station  = UanifyState.stations.find(s => s.code === deptCode) || UanifyState.stations[4];
-      station.status = 'stopped';
+  const closeTravelerModal = () => {
+    if (modalTravelerCardViewer) modalTravelerCardViewer.style.display = 'none';
+  };
 
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      UanifyState.downtimes.unshift({
-        time: timeStr,
-        station: station.name,
-        cause: stopReason,
-        duration: 'En curso...',
-        impact: 'Calculando'
+  if (btnCloseTravelerCardModal) btnCloseTravelerCardModal.addEventListener('click', closeTravelerModal);
+  if (btnDismissTravelerModal)   btnDismissTravelerModal.addEventListener('click', closeTravelerModal);
+
+  // Apertura de Ficha Técnica desde la Tarjeta
+  if (btnModalViewHatSpec) {
+    btnModalViewHatSpec.addEventListener('click', () => {
+      closeTravelerModal();
+      if (hatSpecModal) hatSpecModal.style.display = 'flex';
+    });
+  }
+
+  if (btnCloseHatSpecModal) btnCloseHatSpecModal.addEventListener('click', () => hatSpecModal.style.display = 'none');
+  if (btnOkHatSpecModal)    btnOkHatSpecModal.addEventListener('click',    () => hatSpecModal.style.display = 'none');
+
+  // ── 8. MAPA GENERAL DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (RF-59) ──────
+  function renderPlantDepartmentsGrid() {
+    if (!plantDepartmentsGrid) return;
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const myDepts = user.assignedDepartments || ['*'];
+    const isSuperUser = myDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
+
+    // Lista de estaciones de manufactura
+    const stations = UanifyState.stations || [];
+
+    const filtered = stations.filter(st => {
+      if (currentPlantMapFilter === 'my-depts') {
+        if (isSuperUser) return true;
+        return myDepts.includes(st.code);
+      }
+      return true;
+    });
+
+    plantDepartmentsGrid.innerHTML = filtered.map(st => {
+      const isAssigned = isSuperUser || myDepts.includes(st.code);
+      
+      // Contar lotes presentes en este departamento
+      const lotCount = countLotsAtStation(st.code);
+      const scrapWarningCount = countScrapLotsAtStation(st.code);
+
+      return `
+        <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}">
+          <div class="dept-card-header">
+            <div>
+              <span class="dept-code-tag">${st.icon || '🏭'} ${st.code}</span>
+              <h4 class="dept-name-heading">${st.name}</h4>
+            </div>
+            ${isAssigned ? `<span class="dept-assigned-badge">⭐ Mi Depto</span>` : ''}
+          </div>
+
+          <div class="dept-card-stats">
+            <div class="dept-card-stat-item">
+              <span class="dept-card-stat-val">${lotCount.lots}</span>
+              <span class="dept-card-stat-lbl">Lotes en Almacén</span>
+            </div>
+            <div class="dept-card-stat-item">
+              <span class="dept-card-stat-val">${lotCount.pieces} pzas</span>
+              <span class="dept-card-stat-lbl">En Proceso / Espera</span>
+            </div>
+          </div>
+
+          ${scrapWarningCount > 0 ? `
+            <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:12px; font-weight:700;">
+              ⚠️ ${scrapWarningCount} lote(s) con sombrero de merma en torre
+            </div>
+          ` : ''}
+
+          <button type="button" class="btn-primary btn-touch-lg" style="width:100%;" onclick="window.openDeptWarehouseModal('${st.code}')">
+            📦 Ver Almacén Intermedio
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function countLotsAtStation(code) {
+    let lots = 0;
+    let pieces = 0;
+
+    // Lotes activos en este depto
+    (UanifyState.activeLots || []).forEach(l => {
+      if (l.currentStationCode === code || (code === 'D-05' && !l.currentStationCode)) {
+        lots++;
+        pieces += (l.pieces || 15);
+      }
+    });
+
+    // Lotes en buffer esperando recolección
+    (UanifyState.bufferReadyLots || []).forEach(b => {
+      if (b.originDeptCode === code || b.targetDeptCode === code) {
+        lots++;
+        pieces += (b.pieces || 15);
+      }
+    });
+
+    // Mínimo de muestra para realismo de planta
+    if (lots === 0) {
+      if (code === 'D-01' || code === 'D-02' || code === 'D-06') {
+        lots = 2;
+        pieces = 30;
+      } else if (code === 'D-07' || code === 'D-10') {
+        lots = 1;
+        pieces = 15;
+      }
+    }
+
+    return { lots, pieces };
+  }
+
+  function countScrapLotsAtStation(code) {
+    let scrapLots = 0;
+    (UanifyState.activeLots || []).forEach(l => {
+      if ((l.currentStationCode === code || (code === 'D-05' && !l.currentStationCode)) && l.hasScrap) {
+        scrapLots++;
+      }
+    });
+    return scrapLots;
+  }
+
+  if (btnFilterPlantAll) {
+    btnFilterPlantAll.addEventListener('click', () => {
+      currentPlantMapFilter = 'all';
+      btnFilterPlantAll.classList.add('active');
+      if (btnFilterPlantMyDepts) btnFilterPlantMyDepts.classList.remove('active');
+      renderPlantDepartmentsGrid();
+    });
+  }
+
+  if (btnFilterPlantMyDepts) {
+    btnFilterPlantMyDepts.addEventListener('click', () => {
+      currentPlantMapFilter = 'my-depts';
+      btnFilterPlantMyDepts.classList.add('active');
+      if (btnFilterPlantAll) btnFilterPlantAll.classList.remove('active');
+      renderPlantDepartmentsGrid();
+    });
+  }
+
+  // ── 9. MODAL DE ALMACÉN INTERMEDIO POR DEPARTAMENTO ───────────────────────
+  window.openDeptWarehouseModal = function(deptCode) {
+    currentInspectedWarehouseDept = deptCode;
+    const st = UanifyState.stations.find(s => s.code === deptCode) || { code: deptCode, name: 'Departamento' };
+
+    if (deptWarehouseModalTitle) {
+      deptWarehouseModalTitle.textContent = `📦 Almacén Intermedio · ${st.code} ${st.name}`;
+    }
+    if (deptWarehouseModalSub) {
+      deptWarehouseModalSub.textContent = `Lotes y sublotes en proceso o en espera de recolección en este almacén.`;
+    }
+
+    renderDeptWarehouseTable();
+
+    if (modalDeptWarehouse) modalDeptWarehouse.style.display = 'flex';
+  };
+
+  function renderDeptWarehouseTable() {
+    if (!deptWarehouseTableBody) return;
+    const modelFilter = warehouseFilterModel ? warehouseFilterModel.value : 'all';
+    const typeFilter  = warehouseFilterType ? warehouseFilterType.value : 'all';
+    const statusFilter= warehouseFilterStatus ? warehouseFilterStatus.value : 'all';
+
+    // Obtener lotes para este departamento
+    let lotsList = [];
+
+    (UanifyState.activeLots || []).forEach(l => {
+      if (l.currentStationCode === currentInspectedWarehouseDept || (currentInspectedWarehouseDept === 'D-05' && !l.currentStationCode)) {
+        lotsList.push({
+          folio: l.lotId,
+          sublotNum: l.sublotNum || (l.isSubdivided ? 3 : null),
+          model: l.model,
+          clase: l.clase,
+          pieces: l.pieces || 15,
+          operator: l.operatorSticker || l.operator || 'Jorge',
+          targetDept: l.targetStationName || 'Siguiente Estación',
+          hasScrap: l.hasScrap,
+          scrapReason: l.scrapReason
+        });
+      }
+    });
+
+    (UanifyState.bufferReadyLots || []).forEach(b => {
+      if (b.originDeptCode === currentInspectedWarehouseDept || b.targetDeptCode === currentInspectedWarehouseDept) {
+        lotsList.push({
+          folio: b.lotId,
+          sublotNum: b.lotId.includes('-') ? parseInt(b.lotId.split('-')[1], 10) : null,
+          model: b.model,
+          clase: '1000X MASTER TELAR',
+          pieces: b.pieces,
+          operator: 'Recolector',
+          targetDept: b.targetDeptName,
+          hasScrap: b.notes.includes('merma'),
+          scrapReason: b.notes
+        });
+      }
+    });
+
+    // Si está vacío, agregar un par de lotes de muestra coherentes
+    if (lotsList.length === 0) {
+      lotsList.push({
+        folio: '49,633-1',
+        sublotNum: 1,
+        model: 'VIEJONON',
+        clase: '1,000X MASTER TELAR',
+        pieces: 15,
+        operator: 'Jorge',
+        targetDept: 'D-06 Recorte',
+        hasScrap: false
       });
+      lotsList.push({
+        folio: '49,386',
+        sublotNum: null,
+        model: 'CHAPARRAL',
+        clase: '1,000X MASTER TELAR',
+        pieces: 60,
+        operator: 'Pedro Morales',
+        targetDept: 'D-05 Prensas',
+        hasScrap: false
+      });
+    }
 
-      if (modalStop) modalStop.classList.remove('active');
-      EventBus.emit('status-updated');
-
-      window.UanifyUI.toast(
-        `Paro en ${station.name} por motivo: "${stopReason}". El semáforo Andon se iluminó en ROJO para intervención del supervisor.`,
-        'error',
-        '🛑 Paro de Línea Reportado'
-      );
+    // Filtrar
+    const filtered = lotsList.filter(item => {
+      if (modelFilter !== 'all' && !item.model.toUpperCase().includes(modelFilter.toUpperCase())) {
+        return false;
+      }
+      if (typeFilter === 'sublot' && !item.sublotNum) return false;
+      if (typeFilter === 'mother' && item.sublotNum) return false;
+      if (statusFilter === 'clean' && item.hasScrap) return false;
+      if (statusFilter === 'scrap' && !item.hasScrap) return false;
+      return true;
     });
-  });
 
-  // ── 7. MAPA DE PROCESO & RASTREADOR DE LOTES (VALUE STREAM TIMELINE) ───────
+    if (filtered.length === 0) {
+      deptWarehouseTableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">
+            No hay lotes que coincidan con los filtros en este almacén.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    deptWarehouseTableBody.innerHTML = filtered.map(item => `
+      <tr>
+        <td>
+          <strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${item.folio}</strong>
+          ${item.sublotNum ? `<span class="badge-subtle" style="font-weight:700; margin-left:4px;">Sublote #${item.sublotNum}</span>` : '<span class="badge-subtle" style="margin-left:4px;">Lote Madre</span>'}
+        </td>
+        <td><strong>${item.model}</strong> (${item.clase})</td>
+        <td><strong style="color:var(--text-primary);">${item.pieces} pzas</strong></td>
+        <td>${item.operator}</td>
+        <td>➔ ${item.targetDept}</td>
+        <td>
+          ${item.hasScrap 
+            ? `<span style="color:#B91C1C; font-weight:800; font-size:11.5px;">⚠️ Sombrero Merma</span>` 
+            : `<span style="color:#16A34A; font-weight:700; font-size:11.5px;">✅ Íntegro</span>`}
+        </td>
+        <td>
+          <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px; font-weight:700;" onclick="window.inspectSpecificLotCard('${item.folio}')">
+            🏷️ Ver Tarjeta
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.inspectSpecificLotCard = function(lotId) {
+    if (modalDeptWarehouse) modalDeptWarehouse.style.display = 'none';
+    triggerScanEvaluation(lotId);
+  };
+
+  if (warehouseFilterModel)  warehouseFilterModel.addEventListener('change', renderDeptWarehouseTable);
+  if (warehouseFilterType)   warehouseFilterType.addEventListener('change', renderDeptWarehouseTable);
+  if (warehouseFilterStatus) warehouseFilterStatus.addEventListener('change', renderDeptWarehouseTable);
+
+  const closeDeptWarehouseModal = () => {
+    if (modalDeptWarehouse) modalDeptWarehouse.style.display = 'none';
+  };
+
+  if (btnCloseDeptWarehouseModal)   btnCloseDeptWarehouseModal.addEventListener('click', closeDeptWarehouseModal);
+  if (btnDismissDeptWarehouseModal) btnDismissDeptWarehouseModal.addEventListener('click', closeDeptWarehouseModal);
+
+  // ── 10. TRAZABILIDAD INDIVIDUAL DE LOTE & PROCESO ──────────────────────────
   const trackerLotSelect = document.getElementById('trackerLotSelect');
   const trackerLotSearch = document.getElementById('trackerLotSearch');
-  const trackerRouteNameBadge = document.getElementById('trackerRouteNameBadge');
-  const trackerCurrentStationBadge = document.getElementById('trackerCurrentStationBadge');
-  const trackerNextStationText = document.getElementById('trackerNextStationText');
-  const trackerModelName = document.getElementById('trackerModelName');
-  const trackerOProd = document.getElementById('trackerOProd');
-  const trackerPiecesInfo = document.getElementById('trackerPiecesInfo');
-  const trackerOperatorName = document.getElementById('trackerOperatorName');
-  const trackerProgressPct = document.getElementById('trackerProgressPct');
-  const trackerProgressBar = document.getElementById('trackerProgressBar');
   const processTimelineContainer = document.getElementById('processTimelineContainer');
-
   const btnAdvanceLotStep = document.getElementById('btnAdvanceLotStep');
-  const btnRewindLotStep = document.getElementById('btnRewindLotStep');
-  const btnApproveQualityStep = document.getElementById('btnApproveQualityStep');
-
+  const btnRewindLotStep  = document.getElementById('btnRewindLotStep');
+  const btnApproveQuality = document.getElementById('btnApproveQualityStep');
   let activeTrackedLotId = '49,633';
 
   function populateTrackerLotSelect() {
     if (!trackerLotSelect || !UanifyState.activeLots) return;
     trackerLotSelect.innerHTML = UanifyState.activeLots.map(lot => {
-      const subInfo = lot.isSubdivided ? ' · Sublote 3' : ' · Lote Completo';
+      const subInfo = lot.isSubdivided ? ' · Sublote 3' : ' · Lote Madre';
       return `<option value="${lot.lotId}" ${lot.lotId === activeTrackedLotId ? 'selected' : ''}>
         Lote ${lot.lotId} · ${lot.model} (${lot.pieces} pzas${subInfo}) · ${lot.currentStation || 'Piso'}
       </option>`;
@@ -722,17 +970,18 @@ window.initTerminalView = function() {
     const totalSteps = route.steps.length;
     const progressPercent = Math.round(((currentIdx + 1) / totalSteps) * 100);
 
-    // Actualizar Encabezado y Badges
-    if (trackerRouteNameBadge) {
-      trackerRouteNameBadge.textContent = `Ruta: ${route.name} (${totalSteps} Pasos)`;
-    }
+    const trackerCurrentStationBadge = document.getElementById('trackerCurrentStationBadge');
+    const trackerNextStationText     = document.getElementById('trackerNextStationText');
+    const trackerModelName           = document.getElementById('trackerModelName');
+    const trackerOProd               = document.getElementById('trackerOProd');
+    const trackerPiecesInfo          = document.getElementById('trackerPiecesInfo');
+    const trackerOperatorName        = document.getElementById('trackerOperatorName');
+    const trackerProgressPct         = document.getElementById('trackerProgressPct');
+    const trackerProgressBar         = document.getElementById('trackerProgressBar');
+
     if (trackerCurrentStationBadge) {
       trackerCurrentStationBadge.innerHTML = `📍 UBICACIÓN ACTUAL: ${currentStep.code} ${currentStep.name}`;
-      if (currentStep.type === 'calidad' || currentStep.isQualityStop) {
-        trackerCurrentStationBadge.style.background = '#D97706';
-      } else {
-        trackerCurrentStationBadge.style.background = 'var(--color-brand)';
-      }
+      trackerCurrentStationBadge.style.background = currentStep.type === 'calidad' ? '#D97706' : 'var(--color-brand)';
     }
     if (trackerNextStationText) {
       trackerNextStationText.innerHTML = nextStep 
@@ -742,32 +991,12 @@ window.initTerminalView = function() {
     if (trackerModelName) trackerModelName.textContent = `${lot.clase || 'Sombrero'} (${lot.model})`;
     if (trackerOProd) trackerOProd.textContent = `#${lot.oProd || '15000'}`;
     if (trackerPiecesInfo) {
-      const subTxt = lot.isSubdivided ? ' (Sublote 3 de 4)' : ` (Lote Madre ${lot.pieces} pzas)`;
-      trackerPiecesInfo.textContent = `${lot.pieces} pzas${subTxt}`;
+      trackerPiecesInfo.textContent = `${lot.pieces} pzas${lot.isSubdivided ? ' (Sublote 3 de 4)' : ' (Lote Madre)'}`;
     }
     if (trackerOperatorName) trackerOperatorName.textContent = `${lot.operatorSticker || lot.operator} (${currentStep.code})`;
     if (trackerProgressPct) trackerProgressPct.textContent = `${progressPercent}% (Paso ${currentIdx + 1} de ${totalSteps})`;
     if (trackerProgressBar) trackerProgressBar.style.width = `${progressPercent}%`;
 
-    // Botón de Calidad
-    if (btnApproveQualityStep) {
-      if (currentStep.type === 'calidad' || currentStep.isQualityStop || currentStep.code.startsWith('C-')) {
-        btnApproveQualityStep.style.display = 'inline-block';
-        btnApproveQualityStep.textContent = `✅ Liberar ${currentStep.code} (Calidad OK)`;
-      } else {
-        btnApproveQualityStep.style.display = 'none';
-      }
-    }
-
-    // Botones de Avance y Retroceso
-    if (btnAdvanceLotStep) {
-      btnAdvanceLotStep.disabled = currentIdx >= totalSteps - 1;
-    }
-    if (btnRewindLotStep) {
-      btnRewindLotStep.disabled = currentIdx <= 0;
-    }
-
-    // Renderizar Nodos de la Línea de Tiempo
     processTimelineContainer.innerHTML = route.steps.map((st, idx) => {
       let stateClass = 'is-pending';
       let stateFooter = '⏳ En espera';
@@ -781,23 +1010,13 @@ window.initTerminalView = function() {
 
       const isQuality = st.type === 'calidad' || st.isQualityStop || st.code.startsWith('C-');
       const isLogistics = st.type === 'logistica' || st.code === 'D-11';
-      let typeClass = 'type-mfg';
-      let typeLabel = '🏭 Manufactura';
-      if (isQuality) {
-        typeClass = 'type-quality';
-        typeLabel = '🔍 Calidad';
-      } else if (isLogistics) {
-        typeClass = 'type-logistics';
-        typeLabel = '🚚 Logística';
-      }
+      let typeLabel = isQuality ? '🔍 Calidad' : isLogistics ? '🚚 Logística' : '🏭 Manufactura';
 
       return `
-        <div class="timeline-step-node ${stateClass} ${isQuality ? 'is-quality' : ''}" 
-             data-step-index="${idx}"
-             title="Clic para reubicar Lote ${lot.lotId} en ${st.name}">
+        <div class="timeline-step-node ${stateClass} ${isQuality ? 'is-quality' : ''}" data-step-index="${idx}">
           <div class="timeline-step-head">
             <span class="timeline-step-number">#${idx + 1}</span>
-            <span class="timeline-step-type-badge ${typeClass}">${typeLabel}</span>
+            <span class="timeline-step-type-badge">${typeLabel}</span>
           </div>
           <div class="timeline-step-body">
             <div class="timeline-step-code">${st.icon || (isQuality ? '🔍' : '🏭')} ${st.code}</div>
@@ -810,31 +1029,6 @@ window.initTerminalView = function() {
         </div>
       `;
     }).join('');
-
-    // Listener para clic en cada nodo para reubicar el lote
-    processTimelineContainer.querySelectorAll('.timeline-step-node').forEach(node => {
-      node.addEventListener('click', () => {
-        const stepIdx = parseInt(node.getAttribute('data-step-index'), 10);
-        const res = UanifyState.moveLotToStep(lot.lotId, stepIdx);
-        if (res) {
-          renderProcessTimeline(lot.lotId);
-          populateTrackerLotSelect();
-          window.UanifyUI.toast(
-            `Lote ${lot.lotId} reubicado en Paso #${stepIdx + 1}: ${res.targetStep.code} - ${res.targetStep.name}.`,
-            'info',
-            '📍 Lote Actualizado'
-          );
-        }
-      });
-    });
-
-    // Auto-scroll para centrar el nodo activo
-    setTimeout(() => {
-      const activeNode = processTimelineContainer.querySelector('.timeline-step-node.is-current');
-      if (activeNode) {
-        activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
-    }, 150);
   }
 
   if (trackerLotSelect) {
@@ -861,12 +1055,34 @@ window.initTerminalView = function() {
     });
   }
 
+  // Avance y Retroceso en Timeline con Validación de Supervisor
+  function validateSupervisorMovement(lot) {
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const isSuperUser = user.role === 'admin' || user.role === 'ingeniero' || 
+                        (user.assignedDepartments && user.assignedDepartments.includes('*'));
+
+    const currentStationCode = lot.currentStationCode || 'D-05';
+    if (!isSuperUser && (!user.assignedDepartments || !user.assignedDepartments.includes(currentStationCode))) {
+      window.UanifyUI.toast(
+        `Solo puedes mover lotes de tus departamentos asignados (${user.assignedDepartments.join(', ')}). Este lote pertenece a ${lot.currentStation || currentStationCode}.`,
+        'warning',
+        '🔒 Restricción de Supervisor'
+      );
+      return false;
+    }
+    return true;
+  }
+
   if (btnAdvanceLotStep) {
     btnAdvanceLotStep.addEventListener('click', () => {
+      const lot = UanifyState.activeLots.find(l => l.lotId === activeTrackedLotId) || UanifyState.activeLots[0];
+      if (!validateSupervisorMovement(lot)) return;
+
       const res = UanifyState.advanceLot(activeTrackedLotId);
       if (res) {
         renderProcessTimeline(activeTrackedLotId);
         populateTrackerLotSelect();
+        renderPlantDepartmentsGrid();
         window.UanifyUI.toast(
           `Lote ${res.lot.lotId} avanzó a ${res.targetStep.code} "${res.targetStep.name}".`,
           'success',
@@ -878,12 +1094,16 @@ window.initTerminalView = function() {
 
   if (btnRewindLotStep) {
     btnRewindLotStep.addEventListener('click', () => {
+      const lot = UanifyState.activeLots.find(l => l.lotId === activeTrackedLotId) || UanifyState.activeLots[0];
+      if (!validateSupervisorMovement(lot)) return;
+
       const res = UanifyState.rewindLot(activeTrackedLotId);
       if (res) {
         renderProcessTimeline(activeTrackedLotId);
         populateTrackerLotSelect();
+        renderPlantDepartmentsGrid();
         window.UanifyUI.toast(
-          `Lote ${res.lot.lotId} retrocedió a ${res.targetStep.code} "${res.targetStep.name}" para ajuste/reproceso.`,
+          `Lote ${res.lot.lotId} retrocedió a ${res.targetStep.code} "${res.targetStep.name}" para reproceso.`,
           'warning',
           '⏮️ Lote Reubicado'
         );
@@ -891,24 +1111,23 @@ window.initTerminalView = function() {
     });
   }
 
-  if (btnApproveQualityStep) {
-    btnApproveQualityStep.addEventListener('click', () => {
-      const lot = UanifyState.activeLots.find(l => l.lotId === activeTrackedLotId);
-      const res = UanifyState.advanceLot(activeTrackedLotId);
-      if (res) {
-        renderProcessTimeline(activeTrackedLotId);
-        populateTrackerLotSelect();
-        window.UanifyUI.toast(
-          `Filtro de Calidad APROBADO sin defectos para Lote ${lot.lotId}. El lote avanzó a ${res.targetStep.code} "${res.targetStep.name}".`,
-          'success',
-          '✅ Inspección de Calidad Liberada'
-        );
-      }
+  // ── 11. FRACCIONAR EN RAMPA & MODALES DE SCRAP / PAROS ─────────────────────
+  if (btnSubdivideLot) {
+    btnSubdivideLot.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      activeScannedLot.isSubdivided = true;
+      activeScannedLot.sublotNum = 1;
+      activeScannedLot.pieces = 15;
+      renderActiveScannedLotCard(activeScannedLot);
+      window.UanifyUI.toast(
+        `Lote ${activeScannedLot.lotId} fraccionado en 4 torres de 15 sombreros. Cargando Sublote #1 en la terminal.`,
+        'success',
+        '✂️ Fraccionamiento en Rampa'
+      );
     });
   }
 
-  // ── 8. MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS (BUFFER MONITOR) ───
-  // "para poder consultar los demás almacenes y así saber si el otro ya tiene listo lotes para que yo lo agarre"
+  // ── 12. MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS (SUBTAB 3) ────────
   const bufferGrid = document.getElementById('bufferReadyLotsGrid');
   const bufferFilterScope = document.getElementById('bufferFilterScope');
   const bufferCountBadge = document.getElementById('bufferReadyCountBadge');
@@ -974,10 +1193,10 @@ window.initTerminalView = function() {
           </div>
 
           <div class="buffer-actions-row">
-            <button class="btn-primary" style="flex:1; padding:8px 12px; font-size:12px;" onclick="window.collectBufferLot('${item.id}')">
+            <button class="btn-primary btn-touch-lg" style="flex:1;" onclick="window.collectBufferLot('${item.id}')">
               🚚 Recoger Lote (${item.pieces} pzas)
             </button>
-            <button class="btn-secondary" style="padding:8px 10px; font-size:12px;" onclick="window.previewBufferLot('${item.lotId}')" title="Ver en Rastreador">
+            <button class="btn-secondary btn-touch-lg" style="padding:8px 12px;" onclick="window.inspectSpecificLotCard('${item.lotId}')" title="Ver en Visor">
               👁️
             </button>
           </div>
@@ -1017,20 +1236,7 @@ window.initTerminalView = function() {
     );
   };
 
-  window.previewBufferLot = function(lotId) {
-    activeTrackedLotId = lotId;
-    if (trackerLotSelect) trackerLotSelect.value = lotId;
-    renderProcessTimeline(lotId);
-    
-    const trackerBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-terminal-tracker"]');
-    if (trackerBtn) trackerBtn.click();
-    
-    window.UanifyUI.toast(`Mostrando trazabilidad en vivo de Lote ${lotId}.`, 'info', 'Rastreador');
-  };
-
-  if (bufferFilterScope) {
-    bufferFilterScope.addEventListener('change', renderBufferReadyLots);
-  }
+  if (bufferFilterScope) bufferFilterScope.addEventListener('change', renderBufferReadyLots);
   if (btnRefreshBuffer) {
     btnRefreshBuffer.addEventListener('click', () => {
       renderBufferReadyLots();
@@ -1038,27 +1244,143 @@ window.initTerminalView = function() {
     });
   }
 
-  renderBufferReadyLots();
+  // ── 13. OPERACIÓN EN MÁQUINA & RECOLECCIÓN (SUBTABS 4 Y 5) ────────────────
+  const workflowDeptSelect     = document.getElementById('workflowDeptSelect');
+  const workflowMachineSelect  = document.getElementById('workflowMachineSelect');
+  const workflowOperatorSelect = document.getElementById('workflowOperatorSelect');
+  const btnCompleteMachineRun  = document.getElementById('btnCompleteMachineRun');
+  const supervisorDeptsBadge   = document.getElementById('supervisorDeptsBadge');
 
-  // Inicializar tracker de lotes
+  const transferOriginDept    = document.getElementById('transferOriginDept');
+  const transferDestDept      = document.getElementById('transferDestDept');
+  const transferCollectorName = document.getElementById('transferCollectorName');
+  const transferQtyInput      = document.getElementById('transferQtyInput');
+  const btnExecuteTransfer    = document.getElementById('btnExecuteTransfer');
+
+  function syncDepartmentScope() {
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const banner = document.getElementById('terminalSupervisorBanner');
+    if (banner) {
+      banner.textContent = `Supervisor Activo: ${user.name} (${user.roleName})`;
+    }
+
+    let allowedStations = UanifyState.stations;
+    if (user.role === 'supervisor') {
+      allowedStations = UanifyState.stations.filter(st => {
+        return user.assignedDepartments && user.assignedDepartments.includes(st.code);
+      });
+      if (supervisorDeptsBadge) {
+        supervisorDeptsBadge.textContent = `Mis Depts Asignados: ${user.assignedDepartments.join(', ')}`;
+      }
+    } else {
+      if (supervisorDeptsBadge) {
+        supervisorDeptsBadge.textContent = `Acceso Global: Todos los Depts (D-01 a D-14)`;
+      }
+    }
+
+    if (workflowDeptSelect) {
+      workflowDeptSelect.innerHTML = allowedStations.map(st => `
+        <option value="${st.code}">${st.code} · ${st.name}</option>
+      `).join('');
+      populateMachinesAndOperators();
+    }
+
+    if (transferOriginDept) {
+      transferOriginDept.innerHTML = UanifyState.stations.map(st => `
+        <option value="${st.code}">${st.code} · ${st.name}</option>
+      `).join('');
+    }
+    if (transferDestDept) {
+      transferDestDept.innerHTML = UanifyState.stations.slice(1).map(st => `
+        <option value="${st.code}">${st.code} · ${st.name}</option>
+      `).join('');
+    }
+  }
+
+  function populateMachinesAndOperators() {
+    if (!workflowDeptSelect) return;
+    const deptCode = workflowDeptSelect.value;
+    const st = UanifyState.stations.find(s => s.code === deptCode);
+
+    if (workflowMachineSelect) {
+      workflowMachineSelect.innerHTML = `
+        <option value="M-01">${st ? st.name : 'Estación'} - Máquina Principal 01</option>
+        <option value="M-02">${st ? st.name : 'Estación'} - Máquina Principal 02</option>
+        <option value="M-03">${st ? st.name : 'Estación'} - Mesa de Soporte 03</option>
+      `;
+    }
+
+    if (workflowOperatorSelect) {
+      const deptOps = (UanifyState.operators || []).filter(op => op.deptCode === deptCode);
+      if (deptOps.length > 0) {
+        workflowOperatorSelect.innerHTML = deptOps.map(op => `
+          <option value="${op.empId}">${op.empId} · ${op.name} (${op.machine})</option>
+        `).join('');
+      } else {
+        workflowOperatorSelect.innerHTML = `
+          <option value="OP-GENERIC">${st ? st.operator : 'Operador de Turno Único'}</option>
+        `;
+      }
+    }
+  }
+
+  if (workflowDeptSelect) workflowDeptSelect.addEventListener('change', populateMachinesAndOperators);
+
+  if (btnCompleteMachineRun) {
+    btnCompleteMachineRun.addEventListener('click', () => {
+      const deptCode = workflowDeptSelect ? workflowDeptSelect.value : 'D-05';
+      const st = UanifyState.stations.find(s => s.code === deptCode) || UanifyState.stations[4];
+      const opText = workflowOperatorSelect ? workflowOperatorSelect.selectedOptions[0]?.text : 'Operador';
+      const machineText = workflowMachineSelect ? workflowMachineSelect.selectedOptions[0]?.text : 'Máquina';
+
+      st.produced += 15;
+      UanifyState.producedTotal += 15;
+      if (terminalProduced) terminalProduced.textContent = `${UanifyState.producedTotal} pzas`;
+
+      const andonTotalEl = document.getElementById('andonProducedTotal');
+      if (andonTotalEl) andonTotalEl.textContent = `${UanifyState.producedTotal} pzas`;
+
+      renderPlantDepartmentsGrid();
+      window.UanifyUI.toast(
+        `Sublote procesado en ${machineText} por ${opText}. Depositado en Almacén Intermedio de Salida de ${st.name}.`,
+        'success',
+        '⚙️ Trabajo en Máquina Concluido'
+      );
+    });
+  }
+
+  if (btnExecuteTransfer) {
+    btnExecuteTransfer.addEventListener('click', () => {
+      const originCode = transferOriginDept ? transferOriginDept.value : 'D-05';
+      const destCode   = transferDestDept ? transferDestDept.value : 'D-06';
+      const collector  = (transferCollectorName ? transferCollectorName.value.trim() : '') || 'Recolector de Turno';
+      const qty        = transferQtyInput ? parseInt(transferQtyInput.value, 10) : 15;
+
+      const originSt = UanifyState.stations.find(s => s.code === originCode) || { name: originCode };
+      const destSt   = UanifyState.stations.find(s => s.code === destCode) || { name: destCode };
+
+      renderPlantDepartmentsGrid();
+      window.UanifyUI.toast(
+        `Se recolectaron ${qty} sombreros del Almacén de ${originSt.name} y se trasladaron al Almacén de ${destSt.name}. Responsable: ${collector}.`,
+        'success',
+        '🚚 Traspaso Confirmado'
+      );
+    });
+  }
+
+  // ── 14. INICIALIZACIÓN GENERAL ─────────────────────────────────────────────
+  renderActiveScannedLotCard(activeScannedLot);
+  renderPlantDepartmentsGrid();
   populateTrackerLotSelect();
   renderProcessTimeline(activeTrackedLotId);
 
-  EventBus.on('lot-moved', (data) => {
-    if (data && data.lot && data.lot.lotId === activeTrackedLotId) {
-      renderProcessTimeline(activeTrackedLotId);
-    }
-  });
-
-  EventBus.on('production-routes-updated', () => {
-    renderProcessTimeline(activeTrackedLotId);
-  });
-
-  // Reaccionar cuando se cambie de usuario en el sidebar
+  // Sincronizar cuando cambie de usuario en el sistema
   EventBus.on('user-switched', () => {
-    syncDepartmentScope();
-    renderBufferReadyLots();
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const banner = document.getElementById('terminalSupervisorBanner');
+    if (banner) {
+      banner.textContent = `Supervisor Activo: ${user.name} (${user.roleName})`;
+    }
+    renderPlantDepartmentsGrid();
   });
-
-  syncDepartmentScope();
 };

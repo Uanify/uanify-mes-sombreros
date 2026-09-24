@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.13.0">
-  <link rel="stylesheet" href="css/components.css?v=2.13.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.14.0">
+  <link rel="stylesheet" href="css/components.css?v=2.14.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.13.0</span>
+        <span class="system-version-pill login-version-pill">v2.14.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -363,47 +363,115 @@
 
         <!-- Sub-navegación por Pestañas del Módulo Terminal -->
         <div class="sub-nav-tabs" data-module="terminal">
-          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Visor Tarjeta</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">🗺️ Operación Actual & Rastreador</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">📦 Almacenes Intermedios & Lotes Listos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Almacén Salida</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Recepción/Depósito</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">🏭 Mapa de Planta & Almacenes Intermedios</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">📦 Monitor General de Almacenes</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Puestos</button>
           <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">🚚 Recolección & Traspaso entre Depts</button>
         </div>
 
-        <!-- Pestaña 1: Lector QR y Cámara Web Completa -->
+        <!-- Pestaña 1: Lector QR Heroico & Recepción/Depósito en Almacén Siguiente -->
         <div class="sub-tab-content active" id="subtab-terminal-scanner">
-          <div class="terminal-layout">
-            <div class="terminal-sidebar card-glass">
-              <div class="model-badge-box">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span class="model-badge-tag">LOTE MADRE (60 PIEZAS)</span>
-                  <span style="font-size:11px; color:var(--color-amber); font-weight:700;">Lote 1094 · Horma: Roper</span>
-                </div>
-                <label class="field-label">Modelo en Fabricación:</label>
-                <select id="tombstoneModelSelect" class="custom-select">
-                  <option value="0">1000X Master Telar Denver</option>
-                  <option value="1">1000X Master Telar El Viejonón</option>
-                  <option value="2">1000X Master Telar Laredo F10</option>
-                  <option value="3">1000X Master Telar Frontier F9</option>
-                  <option value="4">1000X Master Telar Chaparral</option>
-                </select>
-                <p class="model-sku" id="terminalModelSku" style="margin-top:6px;">SKU: TB-1000X-DNV-58 | Talla: 58 (7 1/4) | Horma: Denver | Telar Fino 1000X</p>
-              </div>
-
-              <!-- Sublotes Fraccionados en Rampa -->
+          <!-- Botón de Alto Impacto para Visualizar la Tarjeta Viajera Oficial (Mica de Piso) sin saturar de Scroll -->
+          <div style="margin-bottom:16px;">
+            <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal">
               <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                  <label class="field-label" style="margin-bottom:0;">Sublotes en Rampa (15 pzas c/u):</label>
-                  <span class="badge-subtle" id="sublotsCountBadge">4 activos</span>
+                <div class="btt-title">
+                  <span>🏷️</span> Ver Tarjeta Viajera Oficial (Mica & Gafete de Piso)
                 </div>
-                <div id="sublotsContainer" style="max-height:220px; overflow-y:auto;">
-                  <!-- Inyectado por JS -->
+                <div class="btt-desc">
+                  Réplica exacta reglamentaria con sticker de operador, clase 1000X, horma, acabados y perforación para cordel
+                </div>
+              </div>
+              <span class="btt-pill" id="bttActiveLotPill">Lote 49,633-3 · Sublote 3</span>
+            </button>
+          </div>
+
+          <div class="terminal-layout" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:20px;">
+            
+            <!-- Columna 1: Lector QR Heroico (Cámara Web / Pistola USB / Pantalla Completa) -->
+            <div class="card-glass" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <span class="model-badge-tag" style="font-size:12px; font-weight:800;">📷 ESCÁNER QR DE PISO (HERO)</span>
+                  <span class="badge-subtle" id="cameraStatusBadge">Cámara inactiva</span>
+                </div>
+
+                <!-- Visor de Cámara Web en Vivo -->
+                <div class="camera-scanner-wrapper" id="cameraScannerWrapper" style="position:relative; min-height:260px; background:#0B0F17; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                  <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
+                  
+                  <div class="camera-placeholder-msg" id="cameraPlaceholderMsg" style="position:relative; z-index:2; text-align:center; padding:20px; color:#94A3B8;">
+                    <span style="font-size:46px; display:block; margin-bottom:8px;">📷</span>
+                    <strong style="color:#FFFFFF; font-size:16px; display:block; margin-bottom:4px;">Cámara de Dispositivo Lista</strong>
+                    <span style="font-size:12.5px;">Haz clic en "Activar Cámara Web" o usa la pistola de código de barras USB.</span>
+                  </div>
+
+                  <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; z-index:3; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
+                    <div class="camera-target-box" style="width:220px; height:220px; border:2.5px solid #22C55E; border-radius:16px; position:relative; box-shadow:0 0 0 9999px rgba(0,0,0,0.45);">
+                      <div class="camera-scan-laser" style="position:absolute; top:0; left:0; right:0; height:3px; background:#22C55E; box-shadow:0 0 12px #22C55E; animation:scanLaser 2s infinite ease-in-out;"></div>
+                    </div>
+                    <span style="color:#FFFFFF; font-size:11.5px; margin-top:12px; font-weight:800; background:rgba(0,0,0,0.75); padding:4px 12px; border-radius:20px; letter-spacing:0.3px;">
+                      APUNTA AL CÓDIGO QR DE LA TARJETA VIAJERA
+                    </span>
+                  </div>
+
+                  <!-- Botón Flotante para Salir de Pantalla Completa (Solo visible en fullscreen) -->
+                  <div class="fullscreen-scanner-topbar" id="fsTopBar" style="display:none;">
+                    <span class="fullscreen-scanner-title">📷 Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</span>
+                    <button type="button" class="fullscreen-scanner-exit-btn" id="btnExitFullscreenScanner">
+                      ✖ Salir de Pantalla Completa
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Barra de Botones de Control de Cámara (Gigantes para Tablet) -->
+                <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                  <button type="button" class="btn-primary btn-touch-hero" id="btnToggleCamera" style="flex:1.4;">
+                    ▶️ Activar Cámara Web
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnToggleFullscreen" style="flex:1;" title="Ampliar a pantalla completa para tablet">
+                    ⛶ Pantalla Completa
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnFlipCamera" style="display:none;">
+                    🔄 Girar Cámara
+                  </button>
+                </div>
+
+                <!-- Entrada por Pistola Barcode / Teclado Táctil -->
+                <div style="margin-top:16px;">
+                  <label class="field-label" style="font-size:12px; margin-bottom:6px;">Lector USB o Entrada de Código QR:</label>
+                  <div style="display:flex; gap:10px; align-items:stretch;">
+                    <input type="text" id="manualQrInput" class="form-input" placeholder="Apunta la pistola USB o escribe Folio (ej. 49633-3)..." value="49633-3" style="min-height:50px; font-size:15px; font-weight:700; font-family:'JetBrains Mono';">
+                    <button class="btn-primary btn-touch-hero" id="btnScanQr" style="flex-shrink:0;">
+                      ⚡ Escanear Código QR
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Botones de Simulación Rápida de Tarjetas para Pruebas en Planta -->
+                <div style="margin-top:14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px;">
+                  <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">
+                    Simulación Rápida de Códigos QR para Pruebas:
+                  </div>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button" class="btn-secondary" id="btnSimulateScanSublot3" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
+                      🏷️ Sublote #3 (49633-3 · Viejonón)
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnSimulateScanMotherLot" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
+                      🏷️ Lote Madre (49386 · Chaparral)
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnSimulateScanScrapLot" style="padding:6px 10px; font-size:11.5px; font-weight:700; color:var(--color-amber);">
+                      ⚠️ Lote con Merma (49842 · Magnum)
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div class="station-live-indicators">
+              <!-- Indicadores de Turno del Supervisor -->
+              <div class="station-live-indicators" style="margin-top:16px; margin-bottom:0;">
                 <div class="indicator-row">
-                  <span>Procesadas Hoy:</span>
+                  <span>Piezas Procesadas Hoy:</span>
                   <strong style="color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
                 </div>
                 <div class="indicator-row">
@@ -417,87 +485,90 @@
               </div>
             </div>
 
-            <div class="terminal-main card-glass">
-              <!-- Cámara Web / Visor QR Completo -->
-              <div class="camera-scanner-wrapper" id="cameraScannerWrapper">
-                <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted></video>
-                <div class="camera-placeholder-msg" id="cameraPlaceholderMsg">
-                  <span style="font-size:42px;">📷</span>
-                  <strong style="color:#FFFFFF; font-size:15px;">Cámara de Dispositivo Apagada</strong>
-                  <span style="font-size:12px;">Haz clic en "Activar Cámara Web" para escanear directamente con la cámara de tu dispositivo.</span>
-                </div>
-                <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none;">
-                  <div class="camera-target-box">
-                    <div class="camera-scan-laser"></div>
-                  </div>
-                  <span style="color:#FFFFFF; font-size:11px; margin-top:10px; font-weight:700; background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:4px;">APUNTA AL CÓDIGO QR DE LA TARJETA VIAJERA</span>
-                </div>
-              </div>
-
-              <div class="camera-controls-bar">
-                <div style="display:flex; gap:8px;">
-                  <button type="button" class="btn-primary" id="btnToggleCamera">
-                    ▶️ Activar Cámara Web
-                  </button>
-                  <button type="button" class="btn-secondary" id="btnFlipCamera" style="display:none;">
-                    🔄 Cambiar Cámara
-                  </button>
-                </div>
-                <span class="badge-subtle" id="cameraStatusBadge">Cámara inactiva</span>
-              </div>
-
-              <!-- Entrada manual de código para pruebas o fallas de cámara -->
-              <div class="manual-qr-entry" style="margin-top:16px;">
-                <input type="text" id="manualQrInput" class="qr-text-input" placeholder="Escanea o escribe código ej. 1094 o 1094-01" value="1094-01">
-                <button class="btn-primary" id="btnScanQr" style="padding:10px 18px;">
-                  ⚡ Procesar Tarjeta
-                </button>
-              </div>
-
-              <!-- Acciones de Rampa y Paros -->
-              <div style="display:flex; gap:10px; margin-top:16px;">
-                <button class="btn-secondary" id="btnSubdivideLot" style="flex:1;">
-                  ✂️ Fraccionar Lote Madre (60 a 15 pzas)
-                </button>
-                <button class="btn-secondary" id="btnReportScrap" style="color:var(--color-amber);">
-                  ⚠️ Reportar Segunda / Merma
-                </button>
-                <button class="btn-secondary" id="btnReportStop" style="color:var(--color-red);">
-                  🛑 Reportar Paro de Línea
-                </button>
-              </div>
-
-              <!-- Visualizador Oficial de Tarjeta Viajera (Réplica Física Planta GTO) -->
-              <div class="card-glass" style="margin-top:20px; padding:18px; border: 1.5px solid var(--color-brand-border);">
+            <!-- Columna 2: Ficha del Lote Escaneado & Acción de Depósito en Almacén Siguiente -->
+            <div class="card-glass" style="padding:22px; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                   <div>
-                    <h3 style="font-size:14px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">🏷️ Tarjeta Viajera Oficial (Mica & Gafete de Piso)</h3>
-                    <p class="section-desc" style="margin-bottom:0; font-size:11.5px;">Validada según tarjetas físicas de planta: Lotes sin número abajo a la derecha, Sublotes con número de sublote.</p>
+                    <span class="badge-status" id="activeLotBadgeStatus" style="background:var(--color-brand); color:#FFFFFF; font-size:12px; font-weight:800; padding:5px 10px; border-radius:6px;">
+                      LOTE ACTIVO: 49,633-3
+                    </span>
+                    <span class="badge-subtle" id="activeSublotTypeBadge" style="margin-left:6px; font-weight:700;">Sublote #3 (15 pzas)</span>
                   </div>
-                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" class="btn-primary" id="btnPrintPhysicalTraveler" style="padding:6px 12px; font-size:11.5px; font-weight:700; background:var(--color-brand);">
-                      🖨️ Imprimir Tarjeta Viajera (Física/PDF)
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnViewHatSpecSheet" style="padding:6px 12px; font-size:11.5px; font-weight:700; color:var(--color-amber);">
-                      📋 Ficha Técnica Oficial c/Foto
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnPreviewSublot3" style="padding:5px 10px; font-size:11.5px; font-weight:700;">
-                      👁️ Sublote #3 (Viejonón · Jorge)
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnPreviewLoteMother" style="padding:5px 10px; font-size:11.5px; font-weight:700;">
-                      👁️ Lote 15 Pzas (Chaparral · Sin Número)
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnPreviewLoteMagnum" style="padding:5px 10px; font-size:11.5px; font-weight:700;">
-                      👁️ Lote 60 Pzas (Magnum · Melany)
-                    </button>
+                  <span style="font-size:12px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">O. Prod: #15071</span>
+                </div>
+
+                <!-- Flujo Secuencial Automático de Ruta (De dónde viene ➔ Dónde está ➔ A cuál sigue) -->
+                <div class="route-sequence-flow">
+                  <div class="flow-step-chip chip-origin">
+                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
+                    <strong id="lotOriginStationText">D-04 Refuerzos</strong>
+                  </div>
+                  <span class="flow-arrow-icon">➔</span>
+                  <div class="flow-step-chip chip-current">
+                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">📍 Ubicación Actual:</span>
+                    <strong id="lotCurrentStationText">D-05 Prensas de Hormado</strong>
+                  </div>
+                  <span class="flow-arrow-icon">➔</span>
+                  <div class="flow-step-chip chip-target">
+                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">⏩ Siguiente Destino:</span>
+                    <strong id="lotTargetStationText">D-06 Recorte y Refaldeado</strong>
                   </div>
                 </div>
-                
-                <div id="travelerCardVisualContainer" class="traveler-card-container">
-                  <!-- Inyectado dinámicamente por JS -->
+
+                <!-- Metadatos Extraídos del QR (Sin necesidad de captura manual) -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:14px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:10px;">
+                  <div>
+                    <span style="font-size:11px; color:var(--text-muted); display:block;">Modelo / Clase:</span>
+                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaModel">1000X Master Telar · Viejonón</strong>
+                  </div>
+                  <div>
+                    <span style="font-size:11px; color:var(--text-muted); display:block;">Talla / Falda:</span>
+                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaSpecs">Talla #55 | Falda 9 1/2</strong>
+                  </div>
+                  <div>
+                    <span style="font-size:11px; color:var(--text-muted); display:block;">Operador Responsable:</span>
+                    <strong style="color:var(--color-brand); font-size:13px;" id="lotMetaOperator">Jorge (Prensas)</strong>
+                  </div>
+                  <div>
+                    <span style="font-size:11px; color:var(--text-muted); display:block;">Cantidad en Torre:</span>
+                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaPieces">15 piezas</strong>
+                  </div>
+                </div>
+
+                <!-- Banner Informativo de Merma en el Lote -->
+                <div id="lotScrapBannerContainer">
+                  <div class="lot-clean-banner">
+                    <span style="font-size:16px;">✅</span>
+                    <span><strong>Lote íntegro:</strong> Sin sombreros marcados con defecto en este momento.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ACCIÓN PRINCIPAL DE DEPÓSITO (BOTÓN GIGANTE TABLET) -->
+              <div style="margin-top:18px;">
+                <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
+                  📥 Depositar Lote en Almacén de D-06 Recorte y Refaldeado
+                </button>
+                <div style="font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:6px;">
+                  🔒 Requiere asignación departamental del supervisor activo. Solo puedes mover lotes de tus departamentos.
+                </div>
+
+                <!-- Acciones Rápidas Complementarias -->
+                <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnSubdivideLot" style="flex:1;">
+                    ✂️ Fraccionar Lote Madre
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnReportScrap" style="color:var(--color-amber);">
+                    ⚠️ Reportar Merma
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="color:var(--color-red);">
+                    🛑 Paro de Línea
+                  </button>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -595,30 +666,61 @@
           </div>
         </div>
 
-        <!-- Pestaña 4: Mapa de Proceso & Rastreador de Lotes (Value Stream Timeline) -->
+        <!-- Pestaña 2: Mapa General de Planta & Almacenes Intermedios Departamentales -->
         <div class="sub-tab-content" id="subtab-terminal-tracker">
           <div class="card-glass" style="padding:22px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px;">
               <div>
-                <h3 style="font-size:17px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">🗺️ Rastreador de Lote & Mapa de Proceso en Planta</h3>
-                <p class="section-desc" style="margin-bottom:0;">Línea de tiempo interactiva de estaciones de manufactura y paradas de control de calidad según el tipo de sombrero.</p>
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
+                  🏭 Mapa General de Departamentos & Almacenes Intermedios
+                </h3>
+                <p class="section-desc" style="margin-bottom:0;">
+                  Supervisión general de planta: inspecciona el inventario en proceso (WIP) y sombreros almacenados en cada departamento. Haz clic en "Ver Almacén Intermedio" de cualquier departamento para revisar sus lotes y filtrar por modelo o estado.
+                </p>
               </div>
-              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                <span class="badge-subtle" id="trackerRouteNameBadge" style="font-weight:700; color:var(--color-brand); border:1px solid var(--color-brand-border);">Ruta: 1000X Master Telar (14 Estaciones)</span>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn-secondary btn-touch-lg active" id="btnFilterPlantAllDepts">
+                  🏢 Todos los Depts (14)
+                </button>
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnFilterPlantMyDepts">
+                  ⭐ Mis Depts Asignados
+                </button>
               </div>
             </div>
 
-            <!-- Selector y Buscador de Lote -->
+            <!-- Grid de Tarjetas de Departamentos de Planta (Renderizado Dinámico) -->
+            <div class="dept-plant-map-grid" id="plantDepartmentsGrid">
+              <!-- Renderizado dinámicamente por terminal.js -->
+            </div>
+          </div>
+
+          <!-- Sección Secundaria: Auditoría Individual de Lote & Línea de Tiempo de Ruta -->
+          <div class="card-glass" style="padding:22px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+              <div>
+                <h4 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+                  🔍 Auditoría Individual de Lote & Línea de Tiempo de Ruta
+                </h4>
+                <p class="section-desc" style="margin-bottom:0; font-size:12px;">
+                  Inspección de ruta secuencial. Recuerda: el traspaso físico de custodia se efectúa escaneando el código QR de la tarjeta.
+                </p>
+              </div>
+              <span class="badge-subtle" id="trackerRouteNameBadge" style="font-weight:700; color:var(--color-brand); border:1.5px solid var(--color-brand-border);">
+                Ruta: 1000X Master Telar (14 Estaciones)
+              </span>
+            </div>
+
+            <!-- Selector y Buscador de Lote (Estilos uniformes y flecha corregida) -->
             <div style="display:grid; grid-template-columns: 2fr 1fr; gap:14px; margin-bottom:18px; align-items:flex-end;">
-              <div class="form-group">
-                <label class="field-label">Seleccionar Lote / Tarjeta Viajera a Rastrear:</label>
-                <select id="trackerLotSelect" class="custom-select">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="field-label">Seleccionar Lote / Tarjeta Viajera a Auditar:</label>
+                <select id="trackerLotSelect" class="custom-select" style="min-height:48px; font-weight:700;">
                   <!-- Llenado dinámicamente por JS -->
                 </select>
               </div>
-              <div class="form-group">
-                <label class="field-label">Buscar por Folio / No. Lote:</label>
-                <input type="text" id="trackerLotSearch" class="form-input" placeholder="Ej. 49633, Chaparral, 15071..." style="padding:9px 12px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="field-label">Buscar por Folio / Horma / O.Prod:</label>
+                <input type="text" id="trackerLotSearch" class="form-input" placeholder="Ej. 49633, Chaparral, 15071..." style="min-height:48px; font-weight:600;">
               </div>
             </div>
 
@@ -634,13 +736,13 @@
                   </span>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                  <button type="button" class="btn-secondary" id="btnRewindLotStep" style="padding:7px 12px; font-size:12px; font-weight:700;" title="Regresar al paso anterior (ej. reproceso)">
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnRewindLotStep" title="Regresar al paso anterior (ej. reproceso)">
                     ⏮️ Retroceder
                   </button>
-                  <button type="button" class="btn-primary" id="btnAdvanceLotStep" style="padding:7px 16px; font-size:12.5px; font-weight:700;">
+                  <button type="button" class="btn-primary btn-touch-lg" id="btnAdvanceLotStep">
                     ⏩ Avanzar Lote a Siguiente Estación
                   </button>
-                  <button type="button" class="btn-secondary" id="btnApproveQualityStep" style="padding:7px 12px; font-size:12px; font-weight:700; background:#DCFCE7; color:#15803D; border-color:#86EFAC; display:none;">
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnApproveQualityStep" style="background:#DCFCE7; color:#15803D; border-color:#86EFAC; display:none;">
                     ✅ Liberar Filtro de Calidad
                   </button>
                 </div>
@@ -2256,6 +2358,182 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: VERIFICACIÓN DE TARJETA VIAJERA TRAS ESCANEO QR (RF-56)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalVerifyScannedCard" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:760px;">
+      <div class="modal-header">
+        <div>
+          <h3>🔍 Verificación de Tarjeta Viajera Escaneada</h3>
+          <p class="modal-header-sub">Comprueba que la tarjeta física en la mica coincida con los datos leídos del código QR</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseVerifyCardModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div class="verify-card-modal-grid">
+          <div id="verifyCardReplicaContainer" style="display:flex; justify-content:center; align-items:center;">
+            <!-- Réplica oficial de la tarjeta viajera física inyectada por JS -->
+          </div>
+          <div class="verify-data-meta-box">
+            <div style="font-weight:800; font-size:13.5px; color:var(--color-brand); margin-bottom:2px; display:flex; align-items:center; gap:6px;">
+              <span>⚡</span> Metadatos Extraídos del QR:
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Folio de Lote:</span>
+              <span class="verify-meta-val" id="verifyLotId">49,633</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Sublote / Torre:</span>
+              <span class="verify-meta-val" id="verifySublot">Sublote #3 (15 piezas)</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Modelo & Horma:</span>
+              <span class="verify-meta-val" id="verifyModel">1000X MASTER TELAR · VIEJONON</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Talla & Falda:</span>
+              <span class="verify-meta-val" id="verifySpecs"># 55 | Falda 9 1/2</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Orden de Producción:</span>
+              <span class="verify-meta-val" id="verifyOProd">#15071</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Operador Responsable:</span>
+              <span class="verify-meta-val" id="verifyOperator">JORGE (Prensas)</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Ubicación Actual:</span>
+              <span class="verify-meta-val" style="color:var(--color-brand);" id="verifyOriginStation">D-05 Prensas de Hormado</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Destino Automático:</span>
+              <span class="verify-meta-val" style="color:var(--color-green);" id="verifyTargetStation">D-06 Recorte y Refaldeado</span>
+            </div>
+            <div class="verify-meta-row">
+              <span class="verify-meta-label">Estado de Mermas:</span>
+              <span class="verify-meta-val" id="verifyScrapStatus">✅ Sin mermas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn-secondary btn-touch-lg" id="btnRejectScannedCard" style="flex:1;">
+          ❌ Tarjeta Incorrecta / Escanear de Nuevo
+        </button>
+        <button type="button" class="btn-primary btn-touch-hero" id="btnConfirmScannedCard" style="flex:1.3;">
+          ✅ Confirmar Coincidencia y Proceder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: VISUALIZADOR OFICIAL DE TARJETA VIAJERA EN MICA DE PISO (RF-10)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalTravelerCardViewer" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:540px;">
+      <div class="modal-header">
+        <div>
+          <h3>🏷️ Tarjeta Viajera Oficial (Mica & Gafete de Piso)</h3>
+          <p class="modal-header-sub">Formato reglamentario de planta con sticker de operador y especificaciones físicas</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseTravelerCardModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; align-items:center;">
+        <div id="travelerCardModalContent">
+          <!-- Inyectado dinámicamente por terminal.js -->
+        </div>
+        <div style="margin-top:16px; width:100%; display:flex; justify-content:center; gap:8px;">
+          <button type="button" class="btn-secondary btn-touch-lg" id="btnModalViewHatSpec" style="color:var(--color-amber);">
+            📋 Ver Ficha Técnica Oficial c/Foto
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary btn-touch-lg" id="btnDismissTravelerCardModal" style="width:100%;">
+          Cerrar Visor de Tarjeta
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: ALMACÉN INTERMEDIO DE DEPARTAMENTO (RF-59)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalDeptWarehouse" style="display:none;">
+    <div class="modal-box card-glass" style="max-width:920px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="deptWarehouseModalTitle">📦 Almacén Intermedio · D-05 Prensas de Hormado</h3>
+          <p class="modal-header-sub" id="deptWarehouseModalSub">Lotes en espera de procesamiento o listos para recolección en este departamento</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseDeptWarehouseModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <!-- Barra de Filtros del Almacén -->
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle);">
+          <div style="flex:1; min-width:180px;">
+            <label class="field-label" style="margin-bottom:4px; font-size:11px;">Filtrar por Modelo:</label>
+            <select id="warehouseFilterModel" class="custom-select select-sm">
+              <option value="all">Todos los Modelos</option>
+              <option value="VIEJONON">1000X Viejonón</option>
+              <option value="CHAPARRAL">1000X Chaparral</option>
+              <option value="DENVER">1000X Denver</option>
+              <option value="MAGNUM">Magnum</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label class="field-label" style="margin-bottom:4px; font-size:11px;">Tipo de Tarjeta:</label>
+            <select id="warehouseFilterType" class="custom-select select-sm">
+              <option value="all">Lotes y Sublotes</option>
+              <option value="sublot">Sublotes (15 piezas)</option>
+              <option value="mother">Lotes Madre (60 piezas)</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label class="field-label" style="margin-bottom:4px; font-size:11px;">Estado de Calidad:</label>
+            <select id="warehouseFilterStatus" class="custom-select select-sm">
+              <option value="all">Todos los Estados</option>
+              <option value="clean">Sin Mermas (Íntegro)</option>
+              <option value="scrap">Con Sombrero de Merma</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabla de Lotes en Almacén -->
+        <div class="dept-warehouse-table-wrapper">
+          <table class="dept-warehouse-table">
+            <thead>
+              <tr>
+                <th>Folio / Sublote</th>
+                <th>Modelo & Horma</th>
+                <th>Piezas</th>
+                <th>Operador</th>
+                <th>Ruta / Siguiente Destino</th>
+                <th>Mermas</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="deptWarehouseTableBody">
+              <!-- Renderizado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:14px; padding:10px 14px; background:var(--color-brand-light); border-radius:8px; border:1px solid var(--color-brand-border); font-size:12px; color:var(--color-brand-dark);">
+          💡 <strong>Regla Operativa Tombstone:</strong> El traspaso de lotes entre departamentos se ejecuta exclusivamente escaneando el código QR de la tarjeta con el lector del supervisor.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary btn-touch-lg" id="btnDismissDeptWarehouseModal" style="width:100%;">
+          Cerrar Consulta de Almacén
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: CONFIRMACIÓN ESTANDARIZADA IN-APP (SIN ALERT / CONFIRM NATIVO)
        ====================================================================== -->
   <div class="modal-backdrop" id="uanifyConfirmModal">
@@ -2278,11 +2556,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.13.0"></script>
-  <script src="js/andon.js?v=2.13.0"></script>
-  <script src="js/terminal.js?v=2.13.0"></script>
-  <script src="js/engineer.js?v=2.13.0"></script>
-  <script src="js/executive.js?v=2.13.0"></script>
-  <script src="js/config.js?v=2.13.0"></script>
+  <script src="js/app.js?v=2.14.0"></script>
+  <script src="js/andon.js?v=2.14.0"></script>
+  <script src="js/terminal.js?v=2.14.0"></script>
+  <script src="js/engineer.js?v=2.14.0"></script>
+  <script src="js/executive.js?v=2.14.0"></script>
+  <script src="js/config.js?v=2.14.0"></script>
 </body>
 </html>
