@@ -515,33 +515,40 @@ window.initTerminalView = function() {
   function renderActiveScannedLotCard(lot) {
     if (!lot) return;
 
+    const folioDisplay = lot.sublotNum ? `${lot.motherLotId || lot.lotId.split('-')[0]}-${lot.sublotNum}` : lot.lotId;
     if (activeLotBadgeStatus) {
-      activeLotBadgeStatus.textContent = `LOTE ACTIVO: ${lot.lotId}${lot.sublotNum ? '-' + lot.sublotNum : ''}`;
+      activeLotBadgeStatus.textContent = `LOTE ACTIVO: ${folioDisplay}`;
     }
     if (activeSublotTypeBadge) {
-      activeSublotTypeBadge.textContent = lot.sublotNum ? `Sublote #${lot.sublotNum} (15 pzas)` : `Lote Madre (${lot.pieces} pzas)`;
+      activeSublotTypeBadge.textContent = lot.sublotNum ? `Sublote #${lot.sublotNum} (15 pzas)` : `Lote Madre (${lot.pieces || 60} pzas)`;
     }
     if (bttActiveLotPill) {
-      bttActiveLotPill.textContent = `Lote ${lot.lotId}${lot.sublotNum ? '-' + lot.sublotNum : ''}`;
+      bttActiveLotPill.textContent = `Lote ${folioDisplay}`;
     }
     if (activeLotOProdText) {
-      activeLotOProdText.textContent = `O. Prod: #${lot.oProd}`;
+      activeLotOProdText.textContent = `O. Prod: #${lot.oProd || lot.orderNumber || '15071'}`;
     }
 
     if (lotOriginStationText) {
-      lotOriginStationText.textContent = `${lot.originStationCode} ${lot.originStationName}`;
+      lotOriginStationText.textContent = `${lot.originStationCode || 'D-04'} ${lot.originStationName || 'Rampa de Ensamble'}`;
     }
     if (lotCurrentStationText) {
-      lotCurrentStationText.textContent = `${lot.currentStationCode} ${lot.currentStationName}`;
+      lotCurrentStationText.textContent = `${lot.currentStationCode || 'D-04'} ${lot.currentStationName || 'Rampa de Ensamble'}`;
     }
     if (lotTargetStationText) {
-      lotTargetStationText.textContent = `${lot.targetStationCode} ${lot.targetStationName}`;
+      lotTargetStationText.textContent = `${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
     }
 
-    if (lotMetaModel) lotMetaModel.textContent = `${lot.clase} · ${lot.model}`;
-    if (lotMetaSpecs) lotMetaSpecs.textContent = `Talla #${lot.size} | Falda ${lot.brim} | ${lot.bend}`;
+    const modelName = lot.model || lot.modelName || 'Chaparral';
+    const claseName = lot.clase || '1000X Master Telar';
+    if (lotMetaModel) lotMetaModel.textContent = `${claseName} · ${modelName}`;
+    if (lotMetaSpecs) lotMetaSpecs.textContent = `Talla #${lot.size || '55'} | Falda ${lot.brim || '9 1/2 cm'} | ${lot.bend || 'Doblado Arriba'}`;
     if (lotMetaOperator) lotMetaOperator.textContent = lot.operatorSticker || lot.operator || 'Jorge (Prensas)';
-    if (lotMetaPieces) lotMetaPieces.textContent = `${lot.pieces} piezas`;
+    if (lotMetaPieces) lotMetaPieces.textContent = `${lot.pieces || 15} piezas`;
+
+    if (btnDepositToNextBuffer) {
+      btnDepositToNextBuffer.textContent = `📥 Depositar Lote en Almacén de ${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
+    }
 
     if (lotScrapBannerContainer) {
       if (lot.hasScrap) {
@@ -1196,17 +1203,23 @@ window.initTerminalView = function() {
         motherLotId: cleanId,
         sublotNum: 1,
         pieces: 15,
+        clase: '1000X MASTER TELAR',
+        model: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
         modelName: mName,
         horma: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
         brim: '9 1/2 cm',
+        bend: 'Doblado Arriba',
         size: '55',
-        orderNumber: '#15071',
+        oProd: '15071',
+        orderNumber: 'OP-15071',
         operator: `${selectedOp} (Prensas)`,
         operatorSticker: selectedOp,
+        originStationCode: 'D-04',
+        originStationName: 'Rampa de Ensamble',
         currentStationCode: 'D-04',
-        currentStationName: 'D-04 Ensamble y Rampa',
+        currentStationName: 'Rampa de Ensamble',
         targetStationCode: 'D-05',
-        targetStationName: 'D-05 Prensas de Hormado',
+        targetStationName: 'Prensas de Hormado',
         hasScrap: false,
         isSubdivided: true
       };
