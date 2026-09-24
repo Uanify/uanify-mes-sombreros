@@ -241,6 +241,18 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque K: Digitalización de Pizarras Físicas de Nave (Evidencia de Planta Tombstone)
+
+- **`RF-52` Réplica Digital del Tablero Físico "1000 X M.T Prensas Secas" (Avance Horario Diagonal & Matriz Semanal):**
+  - **Origen:** Evidencia física directa fotografiada en el departamento de Prensas de la planta matriz.
+  - **Arquitectura de Datos y Procesos Reales:**
+    1. **5 Procesos Reales de Prensas:** `HORMADO`, `REPLANCHAR COPA`, `RECORTAR COPAS`, `PEGAR COPA C/FALDA` (ensamble en rampa) y `REPLANCHADO C/ALAMBRE`.
+    2. **Avance Hora por Hora (08:00 a 18:00 hrs):** Cuadrícula horaria con celdas partidas en diagonal: Meta en el cuadrante inferior derecho (165 pzas en horas normales; 90 pzas en horas de comida/descanso de 10:00-11:00 y 14:00-15:00) y Real en el cuadrante superior izquierdo con semaforización condicional (**Verde** $\ge$ Meta, **Rojo** $<$ Meta). Meta diaria total: `1,500 PZS POR PROCESO`.
+    3. **Avance Semanal de Ciclo Sombrerero (Jueves a Miércoles):** Matriz de avance diario de 6 días operativos (Jueves, Viernes, Sábado, Lunes, Martes, Miércoles) con meta semanal de `7,500 PZS POR PROCESO` y sumatoria acumulada de planta.
+  - **Módulos que Impacta:** Pestaña especializada en el **Tablero Andon (`andon`)** y en la **Consola de Rendimiento e Ingeniería (`engineer`)**.
+
+---
+
 ## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -481,3 +493,4 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-49** | CRUD Completo de Supervisores y Asignación Departamental    | Configuración / RBAC         | `v2.12.0`           | ✅ En Producción |
 | **RF-50** | CRUD Completo de Operadores (Altas, Bajas y Modificaciones) | Operadores / Configuración   | `v2.12.0`           | ✅ En Producción |
 | **RF-51** | Notificaciones Toast y Alertas de Éxito Estéticas Premium   | Notificaciones / UX          | `v2.12.0`           | ✅ En Producción |
+| **RF-52** | Réplica Digital de Pizarra Física "1000 X M.T Prensas"      | Andon / Ingeniería           | `v2.13.0`           | 📋 Especificado  |
