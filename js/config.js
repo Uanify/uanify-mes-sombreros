@@ -124,15 +124,15 @@ window.initConfigView = function() {
             </div>
           </td>
           <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="openEditUserModal('${u.id}')">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn-secondary btn-table-action" onclick="openEditUserModal('${u.id}')">
                 ✏️ Editar Usuario & Deptos
               </button>
               ${u.id !== 'admin-1' ? `
-                <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
+                <button type="button" class="btn-secondary btn-table-action" style="color:var(--color-red); border-color:var(--color-red-border); min-width:38px; padding:0 10px;" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
                   🗑️
                 </button>
-              ` : '<span style="font-size:10px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
+              ` : '<span style="font-size:11px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
             </div>
           </td>
         </tr>
@@ -170,9 +170,9 @@ window.initConfigView = function() {
           <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
           <td><span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">● ${op.status}</span></td>
           <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="window.openEditOperatorModal('${op.empId}')">✏️ Editar</button>
-              <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="window.deleteOperator('${op.empId}')">🗑️</button>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn-secondary btn-table-action" onclick="window.openEditOperatorModal('${op.empId}')">✏️ Editar</button>
+              <button type="button" class="btn-secondary btn-table-action" style="color:var(--color-red); border-color:var(--color-red-border); min-width:38px; padding:0 10px;" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">🗑️</button>
             </div>
           </td>
         </tr>

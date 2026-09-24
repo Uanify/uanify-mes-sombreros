@@ -447,3 +447,30 @@ Excepciones permitidas con style="":
 7. **Trazabilidad de Piezas con Merma en Tránsito:**
    - Cuando un sombrero dentro de una torre es clasificado con merma o defecto, la pieza continúa físicamente acompañando al lote en su avance hasta el punto de segregación y auditoría final.
 
+---
+
+## REGLA 0.33: Ergonomía Táctil Industrial y Botones Grandes para Tabletas en TODOS los Módulos (MANDATORIA)
+
+**Toda la interfaz del sistema MES (Andon, Terminal de Supervisor, Inventarios/Hormas, Padrón de Operadores, Consola de Ingeniería, Dirección y Configuración) debe estar rígidamente optimizada para su uso ágil en tabletas industriales y pantallas táctiles de planta, garantizando botones de contacto generosos y accesibilidad táctil WCAG 2.5.5 / 2.5.8.**
+
+1. **Alturas Mínimas de Botones Universales:**
+   - **Botones Primarios / Hero:** Altura mínima de 52px a 56px con tipografía de 15px-16px en negrita (`.btn-touch-hero`, `.btn-primary.btn-lg`). Destinados a acciones neurálgicas de línea (Depositar en Almacén, Confirmar Verificación de Tarjeta, Iniciar Ciclo).
+   - **Botones Estándar del Sistema:** Altura mínima de 48px (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`) con `padding: 0 20px;` y tipografía de 14px. Aplicable a todos los modales, formularios y barras de herramientas de todos los módulos.
+   - **Navegación Principal de Barra Lateral:** Altura mínima de 48px (`.nav-btn`) con `padding: 12px 16px;` y tipografía de 14px.
+   - **Sub-navegación por Pestañas:** Altura mínima de 44px a 46px (`.sub-tab-btn`) con `padding: 10px 18px;` y tipografía de 13.5px.
+   - **Botones de Acción en Tablas y Registros:** Altura mínima de 38px a 42px (`.btn-table-action`, `.btn-sm`) con `padding: 0 12px;` y tipografía de 12.5px-13px. Queda estrictamente prohibido utilizar botones comprimidos con padding menor a 6px o alturas menores a 38px.
+   - **Botones de Cierre de Modales:** Dimensiones cuadradas mínimas de 44px x 44px (`.modal-close`) con icono de 22px-24px para evitar pulsaciones fallidas en tabletas.
+   - **Botones de Opciones Rápidas (Paros y Mermas):** Altura mínima de 50px a 52px (`.scrap-opt-btn`, `.stop-opt-btn`).
+   - **Botones de Reordenamiento de Secuencias:** Dimensiones mínimas de 38px x 38px (`.btn-seq-move`, `.btn-seq-delete`).
+
+2. **Controles de Formulario e Inputs de Planta:**
+   - Todo selector desplegable (`.custom-select`, `select`), campo de texto, hora, fecha o número (`input`, `textarea`) debe respetar una altura mínima táctil de 48px (`--form-height: 48px`).
+
+3. **Separación y Zonas de Seguridad Táctil:**
+   - Debe mantenerse un espaciado (`gap`) mínimo de 8px a 12px entre botones interactivos adyacentes para prevenir toques involuntarios con guantes o dedos de operarios.
+   - Todos los elementos interactivos deben contar con `touch-action: manipulation;` para evitar retrasos de doble toque (*300ms tap delay*) en navegadores móviles/tabletas.
+
+4. **Prohibición Estricta de Estilos Inline Reductivos:**
+   - Queda terminantemente prohibido sobreescribir botones con atributos inline del estilo `style="padding:2px 4px; font-size:10px;"` o alturas reducidas en cualquier módulo.
+
+

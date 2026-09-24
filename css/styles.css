@@ -326,14 +326,17 @@ body.industrial-theme {
   border: 1px solid transparent;
   color: var(--text-secondary);
   font-family: var(--font-main);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
-  padding: 10px 14px;
+  min-height: 48px;
+  padding: 12px 16px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
   width: 100%;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .nav-btn .tab-icon {
@@ -613,9 +616,9 @@ body.industrial-theme {
     font-size: 12.5px;
   }
 
-  /* Zonas táctiles cómodas para dedos (mínimo 42-44px) */
+  /* Zonas táctiles cómodas para dedos (mínimo 48px) */
   button, .btn, .btn-primary, .btn-secondary, .nav-btn, .sub-tab-btn, .custom-select, input {
-    min-height: 42px;
+    min-height: 48px;
   }
 
   /* Sub-navegación por pestañas con deslizamiento horizontal táctil */
@@ -630,8 +633,9 @@ body.industrial-theme {
   .sub-tab-btn {
     white-space: nowrap;
     flex-shrink: 0;
-    font-size: 12.5px;
-    padding: 8px 14px;
+    font-size: 13.5px;
+    padding: 10px 16px;
+    min-height: 44px;
   }
 
   /* Contenedores de tablas con scroll táctil suave */
@@ -762,8 +766,9 @@ body.industrial-theme {
   }
 
   .app-sidebar .nav-btn {
-    padding: 7px 12px;
-    min-height: 40px;
+    padding: 10px 14px;
+    min-height: 46px;
+    font-size: 13px;
     width: auto;
     border-radius: 8px;
     white-space: nowrap;
@@ -1406,3 +1411,60 @@ body.industrial-theme {
     page-break-inside: avoid !important;
   }
 }
+
+/* ==========================================================================
+   ERGONOMÍA TÁCTIL INDUSTRIAL UNIVERSAL (TABLETAS Y TERMINALES DE PISO)
+   ========================================================================== */
+@media (max-width: 1024px), (pointer: coarse) {
+  button,
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .nav-btn,
+  .sub-tab-btn,
+  .custom-select,
+  input,
+  select {
+    min-height: 48px;
+  }
+
+  .btn-sm,
+  .btn-table-action {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .btn-icon.btn-sm {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .modal-close {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    min-height: 46px !important;
+    font-size: 24px !important;
+  }
+
+  .sub-tab-btn {
+    min-height: 46px;
+    padding: 11px 18px;
+    font-size: 13.5px;
+  }
+
+  .scrap-opt-btn,
+  .stop-opt-btn {
+    min-height: 52px;
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+}
+

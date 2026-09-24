@@ -277,6 +277,10 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-60` Trazabilidad de Piezas con Merma en Tránsito y Escáner QR en Pantalla Completa:**
   - **Comportamiento de Piezas con Merma:** Cuando un sombrero dentro de una torre es clasificado con merma o defecto, la pieza continúa físicamente acompañando al lote en su avance por la línea hasta el filtro de calidad/separación física final, mostrándose un banner de advertencia en el detalle del lote.
   - **Modo Pantalla Completa:** Opción táctil `⛶ Pantalla Completa` para expandir el visor de escaneo a la totalidad de la pantalla de la tableta, optimizando ergonomía en condiciones de iluminación variable en nave industrial.
+- **`RF-61` Ergonomía Táctil Universal y Botones Grandes para Tabletas en TODOS los Módulos:**
+  - **Alcance Global:** Estandarización de touch-targets en la totalidad de los 7 módulos (Andon, Terminal, Almacenes/Inventarios, Operadores, Ingeniería, Dirección, Configuración) y modales del sistema MES.
+  - **Jerarquía de Alturas Táctiles:** Botones Hero y de acción primordial de 52px a 56px (`.btn-touch-hero`); botones estándar de modales, formularios y filtros de 48px (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`); botones de navegación de 48px (`.nav-btn`); botones de pestañas de 44px a 46px (`.sub-tab-btn`); acciones de tabla y registros de 38px a 42px (`.btn-table-action`, `.btn-sm`); botones de cierre de modal de 44x44px (`.modal-close`); controles de formulario de 48px (`--form-height: 48px`).
+  - **Zonas de Seguridad:** Espaciado mínimo de 8px a 12px entre elementos interactivos y supresión del retraso de toque de 300ms (`touch-action: manipulation;`).
 
 ---
 
@@ -454,7 +458,7 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **`RNF-01`** | **Costo $0 USD Inicial**                            | Cero contratación de APIs o servicios de pago sin autorización previa expresa de Andrés.                                                 |
 | **`RNF-02`** | **Identidad Visual Light Mode Tradicional Moderno** | Fondo `#F8FAFC`, tarjetas `#FFFFFF`, texto `#0F172A` y color de marca Cuero Artesanal `#8B5E3C`. Prohibidos fondos oscuros tipo consola. |
 | **`RNF-03`** | **Cero Audio en Planta**                            | Supresión total de sintetizadores de voz, sirenas o campanas sonoras para evitar contaminación auditiva en planta.                       |
-| **`RNF-04`** | **Enfoque Tablet-First y 100% Responsivo**          | Diseñado y optimizado primordialmente para pantallas táctiles de 768px a 1024px; touch targets mínimos de 42-44px.                       |
+| **`RNF-04`** | **Enfoque Tablet-First y Botones Grandes en TODOS los Módulos** | Diseñado y optimizado para pantallas táctiles de 768px a 1024px y puestos de trabajo; botones estándar de 48px, botones Hero de 52-56px, acciones de tabla de 38-42px y controles de 48px con separación segura de 8-12px. |
 | **`RNF-05`** | **Prohibición de Hardware Propietario en UI**       | Prohibido usar explícitamente las palabras "iPad", "Tablet" o "Tableta" en la interfaz gráfica.                                          |
 | **`RNF-06`** | **Cero Alertas Nativas de Navegador**               | Prohibido el uso de `alert()`, `confirm()` y `prompt()`. Todo diálogo debe emplear `UanifyUI.toast` y `UanifyUI.confirm`.                |
 | **`RNF-07`** | **Cursor Interactivo Universal**                    | Todo botón, enlace, selector, nodo o tab clickeable debe tener `cursor: pointer !important`.                                             |

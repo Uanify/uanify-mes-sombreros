@@ -912,7 +912,7 @@ window.initTerminalView = function() {
             : `<span style="color:#16A34A; font-weight:700; font-size:11.5px;">✅ Íntegro</span>`}
         </td>
         <td>
-          <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px; font-weight:700;" onclick="window.inspectSpecificLotCard('${item.folio}')">
+          <button type="button" class="btn-secondary btn-table-action" onclick="window.inspectSpecificLotCard('${item.folio}')">
             🏷️ Ver Tarjeta
           </button>
         </td>
