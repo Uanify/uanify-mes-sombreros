@@ -1613,3 +1613,248 @@
   margin-top: 12px;
   flex-wrap: wrap;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   REPLICA DE TARJETA VIAJERA FÍSICA TOMBSTONE HATS (PLANTA MATRIZ GTO)
+   ───────────────────────────────────────────────────────────────────────── */
+.traveler-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.tombstone-traveler-sleeve {
+  width: 100%;
+  max-width: 320px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(203, 213, 225, 0.8);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+.traveler-sleeve-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.traveler-hole-punch {
+  width: 18px;
+  height: 18px;
+  background: #E2E8F0;
+  border: 2px solid #CBD5E1;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.traveler-string-indicator {
+  position: absolute;
+  top: -18px;
+  width: 2px;
+  height: 20px;
+  background: #D97706;
+}
+
+.traveler-paper-tag {
+  background: #FDFCE9;
+  border: 1.5px solid #E2E8A0;
+  border-radius: 6px;
+  padding: 14px 12px 10px;
+  color: #1E293B;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 12px rgba(217, 119, 6, 0.06);
+}
+
+.traveler-operator-sticker {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 50px;
+  height: 50px;
+  background: #38BDF8;
+  color: #03456C;
+  font-weight: 900;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transform: rotate(-8deg);
+  border: 2px solid #BAE6FD;
+  z-index: 2;
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.traveler-route-title {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #334155;
+  border-bottom: 1.5px dashed #CBD5E1;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.traveler-model-name {
+  text-align: center;
+  font-size: 19px;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 4px 0;
+  letter-spacing: 1px;
+}
+
+.traveler-oprod-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.traveler-brand-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+.traveler-hat-logo {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.traveler-clase-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #64748B;
+}
+
+.traveler-quality-title {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 4px 0 2px;
+}
+
+.traveler-finish-title {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.traveler-specs-grid {
+  border: 1px solid #CBD5E1;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+.traveler-spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.traveler-spec-row:last-child {
+  border-bottom: none;
+}
+
+.traveler-spec-label {
+  font-weight: 800;
+  color: #475569;
+}
+
+.traveler-spec-val {
+  font-weight: 900;
+  color: #0F172A;
+}
+
+.traveler-qty-banner {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: #0F172A;
+  padding: 4px 0;
+  background: rgba(255,255,255,0.5);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.traveler-footer-box {
+  display: flex;
+  gap: 4px;
+  height: 48px;
+}
+
+.traveler-lote-box {
+  flex: 1;
+  background: #0F172A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.traveler-sublot-badge-box {
+  width: 52px;
+  border: 2px solid #0F172A;
+  background: #FFFFFF;
+  color: #0F172A;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  position: relative;
+}
+
+.traveler-sublot-badge-box.is-lote-madre {
+  background: #F1F5F9;
+  border: 1.5px dashed #94A3B8;
+  color: #94A3B8;
+}
+
+.traveler-sublot-badge-box .sublot-num {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.traveler-sublot-badge-box .sublot-label {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+

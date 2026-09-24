@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.8.0` | **Fecha de Actualización:** 23 de Septiembre de 2026  
+> **Versión Actual:** `v2.8.1` | **Fecha de Actualización:** 23 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -30,8 +30,29 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 
 ### Tamaño de Lotes y Trazabilidad Viajera
 - **Lote Madre:** **60 piezas** que ingresan desde almacén de materia prima (copas y faldas sin conformar).
-- **Rampa de Fraccionamiento:** Al llegar a la rampa de ensamble, el lote madre de 60 se divide en **4 sublotes de 15 piezas** (ej. lote `1094` se desglosa en `1094-01`, `1094-02`, `1094-03`, `1094-04`).
-- **Tarjeta Viajera con Código QR:** Cada caja o contenedor de 15 piezas lleva adherida una tarjeta viajera impresa con código QR que viaja con el lote hasta calidad final y empaque.
+- **Rampa de Fraccionamiento:** Al llegar a la rampa de ensamble, el lote madre de 60 se divide en **4 sublotes de 15 piezas** (ej. lote `49,633` se desglosa en sublotes `1`, `2`, `3` y `4`).
+- **Tarjeta Viajera Física con Código QR:** Cada torre de 15 piezas lleva adherida una tarjeta viajera protegida en mica transparente que viaja con el lote hasta empaque.
+
+### 2.1 Anatomía y Especificación Oficial de la Tarjeta Viajera (Evidencia Fotográfica de Planta)
+A partir de las tarjetas viajeras capturadas directamente en las líneas de ensamble de San Francisco del Rincón:
+1. **Porta-Gafete y Mica Protectora:** Funda plástica transparente con orificio superior reforzado para colgar de la torre de sombreros con cordel.
+2. **Sticker Redondo de Operador (Esquina Superior Izquierda):** Calcomanía azul rotulada con el nombre del operario responsable (ej. `JORGE`).
+3. **Encabezado de Ruta Departamental:** `TARJETA HIDRÁULICAS - ADORNO` (define el tramo del flujo entre estaciones).
+4. **Nombre del Modelo / Horma:** Tipografía destacada (ej. `CHAPARRAL`, `VIEJONON`, `JOHNSON LONA`, `SONORA`).
+5. **Orden de Producción (`O. PROD:`):** Folio numérico único (ej. `15068`, `15071`).
+6. **Logotipo Oficial Tombstone Hats:** Silueta de sombrero vaquero con la leyenda `*** CLASE ***`.
+7. **Calidad y Material:** `1,000X MASTER TELAR`.
+8. **Acabado:** `LAQUEADOS`.
+9. **Cuadrícula Técnica:**
+   - `FALDA:` Medida en centímetros o pulgadas (ej. `9.0 Cm` o `9 1/2`).
+   - `DOBLADO:` Sentido de planchado del ala (`ABAJO` o `ARRIBA`).
+   - `TALLA:` Talla craneal numérica (ej. `# 55`, `# 56`).
+10. **Cantidad de Piezas:** `15 Pzas`.
+11. **Recuadro Inferior Izquierdo (LOTE):** Número de lote madre (ej. `LOTE: 49,386`, `LOTE: 49,633`).
+12. **REGLA CRUCIAL DEL RECUADRO INFERIOR DERECHO (Distinción Lote vs Sublote):**
+    - **Tarjeta de Lote Madre:** **NO TIENE NÚMERO** abajo a la derecha (el recuadro permanece vacío o sin numeración).
+    - **Tarjeta de Sublote:** **TIENE EL NÚMERO DE SUBLOTE** correspondiente de ese lote madre (ej. número `3` para el tercer sublote).
+    - **Digitalización QR:** El lector web y cámara decodifican la tarjeta viajera identificando automáticamente si es lote madre o el sublote específico.
 
 ### Los 14 Departamentos y Almacenes Modelados
 | Código | Departamento / Estación | Tipo | Takt Time Std | Capacidad Turno Único | Supervisor / Responsable |
@@ -153,12 +174,18 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.7.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.1`.
 
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
 
+- **`v2.8.1` (2026-09-23):**
+  - **Réplica Física de Tarjeta Viajera (Evidencia Fotográfica de Planta):** Implementación de la vista idéntica de la tarjeta con mica protectora, orificio para cordel, sticker de operador (`JORGE`), ruta departamental `TARJETA HIDRÁULICAS - ADORNO`, lote y especificaciones (`FALDA: 9.0 Cm` / `9 1/2`, `DOBLADO: ABAJO` / `ARRIBA`).
+  - **Regla Visual de Lote vs Sublote:**
+    - **Lote Madre (ej. 49,386 Chaparral):** El recuadro inferior derecho NO tiene número.
+    - **Sublote (ej. 49,633-3 Viejonón):** El recuadro inferior derecho muestra el número del sublote (`3`).
+  - **Hormas Reales de Fábrica:** Incorporación de las hormas de aluminio de los racks de planta (`#54 JOHNSON LONA`, `#53 JOHNSON LONA`, `#57 SONORA`, `#53 CHAPARRAL LONA`, `#56 CHAPARRAL`, `#55 VIEJONON`) y prensas `Michelagnoli`.
 - **`v2.8.0` (2026-09-23):**
   - **Navegación Interna por Sub-Pestañas:** Implementación de sub-tabs en los 5 módulos para una navegación limpia sin saturación visual.
   - **Meta Semanal:** Reemplazo de meta diaria rígida por Meta Semanal (4,250 pzas/semana) editable desde configuración y visible en Andon.

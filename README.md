@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.1-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -56,6 +56,13 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### [2.8.1] - 2026-09-23
+- **Réplica Física de Tarjeta Viajera (Validada con Fotos de Planta):** Implementación de la vista idéntica de la tarjeta con mica protectora, orificio para cordel, sticker de operador (`JORGE`), ruta departamental `TARJETA HIDRÁULICAS - ADORNO`, lote y especificaciones (`FALDA: 9.0 Cm` / `9 1/2`, `DOBLADO: ABAJO` / `ARRIBA`).
+- **Regla Visual de Lote vs Sublote:**
+  - **Lote Madre (ej. 49,386 Chaparral):** El recuadro inferior derecho NO tiene número.
+  - **Sublote (ej. 49,633-3 Viejonón):** El recuadro inferior derecho muestra el número del sublote (`3`).
+- **Hormas Reales de Fábrica:** Incorporación de las hormas de aluminio de los racks de planta (`#54 JOHNSON LONA`, `#53 JOHNSON LONA`, `#57 SONORA`, `#53 CHAPARRAL LONA`, `#56 CHAPARRAL`, `#55 VIEJONON`) y prensas `Michelagnoli`.
 
 ### [2.8.0] - 2026-09-23
 - **Navegación Interna por Sub-Pestañas:** Organización de vistas complejas mediante sub-tabs en cada uno de los 5 módulos para una interfaz despejada.

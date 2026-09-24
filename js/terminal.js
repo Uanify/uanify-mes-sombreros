@@ -164,18 +164,153 @@ window.initTerminalView = function() {
     }
   }
 
-  // ── 3. ESCANEAR TARJETA VIAJERA ──
+  // ── RENDERIZADOR DE RÉPLICA DE TARJETA VIAJERA FÍSICA TOMBSTONE ───────────
+  const travelerCardContainer = document.getElementById('travelerCardVisualContainer');
+  const btnPreviewSublot3 = document.getElementById('btnPreviewSublot3');
+  const btnPreviewLoteMother = document.getElementById('btnPreviewLoteMother');
+
+  function renderPhysicalTravelerCard(data) {
+    if (!travelerCardContainer) return;
+
+    const isSublot = typeof data.sublotNum === 'number' && data.sublotNum > 0;
+
+    travelerCardContainer.innerHTML = `
+      <div class="tombstone-traveler-sleeve">
+        <div class="traveler-sleeve-header">
+          <div class="traveler-string-indicator"></div>
+          <div class="traveler-hole-punch"></div>
+        </div>
+        <div class="traveler-paper-tag">
+          ${data.operatorSticker ? `<div class="traveler-operator-sticker">${data.operatorSticker}</div>` : ''}
+          <div class="traveler-route-title">${data.route || 'TARJETA HIDRAULICAS - ADORNO'}</div>
+          <div class="traveler-model-name">${data.model}</div>
+          <div class="traveler-oprod-row">
+            <span>O. PROD :</span>
+            <span>${data.oProd}</span>
+          </div>
+          <div class="traveler-brand-divider">
+            <div class="traveler-hat-logo">🤠 TOMBSTONE®</div>
+            <div class="traveler-clase-tag">*** CLASE ***</div>
+          </div>
+          <div class="traveler-quality-title">${data.clase || '1,000X MASTER TELAR'}</div>
+          <div class="traveler-finish-title">${data.finish || 'LAQUEADOS'}</div>
+          <div class="traveler-specs-grid">
+            <div class="traveler-spec-row">
+              <span class="traveler-spec-label">FALDA</span>
+              <span class="traveler-spec-val">${data.brim || '9 1/2'}</span>
+            </div>
+            <div class="traveler-spec-row">
+              <span class="traveler-spec-label">DOBLADO</span>
+              <span class="traveler-spec-val">${data.bend || 'ARRIBA'}</span>
+            </div>
+            <div class="traveler-spec-row">
+              <span class="traveler-spec-label">TALLA</span>
+              <span class="traveler-spec-val"># ${data.size}</span>
+            </div>
+          </div>
+          <div class="traveler-qty-banner">
+            ${data.pieces || 15} Pzas
+          </div>
+          <div class="traveler-footer-box">
+            <div class="traveler-lote-box">
+              LOTE: ${data.lotId}
+            </div>
+            <div class="traveler-sublot-badge-box ${!isSublot ? 'is-lote-madre' : ''}" title="${isSublot ? `Tarjeta de Sublote #${data.sublotNum}` : 'Tarjeta de Lote Madre (Sin número abajo a la derecha)'}">
+              ${isSublot 
+                ? `<span class="sublot-num">${data.sublotNum}</span><span class="sublot-label">SUBLOTE</span>` 
+                : `<span style="font-size:8.5px; font-weight:800; text-align:center; color:#94A3B8; line-height:1.1;">LOTE<br>(VACÍO)</span>`}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Pre-render inicial con Sublote 3 de la foto del usuario
+  const initialLot = UanifyState.activeLots[0];
+  renderPhysicalTravelerCard({
+    ...initialLot,
+    sublotNum: 3,
+    operatorSticker: 'JORGE'
+  });
+
+  if (btnPreviewSublot3) {
+    btnPreviewSublot3.addEventListener('click', () => {
+      const lot = UanifyState.activeLots[0];
+      renderPhysicalTravelerCard({
+        ...lot,
+        sublotNum: 3,
+        operatorSticker: 'JORGE'
+      });
+      if (manualQrInput) manualQrInput.value = '49633-3';
+      window.UanifyUI.toast(
+        'Tarjeta de Sublote 3 (Viejonón · Jorge · Lote 49,633) cargada en visor. Nota el número "3" en el recuadro inferior derecho.',
+        'info',
+        '🏷️ Tarjeta de Sublote'
+      );
+    });
+  }
+
+  if (btnPreviewLoteMother) {
+    btnPreviewLoteMother.addEventListener('click', () => {
+      const lot = UanifyState.activeLots[1] || UanifyState.activeLots[0];
+      renderPhysicalTravelerCard({
+        ...lot,
+        sublotNum: null,
+        operatorSticker: null
+      });
+      if (manualQrInput) manualQrInput.value = '49386';
+      window.UanifyUI.toast(
+        'Tarjeta de Lote Madre (Chaparral · Lote 49,386) cargada en visor. Nota que el recuadro inferior derecho NO tiene número.',
+        'info',
+        '🏷️ Tarjeta de Lote'
+      );
+    });
+  }
+
+  // ── 3. ESCANEAR TARJETA VIAJERA (CÁMARA O INGRESO MANUAL) ──
   if (btnScanQr) {
     btnScanQr.addEventListener('click', () => {
-      const query = (manualQrInput ? manualQrInput.value.trim() : '') || '1094-01';
+      const query = (manualQrInput ? manualQrInput.value.trim() : '') || '49633-3';
       flashScannerVisual(true);
 
-      const lot = UanifyState.activeLots[0];
-      window.UanifyUI.toast(
-        `Sublote ${query} | Lote Madre: ${lot.lotId} (60 pzas) | Horma: ${lot.horma} | Talla: ${lot.size} | Estación actual: ${lot.currentStation}`,
-        'success',
-        '🏷️ Tarjeta Viajera Validada'
-      );
+      let matchedLot = UanifyState.activeLots[0];
+      let sublotNum = null;
+
+      if (query.includes('-')) {
+        const parts = query.split('-');
+        const base = parts[0].replace(/[,.]/g, '');
+        sublotNum = parseInt(parts[1], 10);
+        const found = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === base);
+        if (found) matchedLot = found;
+      } else {
+        const clean = query.replace(/[,.]/g, '');
+        const found = UanifyState.activeLots.find(l => l.lotId.replace(/[,.]/g, '') === clean);
+        if (found) {
+          matchedLot = found;
+          sublotNum = null;
+        }
+      }
+
+      renderPhysicalTravelerCard({
+        ...matchedLot,
+        sublotNum: sublotNum,
+        operatorSticker: sublotNum ? (matchedLot.operatorSticker || 'JORGE') : null
+      });
+
+      if (sublotNum) {
+        window.UanifyUI.toast(
+          `Sublote #${sublotNum} validado | Lote: ${matchedLot.lotId} | Horma: ${matchedLot.model} | Talla: #${matchedLot.size} | Falda: ${matchedLot.brim} | Operador: ${matchedLot.operatorSticker || matchedLot.operator} | Número en recuadro derecho: [${sublotNum}]`,
+          'success',
+          '🏷️ Tarjeta Viajera de Sublote'
+        );
+      } else {
+        window.UanifyUI.toast(
+          `Tarjeta de LOTE validada | Lote: ${matchedLot.lotId} | Horma: ${matchedLot.model} | Talla: #${matchedLot.size} | Falda: ${matchedLot.brim} | Sin número en recuadro derecho (Lote)`,
+          'success',
+          '🏷️ Tarjeta Viajera de Lote'
+        );
+      }
     });
   }
 
@@ -188,7 +323,7 @@ window.initTerminalView = function() {
       renderSublots();
       EventBus.emit('lot-subdivided', lot);
       window.UanifyUI.toast(
-        `Lote ${lot.lotId} fraccionado en 4 tarjetas de 15 piezas cada una (1094-01 al 1094-04). Listas para distribuirse a prensas y mesas.`,
+        `Lote ${lot.lotId} fraccionado en 4 tarjetas de 15 piezas (49633-1 al 49633-4). Cada tarjeta de sublote incluye su número identificador (1, 2, 3 o 4) en la esquina inferior derecha.`,
         'success',
         '✂️ Fraccionamiento en Rampa'
       );
@@ -201,8 +336,8 @@ window.initTerminalView = function() {
     if (!lot.isSubdivided) {
       sublotsContainer.innerHTML = `
         <div style="font-size:12px; color:var(--text-muted); padding:10px; background:var(--bg-core); border-radius:8px; border:1px solid var(--border-subtle);">
-          Lote <strong style="color:var(--color-brand);">${lot.lotId}</strong> en proceso de 60 pzas.
-          Presiona <strong>"Fraccionar Lote Madre"</strong> para dividirlo en tarjetas viajeras de 15 pzas.
+          Lote <strong style="color:var(--color-brand);">${lot.lotId}</strong> en proceso de 60 pzas (sin número en esquina inferior derecha).
+          Presiona <strong>"Fraccionar Lote Madre"</strong> para generar las tarjetas de sublote con su número asignado (1 al 4).
         </div>`;
       if (sublotsCountBadge) sublotsCountBadge.textContent = 'Madre (60 pzas)';
       return;
@@ -211,25 +346,48 @@ window.initTerminalView = function() {
     if (sublotsCountBadge) sublotsCountBadge.textContent = `${lot.sublots.length} activos (15 pzas c/u)`;
 
     sublotsContainer.innerHTML = lot.sublots.map(sl => `
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); padding:10px 12px; border-radius:8px; margin-bottom:6px; box-shadow:var(--shadow-sm);">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); padding:10px 12px; border-radius:8px; margin-bottom:6px; box-shadow:var(--shadow-sm); cursor:pointer;"
+        onclick="previewSpecificSublot('${sl.id}', ${sl.sublotNum})">
         <div>
           <strong style="color:var(--color-brand); font-family:'JetBrains Mono'; font-size:12.5px;">${sl.id}</strong>
-          <span style="font-size:11.5px; color:var(--text-primary); margin-left:6px; font-weight:600;">${sl.pieces} pzas</span>
+          <span class="badge-subtle" style="margin-left:4px; font-weight:700;">Sublote #${sl.sublotNum}</span>
+          <span style="font-size:11.5px; color:var(--text-primary); margin-left:4px; font-weight:600;">${sl.pieces} pzas</span>
           <small style="display:block; font-size:10.5px; color:var(--text-muted); margin-top:2px;">
-            Estación: ${sl.station} | Op: ${sl.operator || 'Sin asignar'}
+            Estación: ${sl.station} | Op: ${sl.operatorSticker || sl.operator || 'Sin asignar'}
           </small>
-          <small style="display:block; font-size:10px; font-weight:700; color:${sl.status === 'En Proceso' ? 'var(--color-green)' : 'var(--color-amber)'}; margin-top:2px;">
+          <small style="display:block; font-size:10px; font-weight:700; color:${sl.status === 'Listo para Recolección' ? 'var(--color-brand)' : sl.status === 'En Proceso' ? 'var(--color-green)' : 'var(--color-amber)'}; margin-top:2px;">
             ● ${sl.status}
           </small>
         </div>
-        <button class="btn-secondary" style="padding:6px 10px; font-size:11.5px;"
-          onclick="darAvanceSublote('${sl.id}')">
-          📤 Dar Avance
-        </button>
+        <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+          <button class="btn-secondary" style="padding:4px 8px; font-size:11px;"
+            onclick="event.stopPropagation(); previewSpecificSublot('${sl.id}', ${sl.sublotNum})">
+            👁️ Ver
+          </button>
+          <button class="btn-secondary" style="padding:4px 8px; font-size:11px;"
+            onclick="event.stopPropagation(); darAvanceSublote('${sl.id}')">
+            📤 Avance
+          </button>
+        </div>
       </div>
     `).join('');
   }
   renderSublots();
+
+  window.previewSpecificSublot = function(id, sublotNum) {
+    const lot = UanifyState.activeLots[0];
+    renderPhysicalTravelerCard({
+      ...lot,
+      sublotNum: sublotNum,
+      operatorSticker: lot.operatorSticker || 'JORGE'
+    });
+    if (manualQrInput) manualQrInput.value = id;
+    window.UanifyUI.toast(
+      `Mostrando tarjeta física del Sublote #${sublotNum} (Lote ${lot.lotId}). Con el número [${sublotNum}] en la esquina inferior derecha.`,
+      'info',
+      'Tarjeta Viajera'
+    );
+  };
 
   window.darAvanceSublote = function(sublotId) {
     flashScannerVisual(true);

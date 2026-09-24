@@ -94,7 +94,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.8.0',
+  version: '2.8.1',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
@@ -163,14 +163,16 @@ const UanifyState = {
     { empId: 'EMP-107', name: 'Esteban Rocha', deptCode: 'D-12', deptName: 'Adorno (Tafilete y Toquilla)', machine: 'Mesa de Ribeteado M-01', shift: 'Turno Único', status: 'Activo' }
   ],
 
-  // Catálogo Oficial de Hormas y Moldes de San Francisco del Rincón
+  // Catálogo Oficial de Hormas y Moldes de San Francisco del Rincón (Validado en Fábrica)
   molds: [
-    { code: 'HRM-DNV-58', name: 'Denver Master 58', tipo: 'Roper', material: 'Aluminio Templado', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-01', status: 'En Uso' },
-    { code: 'HRM-VJN-57', name: 'El Viejonón 57', tipo: 'Viejón', material: 'Aluminio Templado', size: '57 (7 1/8)', machine: 'Prensa Hidráulica P-02', status: 'En Uso' },
-    { code: 'HRM-LRD-58', name: 'Laredo Falda 4"', tipo: 'Laredo', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-03', status: 'Disponible' },
-    { code: 'HRM-FRN-59', name: 'Frontier Gota', tipo: 'Frontier', material: 'Aluminio Templado', size: '59 (7 3/8)', machine: 'Prensa Hidráulica P-04', status: 'En Mantenimiento' },
-    { code: 'HRM-CHP-56', name: 'Chaparral Texana', tipo: 'Chaparral', material: 'Aluminio Templado', size: '56 (7)', machine: 'Prensa Hidráulica P-01', status: 'Disponible' },
-    { code: 'HRM-BLR-58', name: 'Bullrider Rodeo', tipo: 'Bullrider', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-02', status: 'Disponible' }
+    { code: 'HRM-JHN-54', name: '#54 JOHNSON LONA', tipo: 'Johnson', material: 'Aluminio Termo-Fundido', size: '54 (6 3/4)', machine: 'Prensa Hidráulica Michelagnoli P-01', status: 'En Uso' },
+    { code: 'HRM-JHN-53', name: '#53 JOHNSON LONA', tipo: 'Johnson', material: 'Aluminio Termo-Fundido', size: '53 (6 5/8)', machine: 'Prensa Hidráulica Michelagnoli P-01', status: 'Disponible' },
+    { code: 'HRM-SNR-57', name: '#57 SONORA', tipo: 'Sonora', material: 'Aluminio Termo-Fundido', size: '57 (7 1/8)', machine: 'Prensa Hidráulica Michelagnoli P-02', status: 'En Uso' },
+    { code: 'HRM-CHP-53', name: '#53 CHAPARRAL LONA', tipo: 'Chaparral', material: 'Aluminio Termo-Fundido', size: '53 (6 5/8)', machine: 'Prensa Hidráulica P-03', status: 'Disponible' },
+    { code: 'HRM-CHP-56', name: '#56 CHAPARRAL', tipo: 'Chaparral', material: 'Aluminio Termo-Fundido', size: '56 (7)', machine: 'Prensa Hidráulica P-03', status: 'En Uso' },
+    { code: 'HRM-VJN-55', name: '#55 EL VIEJONÓN', tipo: 'Viejón', material: 'Aluminio Termo-Fundido', size: '55 (6 7/8)', machine: 'Prensa Hidráulica P-02', status: 'En Uso' },
+    { code: 'HRM-DNV-58', name: '#58 DENVER MASTER', tipo: 'Roper', material: 'Aluminio Termo-Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-01', status: 'Disponible' },
+    { code: 'HRM-BLR-58', name: '#58 BULLRIDER RODEO', tipo: 'Bullrider', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-04', status: 'Disponible' }
   ],
 
   // Verificar si el usuario activo tiene acceso a operar sobre un departamento
@@ -184,64 +186,62 @@ const UanifyState = {
     return false;
   },
 
-  // Catálogo Oficial Tombstone (con hormas reales: Roper, Chaparral, Viejón, Laredo, Frontier)
+  // Catálogo Oficial Tombstone (con hormas reales: Roper, Chaparral, Viejón, Laredo, Frontier, Sonora, Johnson)
   activeModels: [
-    { id: 'denver',    name: '1000X Master Telar Denver',     sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel',     size: '58 (7 1/4)', crownHorma: 'Roper',    tipo: '2 piezas' },
-    { id: 'viejonon',  name: '1000X Master Telar El Viejonón',sku: 'TB-1000X-VJN-57', price: 1310, material: 'Master Telar / Horma Viejón',          size: '57 (7 1/8)', crownHorma: 'Viejón',   tipo: '2 piezas' },
-    { id: 'laredo',    name: '1000X Master Telar Laredo F10', sku: 'TB-1000X-LRD-58', price: 1310, material: 'Master Telar / Falda 4" Plana',        size: '58 (7 1/4)', crownHorma: 'Laredo',   tipo: '1 pieza'  },
-    { id: 'frontier',  name: '1000X Master Telar Frontier F9',sku: 'TB-1000X-FRN-59', price: 1310, material: 'Telar / Copa Gota de Agua',            size: '59 (7 3/8)', crownHorma: 'Frontier', tipo: '2 piezas' },
-    { id: 'chaparral', name: '1000X Master Telar Chaparral',  sku: 'TB-1000X-CHP-56', price: 1310, material: 'Telar Blanco / Toquilla Texana',      size: '56 (7)',     crownHorma: 'Chaparral',tipo: '1 pieza'  }
+    { id: 'viejonon',  name: '1000X Master Telar El Viejonón',sku: 'TB-1000X-VJN-55', price: 1310, material: 'Master Telar / Horma Viejón',          size: '55 (6 7/8)', crownHorma: 'Viejón',   tipo: '2 piezas', brim: '9 1/2', bend: 'ARRIBA' },
+    { id: 'chaparral', name: '1000X Master Telar Chaparral',  sku: 'TB-1000X-CHP-56', price: 1310, material: 'Telar Blanco / Toquilla Texana',      size: '56 (7)',     crownHorma: 'Chaparral',tipo: '1 pieza',  brim: '9.0 Cm', bend: 'ABAJO' },
+    { id: 'denver',    name: '1000X Master Telar Denver',     sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel',     size: '58 (7 1/4)', crownHorma: 'Roper',    tipo: '2 piezas', brim: '4 1/4"', bend: 'ARRIBA' },
+    { id: 'laredo',    name: '1000X Master Telar Laredo F10', sku: 'TB-1000X-LRD-58', price: 1310, material: 'Master Telar / Falda 4" Plana',        size: '58 (7 1/4)', crownHorma: 'Laredo',   tipo: '1 pieza',  brim: '4.00"', bend: 'PLANA' },
+    { id: 'frontier',  name: '1000X Master Telar Frontier F9',sku: 'TB-1000X-FRN-59', price: 1310, material: 'Telar / Copa Gota de Agua',            size: '59 (7 3/8)', crownHorma: 'Frontier', tipo: '2 piezas', brim: '4 1/2"', bend: 'ARRIBA' }
   ],
   selectedModelIndex: 0,
 
-  // ─── LOTES ──────────────────────────────────────────────────────────────────
-  // Lote madre: 60 pzas con tarjeta viajera (impresa en Ingeniería).
-  // Al cruzar la Rampa → Nave de Hidráulicos, el auxiliar hace el cambio físico
-  // de tarjeta madre por tarjetas de sublote (ej. 1094-01 … 1094-N de 15 pzas c/u).
-  // El sistema Excel "lotificador" actual define la subdivisión; Uanify lo digitaliza.
+  // ─── LOTES Y TARJETAS VIAJERAS REALES DE PLANTA TOMBSTONE HATS ────────────
+  // REGLA FÍSICA VALIDADA CON FOTOS:
+  // - Tarjeta de LOTE MADRE: NO TIENE NÚMERO abajo a la derecha.
+  // - Tarjeta de SUBLOTE: TIENE EL NÚMERO DE SUBLOTE abajo a la derecha (ej. "3").
+  // - Porta-gafete con mica transparente y orificio para cordel en las torres de 15 sombreros.
   activeLots: [
     {
-      lotId: '1094',
-      model: '1000X Master Telar Denver',
-      size: '57',
-      horma: 'Roper',
-      tipo: '2 piezas',
+      lotId: '49,633',
+      route: 'TARJETA HIDRAULICAS - ADORNO',
+      model: 'VIEJONON',
+      oProd: '15071',
+      clase: '1,000X MASTER TELAR',
+      finish: 'LAQUEADOS',
+      brim: '9 1/2',
+      bend: 'ARRIBA',
+      size: '55',
+      pieces: 15,
       totalPieces: 60,
-      currentStation: 'Almacén Alineado (Rampa → Nave Hidráulicos)',
-      operator: 'Auxiliar de Línea (Rampa)',
-      status: 'Fraccionando a sublotes de 15 pzas',
+      currentStation: 'Almacén Hidráulicas → Adorno',
+      operator: 'Jorge',
+      operatorSticker: 'JORGE',
+      status: 'Fraccionado en 4 sublotes de 15 pzas',
       isSubdivided: true,
-      // Audio confirma: 1094 tiene sublotes 01 al 14 en total (varios lotes de 60 se dividen)
       sublots: [
-        { id: '1094-01', pieces: 15, station: 'Prensas Hidráulicas',   status: 'En Proceso', operator: 'Juan Manuel Pérez' },
-        { id: '1094-02', pieces: 15, station: 'Prensas Hidráulicas',   status: 'En Proceso', operator: 'Carlos Ortiz'      },
-        { id: '1094-03', pieces: 15, station: 'Almacén Alineado',      status: 'En Espera',  operator: 'Sin Asignar'       },
-        { id: '1094-04', pieces: 15, station: 'Almacén Alineado',      status: 'En Espera',  operator: 'Sin Asignar'       }
+        { id: '49633-1', sublotNum: 1, pieces: 15, station: 'Prensas Hidráulicas', status: 'En Proceso', operator: 'Jorge', operatorSticker: 'JORGE' },
+        { id: '49633-2', sublotNum: 2, pieces: 15, station: 'Prensas Hidráulicas', status: 'En Proceso', operator: 'Jorge', operatorSticker: 'JORGE' },
+        { id: '49633-3', sublotNum: 3, pieces: 15, station: 'Almacén Hidráulicas → Adorno', status: 'Listo para Recolección', operator: 'Jorge', operatorSticker: 'JORGE' },
+        { id: '49633-4', sublotNum: 4, pieces: 15, station: 'Almacén Hidráulicas → Adorno', status: 'En Espera', operator: 'Jorge', operatorSticker: 'JORGE' }
       ]
     },
     {
-      lotId: '1095',
-      model: '1000X Master Telar El Viejonón',
-      size: '57',
-      horma: 'Viejón',
-      tipo: '2 piezas',
+      lotId: '49,386',
+      route: 'TARJETA HIDRAULICAS - ADORNO',
+      model: 'CHAPARRAL',
+      oProd: '15068',
+      clase: '1,000X MASTER TELAR',
+      finish: 'LAQUEADOS',
+      brim: '9.0 Cm',
+      bend: 'ABAJO',
+      size: '56',
+      pieces: 15,
       totalPieces: 60,
-      currentStation: 'Prensas de Hormado (Copa)',
-      operator: 'Raúl Mendoza',
-      status: 'Hormado Térmico — Copa',
-      isSubdivided: false,
-      sublots: []
-    },
-    {
-      lotId: '1096',
-      model: '1000X Master Telar Laredo F10',
-      size: '58',
-      horma: 'Laredo',
-      tipo: '1 pieza',
-      totalPieces: 60,
-      currentStation: 'Englopado — Secado en Camas',
-      operator: 'Pedro Torres',
-      status: 'Secado en Cama #3 (Cada cama = 1 lote)',
+      currentStation: 'Prensas Hidráulicas Michelagnoli',
+      operator: 'Pedro Morales',
+      operatorSticker: null,
+      status: 'Lote Madre en Proceso',
       isSubdivided: false,
       sublots: []
     }
