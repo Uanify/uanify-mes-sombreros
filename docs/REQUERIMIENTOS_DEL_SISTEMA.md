@@ -1,7 +1,7 @@
 # 📋 ESPECIFICACIÓN DE REQUERIMIENTOS DE SOFTWARE (SRS / PRD)
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.10.0` | **Versión:** `v2.10.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.12.0` | **Versión:** `v2.12.0`  
 > **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -196,3 +196,51 @@ Este documento formaliza y cataloga la totalidad de **Requerimientos Funcionales
 | **RF-44** | Módulo Central de Almacenes & Hormas (`inventory`) | Almacenes e Inventarios | `v2.10.0` | ✅ En Producción |
 | **RF-45** | Módulo de Padrón de Operadores (`operators`) | Padrón de Mano de Obra | `v2.10.0` | ✅ En Producción |
 | **RF-46** | Consola Especializada de Ingeniería (`engineer`) | Consola de Ingeniería | `v2.10.0` | ✅ En Producción |
+| **RF-47** | Cabeceras de Módulo Fijas con Botones de Acción al Scroll | Interfaz / Todos los Módulos | `v2.12.0` | ✅ En Producción |
+| **RF-48** | Estandarización Estricta de Modales (Cabecera y Pie Fijos) | Modales / Interfaz | `v2.12.0` | ✅ En Producción |
+| **RF-49** | CRUD Completo de Supervisores y Asignación Departamental | Configuración / RBAC | `v2.12.0` | ✅ En Producción |
+| **RF-50** | CRUD Completo de Operadores (Altas, Bajas y Modificaciones) | Operadores / Configuración | `v2.12.0` | ✅ En Producción |
+| **RF-51** | Notificaciones Toast y Alertas de Éxito Estéticas Premium | Notificaciones / UX | `v2.12.0` | ✅ En Producción |
+
+---
+
+### 3.10 Nuevos Requerimientos Funcionales (v2.12.0)
+
+#### RF-47: Cabeceras de Módulo Fijas al Scroll (`.view-hero-bar`)
+- **Descripción:** En todos los módulos de la aplicación (Terminal, Andon, Almacenes, Operadores, Ingeniería, Dirección, Configuración), el contenedor `.view-hero-bar` debe mantenerse pegado en la parte superior (`position: sticky; top: 0; z-index: 100`) durante el desplazamiento vertical.
+- **Criterios de Aceptación:**
+  1. El título del módulo, el texto descriptivo y los botones primarios (ej. Guardar Configuración, Registrar Operador, Simular) no se ocultan al hacer scroll.
+  2. Efecto glassmorphic con `backdrop-filter: blur(12px)` para garantizar contraste sobre el contenido subyacente.
+  3. Comportamiento responsivo optimizado para tabletas táctiles (márgenes automáticos a `<= 1024px`).
+
+#### RF-48: Estandarización Estricta de Modales y Diálogos de Confirmación
+- **Descripción:** Todos los modales del sistema deben respetar rígidamente la arquitectura unificada de cuatro partes: contenedor backdrop, caja modal (`.modal-box`), encabezado fijo superior (`.modal-header`), cuerpo con scroll central (`.modal-body`), y pie de página fijo inferior (`.modal-footer`).
+- **Criterios de Aceptación:**
+  1. El encabezado (`.modal-header`) contiene el título del diálogo y el botón táctil de cerrado (`&times;`) fijos arriba.
+  2. El pie (`.modal-footer`) contiene los botones de acción ("Cancelar" a la izquierda y confirmación/guardado a la derecha) fijos abajo.
+  3. Los campos de formulario residen en `.modal-body`, el cual es el único elemento que genera scroll si el contenido excede la pantalla.
+  4. Los cuadros de diálogo nativos (`alert()` y `confirm()`) están completamente prohibidos y sustituidos por `UanifyUI.confirm()` y `UanifyUI.alert()`.
+
+#### RF-49: CRUD Completo de Supervisores y Asignación Departamental
+- **Descripción:** Los administradores e ingenieros deben poder consultar, editar y dar de baja las credenciales y las asignaciones operativas de los supervisores de planta.
+- **Criterios de Aceptación:**
+  1. Modal integral de edición de usuario donde se pueden modificar Nombre, Correo, Rol y Permisos Modulares.
+  2. Panel de selección múltiple con los 14 departamentos de la planta Tombstone (D-01 a D-14), con botones de selección rápida "Todos" y "Ninguno".
+  3. Indicador dinámico en vivo que muestra el número de departamentos seleccionados y la cantidad de operadores de piso a cargo en dichas estaciones.
+  4. Reflejo inmediato de los cambios en la tabla de usuarios, badges y el selector de usuario del sidebar sin recargar la página.
+
+#### RF-50: CRUD Completo de Operadores de Planta
+- **Descripción:** Gestión integral de la mano de obra registrada en planta matriz, accesible tanto en el módulo de *Padrón de Operadores de Planta* como en la pestaña de configuración correspondiente.
+- **Criterios de Aceptación:**
+  1. Cada registro de operador en ambas tablas cuenta con botones funcionales `✏️ Editar` y `🗑️ Eliminar`.
+  2. Formulario unificado de alta y edición con campos: No. Nómina, Nombre, Departamento Asignado, Máquina / Puesto, Estatus Operativo (Activo, Incapacidad, Capacitación, Baja Temporal) y Turno.
+  3. Eliminación validada mediante confirmación in-app `UanifyUI.confirm()`.
+  4. Recálculo automático de las tarjetas de estadísticas globales de operadores (`#opStatTotal`, `#opStatActive`).
+
+#### RF-51: Notificaciones Toast y Alertas de Éxito Estéticas Premium
+- **Descripción:** Sistema de notificaciones no intrusivas con diseño de alta gama que reemplaza los cuadros genéricos convencionales.
+- **Criterios de Aceptación:**
+  1. Las alertas de éxito (`toast-success`) utilizan un fondo suave degradado con acentos esmeralda (`#10B981` a `#059669`), borde verde translúcido y badge circular con icono SVG de checkmark.
+  2. Barra animada regresiva (`.toast-progress`) de 4.5 segundos en la base de la notificación.
+  3. Al pasar el cursor sobre la notificación (`mouseenter`), la cuenta regresiva se pausa de manera automática, y se reanuda al retirar el cursor (`mouseleave`).
+  4. Botón táctil para descarte inmediato.

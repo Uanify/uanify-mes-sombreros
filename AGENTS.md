@@ -330,3 +330,69 @@ Excepciones permitidas con style="":
 2. try/catch obligatorio: Todo acceso a localStorage o sessionStorage debe estar protegido.
 3. Prohibido: Almacenar contrasenas, tokens de API o datos sensibles en localStorage.
 4. Validacion de esquema: Verificar que la estructura es valida antes de usar datos almacenados.
+
+---
+
+## REGLA 0.26: Cabeceras de Módulo Fijas al Scroll (MANDATORIA)
+
+**En todos los módulos del sistema (Terminal, Andon, Almacén, Operadores, Ingeniería, Dirección, Configuración), el encabezado `.view-hero-bar` debe permanecer sticky/fijo al hacer scroll vertical.**
+
+1. **Elementos Fijos:** El título del módulo (`.view-title`), el texto descriptivo (`.view-subtitle`) y los botones de acción/guardado (ej. `💾 Guardar Configuración`, `+ Registrar Operador`, `Simular`) deben quedar siempre visibles y accesibles en la parte superior del viewport sin importar cuánto descienda el usuario en la página.
+2. **Estilo Glassmorphism:** La barra hero fija debe incorporar `background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(12px);` y una elevación sutil para que el contenido pase por debajo con legibilidad impecable.
+3. **Responsividad:** En pantallas tablet/móviles (<= 1024px), los márgenes y paddings negativos deben adaptarse automáticamente (`margin: -16px -18px 16px -18px; padding: 14px 18px;`).
+
+---
+
+## REGLA 0.27: Estructura Estricta de Modales y Diálogos de Confirmación (MANDATORIA)
+
+**Todos los modales y ventanas de diálogo in-app deben implementar obligatoriamente la arquitectura de 4 partes con cabecera y pie fijos:**
+
+1. **Cabecera Fija Superior (`.modal-header`):**
+   - Debe tener `position: sticky; top: 0; z-index: 10; background: #FFFFFF; flex-shrink: 0;`.
+   - Contiene el título (`h3`), subtítulo opcional (`.modal-header-sub`) y obligatoriamente el botón de cierre táctil (`.modal-close` con `&times;`).
+2. **Cuerpo Central Desplazable (`.modal-body`):**
+   - Debe tener `flex: 1; min-height: 0; overflow-y: auto;`.
+   - Contiene todos los campos del formulario, selectores y notas operativas. Es el único elemento que genera scroll.
+3. **Pie Fijo Inferior (`.modal-footer`):**
+   - Debe tener `position: sticky; bottom: 0; z-index: 10; background: #FAFAFA; flex-shrink: 0;`.
+   - Contiene los botones de acción fijados: botón secundario a la izquierda (`.btn-secondary` "Cancelar") y botón primario de acción/guardado a la derecha (`.btn-primary`).
+4. **Formularios Integrados:** Cuando un modal utiliza un elemento `<form>`, este debe envolver directamente a `.modal-body` y `.modal-footer` con la regla `.modal-box > form { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; height: 100%; }`.
+5. **Diálogo de Confirmación In-App (`UanifyUI.confirm`):** Debe seguir exactamente esta misma estructura, incluyendo botón de cierre (`.modal-close`) en la esquina superior derecha y pie con botones Cancelar y Confirmar.
+
+---
+
+## REGLA 0.28: CRUD Completo de Supervisores y Asignación Departamental (MANDATORIA)
+
+1. **Edición Integral de Usuario / Supervisor:** La plataforma debe permitir editar Nombre, Correo Electrónico, Rol y Permisos Modulares de cualquier usuario existente.
+2. **Asignación Departamental Interactiva:**
+   - Para el rol Supervisor, debe desplegarse un panel con los 14 departamentos de planta (D-01 a D-14) mediante checkboxes interactivos.
+   - Debe incluir botones de acción rápida: "Seleccionar Todos" y "Limpiar Selección".
+   - Debe calcular y mostrar información en tiempo real: número de estaciones asignadas y cantidad total de operadores de planta bajo el mando del supervisor en esas áreas.
+3. **Sincronización Inmediata:** Al guardar los cambios, la tabla de usuarios (`#usersTableBody`), los badges informativos y el selector de usuario activo del sidebar (`#sidebarUserSelect`) deben actualizarse de inmediato sin requerir recargar la página.
+4. **Eliminación Segura:** La baja de usuarios debe requerir confirmación modal in-app via `UanifyUI.confirm()` y no permitir la eliminación del Administrador General principal.
+
+---
+
+## REGLA 0.29: CRUD Completo de Operadores de Planta (MANDATORIA)
+
+1. **Disponibilidad Dual:** La gestión de operadores debe estar plenamente funcional tanto en el módulo de *Configuración de Planta* (`subtab-config-operators`) como en el módulo de *Padrón de Operadores de Planta* (`view-operators`).
+2. **Acciones por Registro:** Cada fila de operador debe incluir obligatoriamente los botones `✏️ Editar` y `🗑️ Eliminar`.
+3. **Formulario Unificado Alta/Edición:**
+   - El modal de operador (`#modalRegisterOperator`) debe admitir tanto el alta de nuevo personal como la edición de personal existente (`#opOriginalEmpId`).
+   - Campos requeridos: No. Nómina (identificador único), Nombre Completo, Departamento Asignado (select con las 14 estaciones), Máquina / Puesto de Trabajo, Estatus Operativo (Activo, Incapacidad, Capacitación, Baja Temporal) y Turno.
+4. **Actualización de Métricas:** Al registrar, modificar o dar de baja a un operador, el banner de estadísticas de planta (`#opStatTotal`, `#opStatActive`, etc.) debe recalcularse y reflejar los valores vigentes al instante.
+
+---
+
+## REGLA 0.30: Diseño Estético Premium de Alertas de Éxito y Toasts (MANDATORIA)
+
+**Las alertas y notificaciones del sistema deben tener un aspecto visual pulido, sofisticado y moderno (anti-genérico).**
+
+1. **Acrílico Glassmorphism:** Fondo degradado translúcido con desenfoque de fondo (`backdrop-filter: blur(16px)`), bordes sutiles y radio de curvatura suave (`14px`).
+2. **Tipología de Éxito (`toast-success`):**
+   - Fondo sutil degradado esmeralda (`linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 253, 244, 0.95))`).
+   - Borde refinado en verde esmeralda translúcido (`rgba(16, 185, 129, 0.38)`).
+   - Icono distintivo: Badge circular de 34x34px con gradiente esmeralda (`#10B981` a `#059669`), sombra verde brillante e icono SVG de checkmark en blanco.
+   - Título en color verde bosque intenso (`#065F46`) con peso bold/extra-bold (`font-weight: 800`).
+3. **Barra de Progreso Regresiva (`.toast-progress`):** Cada toast debe incorporar una barra inferior animada de 3px que desciende progresivamente a lo largo de 4.5 segundos.
+4. **Pausa Ergonómica:** Al colocar el cursor sobre el toast (`mouseenter`), la cuenta regresiva debe pausarse automáticamente para permitir la lectura tranquila del mensaje, y reanudarse al salir (`mouseleave`).

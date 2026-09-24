@@ -83,9 +83,28 @@ window.initConfigView = function() {
         return `<span class="perm-pill">${mod ? mod.name : p}</span>`;
       }).join(' ');
 
-      const deptsInfo = (u.assignedDepartments && u.assignedDepartments[0] !== '*') 
-        ? `<div style="font-size:10.5px; color:var(--color-brand); margin-top:3px; font-weight:600;">Depts: ${u.assignedDepartments.join(', ')}</div>` 
-        : `<div style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">Acceso Global</div>`;
+      // Contar operadores en los departamentos asignados
+      let deptsInfo = '';
+      if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
+        const totalOps = (UanifyState.operators || []).length;
+        deptsInfo = `
+          <div style="font-size:11px; font-weight:700; color:var(--color-brand); display:flex; align-items:center; gap:4px; margin-top:3px;">
+            <span>👑 Acceso Global (14 Áreas)</span>
+          </div>
+          <small style="color:var(--text-muted); font-size:10.5px;">Supervisión total · ${totalOps} operadores</small>
+        `;
+      } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
+        const pills = u.assignedDepartments.map(d => `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${d}</span>`).join(' ');
+        const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
+        deptsInfo = `
+          <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; max-width:240px;">${pills}</div>
+          <small style="display:block; color:var(--text-secondary); font-size:10.5px; margin-top:2px;">
+            <strong>${u.assignedDepartments.length} depts</strong> asignados · <strong>${assignedOps} operadores</strong> a cargo
+          </small>
+        `;
+      } else {
+        deptsInfo = `<span style="font-size:11px; color:var(--text-muted);">Sin departamentos asignados</span>`;
+      }
 
       return `
         <tr>
@@ -95,20 +114,22 @@ window.initConfigView = function() {
           </td>
           <td>
             <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
+          </td>
+          <td>
             ${deptsInfo}
           </td>
           <td>
-            <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:420px;">
+            <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:380px;">
               ${permPills}
             </div>
           </td>
           <td>
             <div style="display:flex; gap:6px;">
-              <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="openEditPermissionsModal('${u.id}')">
-                ✏️ Permisos
+              <button class="btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="openEditUserModal('${u.id}')">
+                ✏️ Editar Usuario & Deptos
               </button>
               ${u.id !== 'admin-1' ? `
-                <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="deleteUser('${u.id}')">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
                   🗑️
                 </button>
               ` : '<span style="font-size:10px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
@@ -125,15 +146,38 @@ window.initConfigView = function() {
   function renderOperatorsTable() {
     if (!operatorsTableBody || !UanifyState || !UanifyState.operators) return;
 
-    operatorsTableBody.innerHTML = UanifyState.operators.map(op => `
-      <tr>
-        <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand); font-size:12px;">${op.empId}</strong></td>
-        <td><strong>${op.name}</strong></td>
-        <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-        <td>${op.machine}</td>
-        <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); font-weight:700;">● ${op.status}</span></td>
-      </tr>
-    `).join('');
+    operatorsTableBody.innerHTML = UanifyState.operators.map(op => {
+      const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+      let statusBg = 'var(--color-green-bg)';
+      let statusColor = 'var(--color-green)';
+      if (op.status === 'Incapacidad') {
+        statusBg = 'var(--color-red-bg)';
+        statusColor = 'var(--color-red)';
+      } else if (op.status === 'Capacitación') {
+        statusBg = 'var(--color-amber-bg)';
+        statusColor = 'var(--color-amber)';
+      } else if (op.status === 'Baja Temporal') {
+        statusBg = '#F1F5F9';
+        statusColor = '#64748B';
+      }
+
+      return `
+        <tr>
+          <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand); font-size:12px;">${op.empId}</strong></td>
+          <td><strong>${op.name}</strong></td>
+          <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
+          <td style="font-size:12px;">${op.machine}</td>
+          <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
+          <td><span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">● ${op.status}</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="window.openEditOperatorModal('${op.empId}')">✏️ Editar</button>
+              <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="window.deleteOperator('${op.empId}')">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   // Sincronizar el selector de usuario del sidebar
@@ -356,16 +400,72 @@ window.initConfigView = function() {
     });
   }
 
-  // ── 6. MODAL: REGISTRAR OPERADOR DE PLANTA ────────────────────────────────
+  // ── 6. MODAL Y CRUD: OPERADORES DE PLANTA (MANO DE OBRA) ────────────────
   const modalOperator = document.getElementById('modalRegisterOperator');
   const btnOpenOperator = document.getElementById('btnOpenRegisterOperatorModal') || document.getElementById('btnOpenCreateOperatorModal');
   const btnCloseOperator = document.getElementById('btnCloseRegisterOperatorModal');
   const formOperator = document.getElementById('formRegisterOperator');
 
-  if (btnOpenOperator && modalOperator) {
-    btnOpenOperator.addEventListener('click', () => {
-      modalOperator.classList.add('active');
-    });
+  function populateOperatorDeptsSelect() {
+    const select = document.getElementById('newOperatorDept');
+    if (!select || !UanifyState || !UanifyState.stations) return;
+    const currentVal = select.value;
+    select.innerHTML = UanifyState.stations.map(s => `
+      <option value="${s.code}">${s.code} · ${s.name}</option>
+    `).join('');
+    if (currentVal) select.value = currentVal;
+  }
+
+  window.openCreateOperatorModal = function() {
+    if (!modalOperator) return;
+    populateOperatorDeptsSelect();
+    if (formOperator) formOperator.reset();
+
+    const origId = document.getElementById('opOriginalEmpId');
+    const title = document.getElementById('operatorModalTitle');
+    const sub = document.getElementById('operatorModalSubtitle');
+    const submitBtn = document.getElementById('btnSubmitOperator');
+
+    if (origId) origId.value = '';
+    if (title) title.textContent = '👷 Registrar Operador de Planta (Mano de Obra)';
+    if (sub) sub.textContent = 'Asignación de personal de piso a máquinas y estaciones';
+    if (submitBtn) submitBtn.textContent = '💾 Guardar Operador';
+
+    modalOperator.classList.add('active');
+  };
+
+  window.openEditOperatorModal = function(empId) {
+    const op = UanifyState.operators.find(o => o.empId === empId);
+    if (!op || !modalOperator) return;
+    populateOperatorDeptsSelect();
+
+    const origId = document.getElementById('opOriginalEmpId');
+    const payroll = document.getElementById('newOperatorPayroll');
+    const name = document.getElementById('newOperatorName');
+    const dept = document.getElementById('newOperatorDept');
+    const machine = document.getElementById('newOperatorMachine');
+    const status = document.getElementById('newOperatorStatus');
+    const shift = document.getElementById('newOperatorShift');
+    const title = document.getElementById('operatorModalTitle');
+    const sub = document.getElementById('operatorModalSubtitle');
+    const submitBtn = document.getElementById('btnSubmitOperator');
+
+    if (origId) origId.value = op.empId;
+    if (payroll) payroll.value = op.empId;
+    if (name) name.value = op.name;
+    if (dept) dept.value = op.deptCode;
+    if (machine) machine.value = op.machine;
+    if (status) status.value = op.status;
+    if (shift) shift.value = op.shift || 'Turno Único';
+    if (title) title.textContent = `✏️ Editar Operador · ${op.name}`;
+    if (sub) sub.textContent = `Modificando estación, máquina y estatus de ${op.empId}`;
+    if (submitBtn) submitBtn.textContent = '💾 Actualizar Operador';
+
+    modalOperator.classList.add('active');
+  };
+
+  if (btnOpenOperator) {
+    btnOpenOperator.addEventListener('click', () => window.openCreateOperatorModal());
   }
 
   if (btnCloseOperator && modalOperator) {
@@ -377,19 +477,55 @@ window.initConfigView = function() {
   if (formOperator) {
     formOperator.addEventListener('submit', (e) => {
       e.preventDefault();
+      const origId = document.getElementById('opOriginalEmpId')?.value;
       const name = document.getElementById('newOperatorName')?.value.trim();
       const empId = document.getElementById('newOperatorPayroll')?.value.trim();
       const deptCode = document.getElementById('newOperatorDept')?.value || 'D-05';
       const machine = document.getElementById('newOperatorMachine')?.value.trim();
+      const status = document.getElementById('newOperatorStatus')?.value || 'Activo';
+      const shift = document.getElementById('newOperatorShift')?.value || 'Turno Único';
 
       if (!name || !empId) {
         window.UanifyUI.toast('Por favor ingresa nombre y número de nómina del operador.', 'warning', 'Datos Incompletos');
         return;
       }
 
-      const st = UanifyState.stations.find(s => s.id === deptCode || s.code === deptCode);
+      const st = UanifyState.stations.find(s => s.code === deptCode || s.id === deptCode);
       const deptName = st ? st.name : 'Prensas Hidráulicas';
-      const resolvedCode = st ? st.code : 'D-05';
+      const resolvedCode = st ? st.code : deptCode;
+
+      if (origId) {
+        // Modo Edición
+        const op = UanifyState.operators.find(o => o.empId === origId);
+        if (op) {
+          op.empId = empId;
+          op.name = name;
+          op.deptCode = resolvedCode;
+          op.deptName = deptName;
+          op.machine = machine || 'Máquina de Línea';
+          op.status = status;
+          op.shift = shift;
+
+          renderOperatorsTable();
+          if (typeof window.renderOperatorsDirectory === 'function') window.renderOperatorsDirectory();
+          if (typeof window.updateOperatorStats === 'function') window.updateOperatorStats();
+          modalOperator.classList.remove('active');
+
+          window.UanifyUI.toast(
+            `Operador "${name}" (${empId}) actualizado en ${resolvedCode} · ${deptName}.`,
+            'success',
+            '✅ Operador Actualizado'
+          );
+          return;
+        }
+      }
+
+      // Modo Nuevo Registro
+      const duplicate = UanifyState.operators.find(o => o.empId === empId);
+      if (duplicate) {
+        window.UanifyUI.toast(`El número de nómina "${empId}" ya existe en el padrón (${duplicate.name}).`, 'warning', 'Nómina Duplicada');
+        return;
+      }
 
       const newOp = {
         empId,
@@ -397,14 +533,17 @@ window.initConfigView = function() {
         deptCode: resolvedCode,
         deptName,
         machine: machine || 'Máquina de Línea',
-        shift: 'Turno Único',
-        status: 'Activo'
+        shift,
+        status,
+        pzasToday: Math.floor(Math.random() * 25 + 75)
       };
 
       if (!UanifyState.operators) UanifyState.operators = [];
       UanifyState.operators.push(newOp);
 
       renderOperatorsTable();
+      if (typeof window.renderOperatorsDirectory === 'function') window.renderOperatorsDirectory();
+      if (typeof window.updateOperatorStats === 'function') window.updateOperatorStats();
       modalOperator.classList.remove('active');
       formOperator.reset();
 
@@ -416,7 +555,26 @@ window.initConfigView = function() {
     });
   }
 
-  // ── 7. MODAL: EDITAR PERMISOS DE USUARIO ──────────────────────────────────
+  window.deleteOperator = function(empId) {
+    const op = UanifyState.operators.find(o => o.empId === empId);
+    if (!op) return;
+
+    window.UanifyUI.confirm(
+      '¿Dar de Baja al Operador?',
+      `¿Confirmas la baja y retiro de nómina del operador "${op.name}" (Nómina: ${op.empId}) de la estación ${op.deptCode} · ${op.deptName}?`,
+      () => {
+        UanifyState.operators = UanifyState.operators.filter(o => o.empId !== empId);
+        renderOperatorsTable();
+        if (typeof window.renderOperatorsDirectory === 'function') window.renderOperatorsDirectory();
+        if (typeof window.updateOperatorStats === 'function') window.updateOperatorStats();
+        window.UanifyUI.toast(`Operador "${op.name}" (${empId}) dado de baja del padrón.`, 'info', 'Operador Eliminado');
+      },
+      'Sí, Dar de Baja',
+      'Cancelar'
+    );
+  };
+
+  // ── 7. MODAL Y CRUD: EDITAR USUARIO & DEPARTAMENTOS ASIGNADOS ────────────
   const modalEditPerms = document.getElementById('modalEditPermissions');
   const btnCloseEditPerms = document.getElementById('btnCloseEditPermsModal');
   const formEditPerms = document.getElementById('formEditPermissions');
@@ -427,20 +585,93 @@ window.initConfigView = function() {
     });
   }
 
-  window.openEditPermissionsModal = function(userId) {
+  function updateSupervisorDeptsSummary() {
+    const checkboxes = document.querySelectorAll('.edit-dept-cb:checked');
+    const countEl = document.getElementById('editSelectedDeptsCount');
+    const opBadge = document.getElementById('editDeptsOperatorsCountBadge');
+    if (!countEl) return;
+
+    const selectedCodes = Array.from(checkboxes).map(cb => cb.value);
+    countEl.textContent = selectedCodes.length;
+
+    if (opBadge && UanifyState.operators) {
+      const totalOpsInDepts = UanifyState.operators.filter(o => selectedCodes.includes(o.deptCode)).length;
+      opBadge.textContent = `${totalOpsInDepts} operadores a cargo`;
+    }
+  }
+
+  window.openEditUserModal = function(userId) {
     const user = UanifyState.users.find(u => u.id === userId);
     if (!user || !modalEditPerms) return;
 
-    document.getElementById('editUserId').value = user.id;
-    document.getElementById('editUserNameTitle').textContent = user.name;
-    document.getElementById('editUserRoleBadge').textContent = user.badge || user.roleName;
+    const idInput = document.getElementById('editUserId');
+    const nameTitle = document.getElementById('editUserNameTitle');
+    const nameInput = document.getElementById('editUserNameInput');
+    const emailInput = document.getElementById('editUserEmailInput');
+    const roleSelect = document.getElementById('editUserRoleSelect');
+    const roleBadge = document.getElementById('editUserRoleBadge');
+    const deptsGrid = document.getElementById('editDeptsCheckboxesGrid');
 
+    if (idInput) idInput.value = user.id;
+    if (nameTitle) nameTitle.textContent = user.name;
+    if (nameInput) nameInput.value = user.name;
+    if (emailInput) emailInput.value = user.email;
+    if (roleSelect) roleSelect.value = user.role;
+    if (roleBadge) roleBadge.textContent = user.badge || user.roleName;
+
+    // Renderizar los 14 departamentos con checkboxes interactivos y detalle de operadores
+    if (deptsGrid && UanifyState.stations) {
+      const userDepts = user.assignedDepartments || [];
+      const isGlobal = userDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
+
+      deptsGrid.innerHTML = UanifyState.stations.map(st => {
+        const isChecked = isGlobal || userDepts.includes(st.code);
+        const opCount = (UanifyState.operators || []).filter(o => o.deptCode === st.code).length;
+        return `
+          <label class="perm-check-item" style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;">
+            <input type="checkbox" class="edit-dept-cb" value="${st.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer;">
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:var(--text-primary); font-family:var(--font-mono); font-size:11.5px;">${st.code}</strong>
+                <small style="color:var(--text-muted); font-size:10px;">${opCount} ops</small>
+              </div>
+              <span style="display:block; color:var(--text-secondary); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${st.name}</span>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      deptsGrid.querySelectorAll('.edit-dept-cb').forEach(cb => {
+        cb.addEventListener('change', updateSupervisorDeptsSummary);
+      });
+      updateSupervisorDeptsSummary();
+    }
+
+    // Botones Seleccionar Todos y Limpiar
+    const btnAll = document.getElementById('btnSelectAllDepts');
+    const btnClear = document.getElementById('btnClearAllDepts');
+    if (btnAll) {
+      btnAll.onclick = () => {
+        document.querySelectorAll('.edit-dept-cb').forEach(cb => cb.checked = true);
+        updateSupervisorDeptsSummary();
+      };
+    }
+    if (btnClear) {
+      btnClear.onclick = () => {
+        document.querySelectorAll('.edit-dept-cb').forEach(cb => cb.checked = false);
+        updateSupervisorDeptsSummary();
+      };
+    }
+
+    // Permisos modulares RBAC
     document.querySelectorAll('.edit-perm-cb').forEach(cb => {
       cb.checked = user.permissions.includes(cb.value);
     });
 
     modalEditPerms.classList.add('active');
   };
+
+  window.openEditPermissionsModal = window.openEditUserModal;
 
   if (formEditPerms) {
     formEditPerms.addEventListener('submit', (e) => {
@@ -449,13 +680,42 @@ window.initConfigView = function() {
       const user = UanifyState.users.find(u => u.id === userId);
       if (!user) return;
 
+      const name = document.getElementById('editUserNameInput')?.value.trim() || user.name;
+      const email = document.getElementById('editUserEmailInput')?.value.trim() || user.email;
+      const role = document.getElementById('editUserRoleSelect')?.value || user.role;
+
+      // Departamentos asignados
+      const selectedDepts = [];
+      document.querySelectorAll('.edit-dept-cb:checked').forEach(cb => {
+        selectedDepts.push(cb.value);
+      });
+
       const newPerms = [];
       document.querySelectorAll('.edit-perm-cb:checked').forEach(cb => {
         newPerms.push(cb.value);
       });
 
+      user.name = name;
+      user.email = email;
+      user.role = role;
       user.permissions = newPerms;
+
+      if (role === 'admin') {
+        user.roleName = 'Administrador General';
+        user.badge = '👑 Admin';
+        user.assignedDepartments = ['*'];
+      } else if (role === 'ingeniero') {
+        user.roleName = 'Ingeniero de Procesos';
+        user.badge = '⚙️ Ingeniero';
+        user.assignedDepartments = ['*'];
+      } else {
+        user.roleName = `Supervisor (${selectedDepts.length > 0 ? selectedDepts.join(', ') : 'Sin Deptos'})`;
+        user.badge = '📋 Supervisor';
+        user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : [];
+      }
+
       renderUsersTable();
+      syncSidebarUserSelector();
       modalEditPerms.classList.remove('active');
 
       if (UanifyState.currentUser === user.id) {
@@ -465,9 +725,9 @@ window.initConfigView = function() {
       }
 
       window.UanifyUI.toast(
-        `Permisos actualizados para ${user.name}: ${user.permissions.join(', ')}.`,
+        `Usuario "${user.name}" actualizado. Departamentos asignados: ${user.assignedDepartments.join(', ') || 'Ninguno'}.`,
         'success',
-        '✅ Permisos Actualizados'
+        '✅ Usuario y Deptos Actualizados'
       );
     });
   }

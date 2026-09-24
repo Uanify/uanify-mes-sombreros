@@ -28,34 +28,64 @@ window.UanifyUI = {
     const toast = document.createElement('div');
     toast.className = `uanify-toast toast-${type}`;
 
-    let icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    if (type === 'warning') icon = '⚠️';
-    if (type === 'error')   icon = '🚨';
+    let iconSvg = '';
+    if (type === 'success') {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+    } else if (type === 'warning') {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    } else if (type === 'error') {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    } else {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    }
+
+    const defaultTitle = type === 'success' ? 'Operación Exitosa' 
+      : type === 'warning' ? 'Advertencia de Línea' 
+      : type === 'error' ? 'Error Operativo' 
+      : 'Notificación de Planta';
 
     toast.innerHTML = `
-      <div class="toast-icon">${icon}</div>
+      <div class="toast-icon">${iconSvg}</div>
       <div class="toast-body">
-        ${title ? `<div class="toast-title">${title}</div>` : ''}
+        <div class="toast-title">${title || defaultTitle}</div>
         <div class="toast-msg">${message}</div>
       </div>
-      <button class="toast-close" aria-label="Cerrar">&times;</button>
+      <button type="button" class="toast-close" aria-label="Cerrar">&times;</button>
+      <div class="toast-progress"></div>
     `;
 
     const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.addEventListener('click', () => {
+    let autoDismissTimer = null;
+
+    const removeToast = () => {
+      if (toast.classList.contains('removing')) return;
       toast.classList.add('removing');
-      setTimeout(() => toast.remove(), 250);
+      setTimeout(() => {
+        if (toast.isConnected) toast.remove();
+      }, 260);
+    };
+
+    closeBtn.addEventListener('click', removeToast);
+
+    // Auto-cierre con timer y pausa en hover
+    const startTimer = () => {
+      autoDismissTimer = setTimeout(removeToast, 4500);
+    };
+
+    toast.addEventListener('mouseenter', () => {
+      if (autoDismissTimer) clearTimeout(autoDismissTimer);
+      const prog = toast.querySelector('.toast-progress');
+      if (prog) prog.style.animationPlayState = 'paused';
+    });
+
+    toast.addEventListener('mouseleave', () => {
+      const prog = toast.querySelector('.toast-progress');
+      if (prog) prog.style.animationPlayState = 'running';
+      autoDismissTimer = setTimeout(removeToast, 2000);
     });
 
     container.appendChild(toast);
-
-    setTimeout(() => {
-      if (toast.isConnected) {
-        toast.classList.add('removing');
-        setTimeout(() => toast.remove(), 250);
-      }
-    }, 4500);
+    startTimer();
   },
 
   confirm(title, message, onConfirm, okText = 'Confirmar', cancelText = 'Cancelar') {
@@ -64,37 +94,80 @@ window.UanifyUI = {
       if (onConfirm) onConfirm();
       return;
     }
-    const titleEl = document.getElementById('uanifyConfirmTitle');
-    const msgEl = document.getElementById('uanifyConfirmMessage');
-    const okBtn = document.getElementById('uanifyConfirmOkBtn');
-    const cancelBtn = document.getElementById('uanifyConfirmCancelBtn');
+    const titleEl = document.getElementById('confirmModalTitle') || document.getElementById('uanifyConfirmTitle');
+    const msgEl = document.getElementById('confirmModalMessage') || document.getElementById('uanifyConfirmMessage');
+    const okBtn = document.getElementById('confirmModalBtnOk') || document.getElementById('uanifyConfirmOkBtn');
+    const cancelBtn = document.getElementById('confirmModalBtnCancel') || document.getElementById('uanifyConfirmCancelBtn');
+    const closeBtn = document.getElementById('confirmModalCloseBtn');
 
     if (titleEl) titleEl.textContent = title || 'Confirmación Requerida';
-    if (msgEl) msgEl.textContent = message || '¿Está seguro de realizar esta acción?';
+    if (msgEl) msgEl.textContent = message || '¿Está seguro de realizar esta acción en planta?';
     if (okBtn) okBtn.textContent = okText;
-    if (cancelBtn) cancelBtn.textContent = cancelText;
+    if (cancelBtn) {
+      cancelBtn.style.display = '';
+      cancelBtn.textContent = cancelText;
+    }
 
     const cleanup = () => {
       modal.classList.remove('active');
-      okBtn.onclick = null;
-      cancelBtn.onclick = null;
+      if (okBtn) okBtn.onclick = null;
+      if (cancelBtn) cancelBtn.onclick = null;
+      if (closeBtn) closeBtn.onclick = null;
     };
 
-    okBtn.onclick = () => {
-      cleanup();
-      if (typeof onConfirm === 'function') onConfirm();
+    if (okBtn) {
+      okBtn.onclick = () => {
+        cleanup();
+        if (typeof onConfirm === 'function') onConfirm();
+      };
+    }
+
+    if (cancelBtn) {
+      cancelBtn.onclick = () => {
+        cleanup();
+      };
+    }
+
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        cleanup();
+      };
+    }
+
+    modal.classList.add('active');
+  },
+
+  alert(title, message, okText = 'Entendido') {
+    const modal = document.getElementById('uanifyConfirmModal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('confirmModalTitle') || document.getElementById('uanifyConfirmTitle');
+    const msgEl = document.getElementById('confirmModalMessage') || document.getElementById('uanifyConfirmMessage');
+    const okBtn = document.getElementById('confirmModalBtnOk') || document.getElementById('uanifyConfirmOkBtn');
+    const cancelBtn = document.getElementById('confirmModalBtnCancel') || document.getElementById('uanifyConfirmCancelBtn');
+    const closeBtn = document.getElementById('confirmModalCloseBtn');
+
+    if (titleEl) titleEl.textContent = title || 'Aviso de Planta';
+    if (msgEl) msgEl.textContent = message || '';
+    if (okBtn) okBtn.textContent = okText;
+    if (cancelBtn) cancelBtn.style.display = 'none';
+
+    const cleanup = () => {
+      modal.classList.remove('active');
+      if (cancelBtn) cancelBtn.style.display = '';
+      if (okBtn) okBtn.onclick = null;
+      if (closeBtn) closeBtn.onclick = null;
     };
 
-    cancelBtn.onclick = () => {
-      cleanup();
-    };
+    if (okBtn) okBtn.onclick = cleanup;
+    if (closeBtn) closeBtn.onclick = cleanup;
 
     modal.classList.add('active');
   }
 };
 
 const UanifyState = {
-  version: '2.11.0',
+  version: '2.12.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -1303,6 +1376,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tableBody.innerHTML = filtered.map(op => {
         const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+        let statusBg = 'var(--color-green-bg)';
+        let statusColor = 'var(--color-green)';
+        if (op.status === 'Incapacidad') {
+          statusBg = 'var(--color-red-bg)';
+          statusColor = 'var(--color-red)';
+        } else if (op.status === 'Capacitación') {
+          statusBg = 'var(--color-amber-bg)';
+          statusColor = 'var(--color-amber)';
+        } else if (op.status === 'Baja Temporal') {
+          statusBg = '#F1F5F9';
+          statusColor = '#64748B';
+        }
+
         return `
           <tr>
             <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${op.empId}</strong></td>
@@ -1311,11 +1397,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <td style="font-size:12px;">${op.machine}</td>
             <td><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
             <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
-            <td><span class="badge-status" style="background:#ECFDF5; color:#047857; font-weight:700;">● ${op.status}</span></td>
+            <td><span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">● ${op.status}</span></td>
             <td>
-              <button class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="window.UanifyUI.toast('Operador ${op.name} asignado en ${op.machine}.', 'info', 'Ficha Operativa')">
-                👁️ Ficha
-              </button>
+              <div style="display:flex; gap:6px;">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="window.openEditOperatorModal('${op.empId}')">
+                  ✏️ Editar
+                </button>
+                <button class="btn-secondary" style="padding:4px 8px; font-size:11px; color:var(--color-red); border-color:var(--color-red-border);" onclick="window.deleteOperator('${op.empId}')">
+                  🗑️
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -1329,11 +1420,30 @@ document.addEventListener('DOMContentLoaded', () => {
     doRender();
   }
 
+  window.renderOperatorsDirectory = renderOperatorsDirectory;
+
+  window.updateOperatorStats = function() {
+    const totalEl = document.getElementById('opStatTotal');
+    const activeEl = document.getElementById('opStatActive');
+    const avgPzasEl = document.getElementById('opStatAvgPzas');
+    const effEl = document.getElementById('opStatEfficiency');
+    if (!UanifyState.operators) return;
+
+    const total = UanifyState.operators.length;
+    const active = UanifyState.operators.filter(o => o.status === 'Activo').length;
+    
+    if (totalEl) totalEl.textContent = total;
+    if (activeEl) activeEl.textContent = active;
+    if (avgPzasEl) avgPzasEl.textContent = total > 0 ? (87.4).toFixed(1) : '0';
+    if (effEl) effEl.textContent = '92.3%';
+  };
+
   initLoginScreen();
   initSubTabs();
   updateUserInterface();
   renderInventorySection();
   renderOperatorsDirectory();
+  window.updateOperatorStats();
 
   if (window.initAndonView)     window.initAndonView();
   if (window.initTerminalView)  window.initTerminalView();

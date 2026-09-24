@@ -742,7 +742,7 @@
             <p class="view-subtitle">Directorio oficial de personal de piso, máquinas asignadas, piezas procesadas en el turno único y estatus operativo</p>
           </div>
           <div style="display:flex; gap:10px;">
-            <button class="btn-primary" onclick="document.getElementById('modalRegisterOperator').classList.add('active')">👷 + Registrar Operador</button>
+            <button class="btn-primary" onclick="window.openCreateOperatorModal()">👷 + Registrar Operador</button>
           </div>
         </div>
 
@@ -1479,7 +1479,10 @@
   <div class="modal-backdrop" id="modalScrap">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>⚠️ Clasificación de Calidad · Defecto / Segunda</h3>
+        <div>
+          <h3>⚠️ Clasificación de Calidad · Defecto / Segunda</h3>
+          <p class="modal-header-sub">Selecciona la tipificación para control de mermas y venta de viernes</p>
+        </div>
         <button class="modal-close" id="btnCloseScrapModal">&times;</button>
       </div>
       <div class="modal-body">
@@ -1502,6 +1505,9 @@
           </button>
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="document.getElementById('modalScrap').classList.remove('active')">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -1511,7 +1517,10 @@
   <div class="modal-backdrop" id="modalStop">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>🛑 Registrar Paro de Línea · Tombstone</h3>
+        <div>
+          <h3>🛑 Registrar Paro de Línea · Tombstone</h3>
+          <p class="modal-header-sub">Notificación inmediata al Tablero Andon y registro de cronómetro</p>
+        </div>
         <button class="modal-close" id="btnCloseStopModal">&times;</button>
       </div>
       <div class="modal-body">
@@ -1534,6 +1543,9 @@
           </button>
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="document.getElementById('modalStop').classList.remove('active')">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -1543,60 +1555,65 @@
   <div class="modal-backdrop" id="modalCreateUser">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>👤 Crear Nuevo Usuario de Planta</h3>
-        <button class="modal-close" id="btnCloseCreateUserModal">&times;</button>
+        <div>
+          <h3>👤 Crear Nuevo Usuario de Planta</h3>
+          <p class="modal-header-sub">Alta de supervisores, ingenieros o administradores de sistema</p>
+        </div>
+        <button class="modal-close" id="btnCloseCreateUserModal" type="button">&times;</button>
       </div>
-      <form id="formCreateUser" class="modal-body">
-        <div class="form-group">
-          <label class="field-label">Nombre Completo:</label>
-          <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Correo Electrónico / Identificador:</label>
-          <input type="email" id="newUserEmail" class="form-input" placeholder="rsanchez@tombstone.mx" required>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Rol del Usuario:</label>
-          <select id="newRoleSelect" class="custom-select">
-            <option value="supervisor" selected>📋 Supervisor de Piso y Almacenes</option>
-            <option value="ingeniero">⚙️ Ingeniero (Procesos, OEE y Subensambles)</option>
-            <option value="admin">👑 Administrador (Acceso y Configuración Total)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Permisos de Acceso por Módulo:</label>
-          <div class="permissions-checklist">
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="terminal" checked>
-              <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="andon" checked>
-              <span>📺 Tablero Andon (Piso)</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="inventory">
-              <span>📦 Almacenes & Hormas (Inventario WIP)</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="operators">
-              <span>👷 Padrón de Operadores de Planta</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="engineer">
-              <span>📊 Consola de Ingeniería & Rendimiento</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="executive">
-              <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
-            </label>
-            <label class="perm-check-item">
-              <input type="checkbox" class="new-perm-cb" value="config">
-              <span>⚙️ Configuración de Planta & Usuarios</span>
-            </label>
+      <form id="formCreateUser">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="field-label">Nombre Completo:</label>
+            <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Correo Electrónico / Identificador:</label>
+            <input type="email" id="newUserEmail" class="form-input" placeholder="rsanchez@tombstone.mx" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Rol del Usuario:</label>
+            <select id="newRoleSelect" class="custom-select">
+              <option value="supervisor" selected>📋 Supervisor de Piso y Almacenes</option>
+              <option value="ingeniero">⚙️ Ingeniero (Procesos, OEE y Subensambles)</option>
+              <option value="admin">👑 Administrador (Acceso y Configuración Total)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Permisos de Acceso por Módulo:</label>
+            <div class="permissions-checklist">
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="terminal" checked>
+                <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="andon" checked>
+                <span>📺 Tablero Andon (Piso)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="inventory">
+                <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="operators">
+                <span>👷 Padrón de Operadores de Planta</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="engineer">
+                <span>📊 Consola de Ingeniería & Rendimiento</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="executive">
+                <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="new-perm-cb" value="config">
+                <span>⚙️ Configuración de Planta & Usuarios</span>
+              </label>
+            </div>
           </div>
         </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+        <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="document.getElementById('modalCreateUser').classList.remove('active')">Cancelar</button>
           <button type="submit" class="btn-primary">Guardar Usuario</button>
         </div>
@@ -1605,56 +1622,105 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: EDITAR PERMISOS DE USUARIO (RBAC)
+       MODAL: EDITAR USUARIO, ASIGNACIÓN DE DEPARTAMENTOS Y PERMISOS (RBAC)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalEditPermissions">
-    <div class="modal-box card-glass">
+    <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3>✏️ Configurar Permisos Modulares</h3>
-          <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+          <h3>✏️ Editar Usuario & Departamentos Asignados</h3>
+          <p class="modal-header-sub">
             Usuario: <strong id="editUserNameTitle" style="color:var(--text-primary);">-</strong>
             <span id="editUserRoleBadge" class="role-badge" style="margin-left:6px;">-</span>
           </p>
         </div>
-        <button class="modal-close" id="btnCloseEditPermsModal">&times;</button>
+        <button class="modal-close" id="btnCloseEditPermsModal" type="button">&times;</button>
       </div>
-      <form id="formEditPermissions" class="modal-body">
-        <input type="hidden" id="editUserId">
-        <p style="font-size:12.5px; color:var(--text-secondary);">Selecciona los módulos a los que este usuario tendrá autorización de ingreso:</p>
-        <div class="permissions-checklist">
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="terminal">
-            <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="andon">
-            <span>📺 Tablero Andon (Piso)</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="inventory">
-            <span>📦 Almacenes & Hormas (Inventario WIP)</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="operators">
-            <span>👷 Padrón de Operadores de Planta</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="engineer">
-            <span>📊 Consola de Ingeniería & Rendimiento</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="executive">
-            <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
-          </label>
-          <label class="perm-check-item">
-            <input type="checkbox" class="edit-perm-cb" value="config">
-            <span>⚙️ Configuración de Planta & Usuarios</span>
-          </label>
+      <form id="formEditPermissions">
+        <div class="modal-body">
+          <input type="hidden" id="editUserId">
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Nombre Completo:</label>
+              <input type="text" id="editUserNameInput" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Correo Electrónico:</label>
+              <input type="email" id="editUserEmailInput" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">Rol del Usuario:</label>
+            <select id="editUserRoleSelect" class="custom-select">
+              <option value="supervisor">📋 Supervisor de Piso y Almacenes</option>
+              <option value="ingeniero">⚙️ Ingeniero de Procesos y OEE</option>
+              <option value="admin">👑 Administrador General</option>
+            </select>
+          </div>
+
+          <!-- SECCIÓN: Departamentos Asignados al Supervisor -->
+          <div id="editSupervisorDeptsSection" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div>
+                <strong style="font-size:13px; color:var(--text-primary);">🏢 Departamentos Asignados al Supervisor</strong>
+                <p style="font-size:11.5px; color:var(--text-muted); margin:2px 0 0 0;">Estaciones sobre las cuales este supervisor tiene mando y control de lotes:</p>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px;" id="btnSelectAllDepts">Todos</button>
+                <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px;" id="btnClearAllDepts">Ninguno</button>
+              </div>
+            </div>
+
+            <div id="editDeptsCheckboxesGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:170px; overflow-y:auto; padding:6px 2px;">
+              <!-- Inyectado dinámicamente con los 14 departamentos de planta -->
+            </div>
+
+            <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+              <span style="color:var(--text-secondary);">Seleccionados: <strong id="editSelectedDeptsCount" style="color:var(--color-brand);">0</strong> áreas</span>
+              <span class="badge-subtle" id="editDeptsOperatorsCountBadge" style="font-weight:700;">0 operadores a cargo</span>
+            </div>
+          </div>
+
+          <!-- SECCIÓN: Permisos Modulares de Acceso -->
+          <div class="form-group">
+            <label class="field-label">Permisos de Acceso a Módulos del Sistema:</label>
+            <div class="permissions-checklist">
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="terminal">
+                <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="andon">
+                <span>📺 Tablero Andon (Piso)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="inventory">
+                <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="operators">
+                <span>👷 Padrón de Operadores de Planta</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="engineer">
+                <span>📊 Consola de Ingeniería & Rendimiento</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="executive">
+                <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+              </label>
+              <label class="perm-check-item">
+                <input type="checkbox" class="edit-perm-cb" value="config">
+                <span>⚙️ Configuración de Planta & Usuarios</span>
+              </label>
+            </div>
+          </div>
         </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+        <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="document.getElementById('modalEditPermissions').classList.remove('active')">Cancelar</button>
-          <button type="submit" class="btn-primary">Actualizar Permisos</button>
+          <button type="submit" class="btn-primary" id="btnSaveEditUser">💾 Guardar Cambios</button>
         </div>
       </form>
     </div>
@@ -1666,41 +1732,46 @@
   <div class="modal-backdrop" id="modalRegisterMold">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>🎩 Registrar Nueva Horma / Molde de Sombrero</h3>
+        <div>
+          <h3>🎩 Registrar Nueva Horma / Molde de Sombrero</h3>
+          <p class="modal-header-sub">Catálogo de moldes físicos para prensas de hormado y hornos</p>
+        </div>
         <button class="modal-close" id="btnCloseRegisterMoldModal">&times;</button>
       </div>
-      <form id="formRegisterMold" class="modal-body">
-        <div class="form-group">
-          <label class="field-label">Nombre del Modelo / Horma:</label>
-          <input type="text" id="newMoldName" class="form-input" placeholder="Ej. Laredo F10 o Rodeo Master" required>
+      <form id="formRegisterMold">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="field-label">Nombre del Modelo / Horma:</label>
+            <input type="text" id="newMoldName" class="form-input" placeholder="Ej. Laredo F10 o Rodeo Master" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Código de Identificación (Grabado):</label>
+            <input type="text" id="newMoldCode" class="form-input" placeholder="Ej. HRM-LRD-450" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Ancho de Falda:</label>
+            <select id="newMoldBrim" class="custom-select">
+              <option value='4.00"'>4" (Falda Corta Tradicional)</option>
+              <option value='4.25"' selected>4 1/4" (Falda Estándar Tombstone)</option>
+              <option value='4.50"'>4 1/2" (Falda Ancha Texana)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Tipo de Copa:</label>
+            <input type="text" id="newMoldCrown" class="form-input" placeholder="Ej. Roper, Gota de Agua, Viejón" required>
+          </div>
+          <div class="form-group">
+            <label class="field-label">Prensa / Ubicación Asignada:</label>
+            <select id="newMoldLocation" class="custom-select">
+              <option value="Prensa Vapor Matriz #1">Prensa Vapor Matriz #1</option>
+              <option value="Prensa Vapor Matriz #2">Prensa Vapor Matriz #2</option>
+              <option value="Prensa Vapor Matriz #3">Prensa Vapor Matriz #3</option>
+              <option value="Estante de Hormas A-1">Estante de Hormas A-1 (Disponible)</option>
+              <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="field-label">Código de Identificación (Grabado):</label>
-          <input type="text" id="newMoldCode" class="form-input" placeholder="Ej. HRM-LRD-450" required>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Ancho de Falda:</label>
-          <select id="newMoldBrim" class="custom-select">
-            <option value='4.00"'>4" (Falda Corta Tradicional)</option>
-            <option value='4.25"' selected>4 1/4" (Falda Estándar Tombstone)</option>
-            <option value='4.50"'>4 1/2" (Falda Ancha Texana)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Tipo de Copa:</label>
-          <input type="text" id="newMoldCrown" class="form-input" placeholder="Ej. Roper, Gota de Agua, Viejón" required>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Prensa / Ubicación Asignada:</label>
-          <select id="newMoldLocation" class="custom-select">
-            <option value="Prensa Vapor Matriz #1">Prensa Vapor Matriz #1</option>
-            <option value="Prensa Vapor Matriz #2">Prensa Vapor Matriz #2</option>
-            <option value="Prensa Vapor Matriz #3">Prensa Vapor Matriz #3</option>
-            <option value="Estante de Hormas A-1">Estante de Hormas A-1 (Disponible)</option>
-            <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
-          </select>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+        <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="document.getElementById('modalRegisterMold').classList.remove('active')">Cancelar</button>
           <button type="submit" class="btn-primary">Guardar Horma</button>
         </div>
@@ -1709,48 +1780,80 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: REGISTRAR OPERADOR DE PLANTA (NO USUARIO DE SISTEMA)
+       MODAL: REGISTRAR / EDITAR OPERADOR DE PLANTA (MANO DE OBRA)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalRegisterOperator">
     <div class="modal-box card-glass">
       <div class="modal-header">
-        <h3>👷 Registrar Operador de Planta (Mano de Obra)</h3>
-        <button class="modal-close" id="btnCloseRegisterOperatorModal">&times;</button>
+        <div>
+          <h3 id="operatorModalTitle">👷 Registrar Operador de Planta (Mano de Obra)</h3>
+          <p class="modal-header-sub" id="operatorModalSubtitle">Asignación de personal de piso a máquinas y estaciones</p>
+        </div>
+        <button class="modal-close" id="btnCloseRegisterOperatorModal" type="button">&times;</button>
       </div>
-      <form id="formRegisterOperator" class="modal-body">
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">
-          Los operadores son registrados para asignación a puestos y máquinas. No son usuarios que ingresen a la plataforma.
-        </p>
-        <div class="form-group">
-          <label class="field-label">Nombre del Operador:</label>
-          <input type="text" id="newOperatorName" class="form-input" placeholder="Ej. Salvador Macías" required>
+      <form id="formRegisterOperator">
+        <div class="modal-body">
+          <input type="hidden" id="opOriginalEmpId" value="">
+          
+          <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">No. Nómina:</label>
+              <input type="text" id="newOperatorPayroll" class="form-input" placeholder="Ej. EMP-0110" required style="font-family:var(--font-mono); font-weight:700;">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Nombre Completo del Operador:</label>
+              <input type="text" id="newOperatorName" class="form-input" placeholder="Ej. Salvador Macías" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">Departamento Productivo Asignado:</label>
+            <select id="newOperatorDept" class="custom-select">
+              <option value="D-01">D-01 · Corte de Telar</option>
+              <option value="D-02">D-02 · Englopado y Camas</option>
+              <option value="D-03">D-03 · Refuerzos de Corona</option>
+              <option value="D-04">D-04 · Engomado y Secado</option>
+              <option value="D-05" selected>D-05 · Prensas Hidráulicas</option>
+              <option value="D-06">D-06 · Recorte y Alambrado</option>
+              <option value="D-07">D-07 · Planchado y Horno</option>
+              <option value="D-08">D-08 · Brillo y Pulido</option>
+              <option value="D-09">D-09 · Pintura y Matizado</option>
+              <option value="D-10">D-10 · Ribete de Ala</option>
+              <option value="D-11">D-11 · Hormado Final</option>
+              <option value="D-12">D-12 · Adorno (Tafilete y Toquilla)</option>
+              <option value="D-13">D-13 · Inspección Final</option>
+              <option value="D-14">D-14 · Empaque y Embarque</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">Máquina o Puesto de Trabajo Asignado:</label>
+            <input type="text" id="newOperatorMachine" class="form-input" placeholder="Ej. Prensa Vapor Matriz #2" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Estatus Operativo:</label>
+              <select id="newOperatorStatus" class="custom-select">
+                <option value="Activo" selected>● Activo (En Piso)</option>
+                <option value="Incapacidad">● Incapacidad</option>
+                <option value="Capacitación">● Capacitación</option>
+                <option value="Baja Temporal">● Baja Temporal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Turno de Trabajo:</label>
+              <select id="newOperatorShift" class="custom-select">
+                <option value="Turno Único" selected>Turno Único (07:00 - 15:30)</option>
+                <option value="Turno Matutino">Turno Matutino</option>
+                <option value="Turno Vespertino">Turno Vespertino</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="field-label">Número de Nómina / Empleado:</label>
-          <input type="text" id="newOperatorPayroll" class="form-input" placeholder="Ej. EMP-0110" required>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Departamento Productivo:</label>
-          <select id="newOperatorDept" class="custom-select">
-            <option value="corte">D-01 · Corte de Cuadros</option>
-            <option value="alambrado">D-02 · Alambrado de Ala</option>
-            <option value="dope">D-03 · Englopado / Baño de Dope</option>
-            <option value="refuerzos">D-04 · Refuerzos (Pintola / Brocha)</option>
-            <option value="prensas" selected>D-05 · Prensas Hormado (Copa y Falda)</option>
-            <option value="recortes">D-06 · Recorte y Refaldeado</option>
-            <option value="pintura">D-07 · Pintura y Secado</option>
-            <option value="brillo">D-08 · Brillo / Acabado</option>
-            <option value="adorno">D-10 · Adorno 1 (Tafilete + Toquilla)</option>
-            <option value="calidad3">C-03 · Calidad 3 (Auditoría Final)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Máquina o Puesto Asignado:</label>
-          <input type="text" id="newOperatorMachine" class="form-input" placeholder="Ej. Prensa Vapor Matriz #2" required>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
-          <button type="button" class="btn-secondary" onclick="document.getElementById('modalRegisterOperator').classList.remove('active')">Cancelar</button>
-          <button type="submit" class="btn-primary">Guardar Operador</button>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelOperatorModal" onclick="document.getElementById('modalRegisterOperator').classList.remove('active')">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btnSubmitOperator">💾 Guardar Operador</button>
         </div>
       </form>
     </div>
@@ -1762,66 +1865,70 @@
   <div class="modal-backdrop" id="modalCreateDepartment">
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
-        <h3>🏢 Dar de Alta Nuevo Departamento</h3>
+        <div>
+          <h3>🏢 Dar de Alta Nuevo Departamento</h3>
+          <p class="modal-header-sub">Catálogo de estaciones de manufactura y flujo continuo</p>
+        </div>
         <button class="modal-close" id="btnCloseCreateDeptModal">&times;</button>
       </div>
-      <form id="formCreateDepartment" class="modal-body">
-        <div style="display:grid; grid-template-columns: 130px 1fr; gap:12px;">
-          <div class="form-group">
-            <label class="field-label">Código Depto:</label>
-            <input type="text" id="newDeptCode" class="form-input" placeholder="D-15" required style="font-family:var(--font-mono); font-weight:700;">
+      <form id="formCreateDepartment">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns: 130px 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Código Depto:</label>
+              <input type="text" id="newDeptCode" class="form-input" placeholder="D-15" required style="font-family:var(--font-mono); font-weight:700;">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Nombre del Departamento:</label>
+              <input type="text" id="newDeptName" class="form-input" placeholder="Bordado Especial & Adornos" required>
+            </div>
           </div>
+
           <div class="form-group">
-            <label class="field-label">Nombre del Departamento:</label>
-            <input type="text" id="newDeptName" class="form-input" placeholder="Bordado Especial & Adornos" required>
+            <label class="field-label">Descripción / Estaciones de Trabajo:</label>
+            <input type="text" id="newDeptDesc" class="form-input" placeholder="Estación de costura fina y herrajes vaqueros">
           </div>
-        </div>
 
-        <div class="form-group">
-          <label class="field-label">Descripción / Estaciones de Trabajo:</label>
-          <input type="text" id="newDeptDesc" class="form-input" placeholder="Estación de costura fina y herrajes vaqueros">
-        </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Tipo de Departamento:</label>
+              <select id="newDeptType" class="custom-select">
+                <option value="proceso">Proceso Productivo</option>
+                <option value="calidad">Control de Calidad</option>
+                <option value="logistica">Logística y Almacén</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Takt Time Estándar:</label>
+              <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s">
+            </div>
+          </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
           <div class="form-group">
-            <label class="field-label">Tipo de Departamento:</label>
-            <select id="newDeptType" class="custom-select">
-              <option value="proceso">Proceso Productivo</option>
-              <option value="calidad">Control de Calidad</option>
-              <option value="logistica">Logística y Almacén</option>
+            <label class="field-label">Supervisor de Planta Responsable:</label>
+            <select id="newDeptSupervisor" class="custom-select">
+              <!-- Llenado dinámicamente con supervisores y admins -->
             </select>
+            <small style="color:var(--text-muted); font-size:11px;">Este departamento se agregará a los departamentos asignados a este supervisor.</small>
           </div>
+
           <div class="form-group">
-            <label class="field-label">Takt Time Estándar:</label>
-            <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s">
+            <label class="field-label">Operadores Asignados a este Departamento:</label>
+            <div id="newDeptOperatorsList" style="max-height:140px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FAFAFA; display:flex; flex-direction:column; gap:6px;">
+              <!-- Checkboxes de operadores inyectados por JS -->
+            </div>
+            <small style="color:var(--text-muted); font-size:11px;">Selecciona los operadores que trabajarán en las máquinas de este departamento.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre operador (ej. Gabriel Santos)">
+              <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / Puesto (ej. Bordadora 01)">
+            </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="field-label">Supervisor de Planta Responsable:</label>
-          <select id="newDeptSupervisor" class="custom-select">
-            <!-- Llenado dinámicamente con supervisores y admins -->
-          </select>
-          <small style="color:var(--text-muted); font-size:11px;">Este departamento se agregará a los departamentos asignados a este supervisor.</small>
-        </div>
-
-        <div class="form-group">
-          <label class="field-label">Operadores Asignados a este Departamento:</label>
-          <div id="newDeptOperatorsList" style="max-height:140px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FAFAFA; display:flex; flex-direction:column; gap:6px;">
-            <!-- Checkboxes de operadores inyectados por JS -->
-          </div>
-          <small style="color:var(--text-muted); font-size:11px;">Selecciona los operadores que trabajarán en las máquinas de este departamento.</small>
-        </div>
-
-        <div class="form-group">
-          <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre operador (ej. Gabriel Santos)">
-            <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / Puesto (ej. Bordadora 01)">
-          </div>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+        <div class="modal-footer">
           <button type="button" class="btn-secondary" id="btnCancelCreateDept">Cancelar</button>
           <button type="submit" class="btn-primary">Guardar Departamento</button>
         </div>
@@ -1835,7 +1942,10 @@
   <div class="modal-backdrop" id="modalCreateQualityArea">
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
-        <h3>🔍 Registrar Nueva Área / Parada de Control de Calidad</h3>
+        <div>
+          <h3>🔍 Registrar Nueva Área / Parada de Control de Calidad</h3>
+          <p class="modal-header-sub">Estación de inspección y filtros de defectos</p>
+        </div>
         <button class="modal-close" id="btnCloseCreateQualityModal">&times;</button>
       </div>
       <form id="formCreateQualityArea">
@@ -1872,7 +1982,7 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-medium);">
+        <div class="modal-footer">
           <button type="button" class="btn-secondary" id="btnCancelCreateQuality">Cancelar</button>
           <button type="submit" class="btn-primary" style="background:#D97706; border-color:#B45309;">
             🔍 Guardar Área de Calidad
@@ -1889,11 +1999,12 @@
     <div class="modal-box card-glass" style="max-width:440px;">
       <div class="modal-header">
         <h3 id="confirmModalTitle">Confirmar Acción</h3>
+        <button type="button" class="modal-close" id="confirmModalCloseBtn" aria-label="Cerrar">&times;</button>
       </div>
       <div class="modal-body">
         <p id="confirmModalMessage" style="color:var(--text-secondary); font-size:13.5px; line-height:1.5;"></p>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+      <div class="modal-footer">
         <button type="button" class="btn-secondary" id="confirmModalBtnCancel">Cancelar</button>
         <button type="button" class="btn-primary" id="confirmModalBtnOk">Confirmar</button>
       </div>
@@ -1904,11 +2015,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.10.0"></script>
-  <script src="js/andon.js?v=2.10.0"></script>
-  <script src="js/terminal.js?v=2.10.0"></script>
-  <script src="js/engineer.js?v=2.10.0"></script>
-  <script src="js/executive.js?v=2.10.0"></script>
-  <script src="js/config.js?v=2.10.0"></script>
+  <script src="js/app.js?v=2.12.0"></script>
+  <script src="js/andon.js?v=2.12.0"></script>
+  <script src="js/terminal.js?v=2.12.0"></script>
+  <script src="js/engineer.js?v=2.12.0"></script>
+  <script src="js/executive.js?v=2.12.0"></script>
+  <script src="js/config.js?v=2.12.0"></script>
 </body>
 </html>
