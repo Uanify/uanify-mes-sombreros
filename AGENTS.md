@@ -55,10 +55,24 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
   2. `index.html` (badge `.system-version-pill` en sidebar y `.footer-version-tag` en footer, y query params de assets CSS/JS `?v=X.Y.Z` para cache busting en GitHub Pages).
   3. `js/app.js` (propiedad `UanifyState.version`).
   4. `README.md` (badge de versión del encabezado y sección Changelog).
+  5. `SISTEMA_TOMBSTONE_MES.md` (encabezado del documento maestro y sección Historial de Versiones).
 
 ---
 
-## REGLA 0.4: Operación Consolidada en Turno Único & RBAC
+## REGLA 0.4: Documentación Continua y Mantenimiento de `README.md` y `SISTEMA_TOMBSTONE_MES.md`
+
+1. **Nombre Oficial del Software:** La plataforma se llama **Tombstone Hats MES** (o **Uanify MES Sombreros**).
+2. **Documento Maestro de Arquitectura y Reglas:** El archivo `SISTEMA_TOMBSTONE_MES.md` en la raíz del proyecto es la **fuente única de verdad** para conocer toda la arquitectura técnica, modelos de datos, reglas de negocio y operativas de planta.
+3. **Obligación de Actualización Continua:**
+   - Tras cualquier cambio relevante, integración de módulos o mejoras arquitectónicas, **evaluar y actualizar obligatoriamente `README.md` y `SISTEMA_TOMBSTONE_MES.md`** para reflejar:
+     - Nuevas características o especificaciones de UX añadidas.
+     - Cambios en el proceso de planta (departamentos, tiempos de ciclo, tamaños de lote y rampa).
+     - Modificaciones en la matriz RBAC de roles y permisos.
+     - Políticas operativas (horarios, turnos y Takt Time).
+
+---
+
+## REGLA 0.5: Operación Consolidada en Turno Único & RBAC
 
 1. **Régimen de Operación:** La planta opera formalmente en **Turno Único (07:00 a 15:30 hrs · Lunes a Viernes)**, con un receso/comida programado de 12:00 a 12:45 hrs.
    - Meta diaria del turno: **850 piezas/día**.
@@ -71,7 +85,7 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 ---
 
-## REGLA 0.5: Cero Fallos en Compilación y Despliegue (Build & Deployment Hygiene)
+## REGLA 0.6: Cero Fallos en Compilación y Despliegue (Build & Deployment Hygiene)
 
 - **Validación previa obligatoria:** Verificar que no existan errores de sintaxis, imports rotos ni inconsistencias de DOM antes de desplegar.
 - **Despliegue a Producción:** Tras confirmar los cambios, realizar commit y push a la rama `main` en `https://github.com/Uanify/uanify-mes-sombreros.git` y verificar con el subagente de navegación en `https://uanify.github.io/uanify-mes-sombreros/`.
