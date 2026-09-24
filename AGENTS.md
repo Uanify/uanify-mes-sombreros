@@ -49,26 +49,30 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 ## REGLA 0.3: Control de Versiones Automático (Version Bump Obligatorio)
 
-- Al completar cualquier conjunto relevante de cambios, nueva feature, corrección de bug o refactorización, **se debe incrementar el número de versión (SemVer)** de la aplicación (ej. `2.6.0` -> `2.7.0`).
+- Al completar cualquier conjunto relevante de cambios, nueva feature, corrección de bug o refactorización, **se debe incrementar el número de versión (SemVer)** de la aplicación (ej. `2.8.4` -> `2.9.0`).
 - La versión debe mantenerse estrictamente sincronizada en:
   1. `package.json` (campo `"version"`).
   2. `index.html` (badge `.system-version-pill` en sidebar y `.footer-version-tag` en footer, y query params de assets CSS/JS `?v=X.Y.Z` para cache busting en GitHub Pages).
   3. `js/app.js` (propiedad `UanifyState.version`).
   4. `README.md` (badge de versión del encabezado y sección Changelog).
   5. `SISTEMA_TOMBSTONE_MES.md` (encabezado del documento maestro y sección Historial de Versiones).
+  6. `docs/REQUERIMIENTOS_DEL_SISTEMA.md` (encabezado de versión y matriz de trazabilidad).
 
 ---
 
-## REGLA 0.4: Documentación Continua y Mantenimiento de `README.md` y `SISTEMA_TOMBSTONE_MES.md`
+## REGLA 0.4: Documentación Continua y Mantenimiento Obligatorio de Requerimientos
 
 1. **Nombre Oficial del Software:** La plataforma se llama **Tombstone Hats MES** (o **Uanify MES Sombreros**).
-2. **Documento Maestro de Arquitectura y Reglas:** El archivo `SISTEMA_TOMBSTONE_MES.md` en la raíz del proyecto es la **fuente única de verdad** para conocer toda la arquitectura técnica, modelos de datos, reglas de negocio y operativas de planta.
-3. **Obligación de Actualización Continua:**
-   - Tras cualquier cambio relevante, integración de módulos o mejoras arquitectónicas, **evaluar y actualizar obligatoriamente `README.md` y `SISTEMA_TOMBSTONE_MES.md`** para reflejar:
-     - Nuevas características o especificaciones de UX añadidas.
-     - Cambios en el proceso de planta (departamentos, tiempos de ciclo, tamaños de lote y rampa).
-     - Modificaciones en la matriz RBAC de roles y permisos.
-     - Políticas operativas (horarios, turnos y Takt Time).
+2. **Documento de Requerimientos de Software (SRS / PRD):** El archivo [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///C:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md) es el **catálogo oficial de requerimientos funcionales (`RF-XX`) y no funcionales (`RNF-XX`)** del sistema.
+3. **Documento Maestro de Arquitectura y Reglas:** El archivo [SISTEMA_TOMBSTONE_MES.md](file:///C:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/SISTEMA_TOMBSTONE_MES.md) en la raíz del proyecto es la **fuente única de verdad** para conocer toda la arquitectura técnica, modelos de datos, reglas de negocio y operativas de planta.
+4. **OBLIGACIÓN DE ACTUALIZACIÓN CONTINUA DE REQUERIMIENTOS (MANDATORIA):**
+   > [!CRITICAL]
+   > **Ante cualquier solicitud del usuario, cambio en la operativa, nueva característica o ajuste de diseño, ES OBLIGATORIO ACTUALIZAR:**
+   > 1. `docs/REQUERIMIENTOS_DEL_SISTEMA.md`: Registrar o actualizar el código de requerimiento (`RF-XX` / `RNF-XX`), descripción técnica, versión y estado en la matriz de trazabilidad.
+   > 2. `SISTEMA_TOMBSTONE_MES.md`: Reflejar la arquitectura, procesos y reglas actualizadas.
+   > 3. `README.md`: Documentar los cambios en el Changelog y actualizar links.
+   > 
+   > **Ninguna tarea se considerará concluida si no se ha sincronizado formalmente el documento de requerimientos.**
 
 ---
 

@@ -92,21 +92,22 @@ El sistema cuenta con un motor de permisos modulares persistente en memoria y co
 
 ```
 [Administrador (Edmundo)] ───► Acceso Total + Gestión de Usuarios & Permisos
-[Ingeniero (Carlos)]     ───► Tablero Andon + Consola Ingeniería + Dirección/COMPAC
-[Supervisor (Juan M.)]   ───► Tablero Andon + Terminal iPad (Lotes & QR) [Tabs Bloqueadas con Candado]
+[Ingeniero (Carlos)]     ───► Andon + Terminal + Consola Ingeniería + Rutas & Calidad
+[Supervisor (Juan M.)]   ───► Tablero Andon + Terminal de Planta (Lotes & QR) [Ocultamiento Estricto]
 ```
 
 ### Tabla de Usuarios Preconfigurados
 | Usuario ID | Nombre | Rol | Permisos por Defecto | Estado |
 |---|---|---|---|---|
 | `admin-1` | **Edmundo González** | `admin` (👑 Administrador) | `andon`, `terminal`, `engineer`, `executive`, `config` | Activo |
-| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (⚡ Ingeniero de Producción) | `andon`, `engineer`, `executive` | Activo |
+| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (⚡ Ingeniero de Procesos) | `andon`, `terminal`, `engineer`, `config` | Activo |
 | `sup-1` | **Juan Manuel Pérez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
+| `sup-2` | **Roberto Méndez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
 
 ### Comportamiento de Seguridad en UI:
-- Los botones de navegación de pestañas no autorizadas muestran un icono de candado (`🔒`) y un badge "Bloqueado por Rol".
-- Al intentar acceder a un módulo restringido, se muestra un banner de seguridad con el rol requerido y la instrucción de solicitar permisos al Administrador.
+- **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso según su perfil se ocultan completamente del menú de navegación (`display: none`). No se muestran iconos de candados (`🔒`) ni opciones deshabilitadas, ofreciendo una experiencia limpia y sin distracciones.
 - El Administrador puede abrir el modal `modalEditPermissions` para marcar/desmarcar módulos individualmente para cualquier usuario, o dar de alta nuevos supervisores con `modalCreateUser`.
+- El Ingeniero de Procesos cuenta con facultades para crear supervisores de planta, dar de alta filtros de calidad (`C-XX`) y modelar rutas de fabricación por modelo.
 
 ---
 
@@ -117,15 +118,21 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 1. **Pantalla Central Andon (Smart TV 50"):**
    - Instalada en la viga central de la nave entre prensas y rampa.
    - Proyecta continuamente el **Módulo 1: Tablero Andon Digital**.
-   - Visibilidad a 20 metros de distancia: semáforos verde/amarillo/rojo, piezas producidas vs meta del turno (850 pzas) y gráfico hora por hora.
-2. **Terminales Portátiles para Supervisores (iPad 10.2" / Android Rugged):**
-   - Funda industrial de uso rudo anticaídas.
+   - Visibilidad a 20 metros de distancia: semáforos verde/amarillo/rojo, piezas producidas vs meta semanal (4,250 pzas) y gráfico hora por hora.
+2. **Terminales Portátiles para Supervisores (Dispositivos Táctiles Industriales / Rugged):**
+   - Funda industrial de uso rudo anticaídas con touch targets ergonómicos (>= 44px).
    - Utilizadas por supervisores en **Rampa (D-05)** y **Almacén Pulmón (D-10)**.
-   - Escaneo mediante cámara del iPad o lector láser Bluetooth de código de barras/QR adherido a la tarjeta viajera.
+   - Escaneo directo mediante cámara web en vivo (`getUserMedia`) o lector láser de código de barras/QR adherido a la tarjeta viajera.
 3. **Cero Pedales Físicos:**
    - Se descartó la instalación de pedales o pulsadores cableados en máquinas para evitar tropiezos, paros por mantenimiento de cables y desbalanceo en puestos manuales.
 4. **Cero Alertas Sonoras:**
    - La planta de San Francisco del Rincón tiene ruido ambiente de vapor y motores. Las alertas sonoras generan fatiga auditiva innecesaria; el sistema emplea semáforos visuales de alto contraste.
+
+---
+
+## 📋 5.1 Catálogo Oficial de Requerimientos de Software (SRS / PRD)
+Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-01` a `RNF-12`) del sistema se encuentran catalogados y bajo control de versiones formal en el documento:
+- **Documento Oficial de Requerimientos:** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md)
 
 ---
 
