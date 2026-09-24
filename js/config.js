@@ -10,7 +10,7 @@ window.initConfigView = function() {
   const cfgTaktTime = document.getElementById('cfgTaktTime');
 
   function renderDepartmentsConfig() {
-    if (!tableBody || !UanifyState.stations) return;
+    if (!tableBody || !UanifyState || !UanifyState.stations) return;
 
     tableBody.innerHTML = UanifyState.stations.map((st, idx) => {
       const isQuality = st.id.startsWith('calidad');
@@ -23,7 +23,7 @@ window.initConfigView = function() {
           <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</strong></td>
           <td><strong>${st.name}</strong></td>
           <td><span class="badge-subtle">${isQuality ? 'Control de Calidad' : 'Proceso Productivo'}</span></td>
-          <td><span style="font-family:'JetBrains Mono';">${st.taktTime || 40} seg</span></td>
+          <td><span style="font-family:'JetBrains Mono';">${st.cycleTime || '35s'}</span></td>
           <td>${st.target || 850} pzas</td>
           <td>${st.operator}</td>
           <td><span class="badge-status" style="${badgeStyle}">Activo</span></td>
@@ -33,6 +33,12 @@ window.initConfigView = function() {
   }
 
   renderDepartmentsConfig();
+
+  if (typeof EventBus !== 'undefined') {
+    EventBus.on('tab-changed', (tab) => {
+      if (tab === 'config') renderDepartmentsConfig();
+    });
+  }
 
   if (btnSaveConfig) {
     btnSaveConfig.addEventListener('click', () => {
@@ -57,3 +63,10 @@ window.initConfigView = function() {
     });
   }
 };
+
+// Auto-inicializar independientemente del orden de carga de scripts
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => window.initConfigView());
+} else {
+  window.initConfigView();
+}
