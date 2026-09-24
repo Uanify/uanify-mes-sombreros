@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.8.1` | **Fecha de Actualización:** 23 de Septiembre de 2026  
+> **Versión Actual:** `v2.8.2` | **Fecha de Actualización:** 23 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -33,26 +33,34 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 - **Rampa de Fraccionamiento:** Al llegar a la rampa de ensamble, el lote madre de 60 se divide en **4 sublotes de 15 piezas** (ej. lote `49,633` se desglosa en sublotes `1`, `2`, `3` y `4`).
 - **Tarjeta Viajera Física con Código QR:** Cada torre de 15 piezas lleva adherida una tarjeta viajera protegida en mica transparente que viaja con el lote hasta empaque.
 
-### 2.1 Anatomía y Especificación Oficial de la Tarjeta Viajera (Evidencia Fotográfica de Planta)
-A partir de las tarjetas viajeras capturadas directamente en las líneas de ensamble de San Francisco del Rincón:
-1. **Porta-Gafete y Mica Protectora:** Funda plástica transparente con orificio superior reforzado para colgar de la torre de sombreros con cordel.
-2. **Sticker Redondo de Operador (Esquina Superior Izquierda):** Calcomanía azul rotulada con el nombre del operario responsable (ej. `JORGE`).
-3. **Encabezado de Ruta Departamental:** `TARJETA HIDRÁULICAS - ADORNO` (define el tramo del flujo entre estaciones).
-4. **Nombre del Modelo / Horma:** Tipografía destacada (ej. `CHAPARRAL`, `VIEJONON`, `JOHNSON LONA`, `SONORA`).
-5. **Orden de Producción (`O. PROD:`):** Folio numérico único (ej. `15068`, `15071`).
-6. **Logotipo Oficial Tombstone Hats:** Silueta de sombrero vaquero con la leyenda `*** CLASE ***`.
-7. **Calidad y Material:** `1,000X MASTER TELAR`.
-8. **Acabado:** `LAQUEADOS`.
-9. **Cuadrícula Técnica:**
-   - `FALDA:` Medida en centímetros o pulgadas (ej. `9.0 Cm` o `9 1/2`).
-   - `DOBLADO:` Sentido de planchado del ala (`ABAJO` o `ARRIBA`).
-   - `TALLA:` Talla craneal numérica (ej. `# 55`, `# 56`).
-10. **Cantidad de Piezas:** `15 Pzas`.
-11. **Recuadro Inferior Izquierdo (LOTE):** Número de lote madre (ej. `LOTE: 49,386`, `LOTE: 49,633`).
-12. **REGLA CRUCIAL DEL RECUADRO INFERIOR DERECHO (Distinción Lote vs Sublote):**
-    - **Tarjeta de Lote Madre:** **NO TIENE NÚMERO** abajo a la derecha (el recuadro permanece vacío o sin numeración).
-    - **Tarjeta de Sublote:** **TIENE EL NÚMERO DE SUBLOTE** correspondiente de ese lote madre (ej. número `3` para el tercer sublote).
-    - **Digitalización QR:** El lector web y cámara decodifican la tarjeta viajera identificando automáticamente si es lote madre o el sublote específico.
+### 2.1 Anatomía y Especificación Oficial de las Tarjetas Viajeras (Evidencia Fotográfica de Planta)
+A partir de las tarjetas viajeras capturadas directamente en las líneas de ensamble de San Francisco del Rincón, se identifican **dos familias oficiales de tarjetas viajeras según la fase del flujo**:
+
+#### Familia 1: `TARJETA PRENSAS - PATIO` (Color Azul Celeste · Lote Completo 60 Piezas)
+- **Ubicación en Flujo:** Proceso de prensas hidráulicas hacia patio exterior de secado y laqueado.
+- **Cantidad:** **`60 Pzas`** (Lote Madre intacto sin fraccionar).
+- **Color de Tarjeta:** **Azul Celeste** (`#E0F2FE`).
+- **Sticker de Operador:** Calcomanía circular fucsia/roja en esquina superior izquierda con el nombre de la operadora (ej. **`MELANY`**).
+- **Rótulo Vertical:** Texto impreso vertical en el margen derecho: **`M A G N U M`**, complementado con anotación manuscrita a pluma (ej. **`D-120`**).
+- **Especificaciones Técnicas (Ejemplo Lote 49,842):**
+  - `O. PROD:` 15877
+  - `CLASE:` 1,000X MASTER TELAR
+  - `ACABADO:` LAQUEADOS
+  - `FALDA:` 7 1/2 | `DOBLADO:` ARRIBA | `TALLA:` # 52 (Línea juvenil)
+  - `LOTE:` 49,842
+- **Esquina Inferior Derecha:** **SIN NÚMERO (VACÍO)**, al tratarse de la tarjeta del lote madre completo.
+
+#### Familia 2: `TARJETA HIDRAULICAS - ADORNO` (Color Amarillo / Pistache · Sublotes 15 Piezas)
+- **Ubicación en Flujo:** Almacén alineado en rampa hacia área de ribeteado de tafilete y montaje de toquilla.
+- **Cantidad:** **`15 Pzas`** por torre fraccionada.
+- **Color de Tarjeta:** **Amarillo Suave / Verde Pistache** (`#FDFCE9`).
+- **Sticker de Operador:** Calcomanía circular azul en esquina superior izquierda con el nombre del operario (ej. **`JORGE`**).
+- **Especificaciones Técnicas (Ejemplos Reales):**
+  - **Lote 49,386 (Lote Madre Chaparral):** O. Prod 15068, Falda 9.0 Cm, Doblado Abajo, Talla # 56, 15 Pzas. **Esquina inferior derecha sin número**.
+  - **Lote 49,633 (Sublote 3 Viejonón):** O. Prod 15071, Falda 9 1/2, Doblado Arriba, Talla # 55, 15 Pzas, Operador Jorge. **Esquina inferior derecha con el número `3`**.
+- **REGLA CRUCIAL DEL RECUADRO INFERIOR DERECHO:**
+  - **Tarjeta de Lote Madre:** **NO TIENE NÚMERO** abajo a la derecha (el recuadro permanece vacío o sin numeración).
+  - **Tarjeta de Sublote:** **TIENE EL NÚMERO DE SUBLOTE** correspondiente de ese lote madre (ej. número `3` para el tercer sublote).
 
 ### Los 14 Departamentos y Almacenes Modelados
 | Código | Departamento / Estación | Tipo | Takt Time Std | Capacidad Turno Único | Supervisor / Responsable |
@@ -174,12 +182,17 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.1`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.8.2`.
 
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
 
+- **`v2.8.2` (2026-09-23):**
+  - **Tarjeta Celeste `PRENSAS - PATIO` (Lote Completo 60 Piezas):** Digitalización de la tarjeta de lote madre de la foto (`49,842`, O. Prod `15877`, Falda `7 1/2`, Doblado `ARRIBA`, Talla `# 52`, Modelo `MAGNUM` rotulado verticalmente con nota `D-120`), operadora con sticker circular fucsia/rojo (`MELANY`) y cantidad completa de **60 Piezas**.
+  - **Confirmación de la Regla de Lote vs. Sublote:**
+    - Ambas tarjetas de Lote Madre (`49,386` Chaparral y `49,842` Magnum) **NO tienen número** abajo a la derecha.
+    - La tarjeta de Sublote (`49,633-3` Viejonón) **SÍ tiene el número `3`** abajo a la derecha.
 - **`v2.8.1` (2026-09-23):**
   - **Réplica Física de Tarjeta Viajera (Evidencia Fotográfica de Planta):** Implementación de la vista idéntica de la tarjeta con mica protectora, orificio para cordel, sticker de operador (`JORGE`), ruta departamental `TARJETA HIDRÁULICAS - ADORNO`, lote y especificaciones (`FALDA: 9.0 Cm` / `9 1/2`, `DOBLADO: ABAJO` / `ARRIBA`).
   - **Regla Visual de Lote vs Sublote:**

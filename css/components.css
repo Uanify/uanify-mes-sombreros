@@ -1858,3 +1858,61 @@
   letter-spacing: -0.5px;
 }
 
+/* Variantes de Color por Ruta Departamental */
+.traveler-paper-tag.color-blue {
+  background: #E0F2FE;
+  border-color: #7DD3FC;
+  color: #03456C;
+  box-shadow: inset 0 0 12px rgba(2, 132, 199, 0.08);
+}
+
+.traveler-paper-tag.color-blue .traveler-route-title {
+  color: #0369A1;
+  border-bottom-color: #BAE6FD;
+}
+
+.traveler-paper-tag.color-blue .traveler-model-name {
+  color: #0C4A6E;
+}
+
+.traveler-paper-tag.color-blue .traveler-specs-grid {
+  border-color: #BAE6FD;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.traveler-paper-tag.color-blue .traveler-lote-box {
+  background: #03456C;
+}
+
+.traveler-operator-sticker.sticker-pink {
+  background: #E11D48;
+  color: #FFFFFF;
+  border-color: #FDA4AF;
+}
+
+.traveler-vertical-watermark {
+  position: absolute;
+  right: 8px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 900;
+  font-size: 11px;
+  color: #0284C7;
+  letter-spacing: 2.5px;
+  opacity: 0.85;
+  user-select: none;
+}
+
+.traveler-pen-note {
+  font-family: 'Outfit', cursive, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1E3A8A;
+  margin-top: 12px;
+  transform: rotate(90deg);
+  display: block;
+}
+
+

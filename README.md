@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.1-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.8.2-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -56,6 +56,12 @@ Este prototipo MES resuelve el dolor operativo central identificado en el piso:
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### [2.8.2] - 2026-09-23
+- **Tarjeta Celeste de Lote Completo (Prensas - Patio · 60 Pzas):** Modelado de la tarjeta viajera de la fase de prensado hacia patio exterior (Lote `49,842`, O. Prod `15877`, Falda `7 1/2`, Doblado `ARRIBA`, Talla `# 52`, Modelo `MAGNUM` rotulado verticalmente con nota `D-120`), operadora con sticker fucsia/rojo (`MELANY`) y cantidad completa de **60 Piezas**.
+- **Confirmación Visual de Lote vs. Sublote:**
+  - Ambas tarjetas de Lote Madre (`49,386` Chaparral y `49,842` Magnum) **NO tienen número** abajo a la derecha.
+  - La tarjeta de Sublote (`49,633-3` Viejonón) **SÍ tiene el número `3`** abajo a la derecha.
 
 ### [2.8.1] - 2026-09-23
 - **Réplica Física de Tarjeta Viajera (Validada con Fotos de Planta):** Implementación de la vista idéntica de la tarjeta con mica protectora, orificio para cordel, sticker de operador (`JORGE`), ruta departamental `TARJETA HIDRÁULICAS - ADORNO`, lote y especificaciones (`FALDA: 9.0 Cm` / `9 1/2`, `DOBLADO: ABAJO` / `ARRIBA`).

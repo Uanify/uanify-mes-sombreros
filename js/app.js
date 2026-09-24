@@ -94,7 +94,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.8.1',
+  version: '2.8.2',
   activeTab: 'andon',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   
@@ -227,6 +227,29 @@ const UanifyState = {
       ]
     },
     {
+      lotId: '49,842',
+      route: 'TARJETA PRENSAS - PATIO',
+      model: 'MAGNUM',
+      oProd: '15877',
+      clase: '1,000X MASTER TELAR',
+      finish: 'LAQUEADOS',
+      brim: '7 1/2',
+      bend: 'ARRIBA',
+      size: '52',
+      pieces: 60,
+      totalPieces: 60,
+      cardColor: 'blue',
+      verticalText: 'M A G N U M',
+      penNote: 'D-120',
+      currentStation: 'Patio Exterior de Secado',
+      operator: 'Melany',
+      operatorSticker: 'MELANY',
+      operatorColor: 'pink',
+      status: 'Lote Madre de 60 Pzas en Patio',
+      isSubdivided: false,
+      sublots: []
+    },
+    {
       lotId: '49,386',
       route: 'TARJETA HIDRAULICAS - ADORNO',
       model: 'CHAPARRAL',
@@ -238,6 +261,7 @@ const UanifyState = {
       size: '56',
       pieces: 15,
       totalPieces: 60,
+      cardColor: 'yellow',
       currentStation: 'Prensas Hidráulicas Michelagnoli',
       operator: 'Pedro Morales',
       operatorSticker: null,
