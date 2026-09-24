@@ -259,7 +259,7 @@
                   <span class="model-badge-tag">LOTE MADRE (60 PIEZAS)</span>
                   <span style="font-size:11px; color:var(--color-amber); font-weight:700;">Lote 1094 · Horma: Roper</span>
                 </div>
-                <label class="field-label" style="margin-top:8px;">Modelo en Fabricación:</label>
+                <label class="field-label">Modelo en Fabricación:</label>
                 <select id="tombstoneModelSelect" class="custom-select">
                   <option value="0">1000X Master Telar Denver</option>
                   <option value="1">1000X Master Telar El Viejonón</option>
@@ -484,13 +484,13 @@
 
             <!-- Selector y Buscador de Lote -->
             <div style="display:grid; grid-template-columns: 2fr 1fr; gap:14px; margin-bottom:18px; align-items:flex-end;">
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label" style="font-weight:700;">Seleccionar Lote / Tarjeta Viajera a Rastrear:</label>
-                <select id="trackerLotSelect" class="custom-select" style="font-weight:700; font-family:var(--font-mono); font-size:13.5px; padding:10px 14px;">
+              <div class="form-group">
+                <label class="field-label">Seleccionar Lote / Tarjeta Viajera a Rastrear:</label>
+                <select id="trackerLotSelect" class="custom-select">
                   <!-- Llenado dinámicamente por JS -->
                 </select>
               </div>
-              <div class="form-group" style="margin-bottom:0;">
+              <div class="form-group">
                 <label class="field-label">Buscar por Folio / No. Lote:</label>
                 <input type="text" id="trackerLotSearch" class="form-input" placeholder="Ej. 49633, Chaparral, 15071..." style="padding:9px 12px;">
               </div>
@@ -590,10 +590,10 @@
             </div>
 
             <!-- Filtros de Almacén Intermedio -->
-            <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle);">
+            <div class="filter-bar">
               <div style="display:flex; align-items:center; gap:8px;">
-                <label class="field-label" style="margin-bottom:0; font-size:12px;">Filtrar:</label>
-                <select id="bufferFilterScope" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+                <label class="field-label">Filtrar:</label>
+                <select id="bufferFilterScope" class="custom-select select-sm">
                   <option value="all">Ver Todos los Almacenes de Salida</option>
                   <option value="my-depts">Solo Lotes Listos para Mis Departamentos</option>
                   <option value="D-01">Almacén Salida D-01 Corte</option>
@@ -777,8 +777,8 @@
               <input type="text" id="operatorSearchInput" class="form-input" placeholder="🔍 Buscar por nombre, número de nómina o máquina..." style="padding-left:12px;">
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <label class="field-label" style="margin-bottom:0; font-size:12px;">Departamento:</label>
-              <select id="operatorDeptFilter" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+              <label class="field-label">Departamento:</label>
+              <select id="operatorDeptFilter" class="custom-select select-sm">
                 <option value="all">Todos los Departamentos</option>
                 <option value="D-01">D-01 Corte de Telar</option>
                 <option value="D-02">D-02 Englopado y Camas</option>
@@ -790,8 +790,8 @@
               </select>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <label class="field-label" style="margin-bottom:0; font-size:12px;">Estatus:</label>
-              <select id="operatorStatusFilter" class="custom-select" style="font-size:12px; padding:6px 10px; width:auto;">
+              <label class="field-label">Estatus:</label>
+              <select id="operatorStatusFilter" class="custom-select select-sm">
                 <option value="all">Todos los Estatus</option>
                 <option value="Activo">Activos</option>
                 <option value="Incapacidad">Incapacidad</option>
@@ -1427,8 +1427,8 @@
 
             <div class="sequence-builder-card" style="margin-top:16px;">
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px; align-items:flex-end;">
-                <div class="form-group" style="margin-bottom:0;">
-                  <label class="field-label" style="font-weight:700;">Modelo / Familia de Sombrero:</label>
+                <div class="form-group">
+                  <label class="field-label">Modelo / Familia de Sombrero:</label>
                   <select id="cfgRouteModelSelect" class="custom-select" style="font-weight:700; font-size:13.5px;">
                     <!-- Llenado dinámicamente por JS -->
                   </select>
@@ -1546,7 +1546,7 @@
         <h3>👤 Crear Nuevo Usuario de Planta</h3>
         <button class="modal-close" id="btnCloseCreateUserModal">&times;</button>
       </div>
-      <form id="formCreateUser" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+      <form id="formCreateUser" class="modal-body">
         <div class="form-group">
           <label class="field-label">Nombre Completo:</label>
           <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
@@ -1619,7 +1619,7 @@
         </div>
         <button class="modal-close" id="btnCloseEditPermsModal">&times;</button>
       </div>
-      <form id="formEditPermissions" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+      <form id="formEditPermissions" class="modal-body">
         <input type="hidden" id="editUserId">
         <p style="font-size:12.5px; color:var(--text-secondary);">Selecciona los módulos a los que este usuario tendrá autorización de ingreso:</p>
         <div class="permissions-checklist">
@@ -1669,7 +1669,7 @@
         <h3>🎩 Registrar Nueva Horma / Molde de Sombrero</h3>
         <button class="modal-close" id="btnCloseRegisterMoldModal">&times;</button>
       </div>
-      <form id="formRegisterMold" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+      <form id="formRegisterMold" class="modal-body">
         <div class="form-group">
           <label class="field-label">Nombre del Modelo / Horma:</label>
           <input type="text" id="newMoldName" class="form-input" placeholder="Ej. Laredo F10 o Rodeo Master" required>
@@ -1717,7 +1717,7 @@
         <h3>👷 Registrar Operador de Planta (Mano de Obra)</h3>
         <button class="modal-close" id="btnCloseRegisterOperatorModal">&times;</button>
       </div>
-      <form id="formRegisterOperator" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+      <form id="formRegisterOperator" class="modal-body">
         <p style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">
           Los operadores son registrados para asignación a puestos y máquinas. No son usuarios que ingresen a la plataforma.
         </p>
@@ -1765,7 +1765,7 @@
         <h3>🏢 Dar de Alta Nuevo Departamento</h3>
         <button class="modal-close" id="btnCloseCreateDeptModal">&times;</button>
       </div>
-      <form id="formCreateDepartment" class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+      <form id="formCreateDepartment" class="modal-body">
         <div style="display:grid; grid-template-columns: 130px 1fr; gap:12px;">
           <div class="form-group">
             <label class="field-label">Código Depto:</label>
@@ -1839,25 +1839,25 @@
         <button class="modal-close" id="btnCloseCreateQualityModal">&times;</button>
       </div>
       <form id="formCreateQualityArea">
-        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="modal-body">
           <div style="display:grid; grid-template-columns: 120px 1fr; gap:12px;">
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group">
               <label class="field-label">Código (C-XX):</label>
               <input type="text" id="newQualityCode" class="form-input" value="C-04" required style="font-weight:700; font-family:var(--font-mono);">
             </div>
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group">
               <label class="field-label">Nombre del Filtro de Calidad:</label>
               <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad de Falda & Borde" required>
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:0;">
+          <div class="form-group">
             <label class="field-label">Criterios de Inspección / Tolerancias Tombstone:</label>
             <textarea id="newQualityDesc" class="form-input" rows="2" placeholder="Especificar qué se evalúa: alineación de copa, curvatura de falda, costura, planchado..."></textarea>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group">
               <label class="field-label">Inspector Responsable:</label>
               <select id="newQualityInspector" class="custom-select">
                 <option value="Inspectora de Calidad (Turno)">Inspectora de Calidad (Turno)</option>
@@ -1866,7 +1866,7 @@
                 <option value="Roberto Méndez">Roberto Méndez (Supervisor)</option>
               </select>
             </div>
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group">
               <label class="field-label">Tiempo de Ciclo / Inspección:</label>
               <input type="text" id="newQualityCycleTime" class="form-input" value="18s" placeholder="ej. 18s">
             </div>
@@ -1890,7 +1890,7 @@
       <div class="modal-header">
         <h3 id="confirmModalTitle">Confirmar Acción</h3>
       </div>
-      <div class="modal-body" style="padding:14px 0;">
+      <div class="modal-body">
         <p id="confirmModalMessage" style="color:var(--text-secondary); font-size:13.5px; line-height:1.5;"></p>
       </div>
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">

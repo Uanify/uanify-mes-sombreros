@@ -365,32 +365,292 @@
   text-transform: uppercase;
 }
 
+/* ── SISTEMA DE DISEÑO DE FORMULARIOS (ESTANDARIZADO) ──────────────────────────
+   REGLA: Todo input, select, textarea y date/time picker comparte las mismas
+   dimensiones, colores, border-radius y focus ring. Prohibido usar style="" inline
+   para sobreescribir font-size, padding o colores de estos controles.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Tokens locales de formulario (NO duplicar en styles.css) */
+:root {
+  --form-height: 42px;              /* Altura mínima táctil ergonómica */
+  --form-radius: 10px;
+  --form-border: var(--border-medium);
+  --form-border-focus: var(--color-brand);
+  --form-shadow-focus: 0 0 0 3px rgba(139, 94, 60, 0.14);
+  --form-font-size: 13px;
+  --form-font-weight: 500;
+  --form-bg: #FFFFFF;
+  --form-bg-disabled: #F8FAFC;
+  --form-color-disabled: var(--text-muted);
+}
+
 .field-label {
   font-size: 11.5px;
   font-weight: 700;
   color: var(--text-secondary);
   display: block;
   margin-bottom: 5px;
+  letter-spacing: 0.1px;
+  line-height: 1.3;
 }
 
-.custom-select {
+.field-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.form-group-row .form-group {
+  flex: 1;
+}
+
+/* ── BASE: todos los controles de formulario comparten estos estilos ── */
+.form-input,
+.custom-select,
+input[type="time"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="search"],
+textarea {
   width: 100%;
-  padding: 9px 12px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
+  min-height: var(--form-height);
+  padding: 0 13px;
+  background: var(--form-bg);
+  border: 1.5px solid var(--form-border);
+  border-radius: var(--form-radius);
   font-family: var(--font-main);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--form-font-size);
+  font-weight: var(--form-font-weight);
   color: var(--text-primary);
   outline: none;
-  cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  line-height: 1.4;
 }
 
-.custom-select:focus {
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.12);
+textarea {
+  min-height: 88px;
+  padding: 10px 13px;
+  resize: vertical;
+}
+
+/* Placeholder */
+.form-input::placeholder,
+input[type="text"]::placeholder,
+input[type="number"]::placeholder,
+input[type="email"]::placeholder,
+input[type="search"]::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+  opacity: 1;
+}
+
+/* ── FOCUS STATE (idéntico en todos los controles) ── */
+.form-input:focus,
+.custom-select:focus,
+input[type="time"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="search"]:focus,
+textarea:focus {
+  border-color: var(--form-border-focus);
+  box-shadow: var(--form-shadow-focus);
+  background: #FFFCF9;
+}
+
+/* ── DISABLED STATE ── */
+.form-input:disabled,
+.custom-select:disabled,
+input:disabled,
+textarea:disabled {
+  background: var(--form-bg-disabled);
+  color: var(--form-color-disabled);
+  cursor: not-allowed;
+  border-color: var(--border-subtle);
+}
+
+/* ── SELECT — flecha SVG personalizada ── */
+.custom-select,
+select.form-input {
+  cursor: pointer !important;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+.custom-select:focus,
+select.form-input:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238B5E3C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+/* ── DATE / TIME — icono de reloj/calendario en brand color ── */
+input[type="time"],
+input[type="date"],
+input[type="datetime-local"] {
+  padding: 0 13px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+  cursor: pointer !important;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+  filter: invert(40%) sepia(40%) saturate(600%) hue-rotate(10deg);
+  padding: 0;
+  margin: 0 2px 0 4px;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ── NUMBER — ocultar spinners nativos ── */
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── READONLY ── */
+.form-input[readonly],
+input[readonly] {
+  background: var(--bg-core);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+/* ── CLASES DE MODIFICADOR DE TAMAÑO para selects de filtro ── */
+.custom-select.select-sm,
+.form-input.input-sm {
+  min-height: 34px;
+  font-size: 12px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.custom-select.select-sm {
+  padding-right: 30px;
+  background-size: 13px;
+  background-position: right 8px center;
+}
+
+/* ── INPUT CON ICONO A LA IZQUIERDA ── */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon input {
+  padding-left: 38px;
+}
+
+/* ── ESTADO DE VALIDACIÓN ── */
+.form-input.is-invalid,
+.custom-select.is-invalid,
+input.is-invalid {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
+}
+
+.form-input.is-valid,
+.custom-select.is-valid,
+input.is-valid {
+  border-color: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+}
+
+.field-error {
+  font-size: 11px;
+  color: var(--color-red);
+  margin-top: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── FILTER BAR (reemplaza los style="" inline en filtros) ── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+
+.filter-bar label.field-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.filter-bar .custom-select,
+.filter-bar .form-input {
+  min-height: 34px;
+  font-size: 12px;
+  padding: 0 10px;
+  border-radius: 8px;
+  width: auto;
+  min-width: 120px;
+  padding-right: 30px;
+  background-size: 13px;
+  background-position: right 8px center;
 }
 
 .model-sku {
@@ -1133,87 +1393,144 @@
   color: var(--text-primary);
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
 .form-input {
-  padding: 8px 12px;
-  border: 1px solid var(--border-medium);
-  border-radius: 6px;
-  font-family: var(--font-main);
-  font-size: 13px;
-  color: var(--text-primary);
+  /* Hereda de la regla base universal arriba */
+  /* Los overrides específicos van en esta clase únicamente si son necesarios */
 }
 
 .form-input:focus {
-  outline: none;
-  border-color: var(--color-brand);
+  /* Focus state definido en la regla base universal */
 }
 
-/* 8. GENERAL BUTTONS */
-.btn-primary {
-  background: var(--color-brand);
-  color: #FFFFFF;
-  border: 1px solid var(--color-brand);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: var(--font-main);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+/* 8. SISTEMA DE BOTONES ESTANDARIZADO ──────────────────────────────────────
+   REGLA: btn-primary, btn-secondary y btn-danger comparten la misma altura
+   táctil (min-height: 40px), border-radius 10px y transiciones.
+   PROHIBIDO sobreescribir con style="" inline el tamaño, padding o color.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* Base compartida de botones */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  letter-spacing: 0.1px;
+}
+
+.btn-primary {
+  background: var(--color-brand);
+  color: #FFFFFF;
+  border-color: var(--color-brand);
 }
 
 .btn-primary:hover {
   background: var(--color-brand-dark);
   border-color: var(--color-brand-dark);
-  box-shadow: 0 2px 6px rgba(139, 94, 60, 0.2);
+  box-shadow: 0 4px 12px rgba(139, 94, 60, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .btn-secondary {
   background: #FFFFFF;
   color: var(--text-secondary);
-  border: 1px solid var(--border-medium);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: var(--font-main);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  border-color: var(--border-medium);
 }
 
 .btn-secondary:hover {
   background: var(--bg-core);
   color: var(--text-primary);
-  border-color: var(--border-strong);
+  border-color: var(--border-medium);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
 }
 
-/* 9. MODALS */
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-danger {
+  background: #FFFFFF;
+  color: var(--color-red);
+  border-color: var(--color-red-border);
+}
+
+.btn-danger:hover {
+  background: var(--color-red-bg);
+  border-color: var(--color-red);
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Tamaños de modificador */
+.btn-sm {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.btn-lg {
+  min-height: 48px;
+  padding: 0 24px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.btn-icon.btn-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+/* 9. SISTEMA DE MODALES ESTANDARIZADO ──────────────────────────────────────
+   REGLA: Todos los modales usan .modal-backdrop + .modal-box + .modal-header
+   + .modal-body + .modal-footer. Prohibido usar style="" inline para
+   padding o display en estos contenedores.
+   ─────────────────────────────────────────────────────────────────────── */
+
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-backdrop.active {
@@ -1226,21 +1543,26 @@
   border-radius: 16px;
   width: 100%;
   max-width: 520px;
-  padding: 24px;
-  box-shadow: var(--shadow-modal);
-  animation: modalEnter 0.2s ease-out;
+  box-shadow: 0 24px 48px -12px rgba(0,0,0,0.25), 0 8px 16px -4px rgba(0,0,0,0.08);
+  animation: modalEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
 }
 
 @keyframes modalEnter {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
@@ -1248,19 +1570,59 @@
   font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.modal-header .modal-header-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.modal-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  background: #FAFAFA;
+  border-radius: 0 0 16px 16px;
 }
 
 .modal-close {
   background: transparent;
-  border: none;
-  font-size: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   color: var(--text-muted);
-  cursor: pointer;
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
   line-height: 1;
 }
 
 .modal-close:hover {
+  background: var(--bg-core);
   color: var(--text-primary);
+  border-color: var(--border-medium);
 }
 
 .scrap-options, .stop-options {

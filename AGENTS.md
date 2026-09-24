@@ -205,3 +205,128 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 4. **Facultad de Configuración para Ingeniería y Dirección:** La creación de áreas de calidad (`C-XX`) y la edición de las secuencias de rutas de fabricación son facultades exclusivas de los roles **Ingeniero** y **Administrador**.
 
 
+
+---
+
+## REGLA 0.19: Sistema Unificado de Componentes de Formulario (MANDATORIA)
+
+**Todo control de formulario - input, select, textarea, input[type=time], input[type=date], input[type=number] - debe usar SIEMPRE las clases del sistema de diseno estandarizado en css/components.css. Queda estrictamente prohibido usar atributos style="" inline para sobreescribir tamano, padding, font-size, border o color de estos controles.**
+
+### 1. Tokens de Formulario
+- --form-height: 42px (altura minima tactil ergonomica)
+- --form-radius: 10px (border-radius uniforme)
+- --form-border / --form-border-focus
+- --form-shadow-focus (ring brand rgba(139, 94, 60, 0.14))
+
+### 2. Tabla de Clases Obligatorias
+
+| Elemento | Clase Obligatoria | Prohibido inline |
+|---|---|---|
+| Texto / Email / Busqueda | .form-input | style="padding:..." |
+| Select / Combobox | .custom-select | style="font-size:..." |
+| Input de hora | input[type="time"] + .form-input | style inline |
+| Input de fecha | input[type="date"] + .form-input | style inline |
+| Numero | input[type="number"] + .form-input | Spinners nativos visibles |
+| Textarea | textarea.form-input | height fijo inline |
+| Label | .field-label | Spans/p sin clase |
+| Hint / ayuda | .field-hint | Texto gris inline |
+| Grupo de campo | .form-group | Divs flotantes sin clase |
+
+### 3. Select / Combobox
+- Siempre usar .custom-select - lleva flecha SVG automatica en brand color al focus.
+- Para filtros y barras de busqueda, usar .custom-select.select-sm (34px, 12px font).
+- PROHIBIDO: style="font-size:12px; padding:6px 10px;" o similar.
+
+### 4. Date/Time Pickers
+- Usar input[type="time"], input[type="date"] o input[type="datetime-local"] con .form-input.
+- El icono nativo se colorea automaticamente con brand color via ::-webkit-calendar-picker-indicator.
+- PROHIBIDO usar librerias de datepicker externas sin aprobacion de Andres.
+
+### 5. Filter Bars
+- Usar siempre .filter-bar como contenedor para agrupar filtros de busqueda.
+- Los .custom-select dentro de .filter-bar adoptan tamano compacto automaticamente.
+- PROHIBIDO: style="display:flex; gap:12px; background:#F8FAFC; ...".
+
+### 6. Estados de Validacion
+- Invalido: clase .is-invalid en el control (borde y ring rojo)
+- Valido: clase .is-valid (borde y ring verde)
+- Mensaje de error: elemento .field-error debajo del control
+
+---
+
+## REGLA 0.20: Sistema Unificado de Modales (MANDATORIA)
+
+**Todos los modales usan la estructura de 4 partes obligatoria. Prohibido usar style="" en .modal-header, .modal-body o .modal-footer.**
+
+Estructura obligatoria:
+.modal-backdrop > .modal-box > .modal-header + .modal-body (o form.modal-body) + .modal-footer
+
+Reglas clave:
+1. max-width por defecto: 520px. Solo se permite sobreescribir en .modal-box con style="max-width:640px".
+2. Activar/desactivar: classList.add/remove('active') en .modal-backdrop.
+3. Para confirmaciones simples de 1-2 lineas usar UanifyUI.confirm(). No abrir modal completo.
+4. Footer: Cancelar a la izquierda (.btn-secondary), accion principal a la derecha (.btn-primary).
+5. modal-body es scrollable, modal-header y modal-footer son fijos (flex-shrink: 0).
+
+---
+
+## REGLA 0.21: Sistema Unificado de Botones (MANDATORIA)
+
+**Todos los botones usan las clases estandar. Prohibido definir padding, border-radius, font-size o background-color con style="" inline.**
+
+| Clase Base | Uso | Modificadores |
+|---|---|---|
+| btn-primary | Accion principal, confirmacion | btn-sm, btn-lg, btn-full, btn-icon |
+| btn-secondary | Cancelar, accion secundaria | btn-sm, btn-lg, btn-full, btn-icon |
+| btn-danger | Eliminar, accion destructiva | btn-sm, btn-lg, btn-full, btn-icon |
+
+---
+
+## REGLA 0.22: Sistema Unificado de Notificaciones (MANDATORIA)
+
+**Toda notificacion, alerta o feedback usa UanifyUI. Prohibido alert(), confirm(), prompt() nativos.**
+
+- UanifyUI.toast('Mensaje', 'success'|'error'|'warning'|'info', 'Titulo');
+- UanifyUI.confirm('Titulo', 'Descripcion', onConfirm, 'Si confirmar', 'Cancelar');
+
+Reglas:
+1. Maximo 1 toast por accion del usuario.
+2. Tipo correcto: success (completado), error (fallo bloqueante), warning (no bloqueante), info (contextual).
+3. Titulos concisos (2-4 palabras en espanol).
+
+---
+
+## REGLA 0.23: Prohibicion de style="" Inline para Componentes Sistematizados
+
+Los siguientes componentes tienen CSS completamente sistematizado. El uso de style="" inline sobre sus propiedades es una violacion de codigo:
+
+| Componente | Propiedades PROHIBIDAS inline |
+|---|---|
+| .form-input, .custom-select, input[type=*] | font-size, padding, border, border-radius, color, width |
+| .btn-primary/secondary/danger | padding, font-size, background, border-radius, color |
+| .modal-backdrop, .modal-box | padding (solo max-width en .modal-box permitido) |
+| .modal-header, .modal-body, .modal-footer | display, flex-direction, gap, padding, justify-content |
+| .field-label | font-size, font-weight, margin-bottom |
+
+Excepciones permitidas con style="":
+- display: none / display: flex para mostrar/ocultar desde JS dinamicamente.
+- max-width en .modal-box para variantes de modal ancho.
+- Propiedades de posicion en overlays y animaciones unicas.
+
+---
+
+## REGLA 0.24: Consistencia de Estructura de Vistas
+
+1. Encabezado de vista: Toda vista usa .view-hero-bar para titulo + subtitulo + KPI banner.
+2. Grids responsivos: grid-template-columns: repeat(auto-fill, minmax(Xpx, 1fr)) sin breakpoints manuales.
+3. Sub-pestanas: .sub-nav-tabs > .sub-tab-btn[data-subtab] activa .sub-tab-content[id].
+4. Prohibido scroll infinito vertical: encapsular tablas en contenedores scrollables .data-table-wrapper.
+
+---
+
+## REGLA 0.25: Integridad de Datos en localStorage
+
+1. Prefijo estandar: Todas las claves usan uanify_ (ej. uanify_logged_user, uanify_shift_schedule).
+2. try/catch obligatorio: Todo acceso a localStorage o sessionStorage debe estar protegido.
+3. Prohibido: Almacenar contrasenas, tokens de API o datos sensibles en localStorage.
+4. Validacion de esquema: Verificar que la estructura es valida antes de usar datos almacenados.
