@@ -70,6 +70,7 @@ Actualmente el flujo de producción de Tombstone Hats opera con:
 | **Asignación de Operarios por Fracción** | Vincula el lote/sublote al número de empleado que lo procesó para control de calidad y posterior cálculo de destajo. |
 | **Tablero Andon TV en Nave Central** | Pantalla de 50" que muestra el avance hora por hora, semáforos por estación y acumulación de cuellos de botella. |
 | **Registro de Segundas (Venta de Viernes)** | Clasifica piezas con defectos estéticos leves como "Producto Regular / Segunda" para venta de saldo los viernes. |
+| **Control de Acceso por Roles (RBAC)** | Perfiles diferenciados: **Admin** (acceso total y gestión de usuarios), **Ingeniero** (OEE, matriz de materiales, hormas y tafiletes) y **Supervisor** (estación iPad en almacenes intermedios para QR y fracciones). |
 
 ---
 

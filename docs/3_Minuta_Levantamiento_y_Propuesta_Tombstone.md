@@ -150,6 +150,17 @@ Sobre la ingeniera de COMPAC (audio):
 | **Red existente** | *"Tenemos el servidor, el módem y los repetidores. Por la conexión no habría problema."* | Edge local + sincronización a nube |
 | **Solo supervisores con dispositivo** | *"Los supervisores deberían tener acceso a revisar qué es lo que tienen en su inventario."* | App para supervisores. Operarios no tocan la app. |
 
+### 2.4 Esquema de Roles de Usuario y Permisos Modulares (RBAC)
+Para garantizar la seguridad y evitar saturación en piso, el sistema implementa **3 perfiles de acceso claramente diferenciados**:
+1. **👑 Administrador (Dirección General / Mundo):**
+   - Acceso total a todos los módulos (Andon, Lotes/QR, Ingeniería, COMPAC, Configuración).
+   - Capacidad exclusiva de dar de alta usuarios y configurar permisos modulares específicos para cada puesto.
+2. **⚙️ Ingeniero de Procesos (Ing. Carlos):**
+   - Acceso a Tablero Andon e Ingeniería & Subensambles (OEE, matriz de materiales con cambio masivo en 1 clic, inventario de hormas y stock de tafiletes por talla).
+3. **📋 Supervisor de Nave y Almacenes (iPad en Almacenes Intermedios):**
+   - Interfaz simplificada y táctil para iPad sin elementos distractores.
+   - Escaneo de tarjetas viajeras con QR, fraccionamiento en rampa (60 a 15 pzas), y reporte de mermas/segundas y paros de línea.
+
 > 📌 **Hardware acordado:** Carlos en audio: *"Para mí sería la parte de módulos físicos. Varios módulos físicos. Para que vayamos registrando por lotes. Ahorita no traemos tanto la parte de pieza por pieza."*
 
 ---
