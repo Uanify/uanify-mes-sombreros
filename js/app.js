@@ -94,7 +94,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.10.0',
+  version: '2.11.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -854,15 +854,19 @@ const ModuleNames = {
 function updateUserInterface() {
   const user = getCurrentUser();
   const navBtns = document.querySelectorAll('.nav-btn');
-  const userSelect = document.getElementById('sidebarUserSelect');
-  const userRoleBadge = document.getElementById('sidebarUserRoleBadge');
 
-  if (userSelect && userSelect.value !== user.id) {
-    userSelect.value = user.id;
-  }
-  if (userRoleBadge) {
-    userRoleBadge.textContent = user.badge;
-  }
+  // Actualizar el chip de usuario en la barra lateral
+  const sidebarUserName   = document.getElementById('sidebarUserName');
+  const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+  const sidebarUserRoleBadge = document.getElementById('sidebarUserRoleBadge');
+
+  let avatarIcon = '📋';
+  if (user.role === 'admin')     avatarIcon = '👑';
+  if (user.role === 'ingeniero') avatarIcon = '⚙️';
+
+  if (sidebarUserAvatar)   sidebarUserAvatar.textContent   = avatarIcon;
+  if (sidebarUserName)     sidebarUserName.textContent     = user.name;
+  if (sidebarUserRoleBadge) sidebarUserRoleBadge.textContent = user.badge;
 
   navBtns.forEach(btn => {
     const tab = btn.getAttribute('data-tab');
@@ -969,13 +973,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Selector de usuario activo en el sidebar
-  const userSelect = document.getElementById('sidebarUserSelect');
-  if (userSelect) {
-    userSelect.addEventListener('change', (e) => {
-      window.switchActiveUser(e.target.value);
-    });
-  }
+  // Selector de usuario activo — ya no existe el <select>, el logout abre el login screen
+  // (la lógica de logout está en initLoginScreen())
 
   function updateClock() {
     const now = new Date();
@@ -1080,13 +1079,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── 1. CONTROL DE PANTALLA DE LOGIN CON SELECTOR DE USUARIO (RBAC) ────────
   function initLoginScreen() {
     const loginScreen = document.getElementById('loginScreen');
-    const usersGrid = document.getElementById('loginUsersGrid');
-    const btnSubmit = document.getElementById('btnLoginSubmit');
+    const usersGrid   = document.getElementById('loginUsersGrid');
+    const btnSubmit   = document.getElementById('btnLoginSubmit');
     const btnSidebarLogout = document.getElementById('btnSidebarLogout');
-    const detailAvatar = document.getElementById('loginDetailAvatar');
-    const detailName = document.getElementById('loginDetailName');
-    const detailRole = document.getElementById('loginDetailRole');
-    const detailBadge = document.getElementById('loginDetailBadge');
 
     let selectedUserId = localStorage.getItem('uanify_logged_user') || UanifyState.currentUser || 'admin-1';
 
@@ -1097,12 +1092,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let icon = '📋';
         if (u.role === 'admin') icon = '👑';
         if (u.role === 'ingeniero') icon = '⚙️';
-        const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts (*)' : u.assignedDepartments.join(', ');
+        const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts' : u.assignedDepartments.join(', ');
 
         return `
           <div class="login-user-card ${isSel ? 'selected' : ''}" data-user-id="${u.id}">
             <div class="login-user-card-head">
-              <span style="font-size:20px;">${icon}</span>
+              <span class="login-user-card-icon">${icon}</span>
               <div class="login-user-card-check">✓</div>
             </div>
             <div>
@@ -1120,28 +1115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('click', () => {
           selectedUserId = card.getAttribute('data-user-id');
           renderUserGrid();
-          updateDetailCard();
         });
       });
     }
 
-    function updateDetailCard() {
-      const u = UanifyState.users.find(x => x.id === selectedUserId) || UanifyState.users[0];
-      if (!u) return;
-
-      let icon = '📋';
-      let badgeClass = 'role-badge-supervisor';
-      if (u.role === 'admin') { icon = '👑'; badgeClass = 'role-badge-admin'; }
-      if (u.role === 'ingeniero') { icon = '⚙️'; badgeClass = 'role-badge-ingeniero'; }
-
-      if (detailAvatar) detailAvatar.textContent = icon;
-      if (detailName) detailName.textContent = u.name;
-      if (detailRole) detailRole.textContent = `${u.roleName} · ${u.email}`;
-      if (detailBadge) {
-        detailBadge.textContent = u.badge;
-        detailBadge.className = `role-badge ${badgeClass}`;
-      }
-    }
 
     if (btnSubmit) {
       btnSubmit.addEventListener('click', () => {
@@ -1173,15 +1150,13 @@ document.addEventListener('DOMContentLoaded', () => {
           loginScreen.style.display = 'flex';
           selectedUserId = UanifyState.currentUser;
           renderUserGrid();
-          updateDetailCard();
         }
         window.UanifyUI.toast('Sesión cerrada. Selecciona tu perfil para ingresar.', 'info', 'Cierre de Sesión');
       });
     }
 
-    // Inicializar grid y detalle
+    // Inicializar grid
     renderUserGrid();
-    updateDetailCard();
 
     // Comprobación de estado de sesión
     const isLoggedIn = sessionStorage.getItem('uanify_logged_in') === 'true';
