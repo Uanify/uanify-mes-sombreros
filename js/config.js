@@ -29,181 +29,398 @@ window.initConfigView = function() {
     { id: 'config',    name: 'Configuración de Planta' }
   ];
 
-  // ── 1. RENDER DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (CRUD COMPLETO) ──
+  // ── 1. RENDER DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (CRUD COMPLETO - REGLA 0.35) ──
+  let deptFiltersBound = false;
   function renderDepartmentsConfig() {
     if (!tableBody || !UanifyState || !UanifyState.stations) return;
 
-    tableBody.innerHTML = UanifyState.stations.map((st, idx) => {
-      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || (st.id && st.id.includes('calidad'));
-      const isPress = st.type === 'prensas' || (st.id && st.id.includes('prensa')) || st.code === 'D-05';
-      const isRampa = st.type === 'rampa' || (st.id && st.id.includes('rampa'));
-      const isLogistics = st.type === 'logistica' || (st.id && st.id.includes('almacen')) || st.code === 'D-11';
+    const searchInput = document.getElementById('deptSearchInput');
+    const processFilter = document.getElementById('deptProcessFilter');
+    const statusFilter = document.getElementById('deptStatusFilter');
+    const countBadge = document.getElementById('deptFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetDeptFilters');
 
-      let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
-      let typeLabel = 'Proceso Productivo';
-      if (isQuality) {
-        badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
-        typeLabel = 'Control de Calidad';
-      } else if (isPress) {
-        badgeStyle = 'background:#FFFBEB; color:#B45309; border:1px solid #FCD34D;';
-        typeLabel = 'Prensas & Vapor';
-      } else if (isRampa) {
-        badgeStyle = 'background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;';
-        typeLabel = 'Rampa Fraccionamiento';
-      } else if (isLogistics) {
-        badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
-        typeLabel = 'Almacén / Logística';
+    const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const proc = processFilter ? processFilter.value : 'all';
+    const stStatus = statusFilter ? statusFilter.value : 'all';
+
+    const filtered = UanifyState.stations.filter(st => {
+      const matchSearch = !q ||
+        (st.code && st.code.toLowerCase().includes(q)) ||
+        (st.name && st.name.toLowerCase().includes(q)) ||
+        (st.operator && st.operator.toLowerCase().includes(q)) ||
+        (st.machines && st.machines.toLowerCase().includes(q)) ||
+        (st.intermediateWarehouse && st.intermediateWarehouse.toLowerCase().includes(q));
+
+      let matchProc = true;
+      if (proc !== 'all') {
+        if (proc === 'calidad') matchProc = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
+        else if (proc === 'prensas') matchProc = st.type === 'prensas' || st.code === 'D-05' || (st.id && st.id.includes('prensa'));
+        else if (proc === 'rampa') matchProc = st.type === 'rampa' || (st.id && st.id.includes('rampa'));
+        else if (proc === 'logistica') matchProc = st.type === 'logistica' || st.code === 'D-11' || (st.id && st.id.includes('almacen'));
+        else if (proc === 'manufactura') matchProc = !st.type || st.type === 'manufactura' || (st.code && !st.code.startsWith('C-') && st.code !== 'D-05' && st.code !== 'D-11');
       }
 
-      const warehouseName = st.intermediateWarehouse || `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
-      const warehouseLoc = st.warehouseLocation || 'Nave Central Tombstone';
-      const machines = st.machines || 'Estación de trabajo manual';
+      let matchStatus = true;
       const isActive = st.status !== 'stopped';
-      const statusBadge = isActive
-        ? '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">🟢 Activo</span>'
-        : '<span class="badge-status" style="background:var(--color-red-bg); color:var(--color-red); border:1px solid var(--color-red-border);">🔴 Inactivo</span>';
+      if (stStatus === 'active') matchStatus = isActive;
+      else if (stStatus === 'inactive') matchStatus = !isActive;
 
-      return `
-        <tr>
-          <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</strong></td>
-          <td>
-            <strong style="font-size:13.5px; color:var(--text-primary);">${st.name}</strong>
-            ${st.desc ? `<br><small style="color:var(--text-muted); font-size:11px;">${st.desc}</small>` : ''}
-          </td>
-          <td><span class="badge-subtle" style="${badgeStyle}">${typeLabel}</span></td>
-          <td>
-            <strong style="color:var(--text-primary); font-size:12.5px;">📦 ${warehouseName}</strong>
-            <br><small style="color:var(--text-muted); font-size:11px;">📍 ${warehouseLoc}</small>
-          </td>
-          <td><span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span></td>
-          <td><strong>${st.wipCapacity || st.target || 150}</strong> <small style="color:var(--text-muted);">pzas</small></td>
-          <td><strong>${st.operator}</strong></td>
-          <td><span style="font-size:11.5px; color:var(--text-secondary); max-width:180px; display:inline-block;">${machines}</span></td>
-          <td>${statusBadge}</td>
-          <td style="text-align:center; white-space:nowrap;">
-            <div style="display:inline-flex; gap:6px;">
-              <button type="button" class="btn-sm btn-secondary" onclick="window.openEditDepartmentModal('${st.code || st.id}')" style="min-height:36px; padding:6px 12px; font-weight:700; border-radius:6px; cursor:pointer;" title="Editar departamento y propiedades del almacén">
-                ✏️ Editar
-              </button>
-              <button type="button" class="btn-sm btn-secondary" onclick="window.deleteDepartment('${st.code || st.id}')" style="min-height:36px; padding:6px 10px; color:#DC2626; border-color:#FCA5A5; font-weight:700; border-radius:6px; cursor:pointer;" title="Eliminar departamento">
-                🗑️
-              </button>
+      return matchSearch && matchProc && matchStatus;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.stations.length} departamentos`;
+    }
+
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="7">
+            <div class="table-empty-content">
+              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-title">No se encontraron departamentos coincidentes</span>
+              <span class="table-empty-subtitle">Intenta cambiar los términos de búsqueda o los selectores de filtro</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetDeptFilters()">🔄 Limpiar Filtros</button>
             </div>
           </td>
         </tr>
       `;
-    }).join('');
+    } else {
+      tableBody.innerHTML = filtered.map((st, idx) => {
+        const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || (st.id && st.id.includes('calidad'));
+        const isPress = st.type === 'prensas' || (st.id && st.id.includes('prensa')) || st.code === 'D-05';
+        const isRampa = st.type === 'rampa' || (st.id && st.id.includes('rampa'));
+        const isLogistics = st.type === 'logistica' || (st.id && st.id.includes('almacen')) || st.code === 'D-11';
+
+        let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
+        let typeLabel = '🏭 Manufactura';
+        if (isQuality) {
+          badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
+          typeLabel = '🔍 Calidad';
+        } else if (isPress) {
+          badgeStyle = 'background:#FFFBEB; color:#B45309; border:1px solid #FCD34D;';
+          typeLabel = '💨 Prensas';
+        } else if (isRampa) {
+          badgeStyle = 'background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;';
+          typeLabel = '✂️ Rampa';
+        } else if (isLogistics) {
+          badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
+          typeLabel = '📦 Logística';
+        }
+
+        const warehouseName = st.intermediateWarehouse || `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
+        const warehouseLoc = st.warehouseLocation || 'Nave Central Tombstone';
+        const machines = st.machines || 'Estación de trabajo manual';
+        const isActive = st.status !== 'stopped';
+
+        return `
+          <tr>
+            <td class="col-code"><span class="table-badge-code">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</span></td>
+            <td class="col-name">
+              <div class="table-cell-primary">${st.name}</div>
+              <span class="badge-subtle" style="${badgeStyle}; margin-top:4px; display:inline-block;">${typeLabel}</span>
+              ${st.desc ? `<span class="table-cell-subtext">${st.desc}</span>` : ''}
+            </td>
+            <td>
+              <strong style="color:var(--text-primary); font-size:12.5px;">📦 ${warehouseName}</strong>
+              <span class="table-cell-subtext">📍 ${warehouseLoc}</span>
+            </td>
+            <td>
+              <span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span>
+              <span class="table-cell-subtext">Cap: <strong>${st.wipCapacity || st.target || 150}</strong> pzas WIP</span>
+            </td>
+            <td>
+              <strong style="font-size:12px;">👤 ${st.operator}</strong>
+              <span class="table-cell-subtext">⚙️ ${machines}</span>
+            </td>
+            <td class="col-status">
+              <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}">
+                <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
+              </span>
+            </td>
+            <td class="col-actions">
+              <div class="action-btns-cell">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditDepartmentModal('${st.code || st.id}')" title="Editar departamento y almacén">
+                  ✏️ Editar
+                </button>
+                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteDepartment('${st.code || st.id}')" title="Eliminar departamento">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!deptFiltersBound) {
+      deptFiltersBound = true;
+      if (searchInput) searchInput.addEventListener('input', renderDepartmentsConfig);
+      if (processFilter) processFilter.addEventListener('change', renderDepartmentsConfig);
+      if (statusFilter) statusFilter.addEventListener('change', renderDepartmentsConfig);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInput) searchInput.value = '';
+          if (processFilter) processFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderDepartmentsConfig();
+        });
+      }
+      window.resetDeptFilters = function() {
+        if (searchInput) searchInput.value = '';
+        if (processFilter) processFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        renderDepartmentsConfig();
+      };
+    }
   }
 
-  // ── 2. RENDER DE USUARIOS Y ROLES (RBAC) ─────────────────────────────────
+  // ── 2. RENDER DE USUARIOS Y ROLES (RBAC CON FILTROS - REGLA 0.35) ────────
+  let userFiltersBound = false;
   function renderUsersTable() {
     if (!usersTableBody || !UanifyState || !UanifyState.users) return;
 
-    usersTableBody.innerHTML = UanifyState.users.map(u => {
-      let roleBadgeClass = 'role-badge-supervisor';
-      if (u.role === 'admin') roleBadgeClass = 'role-badge-admin';
-      else if (u.role === 'ingeniero') roleBadgeClass = 'role-badge-ingeniero';
+    const searchInput = document.getElementById('userSearchInput');
+    const roleFilter = document.getElementById('userRoleFilter');
+    const countBadge = document.getElementById('userFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetUserFilters');
 
-      const permPills = u.permissions.map(p => {
-        const mod = AvailableModules.find(m => m.id === p);
-        return `<span class="perm-pill">${mod ? mod.name : p}</span>`;
-      }).join(' ');
+    const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const role = roleFilter ? roleFilter.value : 'all';
 
-      // Contar operadores en los departamentos asignados
-      let deptsInfo = '';
-      if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
-        const totalOps = (UanifyState.operators || []).length;
-        deptsInfo = `
-          <div style="font-size:11px; font-weight:700; color:var(--color-brand); display:flex; align-items:center; gap:4px; margin-top:3px;">
-            <span>👑 Acceso Global (14 Áreas)</span>
-          </div>
-          <small style="color:var(--text-muted); font-size:10.5px;">Supervisión total · ${totalOps} operadores</small>
-        `;
-      } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
-        const pills = u.assignedDepartments.map(d => `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${d}</span>`).join(' ');
-        const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
-        deptsInfo = `
-          <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; max-width:240px;">${pills}</div>
-          <small style="display:block; color:var(--text-secondary); font-size:10.5px; margin-top:2px;">
-            <strong>${u.assignedDepartments.length} depts</strong> asignados · <strong>${assignedOps} operadores</strong> a cargo
-          </small>
-        `;
-      } else {
-        deptsInfo = `<span style="font-size:11px; color:var(--text-muted);">Sin departamentos asignados</span>`;
-      }
+    const filtered = UanifyState.users.filter(u => {
+      const matchSearch = !q ||
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.id && u.id.toLowerCase().includes(q));
 
-      return `
-        <tr>
-          <td>
-            <strong>${u.name}</strong>
-            <small style="display:block; color:var(--text-muted); font-size:11px;">${u.email}</small>
-          </td>
-          <td>
-            <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
-          </td>
-          <td>
-            ${deptsInfo}
-          </td>
-          <td>
-            <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:380px;">
-              ${permPills}
-            </div>
-          </td>
-          <td>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <button type="button" class="btn-secondary btn-table-action" onclick="openEditUserModal('${u.id}')">
-                ✏️ Editar Usuario & Deptos
-              </button>
-              ${u.id !== 'admin-1' ? `
-                <button type="button" class="btn-secondary btn-table-action" style="color:var(--color-red); border-color:var(--color-red-border); min-width:38px; padding:0 10px;" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
-                  🗑️
-                </button>
-              ` : '<span style="font-size:11px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
+      const matchRole = role === 'all' || u.role === role;
+      return matchSearch && matchRole;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.users.length} usuarios`;
+    }
+
+    if (filtered.length === 0) {
+      usersTableBody.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="7">
+            <div class="table-empty-content">
+              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-title">No se encontraron usuarios coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar con otro término o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetUserFilters()">🔄 Limpiar Filtros</button>
             </div>
           </td>
         </tr>
       `;
-    }).join('');
+    } else {
+      usersTableBody.innerHTML = filtered.map(u => {
+        let roleBadgeClass = 'role-badge-supervisor';
+        if (u.role === 'admin') roleBadgeClass = 'role-badge-admin';
+        else if (u.role === 'ingeniero') roleBadgeClass = 'role-badge-ingeniero';
+
+        const permPills = u.permissions.map(p => {
+          const mod = AvailableModules.find(m => m.id === p);
+          return `<span class="perm-pill">${mod ? mod.name : p}</span>`;
+        }).join(' ');
+
+        // Contar operadores en los departamentos asignados
+        let deptsInfo = '';
+        if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
+          const totalOps = (UanifyState.operators || []).length;
+          deptsInfo = `
+            <div style="font-size:11px; font-weight:700; color:var(--color-brand); display:flex; align-items:center; gap:4px; margin-top:3px;">
+              <span>👑 Acceso Global (14 Áreas)</span>
+            </div>
+            <span class="table-cell-subtext">Supervisión total · ${totalOps} operadores</span>
+          `;
+        } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
+          const pills = u.assignedDepartments.map(d => `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${d}</span>`).join(' ');
+          const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
+          deptsInfo = `
+            <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; max-width:240px;">${pills}</div>
+            <span class="table-cell-subtext">
+              <strong>${u.assignedDepartments.length} depts</strong> asignados · <strong>${assignedOps} ops</strong>
+            </span>
+          `;
+        } else {
+          deptsInfo = `<span style="font-size:11px; color:var(--text-muted);">Sin departamentos asignados</span>`;
+        }
+
+        return `
+          <tr>
+            <td class="col-code"><span class="table-badge-code">${u.id}</span></td>
+            <td class="col-name">
+              <div class="table-cell-primary">${u.name}</div>
+              <span class="table-cell-subtext">✉️ ${u.email}</span>
+            </td>
+            <td>
+              <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
+            </td>
+            <td>
+              ${deptsInfo}
+            </td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:320px;">
+                ${permPills}
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="table-status-pill status-active">
+                <span class="status-dot"></span>Activo
+              </span>
+            </td>
+            <td class="col-actions">
+              <div class="action-btns-cell">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos">
+                  ✏️ Editar
+                </button>
+                ${u.id !== 'admin-1' ? `
+                  <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
+                    🗑️ Eliminar
+                  </button>
+                ` : '<span style="font-size:11px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!userFiltersBound) {
+      userFiltersBound = true;
+      if (searchInput) searchInput.addEventListener('input', renderUsersTable);
+      if (roleFilter) roleFilter.addEventListener('change', renderUsersTable);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInput) searchInput.value = '';
+          if (roleFilter) roleFilter.value = 'all';
+          renderUsersTable();
+        });
+      }
+      window.resetUserFilters = function() {
+        if (searchInput) searchInput.value = '';
+        if (roleFilter) roleFilter.value = 'all';
+        renderUsersTable();
+      };
+    }
 
     syncSidebarUserSelector();
   }
 
-  // ── 3. RENDER DE PADRÓN DE OPERADORES DE PLANTA ──────────────────────────
+  // ── 3. RENDER DE PADRÓN DE OPERADORES EN CONFIG (REGLA 0.35) ─────────────
+  let cfgOpFiltersBound = false;
   function renderOperatorsTable() {
     if (!operatorsTableBody || !UanifyState || !UanifyState.operators) return;
 
-    operatorsTableBody.innerHTML = UanifyState.operators.map(op => {
-      const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
-      let statusBg = 'var(--color-green-bg)';
-      let statusColor = 'var(--color-green)';
-      if (op.status === 'Incapacidad') {
-        statusBg = 'var(--color-red-bg)';
-        statusColor = 'var(--color-red)';
-      } else if (op.status === 'Capacitación') {
-        statusBg = 'var(--color-amber-bg)';
-        statusColor = 'var(--color-amber)';
-      } else if (op.status === 'Baja Temporal') {
-        statusBg = '#F1F5F9';
-        statusColor = '#64748B';
-      }
+    const searchInput = document.getElementById('cfgOperatorSearchInput');
+    const deptFilter = document.getElementById('cfgOperatorDeptFilter');
+    const statusFilter = document.getElementById('cfgOperatorStatusFilter');
+    const countBadge = document.getElementById('cfgOperatorCountBadge');
+    const btnReset = document.getElementById('btnResetCfgOperatorFilters');
 
-      return `
-        <tr>
-          <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand); font-size:12px;">${op.empId}</strong></td>
-          <td><strong>${op.name}</strong></td>
-          <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-          <td style="font-size:12px;">${op.machine}</td>
-          <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
-          <td><span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">● ${op.status}</span></td>
-          <td>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <button type="button" class="btn-secondary btn-table-action" onclick="window.openEditOperatorModal('${op.empId}')">✏️ Editar</button>
-              <button type="button" class="btn-secondary btn-table-action" style="color:var(--color-red); border-color:var(--color-red-border); min-width:38px; padding:0 10px;" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">🗑️</button>
+    // Poblar departamentos en el selector si está vacío
+    if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
+      UanifyState.stations.forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st.code || st.id;
+        opt.textContent = `${st.code || ''} ${st.name}`.trim();
+        deptFilter.appendChild(opt);
+      });
+    }
+
+    const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const dept = deptFilter ? deptFilter.value : 'all';
+    const st = statusFilter ? statusFilter.value : 'all';
+
+    const filtered = UanifyState.operators.filter(op => {
+      const matchSearch = !q ||
+        (op.name && op.name.toLowerCase().includes(q)) ||
+        (op.empId && op.empId.toLowerCase().includes(q)) ||
+        (op.machine && op.machine.toLowerCase().includes(q));
+
+      const matchDept = dept === 'all' || op.deptCode === dept;
+      const matchStatus = st === 'all' || op.status === st;
+      return matchSearch && matchDept && matchStatus;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.operators.length} operadores`;
+    }
+
+    if (filtered.length === 0) {
+      operatorsTableBody.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="7">
+            <div class="table-empty-content">
+              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-title">No se encontraron operadores coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar por otro término o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetCfgOperatorFilters()">🔄 Limpiar Filtros</button>
             </div>
           </td>
         </tr>
       `;
-    }).join('');
+    } else {
+      operatorsTableBody.innerHTML = filtered.map(op => {
+        const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+        let statusClass = 'status-active';
+        if (op.status === 'Incapacidad') statusClass = 'status-danger';
+        else if (op.status === 'Capacitación') statusClass = 'status-warning';
+
+        return `
+          <tr>
+            <td class="col-code"><span class="table-badge-code">${op.empId}</span></td>
+            <td class="col-name">
+              <div class="table-cell-primary">${op.name}</div>
+              <span class="table-cell-subtext">${op.shift || 'Turno Único'}</span>
+            </td>
+            <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
+            <td><span style="font-size:12px;">⚙️ ${op.machine}</span></td>
+            <td><strong style="color:var(--color-brand); font-size:13px;">${pzas} pzas</strong></td>
+            <td class="col-status">
+              <span class="table-status-pill ${statusClass}">
+                <span class="status-dot"></span>${op.status}
+              </span>
+            </td>
+            <td class="col-actions">
+              <div class="action-btns-cell">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
+                  ✏️ Editar
+                </button>
+                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!cfgOpFiltersBound) {
+      cfgOpFiltersBound = true;
+      if (searchInput) searchInput.addEventListener('input', renderOperatorsTable);
+      if (deptFilter) deptFilter.addEventListener('change', renderOperatorsTable);
+      if (statusFilter) statusFilter.addEventListener('change', renderOperatorsTable);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInput) searchInput.value = '';
+          if (deptFilter) deptFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderOperatorsTable();
+        });
+      }
+      window.resetCfgOperatorFilters = function() {
+        if (searchInput) searchInput.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        renderOperatorsTable();
+      };
+    }
   }
 
   // Sincronizar el selector de usuario del sidebar
@@ -217,6 +434,7 @@ window.initConfigView = function() {
       </option>
     `).join('');
   }
+
 
   renderDepartmentsConfig();
   renderUsersTable();
@@ -1095,15 +1313,64 @@ window.initConfigView = function() {
   const formCreateQuality = document.getElementById('formCreateQualityArea');
   const cfgQualityTable = document.getElementById('cfgQualityTable');
 
+  let qualityFiltersBound = false;
   function renderQualityFiltersConfig() {
     if (!cfgQualityTable) return;
     const areas = UanifyState.qualityAreas || [];
 
-    if (areas.length === 0) {
+    const searchInput = document.getElementById('qualitySearchInput');
+    const inspectorFilter = document.getElementById('qualityInspectorFilter');
+    const statusFilter = document.getElementById('qualityStatusFilter');
+    const countBadge = document.getElementById('qualityFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetQualityFilters');
+
+    // Poblar selector de inspectores si está vacío
+    if (inspectorFilter && inspectorFilter.options.length <= 1) {
+      const inspectors = [...new Set(areas.map(a => a.inspector).filter(Boolean))];
+      inspectors.forEach(insp => {
+        const opt = document.createElement('option');
+        opt.value = insp;
+        opt.textContent = `👤 ${insp}`;
+        inspectorFilter.appendChild(opt);
+      });
+    }
+
+    const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const insp = inspectorFilter ? inspectorFilter.value : 'all';
+    const stStatus = statusFilter ? statusFilter.value : 'all';
+
+    const filtered = areas.filter(item => {
+      const matchSearch = !q ||
+        (item.code && item.code.toLowerCase().includes(q)) ||
+        (item.name && item.name.toLowerCase().includes(q)) ||
+        (item.location && item.location.toLowerCase().includes(q)) ||
+        (item.criteria && item.criteria.toLowerCase().includes(q)) ||
+        (item.tolerances && item.tolerances.toLowerCase().includes(q)) ||
+        (item.inspector && item.inspector.toLowerCase().includes(q));
+
+      const matchInsp = insp === 'all' || item.inspector === insp;
+      const isActive = item.status !== 'Inactivo';
+      let matchStatus = true;
+      if (stStatus === 'active') matchStatus = isActive;
+      else if (stStatus === 'inactive') matchStatus = !isActive;
+
+      return matchSearch && matchInsp && matchStatus;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${areas.length} filtros de calidad`;
+    }
+
+    if (filtered.length === 0) {
       cfgQualityTable.innerHTML = `
-        <tr>
-          <td colspan="8" style="text-align:center; padding:32px; color:var(--text-muted);">
-            No hay filtros de calidad registrados. Presiona "+ Dar de Alta Filtro de Calidad" para crear el primero.
+        <tr class="table-empty-row">
+          <td colspan="6">
+            <div class="table-empty-content">
+              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetQualityFilters()">🔄 Limpiar Filtros</button>
+            </div>
           </td>
         </tr>
       `;
@@ -1113,48 +1380,66 @@ window.initConfigView = function() {
     const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const canManage = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
-    cfgQualityTable.innerHTML = areas.map(q => {
+    cfgQualityTable.innerHTML = filtered.map(q => {
       const isActive = q.status !== 'Inactivo';
       return `
         <tr>
-          <td>
-            <strong style="font-family:var(--font-mono); color:#D97706; font-size:13px; font-weight:800;">${q.code}</strong>
+          <td class="col-code">
+            <span class="table-badge-code" style="color:#D97706; background:rgba(217, 119, 6, 0.08); border-color:rgba(217, 119, 6, 0.25);">${q.code}</span>
+          </td>
+          <td class="col-name">
+            <div class="table-cell-primary">${q.name}</div>
+            <span class="table-cell-subtext">📍 ${q.location || 'Nave de Producción'}</span>
           </td>
           <td>
-            <div style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${q.name}</div>
+            <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${q.tolerances || 'Tolerancia estándar'}</div>
+            <span class="table-cell-subtext">${q.criteria || q.desc || '—'}</span>
           </td>
           <td>
-            <span style="font-size:12px; color:var(--text-secondary);">${q.location || 'Nave de Producción'}</span>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary);">👤 ${q.inspector || 'Inspectora de Calidad'}</div>
+            <span class="table-cell-subtext">Ciclo: <strong>${q.cycleTime || '18s'}</strong></span>
           </td>
-          <td>
-            <div style="font-size:12px; color:var(--text-muted); max-width:320px; line-height:1.4;">${q.criteria || q.desc || '—'}</div>
-          </td>
-          <td>
-            <span class="badge-subtle" style="font-size:11px; font-weight:700;">👤 ${q.inspector || 'Inspectora de Calidad'}</span>
-          </td>
-          <td>
-            <span style="font-family:var(--font-mono); font-weight:700; font-size:12.5px;">${q.cycleTime || '18s'}</span>
-          </td>
-          <td>
-            <span class="badge-status ${isActive ? 'badge-status-green' : 'badge-status-red'}" style="font-size:11px; font-weight:700;">
-              ${isActive ? '🟢 Activo' : '🔴 Inactivo'}
+          <td class="col-status">
+            <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}">
+              <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-          <td style="text-align:center;">
+          <td class="col-actions">
             ${canManage ? `
-              <div style="display:flex; gap:6px; justify-content:center;">
-                <button type="button" class="btn-table-action btn-sm" onclick="window.openEditQualityModal('${q.code}')" style="min-height:36px; padding:4px 10px; font-size:12px; font-weight:700; color:#B45309; border-color:#FCD34D;" title="Editar criterios y tolerancias">
+              <div class="action-btns-cell">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar criterios y tolerancias">
                   ✏️ Editar
                 </button>
-                <button type="button" class="btn-table-action btn-sm" onclick="window.deleteQualityFilter('${q.code}')" style="min-height:36px; padding:4px 10px; font-size:12px; font-weight:700; color:#EF4444; border-color:#FECACA;" title="Eliminar filtro de calidad">
+                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteQualityFilter('${q.code}')" title="Eliminar filtro de calidad">
                   🗑️ Eliminar
                 </button>
               </div>
-            ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
+            ` : `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">Solo lectura</span>`}
           </td>
         </tr>
       `;
     }).join('');
+
+    if (!qualityFiltersBound) {
+      qualityFiltersBound = true;
+      if (searchInput) searchInput.addEventListener('input', renderQualityFiltersConfig);
+      if (inspectorFilter) inspectorFilter.addEventListener('change', renderQualityFiltersConfig);
+      if (statusFilter) statusFilter.addEventListener('change', renderQualityFiltersConfig);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInput) searchInput.value = '';
+          if (inspectorFilter) inspectorFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderQualityFiltersConfig();
+        });
+      }
+      window.resetQualityFilters = function() {
+        if (searchInput) searchInput.value = '';
+        if (inspectorFilter) inspectorFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        renderQualityFiltersConfig();
+      };
+    }
   }
 
   window.openCreateQualityModal = function() {

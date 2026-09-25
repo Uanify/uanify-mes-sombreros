@@ -167,7 +167,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.16.0',
+  version: '2.17.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -1638,48 +1638,210 @@ function enrichStationWithDefaults(st, idx) {
       `).join('');
     }
 
-    // Tabla de almacenes
-    if (tableBody && UanifyState.warehouses) {
-      tableBody.innerHTML = UanifyState.warehouses.map(wh => `
-        <tr>
-          <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${wh.code}</strong></td>
-          <td><strong>${wh.name}</strong><br><small style="color:var(--text-muted); font-size:11px;">${wh.location}</small></td>
-          <td><span class="badge-subtle">${wh.type}</span></td>
-          <td><strong style="font-size:13.5px;">${wh.stock}</strong></td>
-          <td style="font-size:12px; max-width:280px; color:var(--text-secondary);">${wh.items}</td>
-          <td>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-size:11.5px; font-weight:700;">${wh.capPercent}%</span>
-              <div class="progress-track" style="width:60px; height:5px;">
-                <div class="progress-fill fill-brand" style="width:${wh.capPercent}%;"></div>
-              </div>
-            </div>
-          </td>
-          <td><span class="badge-status ${wh.statusClass}">● ${wh.status}</span></td>
-        </tr>
-      `).join('');
-    }
+    // Tabla de almacenes (con Filtros y Acciones - Regla 0.35)
+    let whFiltersBound = false;
+    function renderWarehousesTable() {
+      if (!tableBody || !UanifyState.warehouses) return;
+      const searchInput = document.getElementById('whSearchInput');
+      const typeFilter = document.getElementById('whTypeFilter');
+      const statusFilter = document.getElementById('whStatusFilter');
+      const countBadge = document.getElementById('whFilteredCountBadge');
+      const btnReset = document.getElementById('btnResetWhFilters');
 
-    // Tabla de moldes y hormas de aluminio
-    if (moldsTableBody && UanifyState.molds) {
-      moldsTableBody.innerHTML = UanifyState.molds.map(m => {
-        let statusBadge = '<span class="badge-status" style="background:#ECFDF5; color:#047857; font-weight:700;">● Disponible</span>';
-        if (m.status === 'En Uso') {
-          statusBadge = '<span class="badge-status" style="background:#FEF3C7; color:#B45309; font-weight:700;">⚙️ En Uso</span>';
-        }
-        return `
-          <tr>
-            <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${m.code}</strong></td>
-            <td><strong>${m.name}</strong></td>
-            <td><span class="badge-subtle">${m.tipo}</span></td>
-            <td><strong>${m.size}</strong></td>
-            <td style="font-size:12px;">${m.material}</td>
-            <td><span style="font-size:12px; font-family:'JetBrains Mono';">${m.machine}</span></td>
-            <td>${statusBadge}</td>
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const type = typeFilter ? typeFilter.value : 'all';
+      const st = statusFilter ? statusFilter.value : 'all';
+
+      const filtered = UanifyState.warehouses.filter(wh => {
+        const matchSearch = !q ||
+          wh.name.toLowerCase().includes(q) ||
+          wh.code.toLowerCase().includes(q) ||
+          wh.location.toLowerCase().includes(q) ||
+          wh.items.toLowerCase().includes(q);
+        const matchType = type === 'all' || wh.type.includes(type);
+        const matchStatus = st === 'all' || wh.status.includes(st);
+        return matchSearch && matchType && matchStatus;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.warehouses.length} almacenes`;
+      }
+
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `
+          <tr class="table-empty-row">
+            <td colspan="8">
+              <div class="table-empty-content">
+                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-title">No se encontraron almacenes coincidentes</span>
+                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <button type="button" class="btn-reset-filters" onclick="window.resetWhFilters()">🔄 Limpiar Filtros</button>
+              </div>
+            </td>
           </tr>
         `;
-      }).join('');
+      } else {
+        tableBody.innerHTML = filtered.map(wh => {
+          let statusPillClass = 'status-active';
+          if (wh.statusClass && wh.statusClass.includes('amber')) statusPillClass = 'status-warning';
+          else if (wh.statusClass && wh.statusClass.includes('red')) statusPillClass = 'status-danger';
+
+          return `
+            <tr>
+              <td class="col-code"><span class="table-badge-code">${wh.code}</span></td>
+              <td class="col-name">
+                <div class="table-cell-primary">${wh.name}</div>
+                <span class="table-cell-subtext">📍 ${wh.location}</span>
+              </td>
+              <td><span class="badge-subtle">${wh.type}</span></td>
+              <td><strong style="font-size:13.5px; font-family:'JetBrains Mono';">${wh.stock}</strong></td>
+              <td style="font-size:12px; max-width:280px; color:var(--text-secondary);">${wh.items}</td>
+              <td>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-size:11.5px; font-weight:700;">${wh.capPercent}%</span>
+                  <div class="progress-track" style="width:60px; height:5px;">
+                    <div class="progress-fill fill-brand" style="width:${wh.capPercent}%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="col-status">
+                <span class="table-status-pill ${statusPillClass}">
+                  <span class="status-dot"></span>${wh.status}
+                </span>
+              </td>
+              <td class="col-actions">
+                <div class="action-btns-cell">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewWarehouseDetails('${wh.code}')" title="Ver lotes e inventario">
+                    👁️ Ver Lotes
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (!whFiltersBound) {
+        whFiltersBound = true;
+        if (searchInput) searchInput.addEventListener('input', renderWarehousesTable);
+        if (typeFilter) typeFilter.addEventListener('change', renderWarehousesTable);
+        if (statusFilter) statusFilter.addEventListener('change', renderWarehousesTable);
+        if (btnReset) {
+          btnReset.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (typeFilter) typeFilter.value = 'all';
+            if (statusFilter) statusFilter.value = 'all';
+            renderWarehousesTable();
+          });
+        }
+        window.resetWhFilters = function() {
+          if (searchInput) searchInput.value = '';
+          if (typeFilter) typeFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderWarehousesTable();
+        };
+      }
     }
+    renderWarehousesTable();
+
+    // Tabla de moldes y hormas de aluminio (con Filtros y Acciones - Regla 0.35)
+    let moldFiltersBound = false;
+    function renderInventoryMoldsTable() {
+      if (!moldsTableBody || !UanifyState.molds) return;
+      const searchInput = document.getElementById('moldSearchInput');
+      const typeFilter = document.getElementById('moldTypeFilter');
+      const statusFilter = document.getElementById('moldStatusFilter');
+      const countBadge = document.getElementById('moldsFilteredCountBadge');
+      const btnReset = document.getElementById('btnResetMoldFilters');
+
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const type = typeFilter ? typeFilter.value : 'all';
+      const st = statusFilter ? statusFilter.value : 'all';
+
+      const filtered = UanifyState.molds.filter(m => {
+        const matchSearch = !q ||
+          m.name.toLowerCase().includes(q) ||
+          m.code.toLowerCase().includes(q) ||
+          (m.machine && m.machine.toLowerCase().includes(q)) ||
+          (m.material && m.material.toLowerCase().includes(q));
+        const matchType = type === 'all' || (m.name && m.name.toLowerCase().includes(type.toLowerCase())) || (m.tipo && m.tipo.toLowerCase().includes(type.toLowerCase()));
+        const matchStatus = st === 'all' || m.status === st;
+        return matchSearch && matchType && matchStatus;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.molds.length} moldes`;
+      }
+
+      if (filtered.length === 0) {
+        moldsTableBody.innerHTML = `
+          <tr class="table-empty-row">
+            <td colspan="8">
+              <div class="table-empty-content">
+                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-title">No se encontraron moldes de horma coincidentes</span>
+                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <button type="button" class="btn-reset-filters" onclick="window.resetMoldFilters()">🔄 Limpiar Filtros</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        moldsTableBody.innerHTML = filtered.map(m => {
+          const isAvailable = m.status === 'Disponible';
+          return `
+            <tr>
+              <td class="col-code"><span class="table-badge-code">${m.code}</span></td>
+              <td class="col-name">
+                <div class="table-cell-primary">${m.name}</div>
+                <span class="table-cell-subtext">Copa ${m.crown || 'Regular'} · Falda ${m.brim || '4 1/4"'}</span>
+              </td>
+              <td><span class="badge-subtle">${m.tipo || 'Horma Texana'}</span></td>
+              <td><strong>${m.size}</strong></td>
+              <td style="font-size:12px;">${m.material || 'Aluminio Maquinado'}</td>
+              <td><span style="font-size:12px; font-family:'JetBrains Mono'; font-weight:700;">${m.machine || 'Prensa Vapor'}</span></td>
+              <td class="col-status">
+                <span class="table-status-pill ${isAvailable ? 'status-active' : 'status-warning'}">
+                  <span class="status-dot"></span>${m.status}
+                </span>
+              </td>
+              <td class="col-actions">
+                <div class="action-btns-cell">
+                  <button type="button" class="btn-table-action btn-action-edit" onclick="window.editMold('${m.code}')" title="Editar especificación de molde">
+                    ✏️ Editar
+                  </button>
+                  <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteMold('${m.code}')" title="Dar de baja molde">
+                    🗑️ Baja
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (!moldFiltersBound) {
+        moldFiltersBound = true;
+        if (searchInput) searchInput.addEventListener('input', renderInventoryMoldsTable);
+        if (typeFilter) typeFilter.addEventListener('change', renderInventoryMoldsTable);
+        if (statusFilter) statusFilter.addEventListener('change', renderInventoryMoldsTable);
+        if (btnReset) {
+          btnReset.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (typeFilter) typeFilter.value = 'all';
+            if (statusFilter) statusFilter.value = 'all';
+            renderInventoryMoldsTable();
+          });
+        }
+        window.resetMoldFilters = function() {
+          if (searchInput) searchInput.value = '';
+          if (typeFilter) typeFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderInventoryMoldsTable();
+        };
+      }
+    }
+    renderInventoryMoldsTable();
 
     // Inventario de subensambles (Tafiletes)
     if (tafileteGrid) {
@@ -1710,31 +1872,144 @@ function enrichStationWithDefaults(st, idx) {
       `).join('');
     }
 
-    // Kárdex de movimientos de almacén
+    // Kárdex de movimientos de almacén (con Filtros y Acciones - Regla 0.35)
     const kardexBody = document.getElementById('inventoryKardexTableBody');
-    if (kardexBody && UanifyState.inventoryMovements) {
-      kardexBody.innerHTML = UanifyState.inventoryMovements.map(m => {
-        let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
-        if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">📥 Entrada MP</span>';
-        else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">🚚 Embarque</span>';
-        else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">⚠️ Saldos / Segundas</span>';
-        else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">✂️ Fraccionamiento Rampa</span>';
+    let kardexFiltersBound = false;
+    function renderInventoryKardexTable() {
+      if (!kardexBody || !UanifyState.inventoryMovements) return;
+      const searchInput = document.getElementById('kardexSearchInput');
+      const typeFilter = document.getElementById('kardexTypeFilter');
+      const countBadge = document.getElementById('kardexFilteredCountBadge');
+      const btnReset = document.getElementById('btnResetKardexFilters');
 
-        return `
-          <tr>
-            <td><strong style="font-family:'JetBrains Mono';">${m.time}</strong></td>
-            <td>${typeBadge}</td>
-            <td><span style="font-weight:600; font-size:12px;">${m.origin}</span></td>
-            <td><strong style="font-weight:700; font-size:12px; color:var(--color-brand);">→ ${m.dest}</strong></td>
-            <td><strong>${m.item}</strong></td>
-            <td><strong style="font-family:'JetBrains Mono';">${m.qty}</strong></td>
-            <td><span style="font-size:11.5px; color:var(--text-secondary);">${m.user}</span></td>
-            <td><span class="badge-subtle" style="font-family:'JetBrains Mono';">${m.doc}</span></td>
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const type = typeFilter ? typeFilter.value : 'all';
+
+      const filtered = UanifyState.inventoryMovements.filter(m => {
+        const matchSearch = !q ||
+          m.item.toLowerCase().includes(q) ||
+          m.origin.toLowerCase().includes(q) ||
+          m.dest.toLowerCase().includes(q) ||
+          m.user.toLowerCase().includes(q) ||
+          m.doc.toLowerCase().includes(q);
+        const matchType = type === 'all' || m.type.includes(type);
+        return matchSearch && matchType;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.inventoryMovements.length} movimientos`;
+      }
+
+      if (filtered.length === 0) {
+        kardexBody.innerHTML = `
+          <tr class="table-empty-row">
+            <td colspan="8">
+              <div class="table-empty-content">
+                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-title">No se encontraron movimientos registrados</span>
+                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <button type="button" class="btn-reset-filters" onclick="window.resetKardexFilters()">🔄 Limpiar Filtros</button>
+              </div>
+            </td>
           </tr>
         `;
-      }).join('');
+      } else {
+        kardexBody.innerHTML = filtered.map(m => {
+          let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
+          if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">📥 Entrada MP</span>';
+          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">🚚 Embarque</span>';
+          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">⚠️ Saldos</span>';
+          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">✂️ Rampa</span>';
+
+          return `
+            <tr>
+              <td class="col-code"><span class="table-badge-code">${m.time}</span></td>
+              <td class="col-name">${typeBadge}</td>
+              <td><span style="font-weight:600; font-size:12px;">${m.origin}</span></td>
+              <td><strong style="font-weight:700; font-size:12px; color:var(--color-brand);">→ ${m.dest}</strong></td>
+              <td><strong>${m.item}</strong></td>
+              <td><strong style="font-family:'JetBrains Mono'; font-size:13px;">${m.qty}</strong></td>
+              <td><span style="font-size:11.5px; color:var(--text-secondary);">👤 ${m.user}</span></td>
+              <td class="col-status"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px;">${m.doc}</span></td>
+              <td class="col-actions">
+                <div class="action-btns-cell">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver vale de traspaso">
+                    👁️ Detalle
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (!kardexFiltersBound) {
+        kardexFiltersBound = true;
+        if (searchInput) searchInput.addEventListener('input', renderInventoryKardexTable);
+        if (typeFilter) typeFilter.addEventListener('change', renderInventoryKardexTable);
+        if (btnReset) {
+          btnReset.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (typeFilter) typeFilter.value = 'all';
+            renderInventoryKardexTable();
+          });
+        }
+        window.resetKardexFilters = function() {
+          if (searchInput) searchInput.value = '';
+          if (typeFilter) typeFilter.value = 'all';
+          renderInventoryKardexTable();
+        };
+      }
     }
+    renderInventoryKardexTable();
   }
+
+  // Helpers para acciones en almacén
+  window.viewWarehouseDetails = function(whCode) {
+    const wh = (UanifyState.warehouses || []).find(w => w.code === whCode);
+    if (!wh) return;
+    window.UanifyUI.toast(
+      `Almacén ${wh.name} (${wh.code}) en ${wh.location}. Existencias: ${wh.stock}. Custodia: ${wh.items}. Ocupación: ${wh.capPercent}%.`,
+      'info',
+      '📦 Detalle de Almacén'
+    );
+  };
+
+  window.viewKardexDoc = function(docFolio, item) {
+    window.UanifyUI.toast(
+      `Vale oficial ${docFolio} registrado en Kárdex. Movimiento verificado por Logística MES para ${item || 'lote'}.`,
+      'info',
+      '📋 Vale de Movimiento'
+    );
+  };
+
+  window.editMold = function(moldCode) {
+    const m = (UanifyState.molds || []).find(x => x.code === moldCode);
+    if (!m) return;
+    const nameInput = document.getElementById('newMoldName');
+    const codeInput = document.getElementById('newMoldCode');
+    const crownInput = document.getElementById('newMoldCrown');
+    const modal = document.getElementById('modalRegisterMold');
+    if (nameInput) nameInput.value = m.name;
+    if (codeInput) codeInput.value = m.code;
+    if (crownInput) crownInput.value = m.crown || '';
+    if (modal) modal.classList.add('active');
+  };
+
+  window.deleteMold = function(moldCode) {
+    window.UanifyUI.confirm(
+      'Dar de Baja Molde de Horma',
+      `¿Confirmas la baja del molde de aluminio ${moldCode}? Se retirará de las opciones de asignación de prensas de vapor.`,
+      () => {
+        UanifyState.molds = (UanifyState.molds || []).filter(x => x.code !== moldCode);
+        try {
+          localStorage.setItem('uanify_custom_molds', JSON.stringify(UanifyState.molds));
+        } catch (e) {}
+        renderInventorySection();
+        window.UanifyUI.toast(`Molde ${moldCode} dado de baja exitosamente.`, 'success', 'Molde Retirado');
+      }
+    );
+  };
 
   // Manejo del Modal de Registro de Hormas (Catálogo Oficial de Almacén)
   const modalRegisterMold = document.getElementById('modalRegisterMold');
@@ -1793,13 +2068,14 @@ function enrichStationWithDefaults(st, idx) {
 
   window.renderInventorySection = renderInventorySection;
 
-  // ── 3. RENDER DE PADRÓN DE OPERADORES DIRECTORY ──────────────────────────
+  // ── 3. RENDER DE PADRÓN DE OPERADORES DIRECTORY (REGLA 0.35) ─────────────
   function renderOperatorsDirectory() {
     const tableBody = document.getElementById('operatorsDirectoryTableBody');
     const searchInput = document.getElementById('operatorSearchInput');
     const deptFilter = document.getElementById('operatorDeptFilter');
     const statusFilter = document.getElementById('operatorStatusFilter');
     const badgeCount = document.getElementById('operatorsFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetOperatorFilters');
     if (!tableBody || !UanifyState.operators) return;
 
     function doRender() {
@@ -1818,37 +2094,50 @@ function enrichStationWithDefaults(st, idx) {
         badgeCount.textContent = `Mostrando ${filtered.length} de ${UanifyState.operators.length} operadores`;
       }
 
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `
+          <tr class="table-empty-row">
+            <td colspan="8">
+              <div class="table-empty-content">
+                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-title">No se encontraron operadores coincidentes</span>
+                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <button type="button" class="btn-reset-filters" onclick="window.resetOperatorFilters()">🔄 Limpiar Filtros</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
       tableBody.innerHTML = filtered.map(op => {
         const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
-        let statusBg = 'var(--color-green-bg)';
-        let statusColor = 'var(--color-green)';
-        if (op.status === 'Incapacidad') {
-          statusBg = 'var(--color-red-bg)';
-          statusColor = 'var(--color-red)';
-        } else if (op.status === 'Capacitación') {
-          statusBg = 'var(--color-amber-bg)';
-          statusColor = 'var(--color-amber)';
-        } else if (op.status === 'Baja Temporal') {
-          statusBg = '#F1F5F9';
-          statusColor = '#64748B';
-        }
+        let statusClass = 'status-active';
+        if (op.status === 'Incapacidad') statusClass = 'status-danger';
+        else if (op.status === 'Capacitación') statusClass = 'status-warning';
 
         return `
           <tr>
-            <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${op.empId}</strong></td>
-            <td><strong>${op.name}</strong></td>
+            <td class="col-code"><span class="table-badge-code">${op.empId}</span></td>
+            <td class="col-name">
+              <div class="table-cell-primary">${op.name}</div>
+            </td>
             <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-            <td style="font-size:12px;">${op.machine}</td>
+            <td style="font-size:12px;">⚙️ ${op.machine}</td>
             <td><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
-            <td><strong style="color:var(--color-brand);">${pzas} pzas</strong></td>
-            <td><span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">● ${op.status}</span></td>
-            <td>
-              <div style="display:flex; gap:8px; align-items:center;">
-                <button type="button" class="btn-secondary btn-table-action" onclick="window.openEditOperatorModal('${op.empId}')">
+            <td><strong style="color:var(--color-brand); font-size:13px;">${pzas} pzas</strong></td>
+            <td class="col-status">
+              <span class="table-status-pill ${statusClass}">
+                <span class="status-dot"></span>${op.status}
+              </span>
+            </td>
+            <td class="col-actions">
+              <div class="action-btns-cell">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
                   ✏️ Editar
                 </button>
-                <button type="button" class="btn-secondary btn-table-action" style="color:var(--color-red); border-color:var(--color-red-border); min-width:38px; padding:0 10px;" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
-                  🗑️
+                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
+                  🗑️ Baja
                 </button>
               </div>
             </td>
@@ -1860,6 +2149,21 @@ function enrichStationWithDefaults(st, idx) {
     if (searchInput) searchInput.addEventListener('input', doRender);
     if (deptFilter) deptFilter.addEventListener('change', doRender);
     if (statusFilter) statusFilter.addEventListener('change', doRender);
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        doRender();
+      });
+    }
+
+    window.resetOperatorFilters = function() {
+      if (searchInput) searchInput.value = '';
+      if (deptFilter) deptFilter.value = 'all';
+      if (statusFilter) statusFilter.value = 'all';
+      doRender();
+    };
 
     doRender();
   }

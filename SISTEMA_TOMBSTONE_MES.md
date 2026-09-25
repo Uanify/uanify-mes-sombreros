@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.16.0` | **Fecha de Actualización:** 24 de Septiembre de 2026  
+> **Versión Actual:** `v2.17.0` | **Fecha de Actualización:** 25 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -31,6 +31,12 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
+
+- **`v2.17.0` (2026-09-25):**
+  - **Estandarización Universal de Tablas, Columnas y Acciones (Regla 0.35 de AGENTS.md):** Normalización transversal de las 7 tablas maestras del sistema (Departamentos, Filtros de Calidad, Usuarios RBAC, Padrón de Operadores, Almacenes Físicos, Moldes/Hormas y Kárdex) bajo la misma arquitectura de columnas (`.col-code`, `.col-name`, especificaciones técnicas, `.col-status`, `.col-actions`).
+  - **Barra de Filtros Multi-Criterio (`.uanify-filter-toolbar`):** Inclusión en cada tabla de buscador de texto en tiempo real, dropdowns contextuales de filtrado por categoría/estatus, contador "Mostrando X de Y registros" y botón `🔄 Limpiar Filtros`.
+  - **Diseño de Sección de Acciones (`.action-btns-cell`):** Homogeneización de celdas de acción con botones touch de 38px, centrados y con feedback hover (`✏️ Editar`, `🗑️ Eliminar/Baja`, `👁️ Ver Lotes/Detalle`).
+  - **Filas de Estado Vacío (`.table-empty-row`):** Manejo estandarizado con mensaje descriptivo y llamada a la acción para resetear filtros cuando la búsqueda no arroja coincidencias.
 
 - **`v2.16.0` (2026-09-24):**
   - **Rutas y Secuencias Específicas por Modelo con Drag & Drop (`⠿`):** Implementación de reordenamiento visual y táctil mediante arrastre de elementos para las secuencias de manufactura asignadas a cada modelo individual de sombrero (`El Viejonón`, `Denver Master`, `Chaparral`, etc.).

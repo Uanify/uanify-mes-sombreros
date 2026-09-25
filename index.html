@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.16.0">
-  <link rel="stylesheet" href="css/components.css?v=2.16.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.17.0">
+  <link rel="stylesheet" href="css/components.css?v=2.17.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.16.0</span>
+        <span class="system-version-pill login-version-pill">v2.17.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -143,7 +143,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.16.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.17.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -873,23 +873,53 @@
 
           <!-- Tabla de Detalle de Almacenes y Stocks -->
           <div class="card-glass" style="padding:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
               <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
                 📋 Registro Oficial de Almacenes de Nave Central
               </h3>
               <span class="badge-subtle">5 Almacenes Físicos · Tombstone Hats San Francisco del Rincón</span>
             </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="whSearchInput" class="form-input" placeholder="Buscar almacén por código, nombre, ubicación..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="whTypeFilter" class="custom-select">
+                    <option value="all">Todos los Tipos</option>
+                    <option value="Materia Prima">Materia Prima</option>
+                    <option value="WIP">WIP / Rampa</option>
+                    <option value="Pulmón">Pulmón Pre-Prensas</option>
+                    <option value="Producto Terminado">Producto Terminado</option>
+                    <option value="Merma">Merma / Segundas</option>
+                  </select>
+                  <select id="whStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="Normal">🟢 Normal</option>
+                    <option value="Precaución">🟡 Precaución</option>
+                    <option value="Crítico">🔴 Crítico</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="whFilteredCountBadge">5 almacenes</span>
+                <button type="button" class="btn-reset-filters" id="btnResetWhFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Código</th>
-                    <th>Nombre del Almacén</th>
+                    <th class="col-code">Código</th>
+                    <th class="col-name">Nombre del Almacén</th>
                     <th>Tipo / Ubicación</th>
                     <th>Stock Actual</th>
                     <th>Materiales y Lotes en Custodia</th>
                     <th>Capacidad</th>
-                    <th>Estado</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="warehousesTableBody">
@@ -916,17 +946,48 @@
                 🎩 + Registrar Nueva Horma
               </button>
             </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="moldSearchInput" class="form-input" placeholder="Buscar por código, nombre de horma, modelo, prensa..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="moldTypeFilter" class="custom-select">
+                    <option value="all">Todos los Modelos</option>
+                    <option value="Denver">Denver</option>
+                    <option value="Bullrider">Bullrider</option>
+                    <option value="Viejonón">Viejonón</option>
+                    <option value="Chaparral">Chaparral</option>
+                    <option value="Sonora">Sonora</option>
+                    <option value="Laredo">Laredo</option>
+                    <option value="Frontier">Frontier</option>
+                  </select>
+                  <select id="moldStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="Disponible">🟢 Disponibles</option>
+                    <option value="En Uso">⚙️ En Uso</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="moldsFilteredCountBadge">18 moldes</span>
+                <button type="button" class="btn-reset-filters" id="btnResetMoldFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Código Molde</th>
-                    <th>Modelo / Nombre de Horma</th>
+                    <th class="col-code">Código</th>
+                    <th class="col-name">Modelo / Nombre de Horma</th>
                     <th>Tipo de Horma</th>
                     <th>Talla (US/MX)</th>
                     <th>Material</th>
                     <th>Prensa Asignada</th>
-                    <th>Estatus Operativo</th>
+                    <th class="col-status">Estatus Operativo</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryMoldsTableBody">
@@ -970,18 +1031,42 @@
               </div>
               <span class="badge-subtle" style="font-weight:700;">Auditado por Logística MES</span>
             </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="kardexSearchInput" class="form-input" placeholder="Buscar por lote, material, custodio, folio..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="kardexTypeFilter" class="custom-select">
+                    <option value="all">Todos los Movimientos</option>
+                    <option value="Entrada">📥 Entrada MP</option>
+                    <option value="Traspaso">🔄 Traspaso WIP</option>
+                    <option value="Fraccionamiento">✂️ Fraccionamiento Rampa</option>
+                    <option value="Salida">🚚 Embarque / Salida</option>
+                    <option value="Merma">⚠️ Saldos / Segundas</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="kardexFilteredCountBadge">Movimientos recientes</span>
+                <button type="button" class="btn-reset-filters" id="btnResetKardexFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Hora</th>
-                    <th>Tipo de Movimiento</th>
+                    <th class="col-code">Hora</th>
+                    <th class="col-name">Tipo de Movimiento</th>
                     <th>Almacén Origen</th>
                     <th>Almacén Destino</th>
                     <th>Lote / Material</th>
                     <th>Cantidad</th>
                     <th>Responsable</th>
-                    <th>Folio / Doc</th>
+                    <th class="col-status">Folio / Doc</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryKardexTableBody">
@@ -1032,15 +1117,15 @@
           </div>
         </div>
 
-        <!-- Barra de Filtros y Búsqueda -->
-        <div class="operators-filter-bar">
-          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; flex:1;">
-            <div style="position:relative; min-width:240px; flex:1;">
-              <input type="text" id="operatorSearchInput" class="form-input" placeholder="🔍 Buscar por nombre, número de nómina o máquina..." style="padding-left:12px;">
+        <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+        <div class="uanify-filter-toolbar">
+          <div class="filter-toolbar-inputs">
+            <div class="filter-search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="operatorSearchInput" class="form-input" placeholder="Buscar por nombre, nómina, máquina o departamento..." autocomplete="off">
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label class="field-label">Departamento:</label>
-              <select id="operatorDeptFilter" class="custom-select select-sm">
+            <div class="filter-select-group">
+              <select id="operatorDeptFilter" class="custom-select">
                 <option value="all">Todos los Departamentos</option>
                 <option value="D-01">D-01 Corte de Telar</option>
                 <option value="D-02">D-02 Englopado y Camas</option>
@@ -1050,39 +1135,38 @@
                 <option value="D-09">D-09 Pintura y Matizado</option>
                 <option value="D-12">D-12 Adorno (Tafilete y Toquilla)</option>
               </select>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label class="field-label">Estatus:</label>
-              <select id="operatorStatusFilter" class="custom-select select-sm">
+              <select id="operatorStatusFilter" class="custom-select">
                 <option value="all">Todos los Estatus</option>
-                <option value="Activo">Activos</option>
-                <option value="Incapacidad">Incapacidad</option>
-                <option value="Capacitación">En Capacitación</option>
+                <option value="Activo">🟢 Activos</option>
+                <option value="Incapacidad">🔴 Incapacidad</option>
+                <option value="Capacitación">🟡 En Capacitación</option>
               </select>
             </div>
+            <span class="filter-count-badge" id="operatorsFilteredCountBadge">Mostrando 7 operadores</span>
+            <button type="button" class="btn-reset-filters" id="btnResetOperatorFilters" title="Restablecer filtros">🔄 Limpiar</button>
           </div>
         </div>
 
         <!-- Directorio y Tabla de Operadores -->
         <div class="card-glass" style="padding:22px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
             <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
               👷 Directorio de Operadores de Planta Matriz
             </h3>
-            <span class="badge-subtle" id="operatorsFilteredCountBadge">Mostrando 7 operadores</span>
+            <span class="badge-subtle">Mano de Obra Calificada · San Francisco del Rincón</span>
           </div>
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>No. Nómina</th>
-                  <th>Nombre Completo</th>
+                  <th class="col-code">No. Nómina</th>
+                  <th class="col-name">Nombre Completo</th>
                   <th>Departamento Asignado</th>
                   <th>Máquina / Puesto</th>
                   <th>Turno</th>
                   <th>Pzas Procesadas Hoy</th>
-                  <th>Estatus</th>
-                  <th>Acciones</th>
+                  <th class="col-status">Estatus</th>
+                  <th class="col-actions">Acciones</th>
                 </tr>
               </thead>
               <tbody id="operatorsDirectoryTableBody">
@@ -1528,19 +1612,42 @@
                 <h3>👥 Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
                 <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear administradores, ingenieros y supervisores. Ingeniería puede crear supervisores.</p>
               </div>
-              <button class="btn-primary" id="btnOpenCreateUserModal">
-                + Crear Nuevo Usuario
+              <button class="btn-primary" id="btnOpenCreateUserModal" style="min-height:48px; padding:0 20px; font-weight:700;">
+                ➕ Crear Nuevo Usuario
               </button>
             </div>
-            <div class="downtime-table-wrapper" style="margin-top:14px;">
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre, correo, departamento..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="userRoleFilter" class="custom-select">
+                    <option value="all">Todos los Roles</option>
+                    <option value="admin">👑 Administrador</option>
+                    <option value="ingeniero">⚡ Ingeniero de Producción</option>
+                    <option value="supervisor">📱 Supervisor de Planta</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="userFilteredCountBadge">4 usuarios</span>
+                <button type="button" class="btn-reset-filters" id="btnResetUserFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Usuario & Correo</th>
-                    <th>Rol</th>
+                    <th class="col-code">ID / Usuario</th>
+                    <th class="col-name">Nombre & Correo</th>
+                    <th>Rol en Planta</th>
                     <th>Departamentos Asignados</th>
                     <th>Permisos Modulares</th>
-                    <th>Acciones</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -1559,21 +1666,45 @@
                 <h3>👷 Padrón de Operadores de Planta (Mano de Obra)</h3>
                 <p class="section-desc" style="margin-bottom:0;">Registro de operadores que trabajan máquinas en cada departamento. No son usuarios con acceso al sistema; son gestionados por Supervisores, Ingenieros y Administradores.</p>
               </div>
-              <button class="btn-primary" id="btnOpenCreateOperatorModal">
-                + Registrar Operador
+              <button class="btn-primary" id="btnOpenCreateOperatorModal" style="min-height:48px; padding:0 20px; font-weight:700;">
+                ➕ Registrar Operador
               </button>
             </div>
-            <div class="downtime-table-wrapper" style="margin-top:14px;">
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="cfgOperatorSearchInput" class="form-input" placeholder="Buscar por nómina, nombre, departamento, máquina..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="cfgOperatorDeptFilter" class="custom-select">
+                    <option value="all">Todos los Departamentos</option>
+                  </select>
+                  <select id="cfgOperatorStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="Activo">🟢 Activos</option>
+                    <option value="Incapacidad">🔴 Incapacidad</option>
+                    <option value="Capacitación">🟡 En Capacitación</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="cfgOperatorCountBadge">7 operadores</span>
+                <button type="button" class="btn-reset-filters" id="btnResetCfgOperatorFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>No. Nómina</th>
-                    <th>Nombre del Operador</th>
-                    <th>Departamento</th>
-                    <th>Máquina / Puesto Asignado</th>
+                    <th class="col-code">No. Nómina</th>
+                    <th class="col-name">Nombre del Operador</th>
+                    <th>Departamento Asignado</th>
+                    <th>Máquina / Puesto</th>
                     <th>Piezas Procesadas Hoy</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="operatorsTableBody">
@@ -1598,20 +1729,47 @@
                 </button>
               </div>
             </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por código, departamento, supervisor, máquina..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="deptProcessFilter" class="custom-select">
+                    <option value="all">Todos los Procesos</option>
+                    <option value="manufactura">🏭 Proceso Productivo</option>
+                    <option value="prensas">💨 Prensas & Vapor</option>
+                    <option value="rampa">✂️ Rampa Fraccionamiento</option>
+                    <option value="calidad">🔍 Control de Calidad</option>
+                    <option value="logistica">📦 Almacén / Logística</option>
+                  </select>
+                  <select id="deptStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="active">🟢 Activos</option>
+                    <option value="inactive">🔴 Inactivos</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="deptFilteredCountBadge">14 departamentos</span>
+                <button type="button" class="btn-reset-filters" id="btnResetDeptFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
             <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Código</th>
-                    <th>Departamento</th>
-                    <th>Tipo de Proceso</th>
+                    <th class="col-code">Código</th>
+                    <th class="col-name">Departamento & Proceso</th>
                     <th>Almacén Intermedio (Buffer)</th>
                     <th>Takt Time</th>
                     <th>Capacidad WIP</th>
                     <th>Supervisor Responsable</th>
                     <th>Maquinaria / Prensas</th>
-                    <th>Estado</th>
-                    <th style="text-align:center;">Acciones</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgDepartmentsTable">
@@ -1636,18 +1794,40 @@
                 </button>
               </div>
             </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="qualitySearchInput" class="form-input" placeholder="Buscar por código, filtro, criterio, inspector, ubicación..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="qualityInspectorFilter" class="custom-select">
+                    <option value="all">Todos los Inspectores</option>
+                  </select>
+                  <select id="qualityStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="active">🟢 Activos</option>
+                    <option value="inactive">🔴 Inactivos</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="qualityFilteredCountBadge">4 filtros de calidad</span>
+                <button type="button" class="btn-reset-filters" id="btnResetQualityFilters" title="Restablecer filtros">🔄 Limpiar</button>
+              </div>
+            </div>
+
             <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Código</th>
-                    <th>Filtro de Calidad</th>
-                    <th>Ubicación en Nave</th>
+                    <th class="col-code">Código</th>
+                    <th class="col-name">Filtro de Calidad & Área</th>
                     <th>Criterios & Tolerancias Técnicas</th>
                     <th>Inspector Responsable</th>
                     <th>Tiempo de Ciclo</th>
-                    <th>Estatus</th>
-                    <th style="text-align:center;">Acciones</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgQualityTable">
@@ -2752,11 +2932,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.16.0"></script>
-  <script src="js/andon.js?v=2.16.0"></script>
-  <script src="js/terminal.js?v=2.16.0"></script>
-  <script src="js/engineer.js?v=2.16.0"></script>
-  <script src="js/executive.js?v=2.16.0"></script>
-  <script src="js/config.js?v=2.16.0"></script>
+  <script src="js/app.js?v=2.17.0"></script>
+  <script src="js/andon.js?v=2.17.0"></script>
+  <script src="js/terminal.js?v=2.17.0"></script>
+  <script src="js/engineer.js?v=2.17.0"></script>
+  <script src="js/executive.js?v=2.17.0"></script>
+  <script src="js/config.js?v=2.17.0"></script>
 </body>
 </html>

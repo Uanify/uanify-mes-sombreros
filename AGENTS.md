@@ -486,5 +486,40 @@ Excepciones permitidas con style="":
 3. **Estatus de la Bitácora de Paros e Incidencias (`GAP-10`):**
    - La bitácora de paros permanece marcada como **Bajo Revisión / Pendiente de Aprobación de Cliente** para evaluar si en la operación real de Tombstone aporta valor o si genera fricción administrativa innecesaria en piso.
 
+---
+
+## REGLA 0.35: Estandarización Universal de Tablas, Listados, Columnas, Secciones de Acciones y Barras de Filtros Multi-Criterio (MANDATORIA)
+
+**Todos los listados, tablas y catálogos del sistema MES (Departamentos, Filtros de Calidad, Almacenes Físicos, Hormas y Moldes, Kárdex, Padrón de Operadores, Usuarios RBAC y Bitácoras) DEBEN compartir exactamente la misma arquitectura estructural, jerarquía de columnas, diseño de sección de acciones y capacidades avanzadas de filtrado reactivo.**
+
+1. **Estructura Jerárquica Universal de Columnas:**
+   - **Columna 1 — Identificador / Código Maestro (`.col-code`):** Siempre al extremo izquierdo. Ancho compacto. Tipografía monoespaciada (`'JetBrains Mono', monospace`), peso negrita 700, presentada como badge delimitado (`.table-badge-code`, ej. `D-01`, `C-02`, `ALM-03`, `M-05`, `OP-104`).
+   - **Columna 2 — Entidad Principal & Nombre Comercial (`.col-name`):** Título principal en negrita de alta visibilidad (`font-size: 13.5px; font-weight: 700; color: var(--text-primary);`), complementado invariablemente con texto explicativo secundario (`.table-cell-subtext`) con descripción, alias o modelo.
+   - **Columnas Intermedias — Especificaciones Técnicas y Operativas:** Presentadas con alineación limpia, badges semánticos sutiles para categorías o procesos, y métricas cuantitativas con unidades claras (`pzas`, `seg`, `MXN`).
+   - **Penúltima Columna — Estatus Operativo Estandarizado (`.col-status`):** Indicador visual unificado en píldora (`.table-status-pill`) con punto de color identificativo:
+     - 🟢 **Activo / Operativo / Normal:** Verde industrial (`#16A34A`, fondo `#DCFCE7`).
+     - 🟡 **En Mantenimiento / Calibración / WIP Alto:** Ámbar preventivo (`#D97706`, fondo `#FEF3C7`).
+     - 🔴 **Inactivo / Detenido / Bloqueado:** Rojo crítico (`#DC2626`, fondo `#FEE2E2`).
+   - **Última Columna — Celda de Acciones Estandarizada (`.col-actions`, `.action-btns-cell`):** Encabezado `"Acciones"` centrado (`text-align: center`), con ancho mínimo reservado de 140px a 180px. Los botones deben estar alojados en un contenedor flex (`.action-btns-cell`) centrado con separación constante (`gap: 6px` a `8px`).
+
+2. **Diseño Estandarizado de la Sección de Acciones (`.action-btns-cell`):**
+   - **Botón Editar (`.btn-action.btn-action-edit`):** Icono `✏️` + etiqueta `"Editar"` (o botón táctil compacto con tooltip). Fondo suave neutro, borde sutil, texto primario o cuero de marca (`#8B5E3C`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
+   - **Botón Eliminar / Baja (`.btn-action.btn-action-delete`):** Icono `🗑️` + etiqueta `"Eliminar"` o `"Baja"`. Fondo rojo tenue (`#FEF2F2`), borde carmesí (`#FCA5A5`), texto rojo intenso (`#DC2626`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
+   - **Botón Ver / Detalle (`.btn-action.btn-action-view`):** Icono `👁️` + etiqueta `"Ver"` o `"Detalle"`. Fondo azul tenue (`#EFF6FF`), borde azul (`#BFDBFE`), texto azul (`#1D4ED8`).
+   - **Queda estrictamente prohibido:** Usar estilos inline discordantes, variar los anchos o alturas entre tablas, o dejar acciones desalineadas sin contenedor estandarizado.
+
+3. **Barra de Filtrado Multi-Criterio Obligatoria en TODO Listado (`.uanify-filter-toolbar`):**
+   - **Sin excepción:** Toda tabla o listado de registros debe poseer inmediatamente sobre ella su barra de filtrado estandarizada (`.uanify-filter-toolbar`), compuesta por:
+     1. **Caja de Búsqueda Rápida en Tiempo Real (`.filter-search-box`):** Input de texto con lupa integrada (`🔍`), placeholder contextual (ej. `"Buscar por código, nombre, supervisor..."`), con filtrado reactivo inmediato (`input` event).
+     2. **Selectores Desplegables de Clasificación (`.filter-select`):** Mínimo dos filtros específicos:
+        - **Filtro por Estatus:** `"Todos los Estatus"`, `"Activos"`, `"Inactivos"`, etc.
+        - **Filtro por Tipo / Proceso / Categoría:** Según la entidad de la tabla (ej. Tipo de Proceso en Departamentos, Tipo de Horma en Moldes, Tipo de Movimiento en Kárdex, Departamento en Operadores, Rol en Usuarios).
+     3. **Badge de Conteo Dinámico (`.filter-count-badge`):** Muestra reactivamente `"Mostrando X de Y registros"` actualizándose con cada pulsación o selección.
+     4. **Botón de Restablecimiento (`.btn-reset-filters`):** Botón táctil `"🔄 Limpiar"` o `"Restablecer"` que revierte todos los filtros a sus valores predeterminados de un solo toque.
+     5. **Botón de Creación / Alta Alineado a la Derecha:** Botón principal de módulo (ej. `➕ Dar de Alta...`) colocado armónicamente a la derecha del toolbar o en la cabecera de la tarjeta.
+
+4. **Estado Vacío Estandarizado (`.table-empty-row`):**
+   - Si la búsqueda o los filtros no devuelven registros coincidentes, la tabla debe desplegar una fila elegante con colspan completo que contenga: icono explicativo (🔍), mensaje claro (`"No se encontraron registros que coincidan con los filtros aplicados"`) y un enlace o botón táctil para limpiar los filtros (`"Limpiar filtros de búsqueda"`).
+
 
 

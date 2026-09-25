@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.16.0` | **Versión:** `v2.16.0`  
-> **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.17.0` | **Versión:** `v2.17.0`  
+> **Fecha de Emisión / Última Actualización:** 25 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -333,6 +333,43 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque O: Estandarización Universal de Tablas, Barras de Filtros Multi-Criterio y Acciones de Registro (v2.17.0)
+
+- **`RF-66` Estandarización Universal de Tablas, Barras de Filtros Multi-Criterio y Acciones de Registro:**
+  - **Propósito:** Unificar de forma obligatoria y consistente la totalidad de tablas y listados del sistema bajo un patrón visual y funcional idéntico (Regla 0.35 de `AGENTS.md`), dotando a cada listado de capacidades multi-criterio de filtrado reactivo, diseño estandarizado de columnas y ergonomía táctil en celdas de acciones.
+  - **Especificación Funcional y Cobertura:**
+    - **Alcance Transversal (7 Tablas Maestras):**
+      1. *Configuración:* Catálogo de Departamentos y Almacenes Intermedios (`#cfgDeptTableBody`).
+      2. *Configuración:* Catálogo de Puntos de Calidad y Tolerancias (`#cfgQualityTableBody`).
+      3. *Configuración:* Gestión de Usuarios y Permisos RBAC (`#usersTableBody`).
+      4. *Configuración:* Padrón de Operadores en Planta (`#operatorsTableBody`).
+      5. *Padrón de Operadores:* Directorio Operativo de Mano de Obra (`#operatorsDirectoryBody`).
+      6. *Almacén & Inventarios:* Saldos de Almacenes Físicos (`#tblPhysicalWarehousesBody`).
+      7. *Almacén & Inventarios:* Catálogo Maestro de Hormas y Moldes de Aluminio (`#tblInventoryMoldsBody`).
+      8. *Almacén & Inventarios:* Kárdex & Movimientos de Almacén (`#tblInventoryKardexBody`).
+    - **Barra de Filtros Multi-Criterio Estandarizada (`.uanify-filter-toolbar`):**
+      - Búsqueda en tiempo real por texto (`input[type="text"]` con clase `.filter-search-box`) filtrando por código, nombre y metadatos relevantes.
+      - Selectores contextuales de categoría, tipo de proceso o estatus (`.filter-select-group`).
+      - Contador reactivo en vivo (`.filter-count-badge`) con formato *"Mostrando X de Y registros"*.
+      - Botón de reseteo rápido (`.btn-reset-filters`) con icono `🔄 Limpiar` que restaura inputs y muestra la totalidad de registros.
+    - **Jerarquía y Diseño de Columnas Normalizado:**
+      - *Columna 1 (Identificador):* `.col-code` con badge monoespaciado `.table-badge-code` en fondo neutro (#F1F5F9).
+      - *Columna 2 (Nombre y Descripción):* `.col-name` con título en negrita `.table-cell-primary` y subtítulo explicativo `.table-cell-subtext`.
+      - *Columnas Intermedias (Datos Técnicos / Procesos):* Alineación a la izquierda con tipografía compacta (#475569) y badges temáticos.
+      - *Columna Penúltima (Estatus):* `.col-status` con pastilla `.table-status-pill` (activa/inactiva/mantenimiento) y punto de estado luminoso `.status-dot`.
+      - *Columna Final (Acciones):* `.col-actions` con ancho mínimo de 140px y contenedor flexible centrado `.action-btns-cell`.
+    - **Sección de Acciones Estandarizada (`.action-btns-cell`):**
+      - Botones touch de 38px de altura mínima con tipografía clara y padding ergonómico (8px 14px):
+        - `✏️ Editar` (`.btn-action-edit`) con tono azul suave (#EFF6FF / #2563EB).
+        - `🗑️ Eliminar/Baja` (`.btn-action-delete`) con tono carmesí suave (#FEF2F2 / #DC2626).
+        - `👁️ Ver Lotes/Detalle` (`.btn-action-view`) con tono café/cuero artesanal (#FDF8F6 / #8B5E3C).
+        - `👤 Asignar` (`.btn-action-assign`) con tono verde suave (#F0FDF4 / #16A34A).
+      - Todo botón interactivo cuenta con `cursor: pointer !important` y micro-animación hover.
+    - **Manejo de Estado Vacío (`.table-empty-row`):**
+      - Despliegue de fila con `colspan` total, icono representativo (🔍), leyenda clara ("No se encontraron registros...") y botón interactivo para restablecer filtros.
+
+---
+
 ## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -590,3 +627,5 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-63** | Unificación de Catálogos de Hormas y Módulo General Almacén | Almacenes e Inventarios      | `v2.15.0`           | ✅ En Producción |
 | **RF-64** | CRUD Integral de Filtros de Calidad & Tolerancias (C-XX)    | Configuración / Calidad      | `v2.16.0`           | ✅ En Producción |
 | **RF-65** | Rutas Específicas por Modelo con Drag & Drop (⠿)            | Configuración / Rutas        | `v2.16.0`           | ✅ En Producción |
+| **RF-66** | Estandarización Universal de Tablas, Filtros y Acciones     | Todos los Módulos / Interfaz | `v2.17.0`           | ✅ En Producción |
+
