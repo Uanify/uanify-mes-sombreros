@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.15.0">
-  <link rel="stylesheet" href="css/components.css?v=2.15.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.16.0">
+  <link rel="stylesheet" href="css/components.css?v=2.16.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.15.0</span>
+        <span class="system-version-pill login-version-pill">v2.16.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -143,7 +143,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.15.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.16.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1413,6 +1413,7 @@
         <!-- Sub-navegación por Pestañas del Módulo Configuración -->
         <div class="sub-nav-tabs" data-module="config">
           <button class="sub-tab-btn active" data-subtab="subtab-config-depts">🏢 Departamentos & Almacenes Intermedios</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-quality">🔍 Filtros de Calidad & Tolerancias</button>
           <button class="sub-tab-btn" data-subtab="subtab-config-routes">📐 Rutas & Secuencias por Modelo</button>
           <button class="sub-tab-btn" data-subtab="subtab-config-params">⏰ Parámetros & Meta Semanal</button>
           <button class="sub-tab-btn" data-subtab="subtab-config-users">👥 Usuarios del Sistema (RBAC)</button>
@@ -1592,9 +1593,6 @@
                 <p class="section-desc" style="margin-bottom:0;">Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn-secondary" id="btnOpenCreateQualityModal" style="padding:10px 16px; font-size:13px; font-weight:700;">
-                  + Registrar Filtro Calidad
-                </button>
                 <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
                   ➕ Dar de Alta Departamento & Almacén
                 </button>
@@ -1624,58 +1622,108 @@
           </div>
         </div>
 
+        <!-- Pestaña: Puntos de Inspección & Filtros de Calidad (C-XX) -->
+        <div class="sub-tab-content" id="subtab-config-quality">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3>🔍 Catálogo Maestro de Puntos de Inspección & Filtros de Calidad (C-XX)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Configuración técnica de áreas de inspección, tolerancias, tiempos de ciclo e inspectores responsables. Estos filtros se insertan como paradas obligatorias en las secuencias de rutas de fabricación.</p>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" id="btnOpenCreateQualityModal" onclick="window.openCreateQualityModal()" style="min-height:48px; padding:0 20px; font-weight:700; background:#D97706; border-color:#B45309;">
+                  ➕ Dar de Alta Filtro de Calidad
+                </button>
+              </div>
+            </div>
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Filtro de Calidad</th>
+                    <th>Ubicación en Nave</th>
+                    <th>Criterios & Tolerancias Técnicas</th>
+                    <th>Inspector Responsable</th>
+                    <th>Tiempo de Ciclo</th>
+                    <th>Estatus</th>
+                    <th style="text-align:center;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cfgQualityTable">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Pestaña 5: Rutas & Secuencias Departamentales por Modelo -->
         <div class="sub-tab-content" id="subtab-config-routes">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
                 <h3>📐 Rutas de Fabricación y Secuencias Departamentales por Modelo</h3>
-                <p class="section-desc" style="margin-bottom:0;">Define y ordena la secuencia de pasos por los que transita cada tipo de sombrero, intercalando departamentos de manufactura y paradas de control de calidad. Configurable por Ingeniería y Dirección.</p>
+                <p class="section-desc" style="margin-bottom:0;">Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad.</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <button class="btn-primary" id="btnSaveRouteSequence">💾 Guardar Secuencia de Ruta</button>
+                <button class="btn-primary" id="btnSaveRouteSequence" style="min-height:48px; padding:0 22px; font-weight:700;">💾 Guardar Secuencia de Ruta</button>
               </div>
             </div>
 
-            <div class="sequence-builder-card" style="margin-top:16px;">
+            <!-- Banner Informativo de Asignación Exclusiva -->
+            <div style="background:var(--color-brand-light); border:1px solid var(--color-brand-border); border-radius:10px; padding:14px 18px; margin-top:16px; margin-bottom:16px; display:flex; gap:14px; align-items:center;">
+              <span style="font-size:24px;">ℹ️</span>
+              <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">
+                <strong style="color:var(--color-brand); font-size:13px;">Asignación Exclusiva de Secuencia por Modelo:</strong> En esta sección configuras el flujo específico del modelo seleccionado arrastrando los pasos con <strong style="color:var(--text-primary);">⠿ Drag & Drop</strong> o usando los botones <strong>▲ ▼</strong>. <strong style="color:var(--text-primary);">Aquí únicamente se añaden o retiran pasos de la asignación a este modelo</strong>; los Departamentos y Filtros de Calidad maestros se crean, editan o eliminan en sus pestañas dedicadas.
+              </div>
+            </div>
+
+            <div class="sequence-builder-card" style="margin-top:12px;">
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px; align-items:flex-end;">
                 <div class="form-group">
-                  <label class="field-label">Modelo / Familia de Sombrero:</label>
-                  <select id="cfgRouteModelSelect" class="custom-select" style="font-weight:700; font-size:13.5px;">
-                    <!-- Llenado dinámicamente por JS -->
+                  <label class="field-label" style="font-size:13px; font-weight:700;">Modelo Específico de Sombrero:</label>
+                  <select id="cfgRouteModelSelect" class="custom-select" style="font-weight:700; font-size:13.5px; min-height:48px;">
+                    <!-- Llenado dinámicamente por JS por modelo -->
                   </select>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-medium); border-radius:8px; padding:10px 14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-medium); border-radius:8px; padding:10px 14px; min-height:48px;">
                   <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Categoría del Sombrero:</span>
+                    <span style="font-size:11px; color:var(--text-muted); display:block;">Categoría Constructiva:</span>
                     <strong style="color:var(--color-brand); font-size:12.5px;" id="cfgRouteCategoryBadge">Sombrero 2 Piezas (Copa y Falda)</strong>
                   </div>
-                  <span class="badge-subtle" id="cfgRouteStepsCountBadge" style="font-weight:700;">14 Pasos</span>
+                  <span class="badge-subtle" id="cfgRouteStepsCountBadge" style="font-weight:700; font-size:12px;">14 Pasos</span>
                 </div>
               </div>
 
-              <p id="cfgRouteDesc" style="font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; background:var(--color-brand-light); border-left:3px solid var(--color-brand); padding:8px 12px; border-radius:4px;">
+              <p id="cfgRouteDesc" style="font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; background:var(--color-brand-light); border-left:3px solid var(--color-brand); padding:10px 14px; border-radius:6px;">
                 Ruta completa con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.
               </p>
 
               <!-- Agregar Parada a la Secuencia -->
-              <div style="display:flex; gap:10px; align-items:center; background:#F1F5F9; border:1px solid var(--border-medium); border-radius:8px; padding:12px 14px; margin-bottom:16px; flex-wrap:wrap;">
-                <span style="font-size:12.5px; font-weight:700; color:var(--text-primary);">+ Insertar Estación o Parada de Calidad:</span>
-                <select id="addStepStationSelect" class="custom-select" style="flex:1; min-width:220px; font-size:12.5px;">
-                  <!-- Llenado dinámico con departamentos y áreas de calidad -->
+              <div style="display:flex; gap:12px; align-items:center; background:#F1F5F9; border:1px solid var(--border-medium); border-radius:10px; padding:14px 16px; margin-bottom:18px; flex-wrap:wrap;">
+                <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                  <span>➕</span> Asignar Estación o Parada de Calidad a este Modelo:
+                </span>
+                <select id="addStepStationSelect" class="custom-select" style="flex:1; min-width:240px; font-size:13px; min-height:48px;">
+                  <!-- Llenado dinámico con optgroups por JS -->
                 </select>
-                <button type="button" class="btn-secondary" id="btnAddStepToRoute" style="padding:8px 14px; font-size:12px; font-weight:700;">
-                  + Agregar al Final de la Ruta
+                <button type="button" class="btn-primary" id="btnAddStepToRoute" style="min-height:48px; padding:0 18px; font-size:13px; font-weight:700;">
+                  ➕ Asignar al Final de la Secuencia
                 </button>
               </div>
 
-              <!-- Lista Ordenada de Pasos -->
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:0;">Secuencia de Pasos en Línea de Tiempo:</h4>
-                <small style="color:var(--text-muted); font-size:11.5px;">Usa los botones ▲ y ▼ para cambiar el orden en la línea de producción.</small>
+              <!-- Lista Ordenada de Pasos con Drag & Drop -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
+                  Secuencia de Pasos en Línea de Tiempo (Arrastra con ⠿ o usa ▲ ▼):
+                </h4>
+                <small style="color:var(--color-brand); font-weight:700; font-size:11.5px; background:var(--color-brand-light); padding:4px 8px; border-radius:4px;">
+                  ⠿ Drag & Drop Habilitado
+                </small>
               </div>
               <div id="routeSequenceList" class="sequence-builder-list">
-                <!-- Pasos inyectados por config.js -->
+                <!-- Pasos inyectados por config.js con drag and drop -->
               </div>
             </div>
           </div>
@@ -2191,39 +2239,46 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: REGISTRAR ÁREA / PARADA DE CONTROL DE CALIDAD
+       MODAL: REGISTRAR / EDITAR ÁREA / PARADA DE CONTROL DE CALIDAD (CRUD)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateQualityArea">
-    <div class="modal-box card-glass" style="max-width:540px;">
+    <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3>🔍 Registrar Nueva Área / Parada de Control de Calidad</h3>
-          <p class="modal-header-sub">Estación de inspección y filtros de defectos</p>
+          <h3 id="modalQualityTitle">🔍 Registrar Filtro de Control de Calidad</h3>
+          <p class="modal-header-sub" id="modalQualitySub">Estación técnica de inspección, tolerancias y certificación de lotes</p>
         </div>
         <button class="modal-close" id="btnCloseCreateQualityModal">&times;</button>
       </div>
       <form id="formCreateQualityArea">
-        <div class="modal-body">
-          <div style="display:grid; grid-template-columns: 120px 1fr; gap:12px;">
+        <input type="hidden" id="qualityEditMode" value="create">
+        <input type="hidden" id="origQualityCode" value="">
+        <div class="modal-body" style="padding:20px;">
+          <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
             <div class="form-group">
               <label class="field-label">Código (C-XX):</label>
-              <input type="text" id="newQualityCode" class="form-input" value="C-04" required style="font-weight:700; font-family:var(--font-mono);">
+              <input type="text" id="newQualityCode" class="form-input" value="C-04" required style="font-weight:700; font-family:var(--font-mono); min-height:48px;">
             </div>
             <div class="form-group">
               <label class="field-label">Nombre del Filtro de Calidad:</label>
-              <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad de Falda & Borde" required>
+              <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad 4 (Post-Laqueado Especial)" required style="min-height:48px;">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="field-label">Criterios de Inspección / Tolerancias Tombstone:</label>
-            <textarea id="newQualityDesc" class="form-input" rows="2" placeholder="Especificar qué se evalúa: alineación de copa, curvatura de falda, costura, planchado..."></textarea>
+            <label class="field-label">Ubicación / Área en Planta:</label>
+            <input type="text" id="newQualityLocation" class="form-input" placeholder="ej. Salida Cabina de Pintura / Túnel UV" style="min-height:48px;">
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="field-label">Criterios de Inspección / Tolerancias Tombstone:</label>
+            <textarea id="newQualityDesc" class="form-input" rows="3" placeholder="Especificar qué se evalúa: alineación de copa, curvatura de falda, espesor de película, planchado, simetría..."></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 120px; gap:12px;">
             <div class="form-group">
               <label class="field-label">Inspector Responsable:</label>
-              <select id="newQualityInspector" class="custom-select">
+              <select id="newQualityInspector" class="custom-select" style="min-height:48px;">
                 <option value="Inspectora de Calidad (Turno)">Inspectora de Calidad (Turno)</option>
                 <option value="Ing. Carlos Ortiz">Ing. Carlos Ortiz (Procesos)</option>
                 <option value="Juan Manuel Pérez">Juan Manuel Pérez (Supervisor)</option>
@@ -2232,14 +2287,23 @@
             </div>
             <div class="form-group">
               <label class="field-label">Tiempo de Ciclo / Inspección:</label>
-              <input type="text" id="newQualityCycleTime" class="form-input" value="18s" placeholder="ej. 18s">
+              <input type="text" id="newQualityCycleTime" class="form-input" value="18s" placeholder="ej. 18s" style="min-height:48px;">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Estatus:</label>
+              <select id="newQualityStatus" class="custom-select" style="min-height:48px;">
+                <option value="Activo">🟢 Activo</option>
+                <option value="Inactivo">🔴 Inactivo</option>
+              </select>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-secondary" id="btnCancelCreateQuality">Cancelar</button>
-          <button type="submit" class="btn-primary" style="background:#D97706; border-color:#B45309;">
-            🔍 Guardar Área de Calidad
+        <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelCreateQuality" style="flex:1;">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary btn-touch-hero" id="btnSubmitQualityModal" style="flex:1.4; background:#D97706; border-color:#B45309;">
+            💾 Guardar Filtro de Calidad
           </button>
         </div>
       </form>
@@ -2688,11 +2752,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.15.0"></script>
-  <script src="js/andon.js?v=2.15.0"></script>
-  <script src="js/terminal.js?v=2.15.0"></script>
-  <script src="js/engineer.js?v=2.15.0"></script>
-  <script src="js/executive.js?v=2.15.0"></script>
-  <script src="js/config.js?v=2.15.0"></script>
+  <script src="js/app.js?v=2.16.0"></script>
+  <script src="js/andon.js?v=2.16.0"></script>
+  <script src="js/terminal.js?v=2.16.0"></script>
+  <script src="js/engineer.js?v=2.16.0"></script>
+  <script src="js/executive.js?v=2.16.0"></script>
+  <script src="js/config.js?v=2.16.0"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.15.0` | **Fecha de Actualización:** 24 de Septiembre de 2026  
+> **Versión Actual:** `v2.16.0` | **Fecha de Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -31,6 +31,12 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
+
+- **`v2.16.0` (2026-09-24):**
+  - **Rutas y Secuencias Específicas por Modelo con Drag & Drop (`⠿`):** Implementación de reordenamiento visual y táctil mediante arrastre de elementos para las secuencias de manufactura asignadas a cada modelo individual de sombrero (`El Viejonón`, `Denver Master`, `Chaparral`, etc.).
+  - **Delimitación de Alcance en Secuencias:** Restricción estricta para que en el constructor de secuencias únicamente se puedan agregar o quitar asignaciones de pasos de ese modelo (`+ Asignar al Final de la Secuencia`, `🗑️ Quitar de la Secuencia`), impidiendo crear, editar o eliminar departamentos o filtros de calidad maestros desde esta pantalla.
+  - **CRUD Integral de Filtros de Calidad (`C-XX`):** Nueva sección dedicada en Configuración de Planta para dar de alta, editar y eliminar puntos de inspección y tolerancias (`C-01` a `C-04`), vinculando ubicación física, tolerancias paramétricas, inspectores asignados y sincronización automática con `stations`.
+  - **Persistencia y Reactividad Global:** Sincronización transparente de las secuencias de ruta y filtros de calidad en `localStorage` con emisión de eventos vía `EventBus`.
 
 - **`v2.15.0` (2026-09-24):**
   - **Módulo General de Almacén & Control de Inventarios:** Consolidación de todos los almacenes físicos y de amortiguamiento (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Segundas de Viernes y Producto Terminado), subensambles de tafiletes por talla y nuevo **Kárdex & Movimientos de Almacén** con bitácora de transferencias.

@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.15.0` | **Versión:** `v2.15.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.16.0` | **Versión:** `v2.16.0`  
 > **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -311,6 +311,28 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque N: Rutas por Modelo con Drag & Drop y CRUD de Filtros de Calidad (v2.16.0)
+
+- **`RF-64` CRUD Integral de Filtros de Calidad & Tolerancias (`C-XX`):**
+  - **Propósito:** Permitir a ingenieros de calidad y administradores dar de alta, consultar, editar y deshabilitar los puntos de inspección y filtros de calidad de la planta de manera independiente y desacoplada de los departamentos de manufactura.
+  - **Especificación Funcional (CRUD Completo):**
+    - **Create (Alta de Filtro):** Modal interactivo (`#modalCreateQualityArea`) con generación correlativa del código (`C-01`, `C-02`, etc.), captura de Nombre del Filtro (ej. "Inspección de Prensado y Tolerancia"), Ubicación Física en Nave, Criterios de Aceptación/Rechazo, Tolerancias Numéricas (milímetros/gramaje), Inspector Responsable, Tiempo Estimado de Inspección (segundos/pza) y Estatus Operativo (🟢 Activo / 🔴 Inactivo).
+    - **Read (Consulta de Filtros):** Sub-pestaña dedicada en Configuración (`subtab-config-quality`) con tabla exhaustiva (`#cfgQualityTable`) que lista Código, Nombre, Ubicación Física, Criterios y Tolerancias, Inspector Asignado, Tiempo de Ciclo, Estatus y Acciones.
+    - **Update (Edición Paramétrica):** Edición reactiva que actualiza la definición del filtro y propaga los cambios a todas las rutas que tengan asignado dicho filtro.
+    - **Delete (Baja de Filtro):** Supresión segura con confirmación in-app (`UanifyUI.confirm`) que remueve el filtro de `qualityAreas`, de `stations` y de los pasos asignados en cualquier ruta de modelo.
+    - **Sincronización:** Persistencia en `localStorage` (`uanify_custom_quality_areas` y `uanify_custom_stations`) y emisión del evento `stations-updated`.
+
+- **`RF-65` Rutas y Secuencias Específicas por Modelo con Reordenamiento Drag & Drop (`⠿`):**
+  - **Propósito:** Permitir a ingeniería definir el flujo secuencial exacto de fabricación para cada modelo individual de sombrero mediante interacción visual Drag & Drop, garantizando que el editor sólo gestione la asignación de pasos sin alterar el catálogo de estaciones.
+  - **Especificación Funcional:**
+    - **Secuencias Dedicadas por Modelo Específico:** Cada modelo de sombrero del catálogo (`El Viejonón`, `Denver Master`, `Chaparral`, `Laredo Ranch`, `Frontier Rodeo`, `Magnum Gold`, `Sonora Classic`, `Bullrider Pro`) cuenta con su propia ruta independiente (`route-model-[id]`), permitiendo variaciones de proceso (ej. pasos adicionales de laqueado, ribeteado o puntos de inspección específicos) sin afectar a otros modelos.
+    - **Reordenamiento Intuitivo Drag & Drop (`⠿`):** Elementos de la secuencia configurables mediante arrastre directo (HTML5 Drag & Drop API) con grip icon `⠿`, estilos visuales de elevación, borde punteado y líneas guía (`drag-over-top`, `drag-over-bottom`). Respaldado adicionalmente con controles táctiles `▲` y `▼` para compatibilidad ergonómica total en tabletas.
+    - **Delimitación Estricta de Alcance (Sin Mutación de Estaciones):** En la pantalla de secuencias **únicamente** se pueden añadir o quitar pasos de la asignación de ese modelo (`➕ Asignar al Final de la Secuencia`, `🗑️ Quitar de la Secuencia`). Queda terminantemente prohibido crear, modificar o eliminar departamentos o filtros de calidad desde esta interfaz, preservando la integridad del catálogo maestro.
+    - **Selector Agrupado de Pasos:** El selector de adición de pasos categoriza claramente entre `🏭 Departamentos de Manufactura (D-XX)` y `🔍 Puntos de Inspección de Calidad (C-XX)`.
+    - **Persistencia y Trazabilidad en Terminal:** Las secuencias modificadas se persisten en `localStorage` (`uanify_production_routes`) y el método `getLotRoute(lotId)` prioriza la ruta del modelo específico para determinar el siguiente almacén de destino durante la lectura de tarjetas viajeras en la Terminal de Supervisor.
+
+---
+
 ## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -566,3 +588,5 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-61** | Ergonomía Táctil Universal y Botones Grandes para Tabletas  | Interfaz / Todos los Módulos | `v2.14.0`           | ✅ En Producción |
 | **RF-62** | CRUD Integral de Departamentos y Almacenes Intermedios      | Configuración de Planta      | `v2.15.0`           | ✅ En Producción |
 | **RF-63** | Unificación de Catálogos de Hormas y Módulo General Almacén | Almacenes e Inventarios      | `v2.15.0`           | ✅ En Producción |
+| **RF-64** | CRUD Integral de Filtros de Calidad & Tolerancias (C-XX)    | Configuración / Calidad      | `v2.16.0`           | ✅ En Producción |
+| **RF-65** | Rutas Específicas por Modelo con Drag & Drop (⠿)            | Configuración / Rutas        | `v2.16.0`           | ✅ En Producción |

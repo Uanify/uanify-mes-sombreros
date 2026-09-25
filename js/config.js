@@ -1088,28 +1088,184 @@ window.initConfigView = function() {
     });
   }
 
-  // ── 6. ALTA DE ÁREA DE CONTROL DE CALIDAD ──────────────────────────────────
+  // ── 6. CRUD DE FILTROS DE CALIDAD & TOLERANCIAS (C-XX) ───────────────────
   const modalCreateQuality = document.getElementById('modalCreateQualityArea');
-  const btnOpenCreateQuality = document.getElementById('btnOpenCreateQualityModal');
   const btnCloseCreateQuality = document.getElementById('btnCloseCreateQualityModal');
   const btnCancelCreateQuality = document.getElementById('btnCancelCreateQuality');
   const formCreateQuality = document.getElementById('formCreateQualityArea');
+  const cfgQualityTable = document.getElementById('cfgQualityTable');
 
-  if (btnOpenCreateQuality && modalCreateQuality) {
-    btnOpenCreateQuality.addEventListener('click', () => {
-      // Sugerir siguiente código C-0X
-      const existingQualityCodes = (UanifyState.stations || [])
-        .filter(s => s.code && s.code.startsWith('C-'))
-        .map(s => parseInt(s.code.replace('C-', ''), 10))
-        .filter(n => !isNaN(n));
-      const nextNum = existingQualityCodes.length > 0 ? Math.max(...existingQualityCodes) + 1 : 4;
-      const nextCode = `C-${String(nextNum).padStart(2, '0')}`;
-      const codeInput = document.getElementById('newQualityCode');
-      if (codeInput) codeInput.value = nextCode;
+  function renderQualityFiltersConfig() {
+    if (!cfgQualityTable) return;
+    const areas = UanifyState.qualityAreas || [];
 
-      modalCreateQuality.classList.add('active');
-    });
+    if (areas.length === 0) {
+      cfgQualityTable.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align:center; padding:32px; color:var(--text-muted);">
+            No hay filtros de calidad registrados. Presiona "+ Dar de Alta Filtro de Calidad" para crear el primero.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const canManage = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
+
+    cfgQualityTable.innerHTML = areas.map(q => {
+      const isActive = q.status !== 'Inactivo';
+      return `
+        <tr>
+          <td>
+            <strong style="font-family:var(--font-mono); color:#D97706; font-size:13px; font-weight:800;">${q.code}</strong>
+          </td>
+          <td>
+            <div style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${q.name}</div>
+          </td>
+          <td>
+            <span style="font-size:12px; color:var(--text-secondary);">${q.location || 'Nave de Producción'}</span>
+          </td>
+          <td>
+            <div style="font-size:12px; color:var(--text-muted); max-width:320px; line-height:1.4;">${q.criteria || q.desc || '—'}</div>
+          </td>
+          <td>
+            <span class="badge-subtle" style="font-size:11px; font-weight:700;">👤 ${q.inspector || 'Inspectora de Calidad'}</span>
+          </td>
+          <td>
+            <span style="font-family:var(--font-mono); font-weight:700; font-size:12.5px;">${q.cycleTime || '18s'}</span>
+          </td>
+          <td>
+            <span class="badge-status ${isActive ? 'badge-status-green' : 'badge-status-red'}" style="font-size:11px; font-weight:700;">
+              ${isActive ? '🟢 Activo' : '🔴 Inactivo'}
+            </span>
+          </td>
+          <td style="text-align:center;">
+            ${canManage ? `
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <button type="button" class="btn-table-action btn-sm" onclick="window.openEditQualityModal('${q.code}')" style="min-height:36px; padding:4px 10px; font-size:12px; font-weight:700; color:#B45309; border-color:#FCD34D;" title="Editar criterios y tolerancias">
+                  ✏️ Editar
+                </button>
+                <button type="button" class="btn-table-action btn-sm" onclick="window.deleteQualityFilter('${q.code}')" style="min-height:36px; padding:4px 10px; font-size:12px; font-weight:700; color:#EF4444; border-color:#FECACA;" title="Eliminar filtro de calidad">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
+
+  window.openCreateQualityModal = function() {
+    if (!modalCreateQuality) return;
+    const existing = (UanifyState.qualityAreas || [])
+      .map(q => parseInt((q.code || '').replace('C-', ''), 10))
+      .filter(n => !isNaN(n));
+    const nextNum = existing.length > 0 ? Math.max(...existing) + 1 : 5;
+    const nextCode = `C-${String(nextNum).padStart(2, '0')}`;
+
+    const titleEl = document.getElementById('modalQualityTitle');
+    const modeEl = document.getElementById('qualityEditMode');
+    const origCodeEl = document.getElementById('origQualityCode');
+    const codeEl = document.getElementById('newQualityCode');
+    const nameEl = document.getElementById('newQualityName');
+    const locEl = document.getElementById('newQualityLocation');
+    const descEl = document.getElementById('newQualityDesc');
+    const inspectorEl = document.getElementById('newQualityInspector');
+    const cycleEl = document.getElementById('newQualityCycleTime');
+    const statusEl = document.getElementById('newQualityStatus');
+
+    if (titleEl) titleEl.textContent = '🔍 Dar de Alta Filtro de Control de Calidad';
+    if (modeEl) modeEl.value = 'create';
+    if (origCodeEl) origCodeEl.value = '';
+    if (codeEl) { codeEl.value = nextCode; codeEl.readOnly = false; }
+    if (nameEl) nameEl.value = '';
+    if (locEl) locEl.value = '';
+    if (descEl) descEl.value = '';
+    if (inspectorEl) inspectorEl.value = 'Inspectora de Calidad (Turno)';
+    if (cycleEl) cycleEl.value = '18s';
+    if (statusEl) statusEl.value = 'Activo';
+
+    modalCreateQuality.classList.add('active');
+  };
+
+  window.openEditQualityModal = function(code) {
+    if (!modalCreateQuality) return;
+    const q = (UanifyState.qualityAreas || []).find(area => area.code === code);
+    if (!q) return;
+
+    const titleEl = document.getElementById('modalQualityTitle');
+    const modeEl = document.getElementById('qualityEditMode');
+    const origCodeEl = document.getElementById('origQualityCode');
+    const codeEl = document.getElementById('newQualityCode');
+    const nameEl = document.getElementById('newQualityName');
+    const locEl = document.getElementById('newQualityLocation');
+    const descEl = document.getElementById('newQualityDesc');
+    const inspectorEl = document.getElementById('newQualityInspector');
+    const cycleEl = document.getElementById('newQualityCycleTime');
+    const statusEl = document.getElementById('newQualityStatus');
+
+    if (titleEl) titleEl.textContent = `✏️ Editar Filtro de Calidad · ${q.code}`;
+    if (modeEl) modeEl.value = 'edit';
+    if (origCodeEl) origCodeEl.value = q.code;
+    if (codeEl) { codeEl.value = q.code; codeEl.readOnly = true; }
+    if (nameEl) nameEl.value = q.name || '';
+    if (locEl) locEl.value = q.location || '';
+    if (descEl) descEl.value = q.criteria || q.desc || '';
+    if (inspectorEl) inspectorEl.value = q.inspector || 'Inspectora de Calidad (Turno)';
+    if (cycleEl) cycleEl.value = q.cycleTime || '18s';
+    if (statusEl) statusEl.value = q.status || 'Activo';
+
+    modalCreateQuality.classList.add('active');
+  };
+
+  window.deleteQualityFilter = function(code) {
+    if (!window.UanifyUI || !window.UanifyUI.confirm) return;
+    window.UanifyUI.confirm({
+      title: `Eliminar Filtro de Calidad ${code}`,
+      message: `¿Estás seguro de dar de baja el Filtro de Calidad ${code}? Esta parada técnica será removida del catálogo y de todas las rutas de fabricación asignadas.`,
+      confirmText: 'Sí, Eliminar Filtro',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        // 1. Remover de qualityAreas
+        UanifyState.qualityAreas = (UanifyState.qualityAreas || []).filter(q => q.code !== code);
+
+        // 2. Remover de stations
+        UanifyState.stations = (UanifyState.stations || []).filter(s => s.code !== code);
+
+        // 3. Remover de rutas de producción asignadas
+        (UanifyState.productionRoutes || []).forEach(r => {
+          if (Array.isArray(r.steps)) {
+            r.steps = r.steps.filter(s => s.code !== code);
+            r.steps.forEach((s, i) => s.order = i + 1);
+          }
+        });
+
+        // 4. Guardar en localStorage
+        try {
+          localStorage.setItem('uanify_quality_areas', JSON.stringify(UanifyState.qualityAreas));
+          localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+          localStorage.setItem('uanify_production_routes', JSON.stringify(UanifyState.productionRoutes));
+        } catch (e) {
+          console.warn('Error saving deleted quality filter:', e);
+        }
+
+        // 5. Re-renderizar
+        renderQualityFiltersConfig();
+        populateAddStepStations();
+        renderRouteSequence();
+
+        if (typeof EventBus !== 'undefined') {
+          EventBus.emit('quality-areas-updated', UanifyState.qualityAreas);
+          EventBus.emit('stations-updated', UanifyState.stations);
+          EventBus.emit('production-routes-updated', UanifyState.productionRoutes);
+        }
+
+        window.UanifyUI.toast(`Filtro de Calidad ${code} eliminado exitosamente.`, 'success');
+      }
+    });
+  };
 
   function closeQualityModal() {
     if (modalCreateQuality) modalCreateQuality.classList.remove('active');
@@ -1121,60 +1277,83 @@ window.initConfigView = function() {
   if (formCreateQuality) {
     formCreateQuality.addEventListener('submit', (e) => {
       e.preventDefault();
+      const mode = document.getElementById('qualityEditMode')?.value || 'create';
+      const origCode = document.getElementById('origQualityCode')?.value || '';
       const code = (document.getElementById('newQualityCode')?.value || 'C-04').trim().toUpperCase();
       const name = (document.getElementById('newQualityName')?.value || '').trim();
+      const location = (document.getElementById('newQualityLocation')?.value || '').trim();
       const desc = (document.getElementById('newQualityDesc')?.value || '').trim();
-      const inspector = document.getElementById('newQualityInspector')?.value || 'Inspectora de Calidad';
+      const inspector = document.getElementById('newQualityInspector')?.value || 'Inspectora de Calidad (Turno)';
       const cycleTime = document.getElementById('newQualityCycleTime')?.value || '18s';
+      const status = document.getElementById('newQualityStatus')?.value || 'Activo';
 
       if (!name) {
         window.UanifyUI.toast('Ingresa el nombre del filtro de calidad.', 'warning');
         return;
       }
 
-      const newQualityStation = {
-        id: 'calidad-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        code: code,
-        name: name,
-        desc: desc || `Filtro de calidad de planta: ${name}`,
-        criteria: desc,
-        target: 850,
-        produced: 0,
-        scrap: 0,
-        wipWaiting: 0,
-        cycleTime: cycleTime,
-        status: 'running',
-        operator: inspector,
-        type: 'calidad',
-        isQualityStop: true,
-        note: `Área de Calidad registrada. Auditor responsable: ${inspector}.`
-      };
-
-      if (!UanifyState.stations) UanifyState.stations = [];
-      UanifyState.stations.push(newQualityStation);
-
       if (!UanifyState.qualityAreas) UanifyState.qualityAreas = [];
-      UanifyState.qualityAreas.push({
-        code: code,
-        name: name,
-        desc: desc,
-        criteria: desc,
-        inspector: inspector,
-        cycleTime: cycleTime,
-        status: 'Activo'
-      });
+      if (!UanifyState.stations) UanifyState.stations = [];
+
+      if (mode === 'edit') {
+        const qIndex = UanifyState.qualityAreas.findIndex(q => q.code === origCode || q.code === code);
+        if (qIndex !== -1) {
+          UanifyState.qualityAreas[qIndex] = {
+            code, name, location, desc, criteria: desc, inspector, cycleTime, status
+          };
+        }
+        const stIndex = UanifyState.stations.findIndex(s => s.code === origCode || s.code === code);
+        if (stIndex !== -1) {
+          const st = UanifyState.stations[stIndex];
+          st.name = name;
+          st.desc = desc;
+          st.criteria = desc;
+          st.warehouseLocation = location;
+          st.cycleTime = cycleTime;
+          st.operator = inspector;
+          st.status = status === 'Activo' ? 'running' : 'idle';
+        }
+      } else {
+        // Create mode
+        const newQuality = {
+          code, name, location, desc, criteria: desc, inspector, cycleTime, status
+        };
+        UanifyState.qualityAreas.push(newQuality);
+
+        const newStation = {
+          id: 'calidad-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          code: code,
+          name: name,
+          desc: desc || `Filtro de calidad: ${name}`,
+          criteria: desc,
+          warehouseLocation: location || 'Nave de Producción',
+          target: 850,
+          produced: 0,
+          scrap: 0,
+          wipWaiting: 0,
+          cycleTime: cycleTime,
+          status: status === 'Activo' ? 'running' : 'idle',
+          operator: inspector,
+          type: 'calidad',
+          isQualityStop: true,
+          note: `Filtro de Calidad registrado. Auditor responsable: ${inspector}.`
+        };
+        UanifyState.stations.push(newStation);
+      }
 
       try {
-        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
         localStorage.setItem('uanify_quality_areas', JSON.stringify(UanifyState.qualityAreas));
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
       } catch (err) {
         console.warn('Error saving quality areas:', err);
       }
 
+      renderQualityFiltersConfig();
       renderDepartmentsConfig();
       populateAddStepStations();
 
       if (typeof EventBus !== 'undefined') {
+        EventBus.emit('quality-areas-updated', UanifyState.qualityAreas);
         EventBus.emit('stations-updated', UanifyState.stations);
       }
 
@@ -1182,14 +1361,16 @@ window.initConfigView = function() {
       formCreateQuality.reset();
 
       window.UanifyUI.toast(
-        `Área de Control de Calidad ${code} "${name}" registrada exitosamente. Ya puedes integrarla en las secuencias de rutas de fabricación.`,
+        mode === 'edit'
+          ? `Filtro de Calidad ${code} "${name}" actualizado exitosamente.`
+          : `Filtro de Calidad ${code} "${name}" registrado exitosamente. Ya puedes insertarlo en las rutas por modelo.`,
         'success',
-        '🔍 Área de Calidad Creada'
+        mode === 'edit' ? '✏️ Filtro Actualizado' : '🔍 Filtro Creado'
       );
     });
   }
 
-  // ── 7. RUTAS Y SECUENCIAS POR MODELO (INGENIERO & ADMIN) ────────────────────
+  // ── 7. RUTAS Y SECUENCIAS POR MODELO (CON DRAG & DROP) ─────────────────────
   const cfgRouteModelSelect = document.getElementById('cfgRouteModelSelect');
   const cfgRouteCategoryBadge = document.getElementById('cfgRouteCategoryBadge');
   const cfgRouteStepsCountBadge = document.getElementById('cfgRouteStepsCountBadge');
@@ -1199,26 +1380,49 @@ window.initConfigView = function() {
   const btnSaveRouteSequence = document.getElementById('btnSaveRouteSequence');
   const routeSequenceList = document.getElementById('routeSequenceList');
 
-  let activeRouteId = 'route-telar-1000x';
+  let activeRouteId = 'route-model-viejonon';
 
   function populateRouteModels() {
     if (!cfgRouteModelSelect || !UanifyState.productionRoutes) return;
+    
+    // Si la ruta activa inicial no existe, tomar la primera
+    if (!UanifyState.productionRoutes.some(r => r.id === activeRouteId)) {
+      activeRouteId = UanifyState.productionRoutes[0].id;
+    }
+
     cfgRouteModelSelect.innerHTML = UanifyState.productionRoutes.map(r => `
       <option value="${r.id}" ${r.id === activeRouteId ? 'selected' : ''}>
-        ${r.name} (${r.category})
+        🎩 ${r.name} · [SKU: ${r.sku || 'TB-STD'}] (${r.category})
       </option>
     `).join('');
   }
 
   function populateAddStepStations() {
     if (!addStepStationSelect || !UanifyState.stations) return;
-    addStepStationSelect.innerHTML = UanifyState.stations.map(st => {
-      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad');
-      const icon = isQuality ? '🔍' : '🏭';
-      const typeTxt = isQuality ? 'Control de Calidad' : 'Manufactura';
-      return `<option value="${st.code}">${icon} ${st.code} - ${st.name} [${typeTxt}]</option>`;
-    }).join('');
+    
+    const mfgStations = UanifyState.stations.filter(s => s.type !== 'calidad' && (!s.code || !s.code.startsWith('C-')));
+    const qualityStations = (UanifyState.qualityAreas && UanifyState.qualityAreas.length > 0)
+      ? UanifyState.qualityAreas
+      : UanifyState.stations.filter(s => s.type === 'calidad' || (s.code && s.code.startsWith('C-')));
+
+    let html = `<option value="">-- Selecciona Departamento o Filtro de Calidad Maestro --</option>`;
+
+    html += `<optgroup label="🏭 Departamentos de Manufactura (D-XX)">`;
+    mfgStations.forEach(st => {
+      html += `<option value="${st.code}">🏭 ${st.code} · ${st.name} [Takt: ${st.cycleTime || '30s'}]</option>`;
+    });
+    html += `</optgroup>`;
+
+    html += `<optgroup label="🔍 Puntos de Inspección de Calidad (C-XX)">`;
+    qualityStations.forEach(q => {
+      html += `<option value="${q.code}">🔍 ${q.code} · ${q.name} [Ciclo: ${q.cycleTime || '18s'}]</option>`;
+    });
+    html += `</optgroup>`;
+
+    addStepStationSelect.innerHTML = html;
   }
+
+  let draggedStepIndex = null;
 
   function renderRouteSequence() {
     if (!routeSequenceList || !UanifyState.productionRoutes) return;
@@ -1229,7 +1433,7 @@ window.initConfigView = function() {
     if (cfgRouteStepsCountBadge) cfgRouteStepsCountBadge.textContent = `${route.steps.length} Pasos`;
     if (cfgRouteDesc) cfgRouteDesc.textContent = route.desc;
 
-    // Verificar permisos: Ingeniero y Admin tienen permiso de edición
+    // Permisos: Ingeniero y Admin
     const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const canEdit = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
@@ -1250,25 +1454,100 @@ window.initConfigView = function() {
         : `<span class="badge-subtle" style="font-size:10.5px;">🏭 Manufactura</span>`;
 
       return `
-        <div class="sequence-builder-item ${isQuality ? 'is-quality-step' : ''}" data-index="${idx}">
+        <div class="sequence-builder-item ${isQuality ? 'is-quality-step' : ''}" 
+             draggable="${canEdit ? 'true' : 'false'}" 
+             data-index="${idx}"
+             data-code="${st.code}">
           <div class="sequence-item-info">
+            ${canEdit ? `<span class="drag-handle-grip" title="Arrastrar con el ratón o dedo para reordenar la secuencia">⠿</span>` : ''}
             <span class="sequence-order-badge">#${idx + 1}</span>
-            <strong style="font-family:var(--font-mono); color:var(--color-brand); font-size:12.5px; min-width:44px;">${st.code}</strong>
+            <strong style="font-family:var(--font-mono); color:${isQuality ? '#D97706' : 'var(--color-brand)'}; font-size:13px; min-width:46px;">${st.code}</strong>
             <span style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${st.name}</span>
             ${typeTag}
+            <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">⏱ ${st.cycleTime || '30s'}</span>
           </div>
           ${canEdit ? `
           <div class="sequence-controls">
-            <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir paso">▲</button>
-            <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar paso">▼</button>
-            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Eliminar paso de la ruta">🗑️</button>
+            <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir este paso">▲</button>
+            <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar este paso">▼</button>
+            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo">🗑️</button>
           </div>
           ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
         </div>
       `;
     }).join('');
 
-    // Handlers para reordenar y eliminar
+    // ── DRAG AND DROP HANDLERS (NATIVO HTML5) ──
+    if (canEdit) {
+      const items = routeSequenceList.querySelectorAll('.sequence-builder-item');
+      items.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          draggedStepIndex = parseInt(item.getAttribute('data-index'), 10);
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(draggedStepIndex));
+        });
+
+        item.addEventListener('dragend', () => {
+          draggedStepIndex = null;
+          items.forEach(it => {
+            it.classList.remove('dragging');
+            it.classList.remove('drag-over-top');
+            it.classList.remove('drag-over-bottom');
+          });
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+
+          const rect = item.getBoundingClientRect();
+          const midY = rect.top + rect.height / 2;
+          if (e.clientY < midY) {
+            item.classList.add('drag-over-top');
+            item.classList.remove('drag-over-bottom');
+          } else {
+            item.classList.add('drag-over-bottom');
+            item.classList.remove('drag-over-top');
+          }
+        });
+
+        item.addEventListener('dragleave', () => {
+          item.classList.remove('drag-over-top');
+          item.classList.remove('drag-over-bottom');
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          item.classList.remove('drag-over-top');
+          item.classList.remove('drag-over-bottom');
+
+          const targetIdx = parseInt(item.getAttribute('data-index'), 10);
+          if (draggedStepIndex === null || isNaN(draggedStepIndex) || draggedStepIndex === targetIdx) {
+            return;
+          }
+
+          // Reordenar pasos en la secuencia
+          const [movedStep] = route.steps.splice(draggedStepIndex, 1);
+          route.steps.splice(targetIdx, 0, movedStep);
+
+          // Normalizar números de orden
+          route.steps.forEach((st, i) => {
+            st.order = i + 1;
+          });
+
+          renderRouteSequence();
+
+          window.UanifyUI.toast(
+            `Paso "${movedStep.code} ${movedStep.name}" movido a la posición #${targetIdx + 1}. Recuerda presionar "Guardar Secuencia de Ruta".`,
+            'info',
+            '⠿ Secuencia Reordenada'
+          );
+        });
+      });
+    }
+
+    // ── BOTONES COMPLEMENTARIOS (▲, ▼, 🗑️) ──
     routeSequenceList.querySelectorAll('[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
         const action = btn.getAttribute('data-action');
@@ -1277,20 +1556,27 @@ window.initConfigView = function() {
           const temp = route.steps[idx];
           route.steps[idx] = route.steps[idx - 1];
           route.steps[idx - 1] = temp;
+          route.steps.forEach((s, i) => s.order = i + 1);
           renderRouteSequence();
         } else if (action === 'down' && idx < route.steps.length - 1) {
           const temp = route.steps[idx];
           route.steps[idx] = route.steps[idx + 1];
           route.steps[idx + 1] = temp;
+          route.steps.forEach((s, i) => s.order = i + 1);
           renderRouteSequence();
         } else if (action === 'delete') {
           if (route.steps.length <= 2) {
-            window.UanifyUI.toast('Una ruta debe tener al menos 2 pasos.', 'warning');
+            window.UanifyUI.toast('Una ruta de modelo debe tener al menos 2 pasos.', 'warning');
             return;
           }
           const removed = route.steps.splice(idx, 1)[0];
+          route.steps.forEach((s, i) => s.order = i + 1);
           renderRouteSequence();
-          window.UanifyUI.toast(`Paso "${removed.code} ${removed.name}" removido de la ruta. Guarda los cambios para aplicar en planta.`, 'info');
+          window.UanifyUI.toast(
+            `Paso "${removed.code} ${removed.name}" quitado de la secuencia de "${route.name}". Los catálogos maestros no se modifican.`,
+            'info',
+            '🗑️ Paso Quitado de la Secuencia'
+          );
         }
       });
     });
@@ -1306,27 +1592,40 @@ window.initConfigView = function() {
   if (btnAddStepToRoute) {
     btnAddStepToRoute.addEventListener('click', () => {
       const code = addStepStationSelect ? addStepStationSelect.value : null;
-      if (!code) return;
+      if (!code) {
+        window.UanifyUI.toast('Selecciona una estación o filtro de calidad maestro para asignar a la ruta.', 'warning');
+        return;
+      }
+
+      // Buscar primero en qualityAreas y luego en stations
+      const qualityArea = (UanifyState.qualityAreas || []).find(q => q.code === code);
       const st = UanifyState.stations.find(s => s.code === code);
-      if (!st) return;
+      if (!st && !qualityArea) return;
 
       const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
       if (!route) return;
 
-      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad');
+      const isQuality = Boolean(qualityArea) || (st && (st.type === 'calidad' || (st.code && st.code.startsWith('C-'))));
+      const stepName = qualityArea ? qualityArea.name : st.name;
+      const cycle = qualityArea ? qualityArea.cycleTime : (st.cycleTime || '30s');
+
       const newStep = {
         order: route.steps.length + 1,
-        code: st.code,
-        name: st.name,
-        type: isQuality ? 'calidad' : (st.code === 'D-11' ? 'logistica' : 'manufactura'),
+        code: code,
+        name: stepName,
+        type: isQuality ? 'calidad' : (code === 'D-11' ? 'logistica' : 'manufactura'),
         icon: isQuality ? '🔍' : '🏭',
         isQualityStop: isQuality,
-        cycleTime: st.cycleTime || '30s'
+        cycleTime: cycle
       };
 
       route.steps.push(newStep);
       renderRouteSequence();
-      window.UanifyUI.toast(`Estación "${st.code} ${st.name}" agregada a la ruta. Recuerda presionar "Guardar Secuencia de Ruta".`, 'success');
+      window.UanifyUI.toast(
+        `Paso "${code} ${stepName}" asignado al final de la ruta de "${route.name}". Recuerda presionar "Guardar Secuencia de Ruta".`,
+        'success',
+        '➕ Paso Asignado'
+      );
     });
   }
 
@@ -1351,20 +1650,26 @@ window.initConfigView = function() {
       }
 
       window.UanifyUI.toast(
-        `Secuencia de ruta para "${route.name}" guardada exitosamente (${route.steps.length} pasos). Los lotes asociados a este modelo seguirán este nuevo flujo de manufactura y calidad.`,
+        `Secuencia de ruta para "${route.name}" guardada exitosamente (${route.steps.length} pasos). Los lotes de este modelo seguirán este nuevo flujo de manufactura y calidad.`,
         'success',
         '📐 Ruta Guardada'
       );
     });
   }
 
+  // Exponer renderizadores
+  window.renderQualityFiltersConfig = renderQualityFiltersConfig;
+  window.renderRouteSequence = renderRouteSequence;
+
   // Inicializar selectores y secuencia
+  renderQualityFiltersConfig();
   populateRouteModels();
   populateAddStepStations();
   renderRouteSequence();
 
   // Actualizar si el usuario activo cambia en el sidebar
   EventBus.on('user-switched', () => {
+    renderQualityFiltersConfig();
     renderRouteSequence();
   });
 };

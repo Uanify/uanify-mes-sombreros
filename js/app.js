@@ -167,7 +167,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.15.0',
+  version: '2.16.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -436,11 +436,14 @@ const UanifyState = {
 
   // Catálogo Oficial Tombstone (con hormas reales: Roper, Chaparral, Viejón, Laredo, Frontier, Sonora, Johnson)
   activeModels: [
-    { id: 'viejonon',  name: '1000X Master Telar El Viejonón',sku: 'TB-1000X-VJN-55', price: 1310, material: 'Master Telar / Horma Viejón',          size: '55 (6 7/8)', crownHorma: 'Viejón',   tipo: '2 piezas', brim: '9 1/2', bend: 'ARRIBA' },
-    { id: 'chaparral', name: '1000X Master Telar Chaparral',  sku: 'TB-1000X-CHP-56', price: 1310, material: 'Telar Blanco / Toquilla Texana',      size: '56 (7)',     crownHorma: 'Chaparral',tipo: '1 pieza',  brim: '9.0 Cm', bend: 'ABAJO' },
+    { id: 'viejonon',  name: '1000X Master Telar El Viejonón', sku: 'TB-1000X-VJN-55', price: 1310, material: 'Master Telar / Horma Viejón',          size: '55 (6 7/8)', crownHorma: 'Viejón',   tipo: '2 piezas', brim: '9 1/2', bend: 'ARRIBA' },
     { id: 'denver',    name: '1000X Master Telar Denver',     sku: 'TB-1000X-DNV-58', price: 1310, material: 'Telar Fino 1000X / Toquilla Piel',     size: '58 (7 1/4)', crownHorma: 'Roper',    tipo: '2 piezas', brim: '4 1/4"', bend: 'ARRIBA' },
+    { id: 'chaparral', name: '1000X Master Telar Chaparral',  sku: 'TB-1000X-CHP-56', price: 1310, material: 'Telar Blanco / Toquilla Texana',      size: '56 (7)',     crownHorma: 'Chaparral',tipo: '1 pieza',  brim: '9.0 Cm', bend: 'ABAJO' },
     { id: 'laredo',    name: '1000X Master Telar Laredo F10', sku: 'TB-1000X-LRD-58', price: 1310, material: 'Master Telar / Falda 4" Plana',        size: '58 (7 1/4)', crownHorma: 'Laredo',   tipo: '1 pieza',  brim: '4.00"', bend: 'PLANA' },
-    { id: 'frontier',  name: '1000X Master Telar Frontier F9',sku: 'TB-1000X-FRN-59', price: 1310, material: 'Telar / Copa Gota de Agua',            size: '59 (7 3/8)', crownHorma: 'Frontier', tipo: '2 piezas', brim: '4 1/2"', bend: 'ARRIBA' }
+    { id: 'frontier',  name: '1000X Master Telar Frontier F9',sku: 'TB-1000X-FRN-59', price: 1310, material: 'Telar / Copa Gota de Agua',            size: '59 (7 3/8)', crownHorma: 'Frontier', tipo: '2 piezas', brim: '4 1/2"', bend: 'ARRIBA' },
+    { id: 'magnum',    name: 'Campana Fieltro Magnum 500X',    sku: 'TB-500X-MGN-57',  price: 1150, material: 'Fieltro Lana / Copa Redonda',           size: '57 (7 1/8)', crownHorma: 'Magnum',   tipo: '1 pieza (Campana)', brim: '4 1/4"', bend: 'ARRIBA' },
+    { id: 'sonora',    name: 'Laqueado Especial Sonora Blanco',sku: 'TB-LQ-SNR-57',   price: 1450, material: 'Laca Nitro Blanco Espejo',              size: '57 (7 1/8)', crownHorma: 'Sonora',   tipo: '2 piezas', brim: '4 1/4"', bend: 'PLANA' },
+    { id: 'bullrider', name: 'Bullrider Rodeo Heavy Duty',    sku: 'TB-BLR-58-HD',    price: 1390, material: 'Hierro Forjado Prensado Rígido',        size: '58 (7 1/4)', crownHorma: 'Bullrider',tipo: '2 piezas', brim: '4 1/2"', bend: 'ARRIBA' }
   ],
   selectedModelIndex: 0,
 
@@ -529,6 +532,7 @@ const UanifyState = {
     {
       code: 'C-01',
       name: 'Calidad 1 (Post-Dope / Refuerzos)',
+      location: 'Filtro Entrada a Prensas (Nave 1)',
       desc: '1er punto de inspección. Libera o rechaza el lote tras sellado y secado en camas.',
       criteria: 'Rigidez uniforme de telares, sin burbujas de dope, sellado perimetral.',
       inspector: 'Inspectora de Calidad (Turno)',
@@ -538,6 +542,7 @@ const UanifyState = {
     {
       code: 'C-02',
       name: 'Calidad 2 (Post-Pintura)',
+      location: 'Salida Cabina de Pintura (Nave 2)',
       desc: '2do punto de inspección. Verifica uniformidad y tono de pintura antes de brillo.',
       criteria: 'Tono según muestra patrón, sin escurrimientos, recubrimiento parejo.',
       inspector: 'Inspectora de Calidad (Turno)',
@@ -547,10 +552,21 @@ const UanifyState = {
     {
       code: 'C-03',
       name: 'Calidad 3 (Producto Terminado)',
+      location: 'Mezzanine de Empaque & Traspaso',
       desc: '3er punto de inspección previo a empaque y embarque final.',
       criteria: 'Alineación de copa y ala, costura de tafilete, toquilla y herrajes firmes.',
       inspector: 'Ing. Carlos Ortiz / Inspectora',
       cycleTime: '25s',
+      status: 'Activo'
+    },
+    {
+      code: 'C-04',
+      name: 'Calidad 4 (Post-Laqueado Especial)',
+      location: 'Túnel de Secado Infrarrojo (Nave 2)',
+      desc: '4to punto de inspección para modelos de alto brillo y resistencia térmica.',
+      criteria: 'Cero piel de naranja, adherencia clase 5B, brillo espejo uniforme.',
+      inspector: 'Inspectora de Calidad (Turno)',
+      cycleTime: '20s',
       status: 'Activo'
     }
   ],
@@ -558,10 +574,193 @@ const UanifyState = {
   // ─── RUTAS Y SECUENCIAS PRODUCTIVAS POR MODELO DE SOMBRERO ─────────────────
   productionRoutes: [
     {
-      id: 'route-telar-1000x',
-      name: '1000X Master Telar (Viejonón, Denver, Chaparral)',
-      modelKeyword: '1000X Master Telar',
+      id: 'route-model-viejonon',
+      modelId: 'viejonon',
+      name: '1000X Master Telar El Viejonón',
+      sku: 'TB-1000X-VJN-55',
       category: 'Sombrero 2 Piezas (Copa y Falda)',
+      desc: 'Ruta completa tradicional con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-denver',
+      modelId: 'denver',
+      name: '1000X Master Telar Denver',
+      sku: 'TB-1000X-DNV-58',
+      category: 'Sombrero 2 Piezas (Copa y Falda)',
+      desc: 'Ruta completa con horma Roper 4 1/4" y adorno de toquilla de piel con herraje níquel.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-chaparral',
+      modelId: 'chaparral',
+      name: '1000X Master Telar Chaparral',
+      sku: 'TB-1000X-CHP-56',
+      category: 'Sombrero 1 Pieza (Falda 9.0 Cm)',
+      desc: 'Ruta de 1 pieza con falda de 9.0 cm doblada abajo y toquilla texana fina.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 3,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 4,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 5,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 6,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 7,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 8,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 9,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-laredo',
+      modelId: 'laredo',
+      name: '1000X Master Telar Laredo F10',
+      sku: 'TB-1000X-LRD-58',
+      category: 'Sombrero Laqueado Especial (Falda Plana)',
+      desc: 'Ruta con prensas hidráulicas Michelagnoli, doble laqueado y filtro C-04 post-secado.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
+        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-frontier',
+      modelId: 'frontier',
+      name: '1000X Master Telar Frontier F9',
+      sku: 'TB-1000X-FRN-59',
+      category: 'Sombrero 2 Piezas (Copa Gota de Agua)',
+      desc: 'Ruta con conformación especial de copa de gota de agua y ribete de precisión.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-magnum',
+      modelId: 'magnum',
+      name: 'Campana Fieltro Magnum 500X',
+      sku: 'TB-500X-MGN-57',
+      category: 'Sombrero 1 Pieza (Moldeo Directo Fieltro)',
+      desc: 'Ruta directa sin corte de cuadros ni alambrado. Ingresa directo a sellado y prensas.',
+      steps: [
+        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '⚙️' },
+        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-sonora',
+      modelId: 'sonora',
+      name: 'Laqueado Especial Sonora Blanco',
+      sku: 'TB-LQ-SNR-57',
+      category: 'Sombrero Laqueado Blanco Espejo',
+      desc: 'Ruta con acabado laqueado blanco espejo, secado en túnel UV y filtro C-04.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
+        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    {
+      id: 'route-model-bullrider',
+      modelId: 'bullrider',
+      name: 'Bullrider Rodeo Heavy Duty',
+      sku: 'TB-BLR-58-HD',
+      category: 'Sombrero Rodeo Heavy Duty',
+      desc: 'Ruta con prensado en horma metálica caliente a 130°C y doble endurecedor.',
+      steps: [
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
+        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
+        { order: 10, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
+        { order: 11, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
+        { order: 12, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
+        { order: 13, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+      ]
+    },
+    // Compatibilidad retroactiva de IDs generales
+    {
+      id: 'route-telar-1000x',
+      name: 'Familia General: 1000X Master Telar (2 Piezas)',
+      modelKeyword: '1000X Master Telar',
+      category: 'Familia Base Telar',
       desc: 'Ruta completa con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.',
       steps: [
         { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
@@ -582,9 +781,9 @@ const UanifyState = {
     },
     {
       id: 'route-campana-preformada',
-      name: 'Campana Preformada / Fieltro (Magnum, Frontier)',
+      name: 'Familia General: Campana Preformada / Fieltro',
       modelKeyword: 'Campana Preformada / Fieltro',
-      category: 'Sombrero 1 Pieza (Moldeo Directo)',
+      category: 'Familia Base Fieltro',
       desc: 'Ruta directa sin corte de cuadros ni alambrado. Ingresa directo a sellado y prensas.',
       steps: [
         { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
@@ -602,9 +801,9 @@ const UanifyState = {
     },
     {
       id: 'route-laqueado-premium',
-      name: 'Laqueados Premium Especiales (Laredo, Bullrider, Sonora)',
+      name: 'Familia General: Laqueados Especiales',
       modelKeyword: 'Laqueados Especiales',
-      category: 'Sombrero Especial Alta Densidad',
+      category: 'Familia Base Laqueados',
       desc: 'Ruta con doble fijado térmico en prensas hidráulicas, barniz poliéster y control riguroso.',
       steps: [
         { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
@@ -915,8 +1114,22 @@ const UanifyState = {
   getLotRoute(lotId) {
     const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
     if (!lot) return this.productionRoutes[0];
-    const route = this.productionRoutes.find(r => r.id === lot.routeId) || this.productionRoutes[0];
-    return route;
+
+    // 1. Coincidencia directa por routeId
+    let route = this.productionRoutes.find(r => r.id === lot.routeId);
+    if (route) return route;
+
+    // 2. Coincidencia por modelo específico
+    if (lot.model) {
+      const norm = lot.model.toLowerCase();
+      route = this.productionRoutes.find(r => 
+        (r.modelId && norm.includes(r.modelId.toLowerCase())) ||
+        (r.name && r.name.toLowerCase().includes(norm))
+      );
+      if (route) return route;
+    }
+
+    return this.productionRoutes[0];
   },
 
   moveLotToStep(lotId, targetStepIndex) {
