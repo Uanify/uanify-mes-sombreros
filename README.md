@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.14.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.15.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -13,7 +13,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## 🎯 Arquitectura Funcional Tombstone Hats (v2.10.0)
+## 🎯 Arquitectura Funcional Tombstone Hats (v2.15.0)
 
 El sistema MES está estructurado en 7 módulos especializados con autenticación visual por roles (RBAC):
 
@@ -22,11 +22,11 @@ El sistema MES está estructurado en 7 módulos especializados con autenticació
 | **0. 🔐 Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04) con persistencia de sesión y logout. |
 | **1. 🏷️ Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, **Monitor de Almacenes Intermedios** (lotes listos para recolección entre departamentos) y recolección/traspaso. |
 | **2. 📺 Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s) y comparación hora por hora de producción. |
-| **3. 📦 Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | Registro de 5 almacenes físicos (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Terminado, Merma de Viernes), catálogo maestro de moldes de hormas de aluminio maquinado y stock de tafiletes por talla. |
+| **3. 📦 Almacén & Control de Inventarios** | Almacenistas, Supervisores e Ingeniería | Módulo unificado para 5 almacenes físicos (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Terminado, Merma de Viernes), catálogo unificado de moldes/hormas de aluminio maquinado con alta interactiva, stock de tafiletes por talla y Kárdex general de movimientos. |
 | **4. 👷 Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos. |
-| **5. 📊 Consola de Ingeniería** | Ingeniero de Procesos | Análisis de OEE desagregado (Disponibilidad, Rendimiento, Calidad), gráficas horarias de avance, bitácora de paros SMED y balanceo de líneas. |
+| **5. 📊 Consola de Ingeniería** | Ingeniero de Procesos | Análisis de OEE desagregado (Disponibilidad, Rendimiento, Calidad), balanceo de líneas & cuellos de botella, matriz de materiales (BOM) con cambio de proveedor y KPIs. |
 | **6. 💼 Dirección & COMPAC** | Edmundo (Dirección) | Métricas ejecutivas, valorización del lote en catálogo ($1,310 MXN), vales de entrega digital y enlace con CONTPAQi. |
-| **7. ⚙️ Configuración de Planta** | Admin & Ingeniero | Horario de turno (informativo), meta semanal (4,250 pzas), alta de departamentos con operadores, áreas de calidad y secuencias de rutas por modelo. |
+| **7. ⚙️ Configuración & Catálogos Maestros** | Admin & Ingeniero | CRUD integral de Departamentos y Almacenes Intermedios, Rutas y Secuencias por Modelo, Tolerancias de Calidad, Usuarios RBAC y parámetros de turno. |
 
 ---
 
@@ -95,6 +95,12 @@ El sistema MES está estructurado en 7 módulos especializados con autenticació
 - **Catálogo de Hormas:** Registro de moldes de sombreros de San Francisco del Rincón con asignación a prensas de vapor.
 - **KPIs Exclusivos:** Rendimiento de departamentos y supervisores restringido a Ingeniería y Dirección.
 - **Alertas Estandarizadas In-App:** Supresión total de alertas nativas del navegador (`alert`, `confirm`); estandarización con notificaciones toast y modales in-app `UanifyUI`.
+
+### [2.15.0] - 2026-09-24
+- **Módulo General de Almacén & Control de Inventarios:** Consolidación de inventarios físicos (5 almacenes), tafiletes por talla, catálogo de moldes y nuevo Kárdex cronológico de movimientos.
+- **Unificación de Catálogo Maestro de Hormas:** Eliminación del catálogo duplicado en Ingeniería; el botón `+ Registrar Nueva Horma` ahora vive exclusivamente dentro de la sub-pestaña del catálogo de hormas.
+- **CRUD Integral de Departamentos y Almacenes Intermedios:** Alta, edición, consulta y baja de departamentos vinculados con almacenes intermedios, capacidades WIP, Takt Time y asignación multi-operador con botones táctiles de 48px.
+- **Reestructuración de Arquitectura de Información:** Separación nítida entre Configuración de Planta, Almacén & Inventarios, Consola de Ingeniería y Operación en Piso.
 
 ### [2.14.0] - 2026-09-24
 - **Terminal de Supervisor Heroica Tablet-First:** Botones gigantes (48px-52px), supresión de scroll vertical y layout de alto impacto para tabletas industriales.

@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.14.0` | **Fecha de Actualización:** 24 de Septiembre de 2026  
+> **Versión Actual:** `v2.15.0` | **Fecha de Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -27,6 +27,22 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 1. **Sombreros de 2 Piezas (Producto Campeón):** Copa y falda moldeadas y termo-fusionadas con adhesivo especial y calor. Requiere fraccionamiento de lote en rampa.
 2. **Campana Preformada (Fieltro/Lana):** Proceso directo y corto de una sola pieza, saltando etapas de ensamble de copa/falda.
 3. **Línea de Accesorios y Toquillas:** Taller paralelo para toquillas de piel, herrajes metálicos y plumas.
+
+---
+
+## 📜 8. Historial de Versiones (SemVer)
+
+- **`v2.15.0` (2026-09-24):**
+  - **Módulo General de Almacén & Control de Inventarios:** Consolidación de todos los almacenes físicos y de amortiguamiento (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Segundas de Viernes y Producto Terminado), subensambles de tafiletes por talla y nuevo **Kárdex & Movimientos de Almacén** con bitácora de transferencias.
+  - **Unificación del Catálogo Maestro de Hormas y Moldes:** Eliminación de la duplicidad del catálogo de hormas que existía en Ingeniería. Centralización exclusiva en el módulo de Almacenes con persistencia (`uanify_custom_molds`).
+  - **Reubicación Exclusiva de "Registrar Horma":** El botón `+ Registrar Nueva Horma` ahora se muestra única y exclusivamente dentro de la sub-pestaña del catálogo de hormas, eliminándose del encabezado global.
+  - **CRUD Integral de Departamentos y Almacenes Intermedios para Ingeniería:** Herramienta administrativa para crear, consultar, editar y dar de baja departamentos vinculados con su almacén intermedio (Código, Nombre, Tipo de Proceso, Almacén Intermedio, Ubicación, Capacidad Buffer WIP, Takt Time, Supervisor, Máquinas, Estatus Activo/Inactivo y Operadores asignados), con persistencia y reactividad en tiempo real.
+  - **Delimitación Limpia de Dominios:** Separación rigurosa entre Configuración de Planta (catálogos y definiciones técnicas), Almacenes (custodia física y movimientos), Ingeniería (analítica y balanceo OEE/BOM) y Operación en Piso (Terminal táctil y Andon).
+
+- **`v2.14.0` (2026-09-24):**
+  - **Rediseño Ergonómico de Terminal y Verificación de Mica:** Extracción total de datos por QR sin captura manual, verificación previa de tarjeta física escaneada, depósito automático por secuencia de ruta y restricción departamental para supervisores.
+  - **Botones Grandes y Ergonomía Táctil Universal:** Alturas de 48px a 56px para optimización táctil en tabletas.
+
 
 ### Tamaño de Lotes y Trazabilidad Viajera
 - **Lote Madre:** **60 piezas** que ingresan desde almacén de materia prima (copas y faldas sin conformar).

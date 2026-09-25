@@ -29,41 +29,67 @@ window.initConfigView = function() {
     { id: 'config',    name: 'Configuración de Planta' }
   ];
 
-  // ── 1. RENDER DE DEPARTAMENTOS ───────────────────────────────────────────
+  // ── 1. RENDER DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (CRUD COMPLETO) ──
   function renderDepartmentsConfig() {
     if (!tableBody || !UanifyState || !UanifyState.stations) return;
 
     tableBody.innerHTML = UanifyState.stations.map((st, idx) => {
-      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || st.id.startsWith('calidad') || st.id.includes('calidad');
-      const isLogistics = st.type === 'logistica' || st.id.includes('almacen') || st.id.includes('logistica') || st.code === 'D-11';
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || (st.id && st.id.includes('calidad'));
+      const isPress = st.type === 'prensas' || (st.id && st.id.includes('prensa')) || st.code === 'D-05';
+      const isRampa = st.type === 'rampa' || (st.id && st.id.includes('rampa'));
+      const isLogistics = st.type === 'logistica' || (st.id && st.id.includes('almacen')) || st.code === 'D-11';
+
       let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
       let typeLabel = 'Proceso Productivo';
       if (isQuality) {
         badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
         typeLabel = 'Control de Calidad';
+      } else if (isPress) {
+        badgeStyle = 'background:#FFFBEB; color:#B45309; border:1px solid #FCD34D;';
+        typeLabel = 'Prensas & Vapor';
+      } else if (isRampa) {
+        badgeStyle = 'background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;';
+        typeLabel = 'Rampa Fraccionamiento';
       } else if (isLogistics) {
         badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
-        typeLabel = 'Logística y Almacén';
+        typeLabel = 'Almacén / Logística';
       }
 
-      // Buscar operadores asignados a este departamento
-      const deptOps = (UanifyState.operators || []).filter(op => 
-        op.deptCode === st.code || op.department === st.name || (op.deptName && op.deptName === st.name)
-      );
-      const opsBadges = deptOps.length > 0
-        ? deptOps.map(o => `<span class="badge-subtle" style="font-size:10.5px; margin-right:4px; display:inline-block; margin-bottom:2px;" title="${o.machine || ''}">👤 ${o.name.split(' ')[0]}</span>`).join('')
-        : `<span style="color:var(--text-muted); font-size:11px;">1 asignado (${st.operator})</span>`;
+      const warehouseName = st.intermediateWarehouse || `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
+      const warehouseLoc = st.warehouseLocation || 'Nave Central Tombstone';
+      const machines = st.machines || 'Estación de trabajo manual';
+      const isActive = st.status !== 'stopped';
+      const statusBadge = isActive
+        ? '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">🟢 Activo</span>'
+        : '<span class="badge-status" style="background:var(--color-red-bg); color:var(--color-red); border:1px solid var(--color-red-border);">🔴 Inactivo</span>';
 
       return `
         <tr>
           <td><strong style="font-family:'JetBrains Mono'; color:var(--color-brand);">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</strong></td>
-          <td><strong>${st.name}</strong></td>
-          <td><span class="badge-subtle">${typeLabel}</span></td>
-          <td><span style="font-family:'JetBrains Mono';">${st.cycleTime || '35s'}</span></td>
-          <td>${st.target || 850} pzas</td>
+          <td>
+            <strong style="font-size:13.5px; color:var(--text-primary);">${st.name}</strong>
+            ${st.desc ? `<br><small style="color:var(--text-muted); font-size:11px;">${st.desc}</small>` : ''}
+          </td>
+          <td><span class="badge-subtle" style="${badgeStyle}">${typeLabel}</span></td>
+          <td>
+            <strong style="color:var(--text-primary); font-size:12.5px;">📦 ${warehouseName}</strong>
+            <br><small style="color:var(--text-muted); font-size:11px;">📍 ${warehouseLoc}</small>
+          </td>
+          <td><span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span></td>
+          <td><strong>${st.wipCapacity || st.target || 150}</strong> <small style="color:var(--text-muted);">pzas</small></td>
           <td><strong>${st.operator}</strong></td>
-          <td>${opsBadges}</td>
-          <td><span class="badge-status" style="${badgeStyle}">Activo</span></td>
+          <td><span style="font-size:11.5px; color:var(--text-secondary); max-width:180px; display:inline-block;">${machines}</span></td>
+          <td>${statusBadge}</td>
+          <td style="text-align:center; white-space:nowrap;">
+            <div style="display:inline-flex; gap:6px;">
+              <button type="button" class="btn-sm btn-secondary" onclick="window.openEditDepartmentModal('${st.code || st.id}')" style="min-height:36px; padding:6px 12px; font-weight:700; border-radius:6px; cursor:pointer;" title="Editar departamento y propiedades del almacén">
+                ✏️ Editar
+              </button>
+              <button type="button" class="btn-sm btn-secondary" onclick="window.deleteDepartment('${st.code || st.id}')" style="min-height:36px; padding:6px 10px; color:#DC2626; border-color:#FCA5A5; font-weight:700; border-radius:6px; cursor:pointer;" title="Eliminar departamento">
+                🗑️
+              </button>
+            </div>
+          </td>
         </tr>
       `;
     }).join('');
@@ -768,12 +794,41 @@ window.initConfigView = function() {
   function openCreateDeptModal() {
     if (!modalCreateDept) return;
 
+    const editModeInput = document.getElementById('deptModalEditMode');
+    const origCodeInput = document.getElementById('deptModalOriginalCode');
+    const modalTitle = document.getElementById('deptModalTitle');
+    const modalSubtitle = document.getElementById('deptModalSubtitle');
+
+    if (editModeInput) editModeInput.value = 'create';
+    if (origCodeInput) origCodeInput.value = '';
+    if (modalTitle) modalTitle.textContent = '🏢 Dar de Alta Nuevo Departamento & Almacén Intermedio';
+    if (modalSubtitle) modalSubtitle.textContent = 'Catálogo de estaciones de manufactura, almacén intermedio WIP y asignación técnica';
+
     // Sugerir código D-XX
     const newDeptCodeInput = document.getElementById('newDeptCode');
-    if (newDeptCodeInput) {
-      const nextNum = UanifyState.stations.length + 1;
-      newDeptCodeInput.value = `D-${String(nextNum).padStart(2, '0')}`;
-    }
+    const nextNum = (UanifyState.stations || []).length + 1;
+    const nextCode = `D-${String(nextNum).padStart(2, '0')}`;
+    if (newDeptCodeInput) newDeptCodeInput.value = nextCode;
+
+    const nameInput = document.getElementById('newDeptName');
+    const descInput = document.getElementById('newDeptDesc');
+    const typeSelect = document.getElementById('newDeptType');
+    const cycleTimeInput = document.getElementById('newDeptCycleTime');
+    const warehouseInput = document.getElementById('newDeptWarehouse');
+    const locationInput = document.getElementById('newDeptWarehouseLocation');
+    const capacityInput = document.getElementById('newDeptCapacity');
+    const statusSelect = document.getElementById('newDeptStatus');
+    const machinesInput = document.getElementById('newDeptMachines');
+
+    if (nameInput) nameInput.value = '';
+    if (descInput) descInput.value = '';
+    if (typeSelect) typeSelect.value = 'proceso';
+    if (cycleTimeInput) cycleTimeInput.value = '35s';
+    if (warehouseInput) warehouseInput.value = `Buffer Intermedio ${nextCode} (ALM-INT-${nextCode})`;
+    if (locationInput) locationInput.value = 'Nave Central - Pasillo 2';
+    if (capacityInput) capacityInput.value = '150';
+    if (statusSelect) statusSelect.value = 'running';
+    if (machinesInput) machinesInput.value = '';
 
     // Poblar supervisores
     if (newDeptSupervisor && UanifyState.users) {
@@ -796,6 +851,100 @@ window.initConfigView = function() {
     modalCreateDept.classList.add('active');
   }
 
+  function openEditDepartmentModal(deptCode) {
+    if (!modalCreateDept) return;
+    const station = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+    if (!station) return;
+
+    const editModeInput = document.getElementById('deptModalEditMode');
+    const origCodeInput = document.getElementById('deptModalOriginalCode');
+    const modalTitle = document.getElementById('deptModalTitle');
+    const modalSubtitle = document.getElementById('deptModalSubtitle');
+
+    if (editModeInput) editModeInput.value = 'edit';
+    if (origCodeInput) origCodeInput.value = station.code || station.id;
+    if (modalTitle) modalTitle.textContent = `✏️ Editar Departamento ${station.code} & Almacén Intermedio`;
+    if (modalSubtitle) modalSubtitle.textContent = `Actualización de parámetros técnicos, buffer WIP y maquinaria de ${station.name}`;
+
+    const codeInput = document.getElementById('newDeptCode');
+    const nameInput = document.getElementById('newDeptName');
+    const descInput = document.getElementById('newDeptDesc');
+    const typeSelect = document.getElementById('newDeptType');
+    const cycleTimeInput = document.getElementById('newDeptCycleTime');
+    const warehouseInput = document.getElementById('newDeptWarehouse');
+    const locationInput = document.getElementById('newDeptWarehouseLocation');
+    const capacityInput = document.getElementById('newDeptCapacity');
+    const statusSelect = document.getElementById('newDeptStatus');
+    const machinesInput = document.getElementById('newDeptMachines');
+
+    if (codeInput) codeInput.value = station.code || '';
+    if (nameInput) nameInput.value = station.name || '';
+    if (descInput) descInput.value = station.desc || station.note || '';
+    if (typeSelect) typeSelect.value = station.type || 'proceso';
+    if (cycleTimeInput) cycleTimeInput.value = station.cycleTime || '35s';
+    if (warehouseInput) warehouseInput.value = station.intermediateWarehouse || (`Almacén Intermedio ${station.name}`);
+    if (locationInput) locationInput.value = station.warehouseLocation || 'Nave Central';
+    if (capacityInput) capacityInput.value = station.wipCapacity || station.target || 150;
+    if (statusSelect) statusSelect.value = station.status || 'running';
+    if (machinesInput) machinesInput.value = station.machines || '';
+
+    // Poblar supervisores
+    if (newDeptSupervisor && UanifyState.users) {
+      const supervisors = UanifyState.users.filter(u => u.role === 'supervisor' || u.role === 'admin' || u.role === 'ingeniero');
+      newDeptSupervisor.innerHTML = supervisors.map(s => `
+        <option value="${s.id}" ${s.name === station.operator ? 'selected' : ''}>${s.name} (${s.roleName})</option>
+      `).join('');
+    }
+
+    // Poblar operadores y marcar los que pertenecen a este departamento
+    if (newDeptOperatorsList && UanifyState.operators) {
+      newDeptOperatorsList.innerHTML = UanifyState.operators.map(op => {
+        const isAssigned = op.deptCode === station.code || op.department === station.name || op.deptName === station.name;
+        return `
+          <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:3px 0;">
+            <input type="checkbox" class="dept-op-cb" value="${op.id}" ${isAssigned ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand);">
+            <span><strong>${op.name}</strong> · ${op.deptCode || 'Sin Depto'} (${op.machine || 'Puesto'})</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    modalCreateDept.classList.add('active');
+  }
+
+  function deleteDepartment(deptCode) {
+    const station = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+    if (!station) return;
+
+    window.UanifyUI.confirm(
+      `¿Estás seguro de eliminar el departamento ${station.code} - "${station.name}"? Esta acción removerá su estación y almacén intermedio asociado de la planta.`,
+      () => {
+        UanifyState.stations = UanifyState.stations.filter(s => s.code !== deptCode && s.id !== deptCode);
+        try {
+          localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+        } catch (e) {
+          console.warn('Error saving stations after delete:', e);
+        }
+
+        renderDepartmentsConfig();
+        if (typeof EventBus !== 'undefined') {
+          EventBus.emit('stations-updated', UanifyState.stations);
+        }
+
+        window.UanifyUI.toast(
+          `Departamento ${station.code} "${station.name}" eliminado del catálogo de planta.`,
+          'info',
+          '🗑️ Departamento Eliminado'
+        );
+      }
+    );
+  }
+
+  // Exponer funciones en window para invocación desde botones en tabla
+  window.openCreateDeptModal = openCreateDeptModal;
+  window.openEditDepartmentModal = openEditDepartmentModal;
+  window.deleteDepartment = deleteDepartment;
+
   if (btnOpenCreateDept) btnOpenCreateDept.addEventListener('click', openCreateDeptModal);
   if (btnCloseCreateDept) btnCloseCreateDept.addEventListener('click', () => modalCreateDept.classList.remove('active'));
   if (btnCancelCreateDept) btnCancelCreateDept.addEventListener('click', () => modalCreateDept.classList.remove('active'));
@@ -803,11 +952,18 @@ window.initConfigView = function() {
   if (formCreateDept) {
     formCreateDept.addEventListener('submit', (e) => {
       e.preventDefault();
+      const isEdit = document.getElementById('deptModalEditMode')?.value === 'edit';
+      const origCode = document.getElementById('deptModalOriginalCode')?.value;
       const code = document.getElementById('newDeptCode')?.value.trim() || 'D-15';
       const name = document.getElementById('newDeptName')?.value.trim();
       const desc = document.getElementById('newDeptDesc')?.value.trim() || 'Proceso de fabricación en planta';
       const type = document.getElementById('newDeptType')?.value || 'proceso';
       const cycleTime = document.getElementById('newDeptCycleTime')?.value.trim() || '35s';
+      const warehouse = document.getElementById('newDeptWarehouse')?.value.trim() || `Almacén Intermedio ${name}`;
+      const location = document.getElementById('newDeptWarehouseLocation')?.value.trim() || 'Nave Central';
+      const capacity = parseInt(document.getElementById('newDeptCapacity')?.value, 10) || 150;
+      const status = document.getElementById('newDeptStatus')?.value || 'running';
+      const machines = document.getElementById('newDeptMachines')?.value.trim() || 'Estación de trabajo estándar';
       const supUserId = newDeptSupervisor?.value;
       const supervisor = UanifyState.users.find(u => u.id === supUserId) || UanifyState.users[0];
 
@@ -838,33 +994,62 @@ window.initConfigView = function() {
 
       // Asignar operadores seleccionados
       const checkedOps = formCreateDept.querySelectorAll('.dept-op-cb:checked');
-      checkedOps.forEach(cb => {
-        const op = UanifyState.operators.find(o => o.id === cb.value);
-        if (op) {
+      const checkedIds = Array.from(checkedOps).map(cb => cb.value);
+      (UanifyState.operators || []).forEach(op => {
+        if (checkedIds.includes(op.id)) {
           op.deptCode = code;
           op.department = name;
           op.deptName = name;
+        } else if (isEdit && (op.deptCode === origCode || op.deptCode === code)) {
+          // Desasignar si fue desmarcado en edición
+          op.deptCode = '';
+          op.department = 'Sin Asignar';
+          op.deptName = 'Sin Asignar';
         }
       });
 
-      // Crear nuevo departamento en stations
-      const newStation = {
-        id: 'dept-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        code: code,
-        name: name,
-        desc: desc,
-        target: 850,
-        produced: 0,
-        scrap: 0,
-        wipWaiting: 0,
-        cycleTime: cycleTime,
-        status: 'running',
-        operator: supervisor.name,
-        note: `Departamento registrado. Supervisado por ${supervisor.name}.`
-      };
+      if (isEdit) {
+        const stIndex = (UanifyState.stations || []).findIndex(s => s.code === origCode || s.id === origCode);
+        if (stIndex !== -1) {
+          const st = UanifyState.stations[stIndex];
+          st.code = code;
+          st.name = name;
+          st.desc = desc;
+          st.type = type;
+          st.cycleTime = cycleTime;
+          st.intermediateWarehouse = warehouse;
+          st.warehouseLocation = location;
+          st.wipCapacity = capacity;
+          st.target = capacity;
+          st.status = status;
+          st.machines = machines;
+          st.operator = supervisor.name;
+          st.note = desc;
+        }
+      } else {
+        const newStation = {
+          id: 'dept-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          code: code,
+          name: name,
+          desc: desc,
+          type: type,
+          intermediateWarehouse: warehouse,
+          warehouseLocation: location,
+          wipCapacity: capacity,
+          target: capacity,
+          produced: 0,
+          scrap: 0,
+          wipWaiting: 0,
+          cycleTime: cycleTime,
+          status: status,
+          machines: machines,
+          operator: supervisor.name,
+          note: `Departamento registrado. Supervisado por ${supervisor.name}.`
+        };
 
-      if (!UanifyState.stations) UanifyState.stations = [];
-      UanifyState.stations.push(newStation);
+        if (!UanifyState.stations) UanifyState.stations = [];
+        UanifyState.stations.push(newStation);
+      }
 
       // Asignar departamento al supervisor si no tiene acceso global '*'
       if (supervisor.assignedDepartments && supervisor.assignedDepartments[0] !== '*') {
@@ -894,9 +1079,11 @@ window.initConfigView = function() {
 
       const assignedOpsCount = checkedOps.length + (quickOpName ? 1 : 0);
       window.UanifyUI.toast(
-        `Departamento ${code} "${name}" registrado exitosamente con supervisor ${supervisor.name} y ${assignedOpsCount} operador(es) asignados.`,
+        isEdit 
+          ? `Departamento ${code} "${name}" y su almacén intermedio actualizados correctamente.`
+          : `Departamento ${code} "${name}" registrado exitosamente con supervisor ${supervisor.name} y ${assignedOpsCount} operador(es).`,
         'success',
-        '🏢 Departamento Creado'
+        isEdit ? '✏️ Departamento Actualizado' : '🏢 Departamento Creado'
       );
     });
   }

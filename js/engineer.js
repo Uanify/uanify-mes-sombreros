@@ -13,12 +13,9 @@
 
 window.initEngineerView = function() {
   renderPipeline();
-  renderTafileteStock();
-  renderMoldsCatalog();
   renderMaterialMatrix();
   renderDowntimes();
   updateOeeScores();
-  setupMoldsModal();
 
   EventBus.on('piece-registered', () => {
     renderPipeline();
@@ -83,92 +80,6 @@ window.initEngineerView = function() {
 
   checkKpisAccess();
 };
-
-// ── CATÁLOGO DE HORMAS Y MOLDES ──────────────────────────────────────────────
-function renderMoldsCatalog() {
-  const container = document.getElementById('moldsCatalogTableBody');
-  if (!container) return;
-
-  if (!UanifyState.molds) return;
-
-  container.innerHTML = UanifyState.molds.map(m => {
-    const isUsed = m.status === 'En Uso';
-    const isMaintenance = m.status === 'En Mantenimiento';
-    const statusColor = isUsed ? 'var(--color-green)' : isMaintenance ? 'var(--color-red)' : 'var(--color-brand)';
-    const statusBg = isUsed ? 'var(--color-green-bg)' : isMaintenance ? 'var(--color-red-bg)' : 'var(--color-brand-light)';
-
-    return `
-      <tr>
-        <td><strong style="font-family:'JetBrains Mono'; font-size:12px; color:var(--color-brand);">${m.code}</strong></td>
-        <td><strong>${m.name}</strong></td>
-        <td>${m.material || 'Aluminio Templado'}</td>
-        <td>${m.size || '4 1/4"'}</td>
-        <td>${m.tipo || 'Roper'}</td>
-        <td>${m.machine || 'Prensa Vapor Matriz #1'}</td>
-        <td>
-          <span class="badge-status" style="background:${statusBg}; color:${statusColor}; font-weight:700;">
-            ● ${m.status}
-          </span>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
-
-function setupMoldsModal() {
-  const modal = document.getElementById('modalRegisterMold');
-  const btnOpen = document.getElementById('btnOpenRegisterMoldModal');
-  const btnClose = document.getElementById('btnCloseRegisterMoldModal');
-  const form = document.getElementById('formRegisterMold');
-
-  if (btnOpen && modal) {
-    btnOpen.addEventListener('click', () => {
-      modal.classList.add('active');
-    });
-  }
-
-  if (btnClose && modal) {
-    btnClose.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-  }
-
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('newMoldName')?.value.trim();
-      const code = document.getElementById('newMoldCode')?.value.trim();
-      const brim = document.getElementById('newMoldBrim')?.value;
-      const crown = document.getElementById('newMoldCrown')?.value.trim();
-      const location = document.getElementById('newMoldLocation')?.value;
-
-      if (!name || !code) return;
-
-      const newMold = {
-        code,
-        name,
-        tipo: crown || 'Roper',
-        material: 'Aluminio Templado',
-        size: brim || '4 1/4"',
-        machine: location || 'Prensa Vapor Matriz #1',
-        status: 'Disponible'
-      };
-
-      if (!UanifyState.molds) UanifyState.molds = [];
-      UanifyState.molds.unshift(newMold);
-
-      renderMoldsCatalog();
-      form.reset();
-      if (modal) modal.classList.remove('active');
-
-      window.UanifyUI.toast(
-        `Horma "${name}" (${code}) registrada en el catálogo y disponible para asignación en PPSP.`,
-        'success',
-        '🎩 Horma Registrada'
-      );
-    });
-  }
-}
 
 // ── RESTRICCIÓN DE ACCESO A SUBTAB KPIS (SOLO INGENIEROS Y ADMIN) ────────────
 function checkKpisAccess() {

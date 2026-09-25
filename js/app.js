@@ -167,7 +167,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.14.0',
+  version: '2.15.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -378,6 +378,17 @@ const UanifyState = {
       status: 'Listo para Recoger',
       notes: 'Tafilete de piel fina talla 58 y toquilla con herraje níquel montados.'
     }
+  ],
+
+  // ─── KÁRDEX & MOVIMIENTOS HISTÓRICOS DE ALMACÉN ───────────────────────────
+  inventoryMovements: [
+    { time: '12:45', type: 'Traspaso WIP', origin: 'ALM-INT-02 Alambrado', dest: 'ALM-INT-03 Camas Dope', item: 'Lote #1094 (Denver 1000X)', qty: '60 pzas', user: 'Rocío Morales', doc: 'TR-8841' },
+    { time: '12:15', type: 'Entrada MP', origin: 'Proveedor Celaya', dest: 'ALM-01 Materia Prima', item: 'Rollo Telar 1000X Blanco (150m)', qty: '4 rollos', user: 'Esteban Lozano', doc: 'REM-4412' },
+    { time: '11:50', type: 'Fraccionamiento Rampa', origin: 'ALM-02 Rampa WIP', dest: 'ALM-03 Pulmón Prensas', item: 'Sublote #1093-B (Viejonón 500X)', qty: '15 pzas', user: 'Auxiliar Rampa', doc: 'SUB-1093B' },
+    { time: '11:20', type: 'Salida a Embarque', origin: 'ALM-INT-C3 Mezzanine', dest: 'ALM-04 Producto Terminado', item: 'Lote #1091 (Laredo Black 200X)', qty: '60 pzas', user: 'Inspectora Calidad', doc: 'VAL-0982' },
+    { time: '10:40', type: 'Merma a Segundas', origin: 'ALM-INT-C2 Calidad 2', dest: 'ALM-05 Saldos de Viernes', item: 'Sombreros Denver (Tono disparejo)', qty: '2 pzas', user: 'Marcos Villegas', doc: 'SAL-0145' },
+    { time: '09:30', type: 'Traspaso Subensamble', origin: 'ALM-INT-10 Adorno', dest: 'Mesa Ensamble Adorno 1', item: 'Tafiletes Piel Talla 57', qty: '60 pzas', user: 'María Elena Gómez', doc: 'TAF-5701' },
+    { time: '08:15', type: 'Entrada MP', origin: 'Curtiduría León', dest: 'ALM-01 Materia Prima', item: 'Badanas Piel Cabra Especial', qty: '300 pzas', user: 'Almacenista Central', doc: 'REM-4409' }
   ],
   
   // Métricas Generales Tombstone Hats
@@ -657,6 +668,11 @@ const UanifyState = {
       desc: 'Tendido de rollos de telar y corte en cuadros (copa y falda por separado)',
       target: 150, produced: 135, scrap: 1, wipWaiting: 18, cycleTime: '32s',
       status: 'running', operator: 'Esteban Lozano',
+      type: 'proceso',
+      intermediateWarehouse: 'Buffer Entrada Telar (ALM-INT-01)',
+      warehouseLocation: 'Nave A - Pasillo 1 (Junto a Rollos)',
+      wipCapacity: 180,
+      machines: 'Mesa de Tendido 12m, Cortadora Circular KM-01',
       note: 'Inicio de proceso para telares. Campana preformada omite este paso.'
     },
     {
@@ -666,6 +682,11 @@ const UanifyState = {
       desc: 'Colocación de alambre de memoria en el perímetro de la falda + costura',
       target: 145, produced: 124, scrap: 2, wipWaiting: 15, cycleTime: '38s',
       status: 'running', operator: 'Rocío Morales',
+      type: 'proceso',
+      intermediateWarehouse: 'Pulmón Alambrado (ALM-INT-02)',
+      warehouseLocation: 'Nave A - Estaciones de Cosido',
+      wipCapacity: 160,
+      machines: 'Máquinas de Coser Perimetral Singer Heavy Duty S-01 a S-04',
       note: 'Opera con varias personas en estaciones de trabajo. Supervisor asigna lotes.'
     },
     {
@@ -675,6 +696,11 @@ const UanifyState = {
       desc: 'Baño de dope (sellador) en esquina. Secado en camas. Cada cama = 1 lote.',
       target: 140, produced: 110, scrap: 1, wipWaiting: 22, cycleTime: '45s',
       status: 'running', operator: 'Pedro Torres',
+      type: 'proceso',
+      intermediateWarehouse: 'Camas de Secado Dope (ALM-INT-03)',
+      warehouseLocation: 'Área Químicos - Nave B Esquina Norte',
+      wipCapacity: 200,
+      machines: 'Tinas de Inmersión Dope T-01, Camas de Secado 1 a 6',
       note: 'Tarjetas viajeras se identifican por cama. Lote se arma de nuevo al secar.'
     },
     {
@@ -684,6 +710,11 @@ const UanifyState = {
       desc: 'Aplicación de sellador con brocha y refuerzos con pintola (patio exterior)',
       target: 140, produced: 118, scrap: 1, wipWaiting: 11, cycleTime: '30s',
       status: 'running', operator: 'Luis Salas',
+      type: 'proceso',
+      intermediateWarehouse: 'Pulmón Patio Refuerzos (ALM-INT-04)',
+      warehouseLocation: 'Patio Exterior Techado Refuerzos',
+      wipCapacity: 150,
+      machines: 'Compresor Industrial 15HP, Pistolas de Aspersión HVLP-01/02',
       note: 'Cierra el tejido del telar. Después regresa al almacén y entra a Calidad 1.'
     },
     {
@@ -693,6 +724,11 @@ const UanifyState = {
       desc: '1er punto de inspección de calidad. Libera o rechaza el lote al siguiente dpto.',
       target: 140, produced: 115, scrap: 2, wipWaiting: 10, cycleTime: '18s',
       status: 'running', operator: 'Inspectora de Calidad (turno)',
+      type: 'calidad',
+      intermediateWarehouse: 'Inspección C-01 / Buffer Liberación',
+      warehouseLocation: 'Filtro de Inspección Entrada a Prensas',
+      wipCapacity: 120,
+      machines: 'Mesa de Inspección Iluminada 5000K, Calibrador de Espesor',
       note: 'Si pasa → avanza. Si no → regresa al dpto. con error. Si no tiene arreglo → saldo.'
     },
     {
@@ -702,6 +738,11 @@ const UanifyState = {
       desc: 'Prensas de vapor y calor con hormas metálicas. Múltiples entradas/salidas por fracción.',
       target: 140, produced: 98, scrap: 4, wipWaiting: 46,  // ← cuello de botella
       cycleTime: '26s', status: 'running', operator: 'Juan Manuel Pérez',
+      type: 'prensas',
+      intermediateWarehouse: 'Pulmón Pre-Prensas & Vapor (ALM-03)',
+      warehouseLocation: 'Batería Central de Prensas Michelagnoli',
+      wipCapacity: 250,
+      machines: 'Prensas de Vapor Michelagnoli P-01 a P-04, Prensa Hidráulica H-01',
       note: 'Área de mayor polvo. 2 tipos: Prensas de vapor (copa) + Hidráulicas (alineado). ' +
             'Un lote puede entrar/salir varias veces (copa 1er paso, falda 2o paso, etc.).'
     },
@@ -712,6 +753,11 @@ const UanifyState = {
       desc: 'Corte perimetral de exceso de falda con cuchilla circular. Perfilado de orilla.',
       target: 145, produced: 104, scrap: 1, wipWaiting: 10, cycleTime: '28s',
       status: 'running', operator: 'Chicas de recortes (área exterior)',
+      type: 'proceso',
+      intermediateWarehouse: 'Pulmón Exterior Recortes (ALM-INT-06)',
+      warehouseLocation: 'Patio Exterior de Recortes',
+      wipCapacity: 160,
+      machines: 'Mesas Circulares de Corte Refaldeador R-01 a R-03',
       note: 'Área exterior (patio). También área de polvo. Se almacena antes de pintura.'
     },
     {
@@ -721,6 +767,11 @@ const UanifyState = {
       desc: 'Aplicación de pintura con pistola (ej. Pintura Taiwan 1125) y secado.',
       target: 135, produced: 96, scrap: 2, wipWaiting: 16, cycleTime: '42s',
       status: 'warning', operator: 'Marcos Villegas',
+      type: 'proceso',
+      intermediateWarehouse: 'Buffer Cabinas Pintura (ALM-INT-07)',
+      warehouseLocation: 'Cabinas de Aspersión Nave Central',
+      wipCapacity: 150,
+      machines: 'Cabina de Pintura con Extracción C-01, Pistolas Taiwan 1125',
       note: 'Pintura con pistola/pistolas. El material puede cambiar por proveedor: ' +
             'cambio masivo en matriz de materiales. Post-pintura → Calidad 2.'
     },
@@ -731,6 +782,11 @@ const UanifyState = {
       desc: '2do punto de inspección. Verifica calidad de pintura antes de brillo.',
       target: 130, produced: 94, scrap: 1, wipWaiting: 8, cycleTime: '16s',
       status: 'running', operator: 'Inspectora de Calidad (turno)',
+      type: 'calidad',
+      intermediateWarehouse: 'Inspección C-02 Pintura/Brillo (ALM-INT-C2)',
+      warehouseLocation: 'Salida Cabinas de Pintura',
+      wipCapacity: 110,
+      machines: 'Cámara de Luz D65 para Inspección de Tono de Pintura',
       note: 'Si hay error de pintura → regresa a Pintura. Si no tiene arreglo → saldo.'
     },
     {
@@ -740,6 +796,11 @@ const UanifyState = {
       desc: 'Aplicación de brillo/barniz. Mismo punto de revisión que Calidad 2 (área compartida).',
       target: 130, produced: 91, scrap: 1, wipWaiting: 9, cycleTime: '22s',
       status: 'running', operator: 'Marcos Villegas',
+      type: 'proceso',
+      intermediateWarehouse: 'Túnel Secado Brillo (ALM-INT-08)',
+      warehouseLocation: 'Área Continua a Pintura Nave Central',
+      wipCapacity: 130,
+      machines: 'Túnel Infrarrojo de Curado de Laca T-01',
       note: 'El mismo espacio físico revisa pintura y brillo secuencialmente.'
     },
     {
@@ -749,6 +810,11 @@ const UanifyState = {
       desc: 'Proceso de calor/temperado final. Perfilado de ala (refaldear).',
       target: 130, produced: 100, scrap: 1, wipWaiting: 9, cycleTime: '34s',
       status: 'running', operator: 'Operario Temperado',
+      type: 'proceso',
+      intermediateWarehouse: 'Almacén Pulmón Pre-Adorno (ALM-INT-09)',
+      warehouseLocation: 'Paso Intermedio hacia Mesas de Adorno',
+      wipCapacity: 140,
+      machines: 'Hornos de Calor Seco H-01/02, Conformadoras de Ala',
       note: 'Después de aquí pasa al almacén previo a Adorno 1.'
     },
     {
@@ -758,6 +824,11 @@ const UanifyState = {
       desc: '3 subensambles convergen: cuerpo del sombrero + tafilete (por talla 55-60) + toquilla.',
       target: 140, produced: 101, scrap: 2, wipWaiting: 12, cycleTime: '40s',
       status: 'running', operator: 'María Elena Gómez',
+      type: 'proceso',
+      intermediateWarehouse: 'Almacén Tafiletes & Mesa Adorno (ALM-INT-10)',
+      warehouseLocation: 'Nave de Confección & Adornos',
+      wipCapacity: 180,
+      machines: 'Pegadoras Térmicas de Badana, Planchas de Toquilla P-01',
       note: 'Coordinación actual: supervisores a gritos entre naves. ' +
             'Si no hay tafilete de la talla del lote → línea parada. ' +
             'Avance se da al pegar tafilete. Adornadoras ponen etiquetas adicionales.'
@@ -769,6 +840,11 @@ const UanifyState = {
       desc: '3er punto de inspección (hay 4 en total). Calidad final antes de embarque.',
       target: 140, produced: 95, scrap: 2, wipWaiting: 8, cycleTime: '25s',
       status: 'running', operator: 'Inspectora de Calidad (turno)',
+      type: 'calidad',
+      intermediateWarehouse: 'Mezzanine Inspección Final (C-03)',
+      warehouseLocation: 'Mezzanine Central de San Francisco del Rincón',
+      wipCapacity: 200,
+      machines: 'Mesa de Revisión 360°, Medidores de Confort y Talla',
       note: 'Productos liberados van arriba (mezzanine). Se acumula producción del día. ' +
             'Saldos/segundas van al almacén dedicado para venta de viernes.'
     },
@@ -779,6 +855,11 @@ const UanifyState = {
       desc: 'Carga al camión del cliente. Vale de salida digital → sincronización COMPAC (ingeniera externa).',
       target: 140, produced: 90, scrap: 0, wipWaiting: 5, cycleTime: '20s',
       status: 'running', operator: 'Fernando Valdivia (Almacén)',
+      type: 'logistica',
+      intermediateWarehouse: 'Andén de Embarque & PT (ALM-04)',
+      warehouseLocation: 'Nave B - Andén de Carga y Salida',
+      wipCapacity: 600,
+      machines: 'Terminal POS de Vale Digital, Báscula de Plataforma 500kg',
       note: 'Cliente siempre trae su camión. Vale en papel → se descuenta en Excel de órdenes → ' +
             'pasa a contabilidad → factura en COMPAC. Ingeniera externa de COMPAC (membresía anual).'
     }
@@ -1073,6 +1154,56 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn('Error al restaurar horario de turno:', e);
   }
 
+// Función para enriquecer departamentos con propiedades completas de Almacén Intermedio
+function enrichStationWithDefaults(st, idx) {
+  if (!st) return st;
+  if (!st.type) {
+    if (st.code === 'D-05' || (st.id && st.id.includes('prensa'))) st.type = 'prensas';
+    else if ((st.code && st.code.startsWith('C-')) || (st.id && st.id.includes('calidad'))) st.type = 'calidad';
+    else if (st.code === 'D-11' || (st.id && st.id.includes('embarque'))) st.type = 'logistica';
+    else st.type = 'proceso';
+  }
+  if (!st.intermediateWarehouse) {
+    if (st.code === 'D-01') st.intermediateWarehouse = 'Buffer Entrada Telar (ALM-INT-01)';
+    else if (st.code === 'D-02') st.intermediateWarehouse = 'Pulmón Alambrado (ALM-INT-02)';
+    else if (st.code === 'D-03') st.intermediateWarehouse = 'Camas de Secado Dope (ALM-INT-03)';
+    else if (st.code === 'D-04') st.intermediateWarehouse = 'Pulmón Patio Refuerzos (ALM-INT-04)';
+    else if (st.code === 'C-01') st.intermediateWarehouse = 'Inspección C-01 / Buffer Liberación';
+    else if (st.code === 'D-05') st.intermediateWarehouse = 'Pulmón Pre-Prensas & Vapor (ALM-03)';
+    else if (st.code === 'D-06') st.intermediateWarehouse = 'Pulmón Exterior Recortes (ALM-INT-06)';
+    else if (st.code === 'D-07') st.intermediateWarehouse = 'Buffer Cabinas Pintura (ALM-INT-07)';
+    else if (st.code === 'C-02') st.intermediateWarehouse = 'Inspección C-02 Pintura/Brillo (ALM-INT-C2)';
+    else if (st.code === 'D-08') st.intermediateWarehouse = 'Túnel Secado Brillo (ALM-INT-08)';
+    else if (st.code === 'D-09') st.intermediateWarehouse = 'Almacén Pulmón Pre-Adorno (ALM-INT-09)';
+    else if (st.code === 'D-10') st.intermediateWarehouse = 'Almacén Tafiletes & Mesa Adorno (ALM-INT-10)';
+    else if (st.code === 'C-03') st.intermediateWarehouse = 'Mezzanine Inspección Final (C-03)';
+    else if (st.code === 'D-11') st.intermediateWarehouse = 'Andén de Embarque & PT (ALM-04)';
+    else st.intermediateWarehouse = `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
+  }
+  if (!st.warehouseLocation) {
+    if (st.code === 'D-01' || st.code === 'D-02') st.warehouseLocation = 'Nave A - Pasillo 1';
+    else if (st.code === 'D-03' || st.code === 'D-04') st.warehouseLocation = 'Área Químicos / Patio Exterior';
+    else if (st.code === 'D-05') st.warehouseLocation = 'Batería Central de Prensas Michelagnoli';
+    else if (st.code === 'D-07' || st.code === 'D-08') st.warehouseLocation = 'Cabinas de Aspersión Nave Central';
+    else if (st.code === 'D-10') st.warehouseLocation = 'Nave de Confección & Adornos';
+    else if (st.code === 'D-11') st.warehouseLocation = 'Andén de Carga Nave B';
+    else st.warehouseLocation = 'Nave Central Tombstone';
+  }
+  if (!st.machines) {
+    if (st.code === 'D-05') st.machines = 'Prensas de Vapor Michelagnoli P-01 a P-04, Prensa Hidráulica H-01';
+    else if (st.code === 'D-01') st.machines = 'Mesa de Tendido 12m, Cortadora Circular KM-01';
+    else if (st.code === 'D-02') st.machines = 'Máquinas de Coser Singer Heavy Duty S-01 a S-04';
+    else if (st.code === 'D-03') st.machines = 'Tinas de Inmersión Dope T-01, Camas de Secado 1 a 6';
+    else if (st.code === 'D-07') st.machines = 'Cabina de Pintura con Extracción, Pistolas Taiwan 1125';
+    else if (st.code === 'D-10') st.machines = 'Pegadoras Térmicas de Badana, Planchas de Toquilla';
+    else st.machines = 'Estación manual / Herramientas de mano';
+  }
+  if (!st.wipCapacity) {
+    st.wipCapacity = st.target || 150;
+  }
+  return st;
+}
+
   // Restaurar departamentos personalizados si existen
   try {
     const savedStations = localStorage.getItem('uanify_custom_stations');
@@ -1084,6 +1215,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch (e) {
     console.warn('Error al restaurar departamentos:', e);
+  }
+
+  // Enriquecer estaciones con propiedades de Almacén Intermedio si faltan
+  if (UanifyState.stations && Array.isArray(UanifyState.stations)) {
+    UanifyState.stations = UanifyState.stations.map((st, idx) => enrichStationWithDefaults(st, idx));
+  }
+
+  // Restaurar moldes personalizados si existen
+  try {
+    const savedMolds = localStorage.getItem('uanify_custom_molds');
+    if (savedMolds) {
+      const parsedMolds = JSON.parse(savedMolds);
+      if (Array.isArray(parsedMolds) && parsedMolds.length > 0) {
+        UanifyState.molds = parsedMolds;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar catálogo de moldes:', e);
   }
 
   // Restaurar áreas de calidad personalizadas si existen
@@ -1347,7 +1496,89 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `).join('');
     }
+
+    // Kárdex de movimientos de almacén
+    const kardexBody = document.getElementById('inventoryKardexTableBody');
+    if (kardexBody && UanifyState.inventoryMovements) {
+      kardexBody.innerHTML = UanifyState.inventoryMovements.map(m => {
+        let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
+        if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">📥 Entrada MP</span>';
+        else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">🚚 Embarque</span>';
+        else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">⚠️ Saldos / Segundas</span>';
+        else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">✂️ Fraccionamiento Rampa</span>';
+
+        return `
+          <tr>
+            <td><strong style="font-family:'JetBrains Mono';">${m.time}</strong></td>
+            <td>${typeBadge}</td>
+            <td><span style="font-weight:600; font-size:12px;">${m.origin}</span></td>
+            <td><strong style="font-weight:700; font-size:12px; color:var(--color-brand);">→ ${m.dest}</strong></td>
+            <td><strong>${m.item}</strong></td>
+            <td><strong style="font-family:'JetBrains Mono';">${m.qty}</strong></td>
+            <td><span style="font-size:11.5px; color:var(--text-secondary);">${m.user}</span></td>
+            <td><span class="badge-subtle" style="font-family:'JetBrains Mono';">${m.doc}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
   }
+
+  // Manejo del Modal de Registro de Hormas (Catálogo Oficial de Almacén)
+  const modalRegisterMold = document.getElementById('modalRegisterMold');
+  const btnCloseRegisterMold = document.getElementById('btnCloseRegisterMoldModal');
+  const formRegisterMold = document.getElementById('formRegisterMold');
+
+  if (btnCloseRegisterMold && modalRegisterMold) {
+    btnCloseRegisterMold.onclick = () => modalRegisterMold.classList.remove('active');
+  }
+
+  if (formRegisterMold) {
+    formRegisterMold.onsubmit = (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newMoldName')?.value.trim();
+      const code = document.getElementById('newMoldCode')?.value.trim();
+      const brim = document.getElementById('newMoldBrim')?.value;
+      const crown = document.getElementById('newMoldCrown')?.value.trim();
+      const location = document.getElementById('newMoldLocation')?.value;
+
+      if (!name || !code) return;
+
+      const newMold = {
+        code,
+        name,
+        tipo: crown || 'Roper',
+        material: 'Aluminio Termo-Fundido',
+        size: brim || '4 1/4"',
+        machine: location || 'Prensa Vapor Matriz #1',
+        status: 'Disponible'
+      };
+
+      if (!UanifyState.molds) UanifyState.molds = [];
+      UanifyState.molds.unshift(newMold);
+
+      try {
+        localStorage.setItem('uanify_custom_molds', JSON.stringify(UanifyState.molds));
+      } catch (err) {
+        console.warn('Error saving custom mold:', err);
+      }
+
+      renderInventorySection();
+      formRegisterMold.reset();
+      if (modalRegisterMold) modalRegisterMold.classList.remove('active');
+
+      if (typeof EventBus !== 'undefined') {
+        EventBus.emit('molds-updated', UanifyState.molds);
+      }
+
+      window.UanifyUI.toast(
+        `Horma ${code} "${name}" registrada exitosamente en el catálogo de moldes de Almacén.`,
+        'success',
+        '🎩 Horma Registrada'
+      );
+    };
+  }
+
+  window.renderInventorySection = renderInventorySection;
 
   // ── 3. RENDER DE PADRÓN DE OPERADORES DIRECTORY ──────────────────────────
   function renderOperatorsDirectory() {

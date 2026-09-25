@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.14.0">
-  <link rel="stylesheet" href="css/components.css?v=2.14.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.15.0">
+  <link rel="stylesheet" href="css/components.css?v=2.15.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.14.0</span>
+        <span class="system-version-pill login-version-pill">v2.15.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -97,12 +97,12 @@
           </button>
         </div>
 
-        <!-- Grupo 2: Inventarios & Mano de Obra -->
-        <div class="nav-group-title">Almacén & Personal</div>
+        <!-- Grupo 2: Almacenes & Logística -->
+        <div class="nav-group-title">Almacenes & Logística</div>
         <div class="nav-tabs">
           <button class="nav-btn" data-tab="inventory">
             <span class="tab-icon">📦</span>
-            <span class="tab-label">Almacenes & Hormas</span>
+            <span class="tab-label">Almacén & Control de Inventarios</span>
           </button>
           <button class="nav-btn" data-tab="operators">
             <span class="tab-icon">👷</span>
@@ -123,12 +123,12 @@
           </button>
         </div>
 
-        <!-- Grupo 4: Administración de Planta -->
-        <div class="nav-group-title">Administración</div>
+        <!-- Grupo 4: Administración & Catálogos -->
+        <div class="nav-group-title">Administración & Catálogos</div>
         <div class="nav-tabs">
           <button class="nav-btn" data-tab="config">
             <span class="tab-icon">⚙️</span>
-            <span class="tab-label">Configuración de Planta</span>
+            <span class="tab-label">Configuración & Catálogos Maestros</span>
           </button>
         </div>
       </nav>
@@ -143,7 +143,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.14.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.15.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -846,16 +846,13 @@
       </section>
 
       <!-- ======================================================================
-           SECCIÓN: ALMACÉN E INVENTARIO (ALMACENES FÍSICOS & HORMAS)
+           SECCIÓN: ALMACÉN & CONTROL DE INVENTARIOS
            ====================================================================== -->
       <section class="view-panel" id="view-inventory">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Almacén, Inventarios & Moldes de Hormas</h1>
-            <p class="view-subtitle">Registro central de almacenes físicos, inventario WIP, catálogo maestro de hormas de aluminio maquinado y subensambles</p>
-          </div>
-          <div style="display:flex; gap:10px;">
-            <button class="btn-primary" onclick="document.getElementById('modalRegisterMold').classList.add('active')">🎩 + Registrar Horma</button>
+            <h1 class="view-title">Almacén & Control de Inventarios</h1>
+            <p class="view-subtitle">Control integral de almacenes físicos de nave, inventario WIP en tránsito, materias primas, catálogo maestro de hormas y subensambles</p>
           </div>
         </div>
 
@@ -864,6 +861,7 @@
           <button class="sub-tab-btn active" data-subtab="subtab-inventory-warehouses">🏭 Almacenes Físicos de Planta & WIP</button>
           <button class="sub-tab-btn" data-subtab="subtab-inventory-molds">🎩 Catálogo Maestro de Hormas & Moldes</button>
           <button class="sub-tab-btn" data-subtab="subtab-inventory-subassemblies">🧵 Subensambles (Tafiletes por Talla)</button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-kardex">📦 Kárdex & Movimientos de Almacén</button>
         </div>
 
         <!-- Subpestaña 1: Almacenes Físicos de Planta & WIP -->
@@ -914,8 +912,8 @@
                   Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas de San Francisco del Rincón.
                 </p>
               </div>
-              <button class="btn-primary" onclick="document.getElementById('modalRegisterMold').classList.add('active')">
-                + Agregar Nueva Horma
+              <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="min-height:48px; padding:0 20px; font-weight:700;">
+                🎩 + Registrar Nueva Horma
               </button>
             </div>
             <div class="table-responsive">
@@ -948,12 +946,48 @@
                   🧵 Inventario de Subensambles & Tafiletes de Piel por Talla
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
-                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Departamento D-12.
+                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Departamento D-10.
                 </p>
               </div>
             </div>
             <div class="tafilete-grid" id="inventoryTafileteGrid">
               <!-- Renderizado de tafiletes -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Subpestaña 4: Kárdex & Movimientos de Almacén -->
+        <div class="sub-tab-content" id="subtab-inventory-kardex">
+          <div class="card-glass" style="padding:22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+                  📦 Kárdex & Bitácora de Movimientos de Almacenes Intermedios
+                </h3>
+                <p class="section-desc" style="margin-bottom:0;">
+                  Trazabilidad de transferencias internas de WIP, ingresos de materias primas, fraccionamiento en rampa y bajas por merma.
+                </p>
+              </div>
+              <span class="badge-subtle" style="font-weight:700;">Auditado por Logística MES</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Hora</th>
+                    <th>Tipo de Movimiento</th>
+                    <th>Almacén Origen</th>
+                    <th>Almacén Destino</th>
+                    <th>Lote / Material</th>
+                    <th>Cantidad</th>
+                    <th>Responsable</th>
+                    <th>Folio / Doc</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryKardexTableBody">
+                  <!-- Inyectado dinámicamente por app.js -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1077,8 +1111,8 @@
         <!-- Sub-navegación por Pestañas del Módulo Ingeniería -->
         <div class="sub-nav-tabs" data-module="engineer">
           <button class="sub-tab-btn active" data-subtab="subtab-engineer-oee">📊 OEE & Eficiencia Global</button>
-          <button class="sub-tab-btn" data-subtab="subtab-engineer-molds">🎩 Catálogo de Hormas & Moldes</button>
-          <button class="sub-tab-btn" data-subtab="subtab-engineer-materials">🧵 Stock de Tafiletes & Materiales</button>
+          <button class="sub-tab-btn" data-subtab="subtab-engineer-balancing">⚖️ Balanceo de Líneas & Cuellos de Botella</button>
+          <button class="sub-tab-btn" data-subtab="subtab-engineer-materials">🔄 Matriz de Materiales & Fichas (BOM)</button>
           <button class="sub-tab-btn" data-subtab="subtab-engineer-kpis">🏆 KPIs de Rendimiento (Supervisores y Depts)</button>
         </div>
 
@@ -1122,18 +1156,6 @@
             </div>
           </div>
 
-          <!-- Detección de Cuellos de Botella -->
-          <div class="card-glass bottleneck-card" style="margin-top:20px; padding:20px;">
-            <div class="card-head">
-              <h3>Detección de Cuellos de Botella (WIP en Espera)</h3>
-              <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
-            </div>
-            <p class="section-desc">Acumulación de piezas esperando entre cada almacén para balancear personal.</p>
-            <div class="pipeline-viz" id="pipelineViz">
-              <!-- Renderizado dinámico -->
-            </div>
-          </div>
-
           <!-- Bitácora de Paros Recientes -->
           <div class="card-glass downtime-card" style="margin-top:20px; padding:20px;">
             <div class="card-head">
@@ -1159,76 +1181,36 @@
           </div>
         </div>
 
-        <!-- Pestaña 2: Catálogo de Hormas & Moldes -->
-        <div class="sub-tab-content" id="subtab-engineer-molds">
-          <div class="card-glass" style="padding:22px;">
-            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+        <!-- Pestaña 2: Balanceo de Líneas & Cuellos de Botella -->
+        <div class="sub-tab-content" id="subtab-engineer-balancing">
+          <div class="card-glass bottleneck-card" style="padding:22px;">
+            <div class="card-head">
               <div>
-                <h3>🎩 Catálogo de Hormas y Moldes de Sombreros (Tombstone)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Registro de hormas de aluminio termo-fundido para prensas de vapor y troquelado de falda.</p>
+                <h3>⚖️ Detección de Cuellos de Botella & Acumulación de WIP en Espera</h3>
+                <p class="section-desc" style="margin-bottom:0;">Monitoreo de inventario intermedio retenido entre almacenes intermedios para balanceo táctico de operadores.</p>
               </div>
-              <button class="btn-primary" id="btnOpenRegisterMoldModal">
-                + Registrar Nueva Horma
-              </button>
+              <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
             </div>
-            <div class="downtime-table-wrapper" style="margin-top:16px;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Nombre de Horma / Modelo</th>
-                    <th>Material</th>
-                    <th>Ancho Falda</th>
-                    <th>Tipo Copa</th>
-                    <th>Prensa Asignada</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody id="moldsCatalogTableBody">
-                  <!-- Inyectado dinámicamente por JS -->
-                </tbody>
-              </table>
+            <div class="pipeline-viz" id="pipelineViz" style="margin-top:16px;">
+              <!-- Renderizado dinámico por engineer.js -->
             </div>
           </div>
         </div>
 
-        <!-- Pestaña 3: Stock de Tafiletes & Materiales -->
+        <!-- Pestaña 3: Matriz de Materiales (BOM) & Fichas Técnicas -->
         <div class="sub-tab-content" id="subtab-engineer-materials">
-          <!-- Stock de Subensambles (Tafiletes) -->
-          <div class="card-glass" style="padding:20px; margin-bottom:20px;">
-            <div class="card-head">
-              <h3>Disponibilidad de Subensambles: Tafiletes por Talla</h3>
-              <span class="badge-subtle">Listo para pegado en Adorno 1</span>
-            </div>
-            <p class="section-desc">Evita que los supervisores pregunten a gritos si hay tafiletes disponibles para el lote entrante.</p>
-            <div class="downtime-table-wrapper">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Talla Craneal</th>
-                    <th>Stock Físico</th>
-                    <th>En Lotes</th>
-                    <th>Disponible</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody id="tafileteStockTable">
-                  <!-- Inyectado por JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           <!-- Matriz de Materiales con Cambio Masivo -->
-          <div class="card-glass" style="padding:20px;">
+          <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:10px;">
-              <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+              <div>
+                <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic.</p>
+              </div>
               <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
                 🔄 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
               </button>
             </div>
-            <p class="section-desc">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic.</p>
-            <div class="downtime-table-wrapper">
+            <div class="downtime-table-wrapper" style="margin-top:16px;">
               <table class="data-table">
                 <thead>
                   <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
@@ -1417,28 +1399,28 @@
       </section>
 
       <!-- ======================================================================
-           TAB 5: CONFIGURACIÓN DE PLANTA & GESTIÓN DE MÓDULOS (NUEVO)
+           TAB 5: CONFIGURACIÓN DE PLANTA & CATÁLOGOS MAESTROS
            ====================================================================== -->
       <section class="view-panel" id="view-config">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Configuración de Planta & Gestión de Módulos</h1>
-            <p class="view-subtitle">Parámetros de los 14 departamentos, catálogo de hormas/moldes, alertas WIP y enlace COMPAC</p>
+            <h1 class="view-title">Configuración de Planta & Catálogos Maestros</h1>
+            <p class="view-subtitle">CRUD integral de departamentos y almacenes intermedios, rutas de fabricación por modelo, parámetros de turno y control de acceso RBAC</p>
           </div>
           <button class="btn-primary" id="btnSaveConfig">💾 Guardar Configuración</button>
         </div>
 
         <!-- Sub-navegación por Pestañas del Módulo Configuración -->
         <div class="sub-nav-tabs" data-module="config">
-          <button class="sub-tab-btn active" data-subtab="subtab-config-params">⏰ Parámetros & Meta Semanal</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-config-depts">🏢 Departamentos & Almacenes Intermedios</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-routes">📐 Rutas & Secuencias por Modelo</button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-params">⏰ Parámetros & Meta Semanal</button>
           <button class="sub-tab-btn" data-subtab="subtab-config-users">👥 Usuarios del Sistema (RBAC)</button>
           <button class="sub-tab-btn" data-subtab="subtab-config-operators">👷 Padrón de Operadores de Planta</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-depts">🏢 Departamentos & Calidad</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-routes">📐 Rutas & Secuencias por Modelo</button>
         </div>
 
-        <!-- Pestaña 1: Parámetros Generales & Horario de Turno -->
-        <div class="sub-tab-content active" id="subtab-config-params">
+        <!-- Pestaña: Parámetros Generales & Horario de Turno -->
+        <div class="sub-tab-content" id="subtab-config-params">
           <div class="config-grid">
             <!-- Parámetros Generales de Turno -->
             <div class="config-card card-glass">
@@ -1601,20 +1583,20 @@
           </div>
         </div>
 
-        <!-- Pestaña 4: Departamentos & Asignación a Supervisores -->
-        <div class="sub-tab-content" id="subtab-config-depts">
+        <!-- Pestaña: Departamentos & Almacenes Intermedios (CRUD Completo) -->
+        <div class="sub-tab-content active" id="subtab-config-depts">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>🏢 Configuración de Departamentos y Áreas de Control de Calidad</h3>
-                <p class="section-desc" style="margin-bottom:0;">Catálogo de estaciones de manufactura, almacenes intermedios y puntos de inspección de calidad.</p>
+                <h3>🏢 Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.</p>
               </div>
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-secondary" id="btnOpenCreateQualityModal" style="padding:10px 16px; font-size:13px; font-weight:700;">
-                  + Registrar Área de Calidad
+                  + Registrar Filtro Calidad
                 </button>
-                <button class="btn-primary" id="btnOpenCreateDeptModal">
-                  + Dar de Alta Departamento
+                <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
+                  ➕ Dar de Alta Departamento & Almacén
                 </button>
               </div>
             </div>
@@ -1623,13 +1605,15 @@
                 <thead>
                   <tr>
                     <th>Código</th>
-                    <th>Departamento / Filtro de Calidad</th>
-                    <th>Tipo</th>
+                    <th>Departamento</th>
+                    <th>Tipo de Proceso</th>
+                    <th>Almacén Intermedio (Buffer)</th>
                     <th>Takt Time</th>
-                    <th>Capacidad</th>
-                    <th>Supervisor / Inspector</th>
-                    <th>Operadores Asignados</th>
+                    <th>Capacidad WIP</th>
+                    <th>Supervisor Responsable</th>
+                    <th>Maquinaria / Prensas</th>
                     <th>Estado</th>
+                    <th style="text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgDepartmentsTable">
@@ -2088,19 +2072,23 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: DAR DE ALTA DEPARTAMENTO (CON SUPERVISOR Y OPERADORES)
+       MODAL: DAR DE ALTA / EDITAR DEPARTAMENTO & ALMACÉN INTERMEDIO (CRUD)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateDepartment">
-    <div class="modal-box card-glass" style="max-width:540px;">
+    <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
-          <h3>🏢 Dar de Alta Nuevo Departamento</h3>
-          <p class="modal-header-sub">Catálogo de estaciones de manufactura y flujo continuo</p>
+          <h3 id="deptModalTitle">🏢 Dar de Alta Nuevo Departamento & Almacén Intermedio</h3>
+          <p class="modal-header-sub" id="deptModalSubtitle">Definición de estación de proceso, almacén intermedio WIP y asignación técnica</p>
         </div>
-        <button class="modal-close" id="btnCloseCreateDeptModal">&times;</button>
+        <button class="modal-close" id="btnCloseCreateDeptModal" type="button">&times;</button>
       </div>
       <form id="formCreateDepartment">
+        <input type="hidden" id="deptModalEditMode" value="create">
+        <input type="hidden" id="deptModalOriginalCode" value="">
+
         <div class="modal-body">
+          <!-- Código y Nombre -->
           <div style="display:grid; grid-template-columns: 130px 1fr; gap:12px;">
             <div class="form-group">
               <label class="field-label">Código Depto:</label>
@@ -2112,42 +2100,80 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="field-label">Descripción / Estaciones de Trabajo:</label>
-            <input type="text" id="newDeptDesc" class="form-input" placeholder="Estación de costura fina y herrajes vaqueros">
-          </div>
-
+          <!-- Tipo y Takt Time -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Tipo de Departamento:</label>
+              <label class="field-label">Tipo de Estación / Proceso:</label>
               <select id="newDeptType" class="custom-select">
-                <option value="proceso">Proceso Productivo</option>
-                <option value="calidad">Control de Calidad</option>
-                <option value="logistica">Logística y Almacén</option>
+                <option value="proceso">Proceso Productivo / Manufactura</option>
+                <option value="prensas">Prensas Térmicas & Vapor (Hormado)</option>
+                <option value="calidad">Control de Calidad / Inspección</option>
+                <option value="rampa">Rampa de Fraccionamiento (Sublotes 15 pzas)</option>
+                <option value="logistica">Almacén Intermedio / Logística WIP</option>
               </select>
             </div>
             <div class="form-group">
               <label class="field-label">Takt Time Estándar:</label>
-              <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s">
+              <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s" required>
             </div>
           </div>
 
+          <!-- Almacén Intermedio Asociado y Ubicación -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Almacén Intermedio Asociado (Buffer):</label>
+              <input type="text" id="newDeptWarehouse" class="form-input" placeholder="Buffer Intermedio D-15" required>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Ubicación Física en Nave:</label>
+              <input type="text" id="newDeptWarehouseLocation" class="form-input" placeholder="Nave Central - Pasillo 3" required>
+            </div>
+          </div>
+
+          <!-- Capacidad Buffer WIP y Estado -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Capacidad Máxima Buffer WIP (piezas):</label>
+              <input type="number" id="newDeptCapacity" class="form-input" value="150" min="10" max="2500" required>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Estado Operativo:</label>
+              <select id="newDeptStatus" class="custom-select">
+                <option value="running">🟢 Activo en Operación</option>
+                <option value="stopped">🔴 Inactivo / Fuera de Línea</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Maquinaria / Equipos Asignados -->
+          <div class="form-group">
+            <label class="field-label">Maquinaria / Prensas / Equipos Asignados:</label>
+            <input type="text" id="newDeptMachines" class="form-input" placeholder="Ej. Prensa Vapor P-01, Hidráulica H-02, Mesa M-03">
+          </div>
+
+          <!-- Supervisor Responsable -->
           <div class="form-group">
             <label class="field-label">Supervisor de Planta Responsable:</label>
             <select id="newDeptSupervisor" class="custom-select">
               <!-- Llenado dinámicamente con supervisores y admins -->
             </select>
-            <small style="color:var(--text-muted); font-size:11px;">Este departamento se agregará a los departamentos asignados a este supervisor.</small>
           </div>
 
+          <!-- Descripción Técnica -->
+          <div class="form-group">
+            <label class="field-label">Descripción Técnica & Criterios Operativos:</label>
+            <input type="text" id="newDeptDesc" class="form-input" placeholder="Detalles de proceso, criterios de liberación o requerimientos de calidad">
+          </div>
+
+          <!-- Operadores Asignados -->
           <div class="form-group">
             <label class="field-label">Operadores Asignados a este Departamento:</label>
-            <div id="newDeptOperatorsList" style="max-height:140px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FAFAFA; display:flex; flex-direction:column; gap:6px;">
+            <div id="newDeptOperatorsList" style="max-height:130px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FAFAFA; display:flex; flex-direction:column; gap:6px;">
               <!-- Checkboxes de operadores inyectados por JS -->
             </div>
-            <small style="color:var(--text-muted); font-size:11px;">Selecciona los operadores que trabajarán en las máquinas de este departamento.</small>
           </div>
 
+          <!-- Operador Rápido Opcional -->
           <div class="form-group">
             <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
             <div style="display:flex; gap:8px;">
@@ -2156,9 +2182,9 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-secondary" id="btnCancelCreateDept">Cancelar</button>
-          <button type="submit" class="btn-primary">Guardar Departamento</button>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle);">
+          <button type="button" class="btn-secondary" id="btnCancelCreateDept" style="min-height:48px; padding:0 20px; font-weight:700;">Cancelar</button>
+          <button type="submit" class="btn-primary" style="min-height:48px; padding:0 24px; font-weight:700;">Guardar Departamento</button>
         </div>
       </form>
     </div>
@@ -2662,11 +2688,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.14.0"></script>
-  <script src="js/andon.js?v=2.14.0"></script>
-  <script src="js/terminal.js?v=2.14.0"></script>
-  <script src="js/engineer.js?v=2.14.0"></script>
-  <script src="js/executive.js?v=2.14.0"></script>
-  <script src="js/config.js?v=2.14.0"></script>
+  <script src="js/app.js?v=2.15.0"></script>
+  <script src="js/andon.js?v=2.15.0"></script>
+  <script src="js/terminal.js?v=2.15.0"></script>
+  <script src="js/engineer.js?v=2.15.0"></script>
+  <script src="js/executive.js?v=2.15.0"></script>
+  <script src="js/config.js?v=2.15.0"></script>
 </body>
 </html>

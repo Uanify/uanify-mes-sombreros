@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.14.0` | **Versión:** `v2.14.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.15.0` | **Versión:** `v2.15.0`  
 > **Fecha de Emisión / Última Actualización:** 24 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -284,6 +284,33 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque M: Almacén & Control de Inventarios, Unificación de Catálogos y CRUD de Departamentos (v2.15.0)
+
+- **`RF-62` CRUD Integral de Departamentos y Almacenes Intermedios para Ingeniería:**
+  - **Propósito:** Permitir a ingenieros y administradores configurar la estructura departamental de planta junto con su almacén intermedio asociado y propiedades físicas.
+  - **Especificación Funcional (CRUD Completo):**
+    - **Create (Alta):** Generación automática del código correlativo (`D-XX`), captura de Nombre, Tipo de Proceso (Corte, Prensado, Acabado, Ensamble, Empaque, etc.), Almacén Intermedio Asociado (`ALM-XX`), Ubicación en Nave, Capacidad Máxima del Buffer WIP (pzas), Takt Time Teórico (seg/pza), Máquinas/Prensas Asignadas, Supervisor a Cargo, Estatus Operativo (🟢 Activo / 🔴 Inactivo) y checklist multi-selección de Operadores asignados.
+    - **Read (Consulta Maestra):** Tabla exhaustiva en Configuración con columnas de Código, Nombre y Proceso, Almacén Intermedio y Ubicación, Takt Time y Capacidad Buffer WIP, Supervisor, Máquinas, Estatus y Acciones.
+    - **Update (Edición Completa):** Modal interactivo (`#modalCreateDepartment`) prellenado con los valores actuales que permite modificar cualquiera de sus propiedades físicas, técnicas u operativas sin alterar el historial de lotes previos.
+    - **Delete (Baja Validada):** Supresión controlada con confirmación in-app (`UanifyUI.confirm`) que previene la eliminación accidental si hay lotes activos asignados.
+    - **Persistencia y Reactividad:** Guardado en `localStorage` (`uanify_custom_stations`) y propagación instantánea a través del `EventBus` (`stations-updated`) hacia el Tablero Andon, Terminal de Supervisor y Mapas de Planta.
+
+- **`RF-63` Unificación de Catálogos Maestros y Módulo General de Almacén & Inventarios:**
+  - **Eliminación de Redundancia y Duplicidad:** Supresión total del catálogo duplicado de hormas de aluminio que anteriormente coexistía en la Consola de Ingeniería. Centralización única y definitiva del catálogo de moldes y hormas exclusivamente dentro del módulo **Almacén & Control de Inventarios** (`subtab-inventory-molds`).
+  - **Ubicación Exclusiva del Botón "Registrar Horma":** El botón interactivo `🎩 + Registrar Nueva Horma` se despliega única y exclusivamente dentro de la pestaña del catálogo maestro de hormas y moldes (`subtab-inventory-molds`), eliminándose por completo de la cabecera global del módulo para no invadir las pestañas de Almacenes Físicos, Subensambles o Kárdex.
+  - **Módulo General de Almacén & Inventarios:** Evolución del módulo hacia una plataforma escalable para la custodia de todos los inventarios de planta:
+    1. *Almacenes Físicos:* Existencias y capacidades de Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Almacén de Segundas de Viernes y Almacén Fiscal de Producto Terminado.
+    2. *Catálogo Maestro de Moldes y Hormas:* Modelos de hormas de aluminio maquinado (Johnson, Sonora, Chaparral, Viejonón, Denver, Bullrider, Laredo, Frontier), estatus de disponibilidad, prensa asignada y alta de nuevos moldes con persistencia (`uanify_custom_molds`).
+    3. *Subensambles y Tafiletes:* Existencias de tafiletes de piel por talla (55 a 60).
+    4. *Kárdex & Movimientos de Almacén:* Bitácora cronológica de entradas, traspasos y salidas físicas con folio de lote, almacén origen/destino y custodio responsable.
+  - **Delimitación Estricta de Dominios del Sistema:**
+    - *Configuración de Planta & Catálogos Maestros:* Configuración técnica estructural (Departamentos con Almacenes Intermedios, Rutas de Fabricación, Permisos RBAC, Padrón de Operadores).
+    - *Almacén & Control de Inventarios:* Gestión física de materiales, stocks, moldes y movimientos.
+    - *Consola de Ingeniería & Rendimiento:* Herramientas analíticas puras (OEE, Balanceo de Línea & Cuellos de Botella, Matriz de Materiales BOM con cambio masivo de proveedor, KPIs de Rendimiento).
+    - *Operación en Piso:* Ejecución en tiempo real (Terminal de Supervisor con lector QR ergonómico, verificación de micas viajeras, fraccionamiento en rampa y Tablero Andon).
+
+---
+
 ## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -536,3 +563,6 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-58** | Restricción Departamental Estricta para Supervisores        | Terminal / Seguridad RBAC    | `v2.14.0`           | ✅ En Producción |
 | **RF-59** | Mapa de Planta y Almacenes Intermedios Departamentales      | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
 | **RF-60** | Trazabilidad de Mermas en Tránsito y Escáner Fullscreen     | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
+| **RF-61** | Ergonomía Táctil Universal y Botones Grandes para Tabletas  | Interfaz / Todos los Módulos | `v2.14.0`           | ✅ En Producción |
+| **RF-62** | CRUD Integral de Departamentos y Almacenes Intermedios      | Configuración de Planta      | `v2.15.0`           | ✅ En Producción |
+| **RF-63** | Unificación de Catálogos de Hormas y Módulo General Almacén | Almacenes e Inventarios      | `v2.15.0`           | ✅ En Producción |
