@@ -175,7 +175,12 @@ const UanifyState = {
     end: '15:30',
     lunch: '12:00 a 12:45 hrs',
     days: 'Lunes a Viernes',
-    summary: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)'
+    summary: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
+    mode: 'dynamic', // 'dynamic' (primer QR) | 'fixed' (07:00 estricto)
+    actualStartTime: null,
+    actualStartDate: null,
+    rampUpMinutes: 0,
+    firstLotId: null
   },
   
   // ─── GESTIÓN DE USUARIOS Y ROLES (RBAC) ──────────────────────────────────
@@ -1438,6 +1443,79 @@ const UanifyState = {
     if (!lot) return null;
     const prevIdx = (typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0) - 1;
     return this.moveLotToStep(lotId, prevIdx);
+  },
+
+  // ── INICIO DE TURNO DINÁMICO AL PRIMER QR ESCANEADO (US-17) ───────────────
+  recordShiftFirstScan(lotId) {
+    const today = new Date().toISOString().slice(0, 10);
+    // Si ya se registró para la fecha de hoy, retornar estatus
+    if (this.shiftSchedule.actualStartDate === today && this.shiftSchedule.actualStartTime) {
+      return { isFirst: false, schedule: this.shiftSchedule };
+    }
+
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const actualTime = `${hours}:${minutes}`;
+
+    // Calcular minutos de ramp-up respecto a la hora programada de inicio (07:00)
+    const [startH, startM] = (this.shiftSchedule.start || '07:00').split(':').map(Number);
+    const scheduledMinutes = startH * 60 + startM;
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    let rampUp = currentMinutes - scheduledMinutes;
+    if (rampUp < 0) rampUp = 0; // Si arrancan antes de las 07:00 no hay retraso
+
+    this.shiftSchedule.actualStartTime = actualTime;
+    this.shiftSchedule.actualStartDate = today;
+    this.shiftSchedule.rampUpMinutes = rampUp;
+    this.shiftSchedule.firstLotId = lotId || '49,633';
+
+    try {
+      localStorage.setItem('uanify_shift_actual_start', JSON.stringify({
+        date: today,
+        time: actualTime,
+        rampUpMinutes: rampUp,
+        firstLotId: lotId || '49,633',
+        mode: this.shiftSchedule.mode || 'dynamic'
+      }));
+    } catch (e) {
+      console.warn('Error saving shift actual start:', e);
+    }
+
+    if (typeof EventBus !== 'undefined') {
+      EventBus.emit('shift-dynamic-started', {
+        lotId: lotId || '49,633',
+        actualTime,
+        rampUpMinutes: rampUp,
+        mode: this.shiftSchedule.mode || 'dynamic'
+      });
+    }
+
+    return { isFirst: true, schedule: this.shiftSchedule, rampUpMinutes: rampUp, actualTime };
+  },
+
+  resetShiftDynamicStart() {
+    this.shiftSchedule.actualStartTime = null;
+    this.shiftSchedule.actualStartDate = null;
+    this.shiftSchedule.rampUpMinutes = 0;
+    this.shiftSchedule.firstLotId = null;
+    try {
+      localStorage.removeItem('uanify_shift_actual_start');
+    } catch (e) {}
+
+    if (typeof EventBus !== 'undefined') {
+      EventBus.emit('shift-dynamic-reset', this.shiftSchedule);
+    }
+  },
+
+  setShiftMode(mode) {
+    this.shiftSchedule.mode = mode;
+    try {
+      localStorage.setItem('uanify_shift_mode', mode);
+    } catch (e) {}
+    if (typeof EventBus !== 'undefined') {
+      EventBus.emit('shift-mode-changed', mode);
+    }
   }
 };
 
@@ -1626,11 +1704,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedSchedule = localStorage.getItem('uanify_shift_schedule');
     if (savedSchedule) {
       const parsed = JSON.parse(savedSchedule);
-      UanifyState.shiftSchedule = parsed;
+      UanifyState.shiftSchedule = { ...UanifyState.shiftSchedule, ...parsed };
       UanifyState.currentShift = parsed.summary || `Turno Único (${parsed.start} - ${parsed.end})`;
       const shiftTitleEl = document.querySelector('.shift-title');
       if (shiftTitleEl) {
         shiftTitleEl.textContent = `Turno Único (${parsed.start} - ${parsed.end})`;
+      }
+    }
+
+    const savedMode = localStorage.getItem('uanify_shift_mode');
+    if (savedMode) {
+      UanifyState.shiftSchedule.mode = savedMode;
+    }
+
+    const savedActualStart = localStorage.getItem('uanify_shift_actual_start');
+    if (savedActualStart) {
+      const parsedStart = JSON.parse(savedActualStart);
+      const today = new Date().toISOString().slice(0, 10);
+      if (parsedStart.date === today) {
+        UanifyState.shiftSchedule.actualStartTime = parsedStart.time;
+        UanifyState.shiftSchedule.actualStartDate = parsedStart.date;
+        UanifyState.shiftSchedule.rampUpMinutes = parsedStart.rampUpMinutes;
+        UanifyState.shiftSchedule.firstLotId = parsedStart.firstLotId;
       }
     }
   } catch (e) {

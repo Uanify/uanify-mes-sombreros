@@ -142,7 +142,7 @@ window.initTerminalView = function() {
 
       if (cameraPlaceholder) cameraPlaceholder.style.display = 'none';
       if (cameraReticle)     cameraReticle.style.display = 'flex';
-      if (btnToggleCamera)   btnToggleCamera.textContent = '⏹ Apagar Cámara Web';
+      if (btnToggleCamera)   btnToggleCamera.textContent = 'Apagar Cámara Web';
       if (btnFlipCamera)     btnFlipCamera.style.display = 'inline-flex';
       if (cameraStatusBadge) {
         cameraStatusBadge.textContent = ' Cámara en vivo activa';
@@ -503,6 +503,18 @@ window.initTerminalView = function() {
 
       renderActiveScannedLotCard(activeScannedLot);
 
+      // Disparo dinámico de inicio de turno (US-17) con el primer QR confirmado del día
+      if (UanifyState.shiftSchedule && UanifyState.shiftSchedule.mode !== 'fixed') {
+        const startRes = UanifyState.recordShiftFirstScan(activeScannedLot.lotId);
+        if (startRes && startRes.isFirst) {
+          window.UanifyUI.toast(
+            `Inicio dinámico de jornada registrado a las ${startRes.actualTime} con Lote ${activeScannedLot.lotId}. Ramp-up de arranque calculado: ${startRes.rampUpMinutes} min.`,
+            'info',
+            'Arranque de Turno Dinámico (US-17)'
+          );
+        }
+      }
+
       window.UanifyUI.toast(
         `Tarjeta viajera verificada. Lote ${activeScannedLot.lotId}${activeScannedLot.sublotNum ? '-' + activeScannedLot.sublotNum : ''} cargado en la terminal. Siguiente paso: depositar en ${activeScannedLot.targetStationName}.`,
         'success',
@@ -634,6 +646,11 @@ window.initTerminalView = function() {
           ' Restricción de Supervisor'
         );
         return;
+      }
+
+      // Disparo dinámico de inicio de turno si no se había disparado
+      if (UanifyState.shiftSchedule && UanifyState.shiftSchedule.mode !== 'fixed') {
+        UanifyState.recordShiftFirstScan(activeScannedLot.lotId);
       }
 
       // Obtener Operador Seleccionado (Rastreabilidad Universal Obligatoria)
@@ -1069,7 +1086,7 @@ window.initTerminalView = function() {
 
     processTimelineContainer.innerHTML = route.steps.map((st, idx) => {
       let stateClass = 'is-pending';
-      let stateFooter = '⏳ En espera';
+      let stateFooter = 'En espera';
       if (idx < currentIdx) {
         stateClass = 'is-completed';
         stateFooter = 'OK Superado';
@@ -1356,7 +1373,7 @@ window.initTerminalView = function() {
               </div>
               <span class="buffer-lot-tag">Folio ${item.lotId}</span>
             </div>
-            <span class="buffer-time-badge">⏳ Esperando ${item.waitingMinutes}m</span>
+            <span class="buffer-time-badge">Esperando ${item.waitingMinutes}m</span>
           </div>
 
           <div class="buffer-lot-meta">

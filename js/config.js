@@ -472,13 +472,68 @@ window.initConfigView = function() {
     if (input) input.addEventListener('input', updateShiftSummaryPreview);
   });
 
+  const cfgShiftModeDynamic = document.getElementById('cfgShiftModeDynamic');
+  const cfgShiftModeFixed = document.getElementById('cfgShiftModeFixed');
+  const cfgShiftStartDetails = document.getElementById('cfgShiftStartDetails');
+  const btnResetShiftStart = document.getElementById('btnResetShiftStart');
+
+  function renderShiftStartStatus() {
+    if (!cfgShiftStartDetails) return;
+    const sched = UanifyState.shiftSchedule || {};
+    if (sched.mode === 'fixed') {
+      cfgShiftStartDetails.innerHTML = `<span style="color:var(--text-secondary);">Modo Rígido activo (Fijo a las ${sched.start || '07:00'} hrs).</span>`;
+    } else {
+      if (sched.actualStartTime) {
+        cfgShiftStartDetails.innerHTML = `<strong style="color:var(--color-green);">${sched.actualStartTime} hrs</strong> (Lote #${sched.firstLotId || '49,633'}) · <span style="color:#0284C7; font-weight:700;">Ramp-up: +${sched.rampUpMinutes} min</span>`;
+      } else {
+        cfgShiftStartDetails.innerHTML = `<span style="color:var(--text-muted);">Esperando primer escaneo QR de la jornada...</span>`;
+      }
+    }
+  }
+
   // Cargar valores iniciales si están en UanifyState
   if (UanifyState.shiftSchedule) {
     if (cfgShiftStart) cfgShiftStart.value = UanifyState.shiftSchedule.start;
     if (cfgShiftEnd) cfgShiftEnd.value = UanifyState.shiftSchedule.end;
     if (cfgShiftLunch) cfgShiftLunch.value = UanifyState.shiftSchedule.lunch;
     if (cfgShiftDays) cfgShiftDays.value = UanifyState.shiftSchedule.days;
+    
+    if (UanifyState.shiftSchedule.mode === 'fixed') {
+      if (cfgShiftModeFixed) cfgShiftModeFixed.checked = true;
+    } else {
+      if (cfgShiftModeDynamic) cfgShiftModeDynamic.checked = true;
+    }
     updateShiftSummaryPreview();
+    renderShiftStartStatus();
+  }
+
+  // Eventos de Modo de Turno
+  if (cfgShiftModeDynamic) {
+    cfgShiftModeDynamic.addEventListener('change', () => {
+      if (cfgShiftModeDynamic.checked) {
+        UanifyState.setShiftMode('dynamic');
+        renderShiftStartStatus();
+        window.UanifyUI.toast('Modo dinámico activado. El turno medirá el arranque al primer QR detectado.', 'info', 'Modo Dinámico');
+      }
+    });
+  }
+  if (cfgShiftModeFixed) {
+    cfgShiftModeFixed.addEventListener('change', () => {
+      if (cfgShiftModeFixed.checked) {
+        UanifyState.setShiftMode('fixed');
+        renderShiftStartStatus();
+        window.UanifyUI.toast('Modo rígido activado. El turno operará estrictamente con el horario programado.', 'info', 'Modo Rígido');
+      }
+    });
+  }
+
+  // Reiniciar Arranque para Pruebas / Demostraciones
+  if (btnResetShiftStart) {
+    btnResetShiftStart.addEventListener('click', () => {
+      UanifyState.resetShiftDynamicStart();
+      renderShiftStartStatus();
+      window.UanifyUI.toast('Arranque dinámico reiniciado. El próximo código QR que escanees en la terminal fijará el nuevo inicio de turno.', 'success', 'Arranque Reiniciado');
+    });
   }
 
   // ── 4. GUARDAR PARÁMETROS GENERALES & HORARIO DE TURNO ───────────────────
@@ -498,15 +553,19 @@ window.initConfigView = function() {
       const shiftDays = cfgShiftDays ? cfgShiftDays.value : 'Lunes a Viernes';
       const shiftSummary = `Turno Único (${shiftStart} - ${shiftEnd} · ${shiftDays})`;
 
+      const shiftMode = cfgShiftModeFixed && cfgShiftModeFixed.checked ? 'fixed' : 'dynamic';
       UanifyState.shiftSchedule = {
+        ...UanifyState.shiftSchedule,
         start: shiftStart,
         end: shiftEnd,
         lunch: shiftLunch,
         days: shiftDays,
-        summary: shiftSummary
+        summary: shiftSummary,
+        mode: shiftMode
       };
       UanifyState.currentShift = shiftSummary;
       localStorage.setItem('uanify_shift_schedule', JSON.stringify(UanifyState.shiftSchedule));
+      localStorage.setItem('uanify_shift_mode', shiftMode);
 
       // Actualizar pie de barra lateral
       const shiftTitleEl = document.querySelector('.shift-title');
@@ -519,10 +578,12 @@ window.initConfigView = function() {
       if (goalEl) goalEl.textContent = `${newWeeklyGoal.toLocaleString()} pzas/sem`;
       if (taktEl) taktEl.textContent = `${newTakt} seg/pza`;
 
+      renderShiftStartStatus();
+
       window.UanifyUI.toast(
-        `Horario guardado: ${shiftStart} a ${shiftEnd} hrs (${shiftDays}). Meta Semanal: ${newWeeklyGoal.toLocaleString()} pzas (~${UanifyState.metaShiftTotal} pzas/día). Takt: ${newTakt}s.`,
+        `Horario guardado: ${shiftStart} a ${shiftEnd} hrs (${shiftDays}). Modo: ${shiftMode === 'dynamic' ? 'Dinámico (1er QR)' : 'Rígido'}. Meta Semanal: ${newWeeklyGoal.toLocaleString()} pzas (~${UanifyState.metaShiftTotal} pzas/día). Takt: ${newTakt}s.`,
         'success',
-        '⏰ Horario y Configuración Guardados'
+        'Horario y Configuración Guardados'
       );
     });
   }
@@ -1750,7 +1811,7 @@ window.initConfigView = function() {
             <strong style="font-family:var(--font-mono); color:${isQuality ? '#D97706' : 'var(--color-brand)'}; font-size:13px; min-width:46px;">${st.code}</strong>
             <span style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${st.name}</span>
             ${typeTag}
-            <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">⏱ ${st.cycleTime || '30s'}</span>
+            <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">Ciclo: ${st.cycleTime || '30s'}</span>
           </div>
           ${canEdit ? `
           <div class="sequence-controls">

@@ -12,6 +12,7 @@ window.initAndonView = function() {
   renderDowntimes();
   updateAndonTotals();
   renderPrensasWhiteboard();
+  updateShiftDynamicBadge();
 
   EventBus.on('piece-registered', () => {
     updateAndonTotals();
@@ -25,6 +26,18 @@ window.initAndonView = function() {
   });
   EventBus.on('lot-subdivided', () => {
     renderStations();
+  });
+  EventBus.on('shift-dynamic-started', () => {
+    updateShiftDynamicBadge();
+    renderHourlyProgress();
+  });
+  EventBus.on('shift-dynamic-reset', () => {
+    updateShiftDynamicBadge();
+    renderHourlyProgress();
+  });
+  EventBus.on('shift-mode-changed', () => {
+    updateShiftDynamicBadge();
+    renderHourlyProgress();
   });
 };
 
@@ -87,17 +100,47 @@ function renderHourlyProgress() {
   const container = document.getElementById('hourlyBars');
   if (!container) return;
 
+  const actualStart = UanifyState.shiftSchedule?.actualStartTime;
+  const isDynamic = UanifyState.shiftSchedule?.mode !== 'fixed';
+
   container.innerHTML = UanifyState.hourlyData.map((h, idx) => {
     const isCurrent = idx === 6;
     const overTarget = h.produced > h.target;
+    const isFirstHour = idx === 0;
+
+    let subNote = '';
+    if (isFirstHour && actualStart && isDynamic) {
+      subNote = `<span style="font-size:9.5px; color:#0284C7; font-weight:700; display:block; margin-top:2px;">Inicio: ${actualStart}</span>`;
+    }
+
     return `
       <div class="hour-col ${isCurrent ? 'current' : ''}">
         <span class="hour-time">${h.hour}</span>
         <div class="hour-pzas" style="color: ${overTarget ? 'var(--color-green)' : h.produced > 0 ? 'var(--color-brand)' : 'var(--text-muted)'}">${h.produced}</div>
         <div class="hour-target">Meta: ${h.target}</div>
+        ${subNote}
       </div>
     `;
   }).join('');
+}
+
+function updateShiftDynamicBadge() {
+  const badgeText = document.getElementById('andonShiftStartText');
+  const bannerTime = document.getElementById('andonShiftStartTime');
+  const sched = UanifyState.shiftSchedule || {};
+
+  if (sched.mode === 'fixed') {
+    if (badgeText) badgeText.innerHTML = `<strong>Arranque Rígido:</strong> ${sched.start || '07:00'} hrs (Horario Oficial de Planta)`;
+    if (bannerTime) bannerTime.textContent = `${sched.start || '07:00'} (Fijo)`;
+  } else {
+    if (sched.actualStartTime) {
+      if (badgeText) badgeText.innerHTML = `<strong>Arranque Real:</strong> ${sched.actualStartTime} hrs · Primer Lote: #${sched.firstLotId || '49,633'} <span style="color:#0284C7; font-weight:700;">(Ramp-up Calderas: +${sched.rampUpMinutes} min)</span>`;
+      if (bannerTime) bannerTime.textContent = `${sched.actualStartTime} (+${sched.rampUpMinutes}m)`;
+    } else {
+      if (badgeText) badgeText.innerHTML = `<strong>Arranque Dinámico:</strong> Esperando 1er escaneo QR del día...`;
+      if (bannerTime) bannerTime.textContent = `En espera 1er QR`;
+    }
+  }
 }
 
 function renderDowntimes() {

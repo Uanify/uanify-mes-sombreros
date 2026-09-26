@@ -44,7 +44,7 @@
         </button>
 
         <div class="login-footer-info">
-          <span class="login-footer-item">⏱ Turno Único · 07:00 – 15:30</span>
+          <span class="login-footer-item">Turno Único · 07:00 – 15:30</span>
           <span class="login-footer-item">Planta Matriz · Tombstone Hats</span>
         </div>
       </div>
@@ -186,13 +186,17 @@
               <span class="stat-caption">Eficiencia OEE</span>
               <span class="stat-val success" id="andonGlobalOee">88.4%</span>
             </div>
+            <div class="banner-stat" id="bannerStatShiftStart">
+              <span class="stat-caption">Inicio Turno (US-17)</span>
+              <span class="stat-val highlight" id="andonShiftStartTime" style="font-size:13.5px;">En espera 1er QR</span>
+            </div>
           </div>
         </div>
 
         <!-- Sub-navegación por Pestañas del Tablero Andon -->
         <div class="sub-nav-tabs" data-module="andon">
           <button class="sub-tab-btn active" data-subtab="subtab-andon-stations">14 Departamentos & Semáforos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">⏱ Progreso Hora por Hora</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">Progreso Hora por Hora</button>
           <button class="sub-tab-btn" data-subtab="subtab-andon-stops">Bitácora de Paros & Eventos</button>
           <button class="sub-tab-btn" data-subtab="subtab-andon-whiteboard" style="color:var(--color-brand); font-weight:700;">Pizarra de Línea · 1000X Prensas Secas</button>
         </div>
@@ -207,9 +211,15 @@
         <!-- Pestaña 2: Avance Hora por Hora -->
         <div class="sub-tab-content" id="subtab-andon-hourly">
           <div class="hourly-strip card-glass">
-            <div class="strip-header">
-              <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
-              <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
+            <div class="strip-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
+                <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
+              </div>
+              <div id="andonShiftStartBadge" style="padding:6px 14px; border-radius:6px; font-size:12px; background:#F8FAFC; color:var(--text-secondary); border:1px solid var(--border-subtle); display:flex; align-items:center; gap:8px;">
+                <span class="pulse-dot" style="background:#0284C7;"></span>
+                <span id="andonShiftStartText"><strong>Arranque Dinámico:</strong> Esperando 1er escaneo QR del día...</span>
+              </div>
             </div>
             <div class="hourly-bars" id="hourlyBars">
               <!-- Horas generadas por JS -->
@@ -1641,7 +1651,7 @@
             <!-- Parámetros Generales de Turno -->
             <div class="config-card card-glass">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 style="margin-bottom:0;">⏰ Horario del Turno de Producción</h3>
+                <h3 style="margin-bottom:0;">Horario del Turno de Producción</h3>
                 <span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); font-size:10px; font-weight:700;">Dato Informativo</span>
               </div>
               
@@ -1671,6 +1681,30 @@
                 <label class="field-label">Resumen Informativo del Turno:</label>
                 <input type="text" class="form-input" id="cfgShiftSummary" value="Turno Único (07:00 - 15:30 · Lunes a Viernes)" readonly style="background:#F8FAFC; font-weight:700; color:var(--color-brand); font-family:var(--font-mono);">
                 <small style="color:var(--text-muted); font-size:11px;">Este horario informativo se sincroniza con el encabezado de planta y el pie de navegación.</small>
+              </div>
+
+              <!-- Selector de Modo de Inicio de Turno (US-17) -->
+              <div class="form-group" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
+                <label class="field-label" style="font-weight:700;">Modo de Arranque de Turno (US-17):</label>
+                <div style="display:flex; gap:16px; margin-top:6px; flex-wrap:wrap;">
+                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px;">
+                    <input type="radio" name="cfgShiftModeRadio" id="cfgShiftModeDynamic" value="dynamic" checked>
+                    <span><strong>Dinámico</strong> (Disparo al 1er QR · Mide Ramp-up)</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px;">
+                    <input type="radio" name="cfgShiftModeRadio" id="cfgShiftModeFixed" value="fixed">
+                    <span><strong>Rígido</strong> (Fijo a las 07:00:00 hrs)</span>
+                  </label>
+                </div>
+                <div id="cfgShiftStartStatusBox" style="margin-top:10px; padding:10px 14px; border-radius:6px; background:#F8FAFC; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div>
+                    <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); display:block;">Arranque Registrado Hoy:</span>
+                    <span id="cfgShiftStartDetails" style="font-size:13px; font-weight:700; color:var(--text-primary);">Esperando primer escaneo QR...</span>
+                  </div>
+                  <button type="button" class="btn-outline btn-sm" id="btnResetShiftStart" style="font-size:11px; padding:4px 10px;">
+                    Reiniciar Arranque (Simular Nuevo Turno)
+                  </button>
+                </div>
               </div>
 
               <div class="form-group">

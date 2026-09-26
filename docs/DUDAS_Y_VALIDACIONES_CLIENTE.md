@@ -106,11 +106,13 @@ Su objetivo es servir como guía de entrevista ejecutiva en las sesiones de vali
 ### DUD-08: Inicio de Turno Oficial vs Disparo Dinámico por Primer QR
 * **Pregunta para el Cliente:** El turno oficial de planta es de 07:00 a 15:30 hrs. ¿Prefieren que el reloj del Tablero Andon y las metas hora por hora arranquen estrictamente a las 07:00:00, o les interesa que el sistema detecte automáticamente el **primer escaneo QR del día** para registrar el tiempo real de precalentamiento y arranque de línea (ramp-up)?
 * **Justificación / Origen:** Si la caldera tarda 15 o 20 minutos en alcanzar temperatura o el personal se coloca el equipo de protección, un inicio fijo marca la primera hora con déficit artificial. Un inicio dinámico mide con exactitud el tiempo de preparación de planta.
-* **Impacto en el Software:**
-  * Si prefieren fijo: El sistema mantiene los bloques rígidos de 07:00 a 15:30.
-  * Si prefieren dinámico: Se implementa la historia `US-17` para ajustar el cálculo al primer código detectado después de las 06:30 AM.
-* **Estatus:** Propuesta con valor agregado · Por validar con Carlos Ortiz.
-* **Respuesta / Minuta del Cliente:** [Espacio para captura en reunión]
+* **Resolución e Implementación en Software (`v2.18.0`):**
+  * **100% Implementado con Modo Dual:** El sistema no obliga a elegir a ciegas; incluye en Configuración un selector de modo:
+    1. **Dinámico (Predeterminado):** Detecta automáticamente el primer código QR del día en Terminal, fija `actualStartTime` y calcula los minutos de retraso/precalentamiento (`rampUpMinutes`).
+    2. **Rígido:** Mantiene el arranque fijo estricto a las 07:00:00 hrs.
+  * Se incluye un botón de *"Reiniciar Arranque (Simular Nuevo Turno)"* para que Edmundo González y Carlos Ortiz puedan probar ambos comportamientos en tiempo real durante la reunión técnica.
+* **Estatus:** Resuelto e Implementado (`US-17`, `TC-AND-37`, `TC-CFG-83B`) · Listo para demostración al cliente.
+* **Respuesta / Minuta del Cliente:** [Espacio para confirmar cuál dejan como estándar definitivo]
 
 ---
 
@@ -163,7 +165,7 @@ Su objetivo es servir como guía de entrevista ejecutiva en las sesiones de vali
 | **DUD-05** | Operadores / Destajo | ¿En qué estaciones específicas sí aplica el sticker individual? | Marcar estaciones con destajo obligatorio vs grupales. |
 | **DUD-06** | Bitácora de Paros | ¿Registran hoy tiempos muertos o se implementará de cero? | Incluir en MVP o mover a Fase 2. |
 | **DUD-07** | Mermas y Segundas | ¿Cómo y cuándo revisan las piezas con defecto menor? | Ajustar el módulo de segundas al flujo real de planta. |
-| **DUD-08** | Inicio de Turno | ¿Inicio de turno rígido (07:00) o dinámico al primer QR? | Configurar reloj de Takt Time en el Andon. |
+| **DUD-08** | Inicio de Turno | Modo dual implementado (Dinámico al 1er QR vs Rígido 07:00). | Validar con cliente cuál dejan como estándar final. |
 | **DUD-09** | Impresión Tarjetas | ¿Dónde y en qué impresora imprimen hoy las tarjetas viajeras? | Diseñar plantilla en hoja carta o rollo de etiqueta. |
 | **DUD-10** | Enlace COMPAC | ¿Contacto técnico para revisar licencia y base de datos SQL? | Definir si MVP arranca con CSV o enlace directo. |
 | **DUD-11** | Tablets y Wi-Fi | ¿Preferencia de tablets (iPad vs Android rudo) y cobertura Wi-Fi? | Activar modo offline y definir especificación de hardware. |

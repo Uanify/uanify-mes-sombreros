@@ -113,7 +113,7 @@ A partir de las tarjetas viajeras capturadas directamente en las líneas de ensa
 
 ---
 
-## ⏰ 3. Régimen Operativo de Turno Único
+## 3. Régimen Operativo de Turno Único y Arranque Dinámico (US-17)
 
 Confirmado tras el diagnóstico presencial en la fábrica:
 - **Jornada de Trabajo:** **Turno Único** de Lunes a Viernes, de **07:00 a 15:30 hrs** (8.5 horas totales).
@@ -121,6 +121,7 @@ Confirmado tras el diagnóstico presencial en la fábrica:
 - **Tiempo Efectivo de Producción:** 465 minutos netos por turno.
 - **Meta Diaria de Planta:** **850 piezas terminadas**.
 - **Takt Time Estándar:** **42 segundos por pieza** (ritmo requerido para cumplir la meta sin horas extra).
+- **Inicio de Turno Dinámico (US-17):** El sistema soporta modalidad dual: **Dinámica** (detecta el primer código QR escaneado del día para fijar el inicio real y calcular los minutos de precalentamiento/ramp-up de calderas sin penalizar artificialmente la hora 07:00-08:00) y **Rígida** (fija a las 07:00:00). Configurable desde el panel de Ingeniería.
 - **Políticas de Sistema:** Queda estrictamente deshabilitado cualquier selector de turnos múltiples ("Turno 1 / Turno 2") en el código e interfaz para evitar discrepancias contables.
 
 ---

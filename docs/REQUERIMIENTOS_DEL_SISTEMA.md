@@ -162,7 +162,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-17` Indicadores de Estado de Nodo en Línea de Tiempo:**
   - OK **Completado:** Estaciones superadas con éxito con borde verde.
   -  **ACTUAL (AQUÍ ESTÁ EL LOTE):** Nodo resaltado en cuero de marca con badge pulsante, piezas presentes y operador responsable.
-  - ⏳ **Pendiente:** Estaciones futuras en espera de arribo.
+  - **Pendiente (En Espera):** Estaciones futuras en espera de arribo.
 - **`RF-18` Diferenciación Visual de Tipo de Parada:** Distinción cromática e iconográfica entre departamentos de manufactura (``), paradas de control de calidad (``) y almacenes/embarque (``).
 - **`RF-19` Controles Operativos de Avance y Retroceso de Lote:** Botones para avanzar (`>>`) al siguiente departamento o retroceder (`<<`) a la estación previa por ajuste o retrabajo.
 - **`RF-20` Reubicación Táctil en Línea de Tiempo:** Capacidad de hacer clic sobre cualquier nodo de la línea de tiempo para reubicar el lote directamente en caso de corrección física en piso.

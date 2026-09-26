@@ -298,11 +298,11 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Estatus:** `[Pasa - v2.18.0]`
 
 ### TC-AND-37: Inicio Dinámico de Turno con el Primer QR Escaneado
-* **HU:** `US-17` | **Categoría:** Edge Case / Arranque.
-* **Objetivo:** Iniciar el reloj de producción en el momento del primer escaneo real del día.
-* **Pasos:** 1. Son las 07:14 AM. Se escanea el primer lote en D-01.
-* **Resultado Esperado:** El sistema registra las 07:14 como hora de arranque real, registrando 14 min de precalentamiento.
-* **Estatus:** `[Por Validar / Especificación]`
+* **HU:** `US-17` | **Categoría:** Happy Path / Takt Time Dinámico.
+* **Objetivo:** Iniciar el reloj de producción en el momento del primer escaneo real del día y calcular minutos de ramp-up.
+* **Pasos:** 1. Verificar en Andon que el indicador muestre `Arranque Dinámico: Esperando 1er escaneo QR`. 2. Escanear y confirmar un lote en Terminal (ej. Lote `49,633-3`). 3. Volver al Andon.
+* **Resultado Esperado:** El sistema registra la hora exacta (ej. 07:14), calcula el ramp-up (+14 min), actualiza el badge en el encabezado general y sobre la primera barra horaria `07:00 (Inicio: 07:14)`.
+* **Estatus:** `[Pasa - v2.18.0]`
 
 ---
 
@@ -642,6 +642,13 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Resultado Esperado:** El sistema calcula: 510 min brutos - 45 min comida = `465 minutos netos de producción por turno`.
 * **Estatus:** `[Pasa - v2.18.0]`
 
+### TC-CFG-83B: Modo de Arranque Dual (Dinámico vs Rígido) y Reinicio de Turno
+* **HU:** `US-17`, `US-38` | **Categoría:** Configuración / Control Operativo.
+* **Objetivo:** Comprobar la alternancia entre modo Dinámico (1er QR) y Rígido (07:00 fija), así como el reinicio manual de simulacro.
+* **Pasos:** 1. En Configuración de Turno, seleccionar `Rígido` y guardar. Verificar que el Andon muestre horario fijo oficial. 2. Cambiar a `Dinámico`. 3. Pulsar `Reiniciar Arranque (Simular Nuevo Turno)`.
+* **Resultado Esperado:** El sistema limpia la fecha/hora de inicio previa en `localStorage`, actualiza el visor a *"Esperando primer escaneo QR..."* y queda listo para fijar el nuevo arranque en la Terminal.
+* **Estatus:** `[Pasa - v2.18.0]`
+
 ### TC-CFG-84: Prueba de Conexión ODBC con CONTPAQi ERP (COMPAC)
 * **HU:** `US-39` | **Categoría:** Conectividad / Handshake.
 * **Objetivo:** Comprobar el botón de test ODBC hacia la base de datos de COMPAC.
@@ -749,6 +756,6 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 | **3. Almacenes, Sombreros y Hormas** | 7 | 2 | 5 | 4 | **18** |
 | **4. Padrón de Operadores** | 4 | 2 | 2 | 1 | **9** |
 | **5. Analítica & KPIs de Planta** | 5 | 0 | 5 | 2 | **12** |
-| **6. Configuración y COMPAC** | 5 | 3 | 2 | 2 | **12** |
+| **6. Configuración y COMPAC** | 6 | 3 | 2 | 2 | **13** |
 | **7. Tarjetas, Pedidos y Offline** | 3 | 1 | 3 | 1 | **8** |
-| **TOTALES CONSOLIDADOS** | **36** | **16** | **28** | **16** | **96 Casos de Prueba** |
+| **TOTALES CONSOLIDADOS** | **37** | **16** | **28** | **16** | **97 Casos de Prueba** |

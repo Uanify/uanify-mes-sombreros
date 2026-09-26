@@ -178,12 +178,14 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
   * Tabla con meta por hora (~106 pzas/hora), producido real y delta (+/-). Resalta en rojo las horas con déficit.
 
 ### US-17: Inicio de Turno Dinámico con el Primer Escaneo del Día
-* **Estatus:** `[En Revisión / Propuesto]`
-* **Como:** Ingeniero de Procesos.
-* **Quiero:** Que el cronómetro de Takt Time y el cálculo de horas efectivas de producción se disparen automáticamente al registrar el **primer código QR del día**.
-* **Para:** Medir el tiempo real de precalentamiento y arranque de línea (*ramp-up*) sin penalizar artificialmente la primera hora del turno si la caldera tardó en alcanzar temperatura.
+* **Estatus:** `[Implementado v2.18.0]`
+* **Como:** Ingeniero de Procesos y Supervisor de Línea.
+* **Quiero:** Que el cronómetro de Takt Time y el cálculo de horas efectivas de producción se disparen automáticamente al registrar el **primer código QR del día**, midiendo la hora real de arranque y los minutos de calentamiento/preparación (*ramp-up*).
+* **Para:** Medir el tiempo real de precalentamiento y arranque de línea sin penalizar artificialmente la primera hora del turno si la caldera o maquinaria tardó en alcanzar temperatura de trabajo.
 * **Criterios de Aceptación:**
-  * El sistema detecta el primer escaneo después de las 06:30 AM y fija la hora de arranque real de la jornada.
+  * Al escanear y validar el primer código QR de la jornada en la Terminal, el sistema fija la hora real de arranque (`actualStartTime`), calcula el delta respecto a la hora programada (`rampUpMinutes`) y vincula el lote detonador.
+  * El Tablero Andon exhibe el badge de estatus en el encabezado general y sobre la tira hora por hora (`Arranque Real: HH:MM · Ramp-up: +XX min`).
+  * En Configuración de Turno, el Ingeniero o Administrador puede alternar entre modalidad **Dinámica** (predeterminada) y modalidad **Rígida** (fija a las 07:00:00), y dispone de un botón para reiniciar el arranque en simulacros y pruebas.
 
 ---
 

@@ -156,7 +156,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
 
 ---
 
-### ⏱ Guía Táctica de la Visita (San Pancho — 11:00 AM a 2:00 PM)
+### Guía Táctica de la Visita (San Pancho — 11:00 AM a 2:00 PM)
 
 | Horario | Actividad | Objetivo Uanify |
 |---|---|---|
