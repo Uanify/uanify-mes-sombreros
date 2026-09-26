@@ -192,6 +192,8 @@ const UanifyState = {
       email: 'egonzalez@tombstone.mx',
       role: 'admin',
       roleName: 'Administrador General',
+      pin: '1111',
+      payrollNumber: '101',
       permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
       badge: 'Admin'
@@ -202,6 +204,8 @@ const UanifyState = {
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
       roleName: 'Ingeniero de Procesos',
+      pin: '2222',
+      payrollNumber: '102',
       permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
       assignedDepartments: ['*'],
       badge: 'Ingeniero'
@@ -212,9 +216,11 @@ const UanifyState = {
       email: 'jperez@tombstone.mx',
       role: 'supervisor',
       roleName: 'Supervisor de Nave (Depts 05-08)',
+      pin: '1234',
+      payrollNumber: '103',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-05', 'D-06', 'D-07', 'D-08'],
-      badge: ' Supervisor'
+      badge: 'Supervisor'
     },
     {
       id: 'sup-2',
@@ -222,9 +228,11 @@ const UanifyState = {
       email: 'rmendez@tombstone.mx',
       role: 'supervisor',
       roleName: 'Supervisor de Preparación (Depts 01-04)',
+      pin: '4321',
+      payrollNumber: '104',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-01', 'D-02', 'D-03', 'D-04'],
-      badge: ' Supervisor'
+      badge: 'Supervisor'
     }
   ],
 
@@ -1876,28 +1884,176 @@ function enrichStationWithDefaults(st, idx) {
     });
   }
 
-  // ── 1. CONTROL DE PANTALLA DE LOGIN CON SELECTOR DE USUARIO (RBAC) ────────
+  // ── 1. CONTROL DE PANTALLA DE LOGIN CON SELECTOR DE USUARIO Y PIN (RBAC) ──
   function initLoginScreen() {
     const loginScreen = document.getElementById('loginScreen');
     const usersGrid   = document.getElementById('loginUsersGrid');
     const btnSubmit   = document.getElementById('btnLoginSubmit');
     const btnSidebarLogout = document.getElementById('btnSidebarLogout');
 
+    // Elementos de Modo PIN y Modo Cards
+    const btnModePin = document.getElementById('btnModePin');
+    const btnModeCards = document.getElementById('btnModeCards');
+    const loginPinPanel = document.getElementById('loginPinPanel');
+    const loginCardsPanel = document.getElementById('loginCardsPanel');
+    const pinDotsRow = document.getElementById('pinDotsRow');
+    const pinStatusMsg = document.getElementById('pinStatusMsg');
+    const pinNumpadGrid = document.getElementById('pinNumpadGrid');
+
     let selectedUserId = localStorage.getItem('uanify_logged_user') || UanifyState.currentUser || 'admin-1';
+    let enteredPin = '';
+    let isVerifyingPin = false;
+
+    function setLoginMode(mode) {
+      if (mode === 'pin') {
+        if (btnModePin) {
+          btnModePin.classList.add('active');
+          btnModePin.style.background = 'var(--color-brand)';
+          btnModePin.style.borderColor = 'var(--color-brand)';
+          btnModePin.style.color = '#FFFFFF';
+        }
+        if (btnModeCards) {
+          btnModeCards.classList.remove('active');
+          btnModeCards.style.background = '#F8FAFC';
+          btnModeCards.style.borderColor = '#CBD5E1';
+          btnModeCards.style.color = 'var(--text-secondary)';
+        }
+        if (loginPinPanel) loginPinPanel.style.display = 'block';
+        if (loginCardsPanel) loginCardsPanel.style.display = 'none';
+        resetPin();
+      } else {
+        if (btnModeCards) {
+          btnModeCards.classList.add('active');
+          btnModeCards.style.background = 'var(--color-brand)';
+          btnModeCards.style.borderColor = 'var(--color-brand)';
+          btnModeCards.style.color = '#FFFFFF';
+        }
+        if (btnModePin) {
+          btnModePin.classList.remove('active');
+          btnModePin.style.background = '#F8FAFC';
+          btnModePin.style.borderColor = '#CBD5E1';
+          btnModePin.style.color = 'var(--text-secondary)';
+        }
+        if (loginPinPanel) loginPinPanel.style.display = 'none';
+        if (loginCardsPanel) loginCardsPanel.style.display = 'block';
+        renderUserGrid();
+      }
+    }
+
+    if (btnModePin) btnModePin.addEventListener('click', () => setLoginMode('pin'));
+    if (btnModeCards) btnModeCards.addEventListener('click', () => setLoginMode('cards'));
+
+    function resetPin() {
+      enteredPin = '';
+      isVerifyingPin = false;
+      updatePinDots();
+      if (pinStatusMsg) {
+        pinStatusMsg.innerHTML = '<span style="color:var(--text-muted);">Ingreso automático al 4to dígito</span>';
+      }
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`pinDot${i}`);
+        if (dot) {
+          dot.classList.remove('success', 'error');
+          if (i < enteredPin.length) {
+            dot.classList.add('filled');
+          } else {
+            dot.classList.remove('filled');
+          }
+        }
+      }
+    }
+
+    function handlePinInput(key) {
+      if (isVerifyingPin) return;
+
+      if (key >= '0' && key <= '9') {
+        if (enteredPin.length < 4) {
+          enteredPin += key;
+          updatePinDots();
+        }
+        if (enteredPin.length === 4) {
+          verifyPin();
+        }
+      } else if (key === 'clear') {
+        resetPin();
+      } else if (key === 'backspace') {
+        if (enteredPin.length > 0) {
+          enteredPin = enteredPin.slice(0, -1);
+          updatePinDots();
+        }
+      }
+    }
+
+    function verifyPin() {
+      isVerifyingPin = true;
+      const matched = UanifyState.users.find(u => u.pin === enteredPin || u.payrollNumber === enteredPin);
+
+      if (matched) {
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById(`pinDot${i}`);
+          if (dot) dot.classList.add('success');
+        }
+        if (pinStatusMsg) {
+          pinStatusMsg.innerHTML = `<span style="color:#16A34A; font-weight:800;">Identificado: ${matched.name} (${matched.roleName})</span>`;
+        }
+
+        setTimeout(() => {
+          loginWithUser(matched.id, `¡Identificado con PIN exitoso! Bienvenido ${matched.name}.`);
+          resetPin();
+        }, 250);
+      } else {
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById(`pinDot${i}`);
+          if (dot) dot.classList.add('error');
+        }
+        if (pinDotsRow) pinDotsRow.classList.add('shake');
+        if (pinStatusMsg) {
+          pinStatusMsg.innerHTML = `<span style="color:#DC2626; font-weight:800;">PIN no reconocido. Intenta de nuevo.</span>`;
+        }
+
+        setTimeout(() => {
+          if (pinDotsRow) pinDotsRow.classList.remove('shake');
+          resetPin();
+        }, 550);
+      }
+    }
+
+    // Botones del Numpad Táctil
+    if (pinNumpadGrid) {
+      pinNumpadGrid.querySelectorAll('.pin-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-key');
+          handlePinInput(key);
+        });
+      });
+    }
+
+    // Soporte para Teclado Físico / Escáner de Código de Barras
+    window.addEventListener('keydown', (e) => {
+      if (loginScreen && loginScreen.style.display !== 'none' && loginPinPanel && loginPinPanel.style.display !== 'none') {
+        if (e.key >= '0' && e.key <= '9') {
+          handlePinInput(e.key);
+        } else if (e.key === 'Backspace') {
+          handlePinInput('backspace');
+        } else if (e.key === 'Escape') {
+          handlePinInput('clear');
+        }
+      }
+    });
 
     function renderUserGrid() {
       if (!usersGrid) return;
       usersGrid.innerHTML = UanifyState.users.map(u => {
         const isSel = u.id === selectedUserId;
-        let icon = '';
-        if (u.role === 'admin') icon = '';
-        if (u.role === 'ingeniero') icon = '';
         const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts' : u.assignedDepartments.join(', ');
 
         return `
           <div class="login-user-card ${isSel ? 'selected' : ''}" data-user-id="${u.id}">
             <div class="login-user-card-head">
-              <span class="login-user-card-icon">${icon}</span>
+              <span class="login-user-card-icon" style="font-size:11px; font-weight:800; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:var(--color-brand); font-family:var(--font-mono);">PIN: ${u.pin}</span>
               <div class="login-user-card-check"></div>
             </div>
             <div>
@@ -1905,7 +2061,7 @@ function enrichStationWithDefaults(st, idx) {
               <div class="login-user-role">${u.roleName}</div>
             </div>
             <div class="login-user-depts">
-              <span></span> <span>${deptsText}</span>
+              <span>${deptsText}</span>
             </div>
           </div>
         `;
@@ -1919,26 +2075,33 @@ function enrichStationWithDefaults(st, idx) {
       });
     }
 
+    function loginWithUser(userId, customMsg) {
+      const user = UanifyState.users.find(u => u.id === userId);
+      if (!user) return;
+
+      UanifyState.currentUser = userId;
+      localStorage.setItem('uanify_logged_user', userId);
+      sessionStorage.setItem('uanify_logged_in', 'true');
+
+      if (loginScreen) loginScreen.style.display = 'none';
+      if (appLayout) appLayout.style.display = 'flex';
+
+      window.switchActiveUser(userId);
+
+      // Enviar directamente a la Terminal en piso
+      const terminalNavBtn = document.querySelector('.nav-btn[data-tab="terminal"]');
+      if (terminalNavBtn) terminalNavBtn.click();
+
+      window.UanifyUI.toast(
+        customMsg || `¡Bienvenido a Planta Tombstone, ${user.name}! Sesión activa en rol: ${user.roleName}.`,
+        'success',
+        'Acceso Concedido'
+      );
+    }
 
     if (btnSubmit) {
       btnSubmit.addEventListener('click', () => {
-        const user = UanifyState.users.find(u => u.id === selectedUserId);
-        if (!user) return;
-
-        UanifyState.currentUser = selectedUserId;
-        localStorage.setItem('uanify_logged_user', selectedUserId);
-        sessionStorage.setItem('uanify_logged_in', 'true');
-
-        if (loginScreen) loginScreen.style.display = 'none';
-        if (appLayout) appLayout.style.display = 'flex';
-
-        window.switchActiveUser(selectedUserId);
-
-        window.UanifyUI.toast(
-          `¡Bienvenido a Planta Tombstone, ${user.name}! Sesión activa en rol: ${user.roleName}.`,
-          'success',
-          'Acceso Concedido'
-        );
+        loginWithUser(selectedUserId);
       });
     }
 
@@ -1948,14 +2111,14 @@ function enrichStationWithDefaults(st, idx) {
         if (appLayout) appLayout.style.display = 'none';
         if (loginScreen) {
           loginScreen.style.display = 'flex';
-          selectedUserId = UanifyState.currentUser;
-          renderUserGrid();
+          setLoginMode('pin');
         }
-        window.UanifyUI.toast('Sesión cerrada. Selecciona tu perfil para ingresar.', 'info', 'Cierre de Sesión');
+        window.UanifyUI.toast('Sesión cerrada. Digita tu PIN de 4 dígitos para firmar acceso.', 'info', 'Cierre de Sesión');
       });
     }
 
-    // Inicializar grid
+    // Inicializar estado de login
+    setLoginMode('pin');
     renderUserGrid();
 
     // Comprobación de estado de sesión

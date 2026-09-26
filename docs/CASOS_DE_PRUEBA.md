@@ -86,10 +86,14 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Estatus:** `[Pasa - v2.18.0]`
 
 ### TC-SEC-08: Autenticación por PIN Rápido en Tablet (4 dígitos)
-* **HU:** `US-01` | **Categoría:** Tablet / Ergonomía.
-* **Objetivo:** Comprobar el teclado numérico en pantalla para firmarse con PIN de 4 dígitos.
-* **Pasos:** 1. Seleccionar usuario. 2. Ingresar PIN `1234` mediante keypad táctil.
-* **Resultado Esperado:** El sistema valida el PIN al ingresar el cuarto dígito sin requerir pulsar "Enter".
+* **HU:** `US-01` | **Categoría:** Tablet / Ergonomía / Seguridad.
+* **Objetivo:** Comprobar el ingreso instantáneo en piso mediante PIN de 4 dígitos con auto-submit y feedback háptico/visual.
+* **Pasos:**
+  1. En pantalla de login (sin sesión activa), verificar que por defecto se abre la pestaña "PIN Rápido (Piso)".
+  2. Digitar con el Numpad táctil una combinación inválida de 4 dígitos (ej. `9999`).
+  3. Comprobar que los 4 dots se iluminan en rojo, la barra tiembla (`.shake`) y el mensaje muestra *"PIN o Nómina no reconocidos"*.
+  4. Digitar el PIN de supervisor válido `4321` (Roberto Méndez).
+* **Resultado Esperado:** Al digitar el 4to dígito, los dots se iluminan en verde (`.success`), la terminal se desbloquea en <300ms sin requerir pulsar "Enter", y redirige automáticamente al módulo de Terminal con los departamentos D-01 a D-04 activos.
 * **Estatus:** `[Pasa - v2.18.0]`
 
 ---

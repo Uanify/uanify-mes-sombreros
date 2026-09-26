@@ -3267,6 +3267,135 @@ input.is-valid {
   padding: 22px 24px 24px;
 }
 
+/* PESTAÑAS Y TECLADO NUMÉRICO TÁCTIL DE PIN */
+.login-mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 10px;
+}
+
+.login-mode-tab-btn {
+  flex: 1;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  color: var(--text-secondary);
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+  font-family: var(--font-display);
+}
+
+.login-mode-tab-btn.active {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(139, 94, 60, 0.25);
+}
+
+.pin-dots-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 12px 0 14px 0;
+}
+
+.pin-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #CBD5E1;
+  background: #F8FAFC;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pin-dot.filled {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.2);
+  transform: scale(1.15);
+}
+
+.pin-dot.success {
+  background: #16A34A !important;
+  border-color: #16A34A !important;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.25) !important;
+  transform: scale(1.18);
+}
+
+.pin-dot.error {
+  background: #DC2626 !important;
+  border-color: #DC2626 !important;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.25) !important;
+}
+
+.pin-dots-row.shake {
+  animation: pinShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes pinShake {
+  10%, 90% { transform: translateX(-5px); }
+  20%, 80% { transform: translateX(5px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.pin-numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 290px;
+  margin: 0 auto;
+}
+
+.pin-btn {
+  height: 54px;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 800;
+  cursor: pointer !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pin-btn:hover {
+  background: #F8FAFC;
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.pin-btn:active {
+  background: #F1F5F9;
+  transform: scale(0.94);
+}
+
+.pin-btn-action {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  background: #F8FAFC;
+}
+
+.pin-btn-action:hover {
+  color: #DC2626;
+  border-color: #F87171;
+}
+
 .login-section-label {
   font-family: var(--font-display);
   font-size: 13.5px;

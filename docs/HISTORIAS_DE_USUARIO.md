@@ -34,11 +34,15 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
 ### US-01: Selección de Perfil y Login Rápido
 * **Estatus:** `[Implementado v2.18.0]`
 * **Como:** Operador, Supervisor, Ingeniero o Administrador de planta.
-* **Quiero:** Poder seleccionar mi usuario desde un selector visual o ingresar con un PIN rápido de 4 dígitos.
-* **Para:** Acceder a la plataforma en menos de 3 segundos desde la tablet o computadora sin teclear correos largos en piso de producción.
+* **Quiero:** Poder ingresar con un PIN rápido de 4 dígitos (o número de nómina) a través de un teclado numérico táctil de pantalla completa o seleccionar mi usuario desde un selector visual.
+* **Para:** Acceder a la plataforma en menos de 2 segundos desde la tablet o quiosco en piso de producción sin teclear correos largos ni contraseñas alfanuméricas con guantes o dedos con adhesivo.
 * **Criterios de Aceptación:**
-  * Al ingresar al sistema sin sesión activa se muestra el selector de perfiles con avatars y roles claros (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04).
-  * La sesión seleccionada se almacena en memoria local (`localStorage`) para no perderse si se refresca la página.
+  * Al ingresar al sistema sin sesión activa se ofrece una interfaz dual:
+    1. **Pestaña PIN Rápido (Piso):** Con 4 dots indicadores (`.pin-dot`), Numpad táctil 3x4 (`pin-numpad-grid`) con botones 0-9, botón `C` (limpiar) y botón `⌫` (borrar). Al digitar el 4to dígito, el sistema ejecuta auto-submit instantáneo sin requerir pulsar 'Entrar'.
+    2. **Pestaña Selector de Perfiles:** Con tarjetas visuales, avatares y roles claros (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04).
+  * Feedback visual inmediato: Si el PIN es correcto, los dots se iluminan en verde esmeralda (`.success`) y redirigen a la Terminal en <300ms. Si es incorrecto, los dots se tiñen de rojo carmesí con animación de sacudida (`@keyframes pinShake`) y se limpian automáticamente tras 800ms.
+  * Soporte para teclado físico y pistolas lectoras con emulación de teclado numérico (teclas 0-9, Backspace y Escape).
+  * La sesión seleccionada se almacena en memoria local (`localStorage`) para persistir si se refresca la página.
 
 ### US-02: Ocultamiento Estricto de Módulos No Autorizados
 * **Estatus:** `[Implementado v2.18.0]`

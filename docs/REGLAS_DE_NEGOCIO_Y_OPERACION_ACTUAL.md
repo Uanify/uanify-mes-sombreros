@@ -193,7 +193,60 @@ El supervisor debe poder visualizar en su pantalla los inventarios disponibles e
 
 ---
 
-## 11. Matriz de Roles y Responsabilidades Validadas
+## 11. Flujo Operativo Óptimo de Piso (Happy Path de Terminal con PIN y Depósito Instantáneo)
+
+Este apartado define la especificación estándar del flujo de mayor velocidad en planta, diseñado para operar en un ritmo inferior a 3 segundos por lote y sin distracción manual de los mandos medios.
+
+### 11.1 Disposición Física de las Terminales
+1. **Modalidad Estación Fija (Kiosko de Departamento):**
+   * La tablet se encuentra montada en un brazo articulado o pedestal de uso rudo en el departamento crítico (ej. Prensas de Hormado D-05, Recorte D-06 o Mesa de Rampa).
+   * La terminal tiene preconfigurada su estación base; cualquier lote leído en ella asume por defecto la estación de trabajo física donde está anclada.
+2. **Modalidad Supervisor Móvil:**
+   * La tablet es portada por el supervisor asignado a un tramo departamental específico (ej. Roberto Méndez para D-01 a D-04; Juan Manuel Pérez para D-05 a D-08).
+   * La terminal opera dentro del radio de los departamentos autorizados para ese supervisor según su perfil RBAC.
+
+### 11.2 Secuencia de Pasos del Happy Path Operativo
+
+```
+[PASO 1: 2 SEGUNDOS]
+Supervisor digita PIN de 4 dígitos en Numpad táctil
+→ Auto-submit instantáneo (sin botón 'Entrar')
+→ Terminal desbloqueada y firmada con nombre y tramo departamental
+
+[PASO 2: 1 SEGUNDO]
+Supervisor apunta cámara del lector al código QR de la mica protectora física
+→ Lectura óptica automática en <500ms
+→ Extracción integral: Orden, Folio Lote, Sublote, Modelo, Talla, Falda
+
+[PASO 3: AUTOMÁTICO <100ms]
+Cruce de Datos: [Lote Escaneado] + [Estación de la Tablet / Supervisor]
+→ Sistema valida: "Lote 49,633-3 completó su paso por D-05 Prensas de Hormado"
+→ Consulta ruta activa del modelo: "Siguiente estación según receta: D-06 Recorte y Refaldeado"
+→ Asigna automáticamente al operador titular preseleccionado o cuadrilla
+
+[PASO 4: 1 TOQUE <1 SEGUNDO]
+Supervisor pulsa botón táctil verde gigante: "Depositar Lote en Almacén de D-06 Recorte"
+→ Lote transferido al buffer intermedio de la siguiente estación
+→ Piezas (+15) acreditadas al destajo del operador en el Padrón
+→ Contador horario y Tablero Andon actualizados en tiempo real
+→ Cero formularios manuales · Retorno automático a cámara lista para el siguiente lote
+```
+
+### 11.3 Lo que Hace y lo que NO Hace el Supervisor
+* **Lo que SÍ hace el supervisor:**
+  1. Digitar su PIN de 4 dígitos al iniciar turno o retomar la tablet.
+  2. Apuntar la cámara de la tableta al código QR dentro de la mica de piso.
+  3. Cotejar en 1 segundo que los datos en pantalla coincidan con la cartulina física.
+  4. Confirmar con 1 solo toque en el botón verde de avance de lote.
+* **Lo que NUNCA debe hacer el supervisor (Cero Fricción):**
+  * NO teclea correos electrónicos ni contraseñas alfanuméricas complejas.
+  * NO escribe manualmente el modelo, talla, ancho de falda ni orden de producción (todo viene encriptado en el QR).
+  * NO tiene que buscar ni seleccionar a qué departamento mandar el sombrero (la ruta programada por ingeniería decide el destino en automático).
+  * NO tiene que llenar reportes de papel ni vales de libreta para comprobar el avance del destajo.
+
+---
+
+## 12. Matriz de Roles y Responsabilidades Validadas
 
 | Perfil / Rol | Titulares en Planta | Responsabilidades y Atribuciones Validadas |
 |---|---|---|
@@ -205,10 +258,11 @@ El supervisor debe poder visualizar en su pantalla los inventarios disponibles e
 
 ---
 
-## 12. Historial de Control de Cambios del Documento
+## 13. Historial de Control de Cambios del Documento
 
 | Fecha | Versión | Cambios Realizados y Justificación Técnica |
 |---|---|---|
+| **26/09/2026** | `v2.18.0` | **Incorporación del Flujo Operativo Óptimo de Piso (Sección 11):** Definición detallada del Happy Path de escaneo ultrarrápido con PIN de 4 dígitos, cruce automático de Lote + Estación para cálculo de destino sin formularios, y delimitación clara de acciones del supervisor. |
 | **26/09/2026** | `v2.18.0` | **Creación inicial del Documento Maestro de Operación y Reglas de Negocio Validadas.** Consolidación fidedigna de las grabaciones de audio en planta, levantamiento presencial de procesos, inventario de hormas por color, flujo de 14 puntos, fraccionamiento de 60 a 15 pzas en rampa, y supresión de supuestos no confirmados. |
 
 > **Compromiso de Sincronización Continua (`REGLA 0.36`):** Este documento se mantendrá sincronizado de forma obligatoria e inmediata ante cualquier nuevo descubrimiento, ajuste de proceso o acuerdo formal alcanzado en las reuniones de trabajo con Tombstone Hats.
