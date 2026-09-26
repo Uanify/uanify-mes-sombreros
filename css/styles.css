@@ -621,21 +621,22 @@ body.industrial-theme {
     min-height: 48px;
   }
 
-  /* Sub-navegación por pestañas con deslizamiento horizontal táctil */
+  /* Sub-navegación por pestañas */
   .sub-nav-tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    flex-wrap: nowrap;
-    padding-bottom: 6px;
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 6px;
   }
 
   .sub-tab-btn {
     white-space: nowrap;
-    flex-shrink: 0;
-    font-size: 13.5px;
-    padding: 10px 16px;
-    min-height: 44px;
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 40px;
   }
 
   /* Contenedores de tablas con scroll táctil suave */
@@ -811,12 +812,11 @@ body.industrial-theme {
   /* Sub-tabs optimizados en móvil */
   .sub-nav-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 4px 0 8px 0;
-    margin-bottom: 14px;
+    padding: 5px;
+    margin-top: 14px;
+    margin-bottom: 18px;
     width: 100%;
   }
 
@@ -825,10 +825,9 @@ body.industrial-theme {
   }
 
   .sub-tab-btn {
-    padding: 8px 12px;
-    min-height: 40px;
+    padding: 6px 12px;
+    min-height: 36px;
     font-size: 12px;
-    flex-shrink: 0;
     white-space: nowrap;
   }
 

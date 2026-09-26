@@ -56,6 +56,12 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ## Historial de Versiones (Changelog)
 
+### [2.21.0] - 2026-09-26
+- **Rediseño Ergonómico de Sub-Pestañas y Corrección de Espaciado Superior (`RF-72`):**
+  - **Eliminación del Anclaje Sticky Invasivo:** Se removió la propiedad `position: sticky; top: 76px;` de `.sub-nav-tabs` que provocaba que al hacer scroll las pestañas secundarias se estrellaran y quedaran pegadas con 0px de separación contra el encabezado superior del módulo.
+  - **Margen Superior y Respiración Visual:** Se estableció un `margin: 20px 0 24px 0;` dedicado en desktop y `16px 0 20px 0;` en tablet/móvil, garantizando una separación cómoda, limpia y equilibrada respecto al título del módulo y a las tarjetas de trabajo.
+  - **Diseño Moderno Segmented Control (Pills Hug-Content):** Se transformó el contenedor de una barra vacía al 100% de ancho a una cápsula compacta de ajuste automático (`width: fit-content; max-width: 100%;`) con fondo sutil (`#F1F5F9`), bordes suavizados de 12px y botones tipo chip interactivo con estado activo en tarjeta blanca elevada con sombra táctil.
+
 ### [2.20.0] - 2026-09-26
 - **Erradicación Total de Códigos Técnicos de Departamento en Login y Pantallas de Planta (`RF-72`, `RF-73`):**
   - **Selector de Perfiles de Login:** Los supervisores ya no muestran `(Depts 05-08)` en su rol ni listas de códigos `D-05, D-06...` en su ficha de acceso; ahora visualizan sus nombres de cargo y tramo departamental real (*Supervisor de Hormado & Acabado · Prensas de Hormado · Recorte y Alambrado · Planchado y Horno · Brillo y Pulido*).
