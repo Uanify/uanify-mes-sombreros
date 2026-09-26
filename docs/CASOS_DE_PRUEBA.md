@@ -131,11 +131,11 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Resultado Esperado:** El modal se cierra, la cámara se reinicia y el lote permanece sin cambios en su estación previa.
 * **Estatus:** `[Pasa - v2.18.0]`
 
-### TC-TERM-14: Asignación Obligatoria de Operador Responsable
+### TC-TERM-14: Asignación de Operador en Estaciones con Destajo
 * **HU:** `US-08` | **Categoría:** Validación de Entrada.
-* **Objetivo:** Impedir transferir el lote si no se ha seleccionado qué operario lo trabajó.
-* **Pasos:** 1. En Terminal, intentar pulsar `Completar Estación` sin tocar ningún operador en el selector.
-* **Resultado Esperado:** La acción se bloquea con aviso: *"Debe seleccionar el operador que procesó la torre."*
+* **Objetivo:** Comprobar que en estaciones con pago por destajo (Prensas, Troquelado, Ribeteado) se requiera seleccionar el operario responsable, omitiéndose en estaciones logísticas o grupales.
+* **Pasos:** 1. En Terminal de estación D-03 (Prensas), intentar pulsar `Completar Estación` sin seleccionar operador. 2. En estación D-01 (Materia Prima), transferir lote sin seleccionar operador.
+* **Resultado Esperado:** En D-03 la acción se bloquea solicitando operario; en D-01 la transferencia se realiza de inmediato sin fricción.
 * **Estatus:** `[Pasa - v2.18.0]`
 
 ### TC-TERM-15: Depósito Automático por Secuencia de Ruta del Modelo
@@ -730,11 +730,11 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Resultado Esperado:** La cola de movimientos se sincroniza en orden cronológico exacto; la pastilla cambia a ` Conectado y Sincronizado`.
 * **Estatus:** `[Por Validar / Especificación]`
 
-### TC-NEW-96: Auditoría Semanal de Segundas y Merma de Viernes
-* **HU:** `US-45` | **Categoría:** Calidad / Proceso de Viernes.
-* **Objetivo:** Reclasificar 20 piezas con defecto en D-12 para venta de remate en fábrica.
-* **Pasos:** 1. Abrir pantalla de `Revisión de Segundas`. 2. Asignar 15 sombreros a `Segunda de Fábrica ($450 MXN)` y 5 a `Desecho Total`.
-* **Resultado Esperado:** Las 15 piezas se mueven al inventario de mostrador y las 5 se purgan como costo de merma definitivo.
+### TC-NEW-96: Clasificación y Auditoría de Segundas y Retrabajos (D-12)
+* **HU:** `US-45` | **Categoría:** Calidad / Retrabajo (Validación con Cliente DUD-07).
+* **Objetivo:** Reclasificar 20 piezas con defecto en D-12 para venta de remate en mostrador o reproceso.
+* **Pasos:** 1. Abrir pantalla de `Revisión de Segundas y Retrabajos`. 2. Asignar 15 sombreros a `Segunda de Fábrica ($450 MXN)` y 5 a `Desecho Total`.
+* **Resultado Esperado:** Las 15 piezas se mueven al inventario de mostrador y las 5 se purgan como costo de merma definitivo, sin depender de un día rígido preestablecido.
 * **Estatus:** `[Por Validar / Especificación]`
 
 ---

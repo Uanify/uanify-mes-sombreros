@@ -97,13 +97,14 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
   * El sistema consulta la secuencia del modelo (`El Viejonón`, `Denver`, etc.) y transfiere el lote al almacén de amortiguamiento de la siguiente estación.
   * Se genera una notificación toast de confirmación y se actualiza el contador de piezas en rampa.
 
-### US-08: Asignación del Operador Responsable (Destajo / Nómina)
+### US-08: Asignación del Operador Responsable (Estaciones con Destajo / Nómina Individual)
 * **Estatus:** `[Implementado v2.18.0]`
-* **Como:** Supervisor de línea.
-* **Quiero:** Seleccionar con un toque táctil el nombre del operador que procesó la torre en la máquina antes de dar la salida.
-* **Para:** Que quede registrado el récord de mano de obra y se acumulen las piezas procesadas al destajo del operador.
+* **Como:** Supervisor de línea en estaciones con pago por destajo o máquina individual (ej. Prensas D-03, Troquelado D-04, Ribeteado D-06, Adorno D-08).
+* **Quiero:** Seleccionar con un toque táctil el nombre del operador que procesó la torre en la máquina antes de dar la salida. En departamentos grupales o logísticos (Almacenes D-01/D-05, Engomado D-02, Empaque D-13), este paso es opcional o se omite para agilizar el flujo.
+* **Para:** Registrar el récord de mano de obra y acumular las piezas procesadas al destajo del operador únicamente en las estaciones que manejan sticker o trabajo individual.
 * **Criterios de Aceptación:**
   * Selector rápido con los operadores asignados a esa estación (ej. `Jorge Mendoza`, `Melany Ramos`).
+  * Si la estación no está configurada como destajo/individual, la transferencia se ejecuta directamente sin forzar selección de operario.
   * El récord guarda: `Fecha`, `Hora`, `Lote`, `Estación`, `Operador`, `Piezas`.
 
 ### US-09: Fraccionamiento de Lote Madre (60 a 15 piezas) en Rampa (D-05)
@@ -423,13 +424,14 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
 * **Criterios de Aceptación:**
   * Almacenamiento temporal de eventos en cola local (`IndexedDB / localStorage`). Al recuperar conexión a la red, los movimientos se envían al servidor en el orden cronológico exacto.
 
-### US-45: Auditoría y Venta de Segundas de Fábrica (Proceso de Viernes)
-* **Estatus:** `[En Revisión / Propuesto]`
+### US-45: Gestión y Clasificación de Segundas y Retrabajos (Almacén D-12)
+* **Estatus:** `[En Revisión / Propuesto · Pendiente de Validación con Cliente]`
 * **Como:** Inspector de Calidad / Supervisor.
-* **Quiero:** Un módulo específico para auditar las piezas defectuosas acumuladas en la semana en el Almacén D-12 (Merma y Segundas), clasificándolas en: a) Recuperables por reproceso, b) Segunda de fábrica para venta de remate en mostrador, o c) Desecho total.
-* **Para:** Formalizar el ritual semanal de recuperación de merma de los viernes y monetizar las piezas con defectos menores.
+* **Quiero:** Un módulo específico para auditar las piezas defectuosas acumuladas en el Almacén D-12 (Merma y Segundas), clasificándolas en: a) Recuperables por reproceso, b) Segunda de fábrica para venta de remate en mostrador, o c) Desecho total.
+* **Para:** Regularizar la recuperación de merma y monetizar las piezas con defectos menores de acuerdo con la frecuencia y proceso real que defina el cliente (sin asumir días fijos preestablecidos).
 * **Criterios de Aceptación:**
   * Pantalla de revisión de segundas con registro de causas de defecto (mancha, deformación, costura) y reasignación de estatus en inventario.
+  * La periodicidad y operativa de revisión se adaptará formalmente tras la reunión de validación (`DUD-07`).
 
 ---
 
