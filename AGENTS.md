@@ -83,9 +83,9 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
    - Takt Time estándar: **42 segundos por pieza**.
    - Queda prohibido reactivar selectores de turnos múltiples ficticios.
 2. **Seguridad Basada en Roles (RBAC):**
-   - **Administrador (👑 Admin):** Acceso a todos los módulos y capacidad exclusiva de gestionar usuarios y editar permisos.
-   - **Ingeniero de Producción (⚡ Ingeniero):** Acceso a Tablero Andon, Ingeniería & Subensambles y Dirección & COMPAC.
-   - **Supervisor de Línea (📱 Supervisor):** Acceso a Tablero Andon y Lotes, QR & Almacenes; pestañas restringidas OCULTAS por completo (sin candados ni opciones deshabilitadas).
+   - **Administrador ( Admin):** Acceso a todos los módulos y capacidad exclusiva de gestionar usuarios y editar permisos.
+   - **Ingeniero de Producción ( Ingeniero):** Acceso a Tablero Andon, Ingeniería & Subensambles y Dirección & COMPAC.
+   - **Supervisor de Línea ( Supervisor):** Acceso a Tablero Andon y Lotes, QR & Almacenes; pestañas restringidas OCULTAS por completo (sin candados ni opciones deshabilitadas).
 
 ---
 
@@ -159,7 +159,7 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 ## REGLA 0.13: Seguridad RBAC por Ocultamiento Estricto (Sin Candados Visuales)
 
-**Las restricciones de acceso NO deben mostrar iconos de candados 🔒 ni botones bloqueados.**
+**Las restricciones de acceso NO deben mostrar iconos de candados  ni botones bloqueados.**
 1. **Ocultamiento Total:** Si un usuario no cuenta con autorización para un módulo o pestaña según su matriz de permisos, dicha opción simplemente **NO DEBE APARECER** en la barra lateral ni en los menús (`display: none`).
 2. **Cero Frustración de Usuario:** El operador o supervisor únicamente visualiza las herramientas a las que tiene acceso legítimo, evitando distracciones o sensación de bloqueo.
 3. **Agrupadores Limpios:** Si todos los elementos de un grupo de navegación están restringidos, el título de la sección (`.nav-group-title`) también debe ocultarse automáticamente.
@@ -200,7 +200,7 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 ## REGLA 0.18: Rutas Productivas por Modelo, Áreas de Calidad y Línea de Tiempo de Trazabilidad
 
 1. **Consulta Visual de Ubicación de Lotes (Supervisor de Piso):** El supervisor (así como ingeniería y dirección) debe poder consultar en cualquier momento dónde se encuentra un lote específico a través de un mapa de proceso visual o línea de tiempo interactiva (Value Stream Map).
-2. **Visualización de Nodos y Filtros de Calidad:** La línea de tiempo debe reflejar todos los pasos departamentales y las paradas de control de calidad (`C-XX`) por las que transita el lote, destacando de manera prominente la estación activa (**📍 AQUÍ ESTÁ EL LOTE**), las estaciones ya superadas (✅) y los pasos pendientes (⏳).
+2. **Visualización de Nodos y Filtros de Calidad:** La línea de tiempo debe reflejar todos los pasos departamentales y las paradas de control de calidad (`C-XX`) por las que transita el lote, destacando de manera prominente la estación activa (** AQUÍ ESTÁ EL LOTE**), las estaciones ya superadas () y los pasos pendientes (⏳).
 3. **Secuencias Dependientes del Tipo de Sombrero (Rutas de Fabricación):** Cada modelo de sombrero (ej. 1000X Master Telar, Campana Preformada de 1 pieza, Laqueados Especiales) posee su propia secuencia departamental. Estas rutas deben ser configurables, permitiendo reordenar (subir/bajar) los pasos, agregar o remover departamentos y filtros de calidad.
 4. **Facultad de Configuración para Ingeniería y Dirección:** La creación de áreas de calidad (`C-XX`) y la edición de las secuencias de rutas de fabricación son facultades exclusivas de los roles **Ingeniero** y **Administrador**.
 
@@ -337,7 +337,7 @@ Excepciones permitidas con style="":
 
 **En todos los módulos del sistema (Terminal, Andon, Almacén, Operadores, Ingeniería, Dirección, Configuración), el encabezado `.view-hero-bar` debe permanecer sticky/fijo al hacer scroll vertical.**
 
-1. **Elementos Fijos:** El título del módulo (`.view-title`), el texto descriptivo (`.view-subtitle`) y los botones de acción/guardado (ej. `💾 Guardar Configuración`, `+ Registrar Operador`, `Simular`) deben quedar siempre visibles y accesibles en la parte superior del viewport sin importar cuánto descienda el usuario en la página.
+1. **Elementos Fijos:** El título del módulo (`.view-title`), el texto descriptivo (`.view-subtitle`) y los botones de acción/guardado (ej. ` Guardar Configuración`, `+ Registrar Operador`, `Simular`) deben quedar siempre visibles y accesibles en la parte superior del viewport sin importar cuánto descienda el usuario en la página.
 2. **Estilo Glassmorphism:** La barra hero fija debe incorporar `background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(12px);` y una elevación sutil para que el contenido pase por debajo con legibilidad impecable.
 3. **Responsividad:** En pantallas tablet/móviles (<= 1024px), los márgenes y paddings negativos deben adaptarse automáticamente (`margin: -16px -18px 16px -18px; padding: 14px 18px;`).
 
@@ -376,7 +376,7 @@ Excepciones permitidas con style="":
 ## REGLA 0.29: CRUD Completo de Operadores de Planta (MANDATORIA)
 
 1. **Disponibilidad Dual:** La gestión de operadores debe estar plenamente funcional tanto en el módulo de *Configuración de Planta* (`subtab-config-operators`) como en el módulo de *Padrón de Operadores de Planta* (`view-operators`).
-2. **Acciones por Registro:** Cada fila de operador debe incluir obligatoriamente los botones `✏️ Editar` y `🗑️ Eliminar`.
+2. **Acciones por Registro:** Cada fila de operador debe incluir obligatoriamente los botones ` Editar` y ` Eliminar`.
 3. **Formulario Unificado Alta/Edición:**
    - El modal de operador (`#modalRegisterOperator`) debe admitir tanto el alta de nuevo personal como la edición de personal existente (`#opOriginalEmpId`).
    - Campos requeridos: No. Nómina (identificador único), Nombre Completo, Departamento Asignado (select con las 14 estaciones), Máquina / Puesto de Trabajo, Estatus Operativo (Activo, Incapacidad, Capacitación, Baja Temporal) y Turno.
@@ -431,7 +431,7 @@ Excepciones permitidas con style="":
    - Queda estrictamente prohibido obligar al supervisor a seleccionar manualmente el modelo de sombrero en el escáner.
 2. **Verificación Previa Obligatoria de Tarjeta en Mano:**
    - Tras escanear, el sistema debe desplegar un modal de verificación previa (`#modalVerifyScannedCard`) mostrando la réplica oficial de la tarjeta viajera física.
-   - El supervisor debe poder descartar sin cambios ("❌ Tarjeta Incorrecta / Escanear de Nuevo") o confirmar ("✅ Confirmar Coincidencia y Proceder") antes de registrar cualquier movimiento.
+   - El supervisor debe poder descartar sin cambios (" Tarjeta Incorrecta / Escanear de Nuevo") o confirmar (" Confirmar Coincidencia y Proceder") antes de registrar cualquier movimiento.
 3. **Restricción Departamental Estricta (RBAC de Custodia):**
    - Un supervisor **solo puede mover y depositar lotes correspondientes a sus departamentos asignados** (`assignedDepartments`).
    - Si intenta trasladar un lote que se encuentra en una estación fuera de su asignación, el sistema debe bloquear la acción y emitir una advertencia explicativa.
@@ -440,7 +440,7 @@ Excepciones permitidas con style="":
 5. **Ergonomía Táctil y Pantalla Completa:**
    - Botones principales con altura mínima de 48px a 52px (`.btn-touch-hero`, `.btn-touch-lg`).
    - La tarjeta viajera oficial física se consulta mediante modal de alta visibilidad (`.btn-traveler-trigger`), suprimiendo el scroll vertical infinito en la pantalla principal.
-   - El escáner QR debe contar con modalidad táctil de Pantalla Completa (`⛶ Pantalla Completa`).
+   - El escáner QR debe contar con modalidad táctil de Pantalla Completa (` Pantalla Completa`).
 6. **Mapa de Planta y Almacenes Intermedios Departamentales:**
    - La supervisión macro de la fábrica se realiza mediante el mapa general de planta, permitiendo abrir el almacén intermedio de cualquier departamento (`#modalDeptWarehouse`) con filtros en tiempo real por modelo, tipo de lote y calidad.
    - El traspaso físico entre plantas se ejecuta exclusivamente a través del escaneo del código QR.
@@ -497,29 +497,53 @@ Excepciones permitidas con style="":
    - **Columna 2 — Entidad Principal & Nombre Comercial (`.col-name`):** Título principal en negrita de alta visibilidad (`font-size: 13.5px; font-weight: 700; color: var(--text-primary);`), complementado invariablemente con texto explicativo secundario (`.table-cell-subtext`) con descripción, alias o modelo.
    - **Columnas Intermedias — Especificaciones Técnicas y Operativas:** Presentadas con alineación limpia, badges semánticos sutiles para categorías o procesos, y métricas cuantitativas con unidades claras (`pzas`, `seg`, `MXN`).
    - **Penúltima Columna — Estatus Operativo Estandarizado (`.col-status`):** Indicador visual unificado en píldora (`.table-status-pill`) con punto de color identificativo:
-     - 🟢 **Activo / Operativo / Normal:** Verde industrial (`#16A34A`, fondo `#DCFCE7`).
-     - 🟡 **En Mantenimiento / Calibración / WIP Alto:** Ámbar preventivo (`#D97706`, fondo `#FEF3C7`).
-     - 🔴 **Inactivo / Detenido / Bloqueado:** Rojo crítico (`#DC2626`, fondo `#FEE2E2`).
+     -  **Activo / Operativo / Normal:** Verde industrial (`#16A34A`, fondo `#DCFCE7`).
+     -  **En Mantenimiento / Calibración / WIP Alto:** Ámbar preventivo (`#D97706`, fondo `#FEF3C7`).
+     -  **Inactivo / Detenido / Bloqueado:** Rojo crítico (`#DC2626`, fondo `#FEE2E2`).
    - **Última Columna — Celda de Acciones Estandarizada (`.col-actions`, `.action-btns-cell`):** Encabezado `"Acciones"` centrado (`text-align: center`), con ancho mínimo reservado de 140px a 180px. Los botones deben estar alojados en un contenedor flex (`.action-btns-cell`) centrado con separación constante (`gap: 6px` a `8px`).
 
 2. **Diseño Estandarizado de la Sección de Acciones (`.action-btns-cell`):**
-   - **Botón Editar (`.btn-action.btn-action-edit`):** Icono `✏️` + etiqueta `"Editar"` (o botón táctil compacto con tooltip). Fondo suave neutro, borde sutil, texto primario o cuero de marca (`#8B5E3C`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
-   - **Botón Eliminar / Baja (`.btn-action.btn-action-delete`):** Icono `🗑️` + etiqueta `"Eliminar"` o `"Baja"`. Fondo rojo tenue (`#FEF2F2`), borde carmesí (`#FCA5A5`), texto rojo intenso (`#DC2626`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
-   - **Botón Ver / Detalle (`.btn-action.btn-action-view`):** Icono `👁️` + etiqueta `"Ver"` o `"Detalle"`. Fondo azul tenue (`#EFF6FF`), borde azul (`#BFDBFE`), texto azul (`#1D4ED8`).
+   - **Botón Editar (`.btn-action.btn-action-edit`):** Icono `` + etiqueta `"Editar"` (o botón táctil compacto con tooltip). Fondo suave neutro, borde sutil, texto primario o cuero de marca (`#8B5E3C`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
+   - **Botón Eliminar / Baja (`.btn-action.btn-action-delete`):** Icono `` + etiqueta `"Eliminar"` o `"Baja"`. Fondo rojo tenue (`#FEF2F2`), borde carmesí (`#FCA5A5`), texto rojo intenso (`#DC2626`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
+   - **Botón Ver / Detalle (`.btn-action.btn-action-view`):** Icono `` + etiqueta `"Ver"` o `"Detalle"`. Fondo azul tenue (`#EFF6FF`), borde azul (`#BFDBFE`), texto azul (`#1D4ED8`).
    - **Queda estrictamente prohibido:** Usar estilos inline discordantes, variar los anchos o alturas entre tablas, o dejar acciones desalineadas sin contenedor estandarizado.
 
 3. **Barra de Filtrado Multi-Criterio Obligatoria en TODO Listado (`.uanify-filter-toolbar`):**
    - **Sin excepción:** Toda tabla o listado de registros debe poseer inmediatamente sobre ella su barra de filtrado estandarizada (`.uanify-filter-toolbar`), compuesta por:
-     1. **Caja de Búsqueda Rápida en Tiempo Real (`.filter-search-box`):** Input de texto con lupa integrada (`🔍`), placeholder contextual (ej. `"Buscar por código, nombre, supervisor..."`), con filtrado reactivo inmediato (`input` event).
+     1. **Caja de Búsqueda Rápida en Tiempo Real (`.filter-search-box`):** Input de texto con lupa integrada (``), placeholder contextual (ej. `"Buscar por código, nombre, supervisor..."`), con filtrado reactivo inmediato (`input` event).
      2. **Selectores Desplegables de Clasificación (`.filter-select`):** Mínimo dos filtros específicos:
         - **Filtro por Estatus:** `"Todos los Estatus"`, `"Activos"`, `"Inactivos"`, etc.
         - **Filtro por Tipo / Proceso / Categoría:** Según la entidad de la tabla (ej. Tipo de Proceso en Departamentos, Tipo de Horma en Moldes, Tipo de Movimiento en Kárdex, Departamento en Operadores, Rol en Usuarios).
      3. **Badge de Conteo Dinámico (`.filter-count-badge`):** Muestra reactivamente `"Mostrando X de Y registros"` actualizándose con cada pulsación o selección.
-     4. **Botón de Restablecimiento (`.btn-reset-filters`):** Botón táctil `"🔄 Limpiar"` o `"Restablecer"` que revierte todos los filtros a sus valores predeterminados de un solo toque.
-     5. **Botón de Creación / Alta Alineado a la Derecha:** Botón principal de módulo (ej. `➕ Dar de Alta...`) colocado armónicamente a la derecha del toolbar o en la cabecera de la tarjeta.
+     4. **Botón de Restablecimiento (`.btn-reset-filters`):** Botón táctil `" Limpiar"` o `"Restablecer"` que revierte todos los filtros a sus valores predeterminados de un solo toque.
+     5. **Botón de Creación / Alta Alineado a la Derecha:** Botón principal de módulo (ej. ` Dar de Alta...`) colocado armónicamente a la derecha del toolbar o en la cabecera de la tarjeta.
 
 4. **Estado Vacío Estandarizado (`.table-empty-row`):**
-   - Si la búsqueda o los filtros no devuelven registros coincidentes, la tabla debe desplegar una fila elegante con colspan completo que contenga: icono explicativo (🔍), mensaje claro (`"No se encontraron registros que coincidan con los filtros aplicados"`) y un enlace o botón táctil para limpiar los filtros (`"Limpiar filtros de búsqueda"`).
+   - Si la búsqueda o los filtros no devuelven registros coincidentes, la tabla debe desplegar una fila elegante con colspan completo que contenga: icono explicativo (), mensaje claro (`"No se encontraron registros que coincidan con los filtros aplicados"`) y un enlace o botón táctil para limpiar los filtros (`"Limpiar filtros de búsqueda"`).
 
+---
 
+## REGLA 0.36: Sincronización y Actualización Continua Obligatoria de Toda la Documentación del Proyecto (MANDATORIA)
 
+**Cualquier nuevo descubrimiento, acuerdo con el cliente, requerimiento, cambio de alcance, duda resuelta, funcionalidad implementada o decisión de diseño DEBE reflejarse de forma inmediata y sincronizada en TODA la suite de documentación viva del proyecto.**
+
+Queda estrictamente prohibido que el código o las decisiones operativas avancen sin que la documentación refleje la realidad exacta del sistema.
+
+### Suite Documental Viva del Proyecto (Mantenimiento Continuo Obligatorio):
+1. **`SISTEMA_TOMBSTONE_MES.md` (Documento Maestro / Single Source of Truth):**
+   - Actualizar versión, arquitectura de módulos, procesos de planta, matrices de roles/permisos, especificaciones físicas de tarjetas viajeras y el Historial de Versiones (SemVer).
+2. **`README.md` (Presentación y Bitácora Pública):**
+   - Mantener al día los badges de versión, la tabla de arquitectura funcional y el Changelog detallado de cada versión desplegada.
+3. **`docs/REQUERIMIENTOS_DEL_SISTEMA.md` (SRS / PRD Formal):**
+   - Incorporar y actualizar cada Requerimiento Funcional (`RF-01` a `RF-XX`), criterios de negocio, requerimientos no funcionales y matriz de trazabilidad.
+4. **`docs/HISTORIAS_DE_USUARIO.md` (Catálogo Ágil de Historias de Usuario):**
+   - Añadir, ajustar o reclasificar las historias de usuario (`US-01` a `US-XX`), actualizando su estatus (`[Implementado]`, `[En Revisión / Propuesto]`, `[Fase 2 / Escalabilidad]`) y criterios de aceptación específicos.
+5. **`docs/CASOS_DE_PRUEBA.md` (Matriz Exhaustiva de QA / Test Cases):**
+   - Mantener al día los Casos de Prueba (`TC-01` a `TC-XX`) cubriendo Happy Path, Casos Negativos/Bloqueo, Edge Cases y Pruebas Táctiles en Tablet para cada historia de usuario.
+6. **`package.json` y metadatos del código (`app.js`, `index.html`):**
+   - Sincronizar números de versión y descriptores técnicos.
+
+### Protocolo de Actualización Documental:
+- **Antes de dar por concluida cualquier tarea o iteración:** Verificar que las 5 fuentes documentales estén perfectamente alineadas entre sí y con el código en producción.
+- **Trazabilidad cruzada:** Todo requerimiento (`RF-XX`) debe mapearse a su Historia de Usuario (`US-XX`) y a sus Casos de Prueba (`TC-XX`).
+- **Cero emojis:** Mantener en toda la documentación la estética técnica e industrial sobria, sin emojis informales.
