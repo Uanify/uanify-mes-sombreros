@@ -531,13 +531,13 @@ Queda estrictamente prohibido que el código o las decisiones operativas avancen
 
 ### Suite Documental Viva del Proyecto (Mantenimiento Continuo Obligatorio):
 1. **`SISTEMA_TOMBSTONE_MES.md` (Documento Maestro / Single Source of Truth):**
-   - Actualizar versión, arquitectura de módulos, procesos de planta, matrices de roles/permisos, especificaciones físicas de tarjetas viajeras y el Historial de Versiones (SemVer).
+   - Actualizar versión, arquitectura de módulos, **Diagrama de Descomposición Funcional (WBS / EDT en Mermaid)**, procesos de planta, matrices de roles/permisos, especificaciones físicas de tarjetas viajeras y el Historial de Versiones (SemVer).
 2. **`docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md` (Reglas de Negocio y Operación Actual de Planta):**
    - Sustento técnico y operativo fidedigno de cómo trabaja actualmente Tombstone Hats (mix de telar 1 y 2 piezas, régimen de turno único, 14 puntos de control, fraccionamiento en rampa de 60 a 15 pzas, tarjetas viajeras físicas con micas y stickers, coordinación de subensambles en adorno, vales en papel y facturación en COMPAC). Solo incluye información confirmada y validada en planta o por Dirección.
 3. **`README.md` (Presentación y Bitácora Pública):**
    - Mantener al día los badges de versión, la tabla de arquitectura funcional y el Changelog detallado de cada versión desplegada.
 4. **`docs/REQUERIMIENTOS_DEL_SISTEMA.md` (SRS / PRD Formal):**
-   - Incorporar y actualizar cada Requerimiento Funcional (`RF-01` a `RF-XX`), criterios de negocio, requerimientos no funcionales y matriz de trazabilidad.
+   - Incorporar y actualizar cada Requerimiento Funcional (`RF-01` a `RF-XX`), criterios de negocio, **Diagrama de Descomposición Funcional (WBS / EDT en Mermaid)**, requerimientos no funcionales y matriz de trazabilidad.
 5. **`docs/HISTORIAS_DE_USUARIO.md` (Catálogo Ágil de Historias de Usuario):**
    - Añadir, ajustar o reclasificar las historias de usuario (`US-01` a `US-XX`), actualizando su estatus (`[Implementado]`, `[En Revisión / Propuesto]`, `[Fase 2 / Escalabilidad]`) y criterios de aceptación específicos.
 6. **`docs/CASOS_DE_PRUEBA.md` (Matriz Exhaustiva de QA / Test Cases):**
