@@ -79,10 +79,10 @@ window.initConfigView = function() {
         <tr class="table-empty-row">
           <td colspan="7">
             <div class="table-empty-content">
-              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron departamentos coincidentes</span>
               <span class="table-empty-subtitle">Intenta cambiar los términos de búsqueda o los selectores de filtro</span>
-              <button type="button" class="btn-reset-filters" onclick="window.resetDeptFilters()">🔄 Limpiar Filtros</button>
+              <button type="button" class="btn-reset-filters" onclick="window.resetDeptFilters()">Limpiar Filtros</button>
             </div>
           </td>
         </tr>
@@ -95,19 +95,19 @@ window.initConfigView = function() {
         const isLogistics = st.type === 'logistica' || (st.id && st.id.includes('almacen')) || st.code === 'D-11';
 
         let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
-        let typeLabel = '🏭 Manufactura';
+        let typeLabel = ' Manufactura';
         if (isQuality) {
           badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
-          typeLabel = '🔍 Calidad';
+          typeLabel = ' Calidad';
         } else if (isPress) {
           badgeStyle = 'background:#FFFBEB; color:#B45309; border:1px solid #FCD34D;';
-          typeLabel = '💨 Prensas';
+          typeLabel = ' Prensas';
         } else if (isRampa) {
           badgeStyle = 'background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;';
-          typeLabel = '✂️ Rampa';
+          typeLabel = ' Rampa';
         } else if (isLogistics) {
           badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
-          typeLabel = '📦 Logística';
+          typeLabel = ' Logística';
         }
 
         const warehouseName = st.intermediateWarehouse || `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
@@ -124,16 +124,16 @@ window.initConfigView = function() {
               ${st.desc ? `<span class="table-cell-subtext">${st.desc}</span>` : ''}
             </td>
             <td>
-              <strong style="color:var(--text-primary); font-size:12.5px;">📦 ${warehouseName}</strong>
-              <span class="table-cell-subtext">📍 ${warehouseLoc}</span>
+              <strong style="color:var(--text-primary); font-size:12.5px;"> ${warehouseName}</strong>
+              <span class="table-cell-subtext"> ${warehouseLoc}</span>
             </td>
             <td>
               <span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span>
               <span class="table-cell-subtext">Cap: <strong>${st.wipCapacity || st.target || 150}</strong> pzas WIP</span>
             </td>
             <td>
-              <strong style="font-size:12px;">👤 ${st.operator}</strong>
-              <span class="table-cell-subtext">⚙️ ${machines}</span>
+              <strong style="font-size:12px;"> ${st.operator}</strong>
+              <span class="table-cell-subtext"> ${machines}</span>
             </td>
             <td class="col-status">
               <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}">
@@ -143,10 +143,10 @@ window.initConfigView = function() {
             <td class="col-actions">
               <div class="action-btns-cell">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditDepartmentModal('${st.code || st.id}')" title="Editar departamento y almacén">
-                  ✏️ Editar
+                  Editar
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteDepartment('${st.code || st.id}')" title="Eliminar departamento">
-                  🗑️ Eliminar
+                  Eliminar
                 </button>
               </div>
             </td>
@@ -209,10 +209,10 @@ window.initConfigView = function() {
         <tr class="table-empty-row">
           <td colspan="7">
             <div class="table-empty-content">
-              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron usuarios coincidentes</span>
               <span class="table-empty-subtitle">Intenta buscar con otro término o limpia los filtros</span>
-              <button type="button" class="btn-reset-filters" onclick="window.resetUserFilters()">🔄 Limpiar Filtros</button>
+              <button type="button" class="btn-reset-filters" onclick="window.resetUserFilters()">Limpiar Filtros</button>
             </div>
           </td>
         </tr>
@@ -234,7 +234,7 @@ window.initConfigView = function() {
           const totalOps = (UanifyState.operators || []).length;
           deptsInfo = `
             <div style="font-size:11px; font-weight:700; color:var(--color-brand); display:flex; align-items:center; gap:4px; margin-top:3px;">
-              <span>👑 Acceso Global (14 Áreas)</span>
+              <span> Acceso Global (14 Áreas)</span>
             </div>
             <span class="table-cell-subtext">Supervisión total · ${totalOps} operadores</span>
           `;
@@ -256,7 +256,7 @@ window.initConfigView = function() {
             <td class="col-code"><span class="table-badge-code">${u.id}</span></td>
             <td class="col-name">
               <div class="table-cell-primary">${u.name}</div>
-              <span class="table-cell-subtext">✉️ ${u.email}</span>
+              <span class="table-cell-subtext"> ${u.email}</span>
             </td>
             <td>
               <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
@@ -277,11 +277,11 @@ window.initConfigView = function() {
             <td class="col-actions">
               <div class="action-btns-cell">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos">
-                  ✏️ Editar
+                  Editar
                 </button>
                 ${u.id !== 'admin-1' ? `
                   <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
-                    🗑️ Eliminar
+                    Eliminar
                   </button>
                 ` : '<span style="font-size:11px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
               </div>
@@ -357,10 +357,10 @@ window.initConfigView = function() {
         <tr class="table-empty-row">
           <td colspan="7">
             <div class="table-empty-content">
-              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron operadores coincidentes</span>
               <span class="table-empty-subtitle">Intenta buscar por otro término o limpia los filtros</span>
-              <button type="button" class="btn-reset-filters" onclick="window.resetCfgOperatorFilters()">🔄 Limpiar Filtros</button>
+              <button type="button" class="btn-reset-filters" onclick="window.resetCfgOperatorFilters()">Limpiar Filtros</button>
             </div>
           </td>
         </tr>
@@ -380,7 +380,7 @@ window.initConfigView = function() {
               <span class="table-cell-subtext">${op.shift || 'Turno Único'}</span>
             </td>
             <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-            <td><span style="font-size:12px;">⚙️ ${op.machine}</span></td>
+            <td><span style="font-size:12px;"> ${op.machine}</span></td>
             <td><strong style="color:var(--color-brand); font-size:13px;">${pzas} pzas</strong></td>
             <td class="col-status">
               <span class="table-status-pill ${statusClass}">
@@ -390,10 +390,10 @@ window.initConfigView = function() {
             <td class="col-actions">
               <div class="action-btns-cell">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
-                  ✏️ Editar
+                  Editar
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
-                  🗑️ Eliminar
+                  Eliminar
                 </button>
               </div>
             </td>
@@ -608,16 +608,16 @@ window.initConfigView = function() {
       });
 
       let roleName = 'Supervisor de Nave';
-      let badge = '📋 Supervisor';
+      let badge = ' Supervisor';
       let assignedDepts = ['D-05', 'D-06'];
 
       if (role === 'admin') {
         roleName = 'Administrador General';
-        badge = '👑 Admin';
+        badge = 'Admin';
         assignedDepts = ['*'];
       } else if (role === 'ingeniero') {
         roleName = 'Ingeniero de Procesos';
-        badge = '⚙️ Ingeniero';
+        badge = ' Ingeniero';
         assignedDepts = ['*'];
       }
 
@@ -640,7 +640,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Usuario "${name}" (${roleName}) creado exitosamente con permisos: ${newUser.permissions.join(', ')}.`,
         'success',
-        '✅ Usuario Creado'
+        'OK Usuario Creado'
       );
     });
   }
@@ -672,9 +672,9 @@ window.initConfigView = function() {
     const submitBtn = document.getElementById('btnSubmitOperator');
 
     if (origId) origId.value = '';
-    if (title) title.textContent = '👷 Registrar Operador de Planta (Mano de Obra)';
+    if (title) title.textContent = 'Registrar Operador de Planta (Mano de Obra)';
     if (sub) sub.textContent = 'Asignación de personal de piso a máquinas y estaciones';
-    if (submitBtn) submitBtn.textContent = '💾 Guardar Operador';
+    if (submitBtn) submitBtn.textContent = 'Guardar Operador';
 
     modalOperator.classList.add('active');
   };
@@ -702,9 +702,9 @@ window.initConfigView = function() {
     if (machine) machine.value = op.machine;
     if (status) status.value = op.status;
     if (shift) shift.value = op.shift || 'Turno Único';
-    if (title) title.textContent = `✏️ Editar Operador · ${op.name}`;
+    if (title) title.textContent = `Editar Operador · ${op.name}`;
     if (sub) sub.textContent = `Modificando estación, máquina y estatus de ${op.empId}`;
-    if (submitBtn) submitBtn.textContent = '💾 Actualizar Operador';
+    if (submitBtn) submitBtn.textContent = ' Actualizar Operador';
 
     modalOperator.classList.add('active');
   };
@@ -759,7 +759,7 @@ window.initConfigView = function() {
           window.UanifyUI.toast(
             `Operador "${name}" (${empId}) actualizado en ${resolvedCode} · ${deptName}.`,
             'success',
-            '✅ Operador Actualizado'
+            'OK Operador Actualizado'
           );
           return;
         }
@@ -795,7 +795,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Operador ${name} (${empId}) incorporado a ${deptName} (${newOp.machine}).`,
         'success',
-        '👷 Operador Registrado'
+        ' Operador Registrado'
       );
     });
   }
@@ -947,15 +947,15 @@ window.initConfigView = function() {
 
       if (role === 'admin') {
         user.roleName = 'Administrador General';
-        user.badge = '👑 Admin';
+        user.badge = 'Admin';
         user.assignedDepartments = ['*'];
       } else if (role === 'ingeniero') {
         user.roleName = 'Ingeniero de Procesos';
-        user.badge = '⚙️ Ingeniero';
+        user.badge = ' Ingeniero';
         user.assignedDepartments = ['*'];
       } else {
         user.roleName = `Supervisor (${selectedDepts.length > 0 ? selectedDepts.join(', ') : 'Sin Deptos'})`;
-        user.badge = '📋 Supervisor';
+        user.badge = ' Supervisor';
         user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : [];
       }
 
@@ -972,7 +972,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Usuario "${user.name}" actualizado. Departamentos asignados: ${user.assignedDepartments.join(', ') || 'Ninguno'}.`,
         'success',
-        '✅ Usuario y Deptos Actualizados'
+        'OK Usuario y Deptos Actualizados'
       );
     });
   }
@@ -1020,7 +1020,7 @@ window.initConfigView = function() {
 
     if (editModeInput) editModeInput.value = 'create';
     if (origCodeInput) origCodeInput.value = '';
-    if (modalTitle) modalTitle.textContent = '🏢 Dar de Alta Nuevo Departamento & Almacén Intermedio';
+    if (modalTitle) modalTitle.textContent = 'Dar de Alta Nuevo Departamento & Almacén Intermedio';
     if (modalSubtitle) modalSubtitle.textContent = 'Catálogo de estaciones de manufactura, almacén intermedio WIP y asignación técnica';
 
     // Sugerir código D-XX
@@ -1082,7 +1082,7 @@ window.initConfigView = function() {
 
     if (editModeInput) editModeInput.value = 'edit';
     if (origCodeInput) origCodeInput.value = station.code || station.id;
-    if (modalTitle) modalTitle.textContent = `✏️ Editar Departamento ${station.code} & Almacén Intermedio`;
+    if (modalTitle) modalTitle.textContent = `Editar Departamento ${station.code} & Almacén Intermedio`;
     if (modalSubtitle) modalSubtitle.textContent = `Actualización de parámetros técnicos, buffer WIP y maquinaria de ${station.name}`;
 
     const codeInput = document.getElementById('newDeptCode');
@@ -1153,7 +1153,7 @@ window.initConfigView = function() {
         window.UanifyUI.toast(
           `Departamento ${station.code} "${station.name}" eliminado del catálogo de planta.`,
           'info',
-          '🗑️ Departamento Eliminado'
+          ' Departamento Eliminado'
         );
       }
     );
@@ -1302,7 +1302,7 @@ window.initConfigView = function() {
           ? `Departamento ${code} "${name}" y su almacén intermedio actualizados correctamente.`
           : `Departamento ${code} "${name}" registrado exitosamente con supervisor ${supervisor.name} y ${assignedOpsCount} operador(es).`,
         'success',
-        isEdit ? '✏️ Departamento Actualizado' : '🏢 Departamento Creado'
+        isEdit ? ' Departamento Actualizado' : ' Departamento Creado'
       );
     });
   }
@@ -1331,7 +1331,7 @@ window.initConfigView = function() {
       inspectors.forEach(insp => {
         const opt = document.createElement('option');
         opt.value = insp;
-        opt.textContent = `👤 ${insp}`;
+        opt.textContent = ` ${insp}`;
         inspectorFilter.appendChild(opt);
       });
     }
@@ -1367,10 +1367,10 @@ window.initConfigView = function() {
         <tr class="table-empty-row">
           <td colspan="6">
             <div class="table-empty-content">
-              <span class="table-empty-icon">🔍</span>
+              <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
               <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
-              <button type="button" class="btn-reset-filters" onclick="window.resetQualityFilters()">🔄 Limpiar Filtros</button>
+              <button type="button" class="btn-reset-filters" onclick="window.resetQualityFilters()">Limpiar Filtros</button>
             </div>
           </td>
         </tr>
@@ -1390,14 +1390,14 @@ window.initConfigView = function() {
           </td>
           <td class="col-name">
             <div class="table-cell-primary">${q.name}</div>
-            <span class="table-cell-subtext">📍 ${q.location || 'Nave de Producción'}</span>
+            <span class="table-cell-subtext"> ${q.location || 'Nave de Producción'}</span>
           </td>
           <td>
             <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${q.tolerances || 'Tolerancia estándar'}</div>
             <span class="table-cell-subtext">${q.criteria || q.desc || '—'}</span>
           </td>
           <td>
-            <div style="font-size:12px; font-weight:700; color:var(--text-primary);">👤 ${q.inspector || 'Inspectora de Calidad'}</div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary);"> ${q.inspector || 'Inspectora de Calidad'}</div>
             <span class="table-cell-subtext">Ciclo: <strong>${q.cycleTime || '18s'}</strong></span>
           </td>
           <td class="col-status">
@@ -1409,10 +1409,10 @@ window.initConfigView = function() {
             ${canManage ? `
               <div class="action-btns-cell">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar criterios y tolerancias">
-                  ✏️ Editar
+                  Editar
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteQualityFilter('${q.code}')" title="Eliminar filtro de calidad">
-                  🗑️ Eliminar
+                  Eliminar
                 </button>
               </div>
             ` : `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">Solo lectura</span>`}
@@ -1462,7 +1462,7 @@ window.initConfigView = function() {
     const cycleEl = document.getElementById('newQualityCycleTime');
     const statusEl = document.getElementById('newQualityStatus');
 
-    if (titleEl) titleEl.textContent = '🔍 Dar de Alta Filtro de Control de Calidad';
+    if (titleEl) titleEl.textContent = ' Dar de Alta Filtro de Control de Calidad';
     if (modeEl) modeEl.value = 'create';
     if (origCodeEl) origCodeEl.value = '';
     if (codeEl) { codeEl.value = nextCode; codeEl.readOnly = false; }
@@ -1492,7 +1492,7 @@ window.initConfigView = function() {
     const cycleEl = document.getElementById('newQualityCycleTime');
     const statusEl = document.getElementById('newQualityStatus');
 
-    if (titleEl) titleEl.textContent = `✏️ Editar Filtro de Calidad · ${q.code}`;
+    if (titleEl) titleEl.textContent = `Editar Filtro de Calidad · ${q.code}`;
     if (modeEl) modeEl.value = 'edit';
     if (origCodeEl) origCodeEl.value = q.code;
     if (codeEl) { codeEl.value = q.code; codeEl.readOnly = true; }
@@ -1651,7 +1651,7 @@ window.initConfigView = function() {
           ? `Filtro de Calidad ${code} "${name}" actualizado exitosamente.`
           : `Filtro de Calidad ${code} "${name}" registrado exitosamente. Ya puedes insertarlo en las rutas por modelo.`,
         'success',
-        mode === 'edit' ? '✏️ Filtro Actualizado' : '🔍 Filtro Creado'
+        mode === 'edit' ? ' Filtro Actualizado' : ' Filtro Creado'
       );
     });
   }
@@ -1678,7 +1678,7 @@ window.initConfigView = function() {
 
     cfgRouteModelSelect.innerHTML = UanifyState.productionRoutes.map(r => `
       <option value="${r.id}" ${r.id === activeRouteId ? 'selected' : ''}>
-        🎩 ${r.name} · [SKU: ${r.sku || 'TB-STD'}] (${r.category})
+         ${r.name} · [SKU: ${r.sku || 'TB-STD'}] (${r.category})
       </option>
     `).join('');
   }
@@ -1693,15 +1693,15 @@ window.initConfigView = function() {
 
     let html = `<option value="">-- Selecciona Departamento o Filtro de Calidad Maestro --</option>`;
 
-    html += `<optgroup label="🏭 Departamentos de Manufactura (D-XX)">`;
+    html += `<optgroup label=" Departamentos de Manufactura (D-XX)">`;
     mfgStations.forEach(st => {
-      html += `<option value="${st.code}">🏭 ${st.code} · ${st.name} [Takt: ${st.cycleTime || '30s'}]</option>`;
+      html += `<option value="${st.code}"> ${st.code} · ${st.name} [Takt: ${st.cycleTime || '30s'}]</option>`;
     });
     html += `</optgroup>`;
 
-    html += `<optgroup label="🔍 Puntos de Inspección de Calidad (C-XX)">`;
+    html += `<optgroup label=" Puntos de Inspección de Calidad (C-XX)">`;
     qualityStations.forEach(q => {
-      html += `<option value="${q.code}">🔍 ${q.code} · ${q.name} [Ciclo: ${q.cycleTime || '18s'}]</option>`;
+      html += `<option value="${q.code}"> ${q.code} · ${q.name} [Ciclo: ${q.cycleTime || '18s'}]</option>`;
     });
     html += `</optgroup>`;
 
@@ -1736,8 +1736,8 @@ window.initConfigView = function() {
       const isFirst = idx === 0;
       const isLast = idx === route.steps.length - 1;
       const typeTag = isQuality 
-        ? `<span class="badge-quality">🔍 Filtro de Calidad</span>`
-        : `<span class="badge-subtle" style="font-size:10.5px;">🏭 Manufactura</span>`;
+        ? `<span class="badge-quality"> Filtro de Calidad</span>`
+        : `<span class="badge-subtle" style="font-size:10.5px;"> Manufactura</span>`;
 
       return `
         <div class="sequence-builder-item ${isQuality ? 'is-quality-step' : ''}" 
@@ -1756,7 +1756,7 @@ window.initConfigView = function() {
           <div class="sequence-controls">
             <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir este paso">▲</button>
             <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar este paso">▼</button>
-            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo">🗑️</button>
+            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo"></button>
           </div>
           ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
         </div>
@@ -1833,7 +1833,7 @@ window.initConfigView = function() {
       });
     }
 
-    // ── BOTONES COMPLEMENTARIOS (▲, ▼, 🗑️) ──
+    // ── BOTONES COMPLEMENTARIOS (▲, ▼, ) ──
     routeSequenceList.querySelectorAll('[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
         const action = btn.getAttribute('data-action');
@@ -1861,7 +1861,7 @@ window.initConfigView = function() {
           window.UanifyUI.toast(
             `Paso "${removed.code} ${removed.name}" quitado de la secuencia de "${route.name}". Los catálogos maestros no se modifican.`,
             'info',
-            '🗑️ Paso Quitado de la Secuencia'
+            ' Paso Quitado de la Secuencia'
           );
         }
       });
@@ -1900,7 +1900,7 @@ window.initConfigView = function() {
         code: code,
         name: stepName,
         type: isQuality ? 'calidad' : (code === 'D-11' ? 'logistica' : 'manufactura'),
-        icon: isQuality ? '🔍' : '🏭',
+        icon: isQuality ? '' : '',
         isQualityStop: isQuality,
         cycleTime: cycle
       };
@@ -1910,7 +1910,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Paso "${code} ${stepName}" asignado al final de la ruta de "${route.name}". Recuerda presionar "Guardar Secuencia de Ruta".`,
         'success',
-        '➕ Paso Asignado'
+        '+ Paso Asignado'
       );
     });
   }
@@ -1938,7 +1938,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Secuencia de ruta para "${route.name}" guardada exitosamente (${route.steps.length} pasos). Los lotes de este modelo seguirán este nuevo flujo de manufactura y calidad.`,
         'success',
-        '📐 Ruta Guardada'
+        ' Ruta Guardada'
       );
     });
   }

@@ -209,7 +209,7 @@ const UanifyState = {
       roleName: 'Supervisor de Nave (Depts 05-08)',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-05', 'D-06', 'D-07', 'D-08'],
-      badge: '📋 Supervisor'
+      badge: ' Supervisor'
     },
     {
       id: 'sup-2',
@@ -219,7 +219,7 @@ const UanifyState = {
       roleName: 'Supervisor de Preparación (Depts 01-04)',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-01', 'D-02', 'D-03', 'D-04'],
-      badge: '📋 Supervisor'
+      badge: ' Supervisor'
     }
   ],
 
@@ -843,20 +843,20 @@ const UanifyState = {
       category: 'Sombrero 2 Piezas (Copa y Falda)',
       desc: 'Ruta completa tradicional con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
-        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -867,20 +867,20 @@ const UanifyState = {
       category: 'Sombrero 2 Piezas (Copa y Falda)',
       desc: 'Ruta completa con horma Roper 4 1/4" y adorno de toquilla de piel con herraje níquel.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
-        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -891,18 +891,18 @@ const UanifyState = {
       category: 'Sombrero 1 Pieza (Falda 9.0 Cm)',
       desc: 'Ruta de 1 pieza con falda de 9.0 cm doblada abajo y toquilla texana fina.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 3,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 4,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 5,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 6,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 7,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 8,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 9,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 10, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 11, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 12, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 3,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 4,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 5,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 6,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 7,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 8,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 9,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -913,18 +913,18 @@ const UanifyState = {
       category: 'Sombrero Laqueado Especial (Falda Plana)',
       desc: 'Ruta con prensas hidráulicas Michelagnoli, doble laqueado y filtro C-04 post-secado.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
-        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
-        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
-        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
-        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
-        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '' },
+        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -935,20 +935,20 @@ const UanifyState = {
       category: 'Sombrero 2 Piezas (Copa Gota de Agua)',
       desc: 'Ruta con conformación especial de copa de gota de agua y ribete de precisión.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
-        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -959,17 +959,17 @@ const UanifyState = {
       category: 'Sombrero 1 Pieza (Moldeo Directo Fieltro)',
       desc: 'Ruta directa sin corte de cuadros ni alambrado. Ingresa directo a sellado y prensas.',
       steps: [
-        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '⚙️' },
-        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -980,18 +980,18 @@ const UanifyState = {
       category: 'Sombrero Laqueado Blanco Espejo',
       desc: 'Ruta con acabado laqueado blanco espejo, secado en túnel UV y filtro C-04.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
-        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
-        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
-        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
-        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
-        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '' },
+        { order: 8,  code: 'C-04', name: 'Calidad 4 (Post-Laqueado)',        type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -1002,19 +1002,19 @@ const UanifyState = {
       category: 'Sombrero Rodeo Heavy Duty',
       desc: 'Ruta con prensado en horma metálica caliente a 130°C y doble endurecedor.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 5,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 7,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 9,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 10, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 11, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 12, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 13, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 10, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 11, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 12, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 13, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     // Compatibilidad retroactiva de IDs generales
@@ -1025,20 +1025,20 @@ const UanifyState = {
       category: 'Familia Base Telar',
       desc: 'Ruta completa con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '🖌️' },
-        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '⚙️' },
-        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-04', name: 'Refuerzos (Pintola / Brocha)',     type: 'manufactura', icon: '' },
+        { order: 5,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 6,  code: 'D-05', name: 'Prensas de Hormado (Rampa 15pz)',  type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 9,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 10, code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 11, code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 12, code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 13, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 14, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -1048,17 +1048,17 @@ const UanifyState = {
       category: 'Familia Base Fieltro',
       desc: 'Ruta directa sin corte de cuadros ni alambrado. Ingresa directo a sellado y prensas.',
       steps: [
-        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '🧪' },
-        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '⚙️' },
-        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '📐' },
-        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '🎨' },
-        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '✨' },
-        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '♨️' },
-        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '🤠' },
-        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-03', name: 'Englopado / Baño de Dope',         type: 'manufactura', icon: '' },
+        { order: 2,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 3,  code: 'D-05', name: 'Prensas de Hormado (Moldeo)',      type: 'manufactura', icon: '' },
+        { order: 4,  code: 'D-06', name: 'Recorte y Refaldeado',             type: 'manufactura', icon: '' },
+        { order: 5,  code: 'D-07', name: 'Pintura y Secado',                 type: 'manufactura', icon: '' },
+        { order: 6,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 7,  code: 'D-08', name: 'Brillo / Acabado',                 type: 'manufactura', icon: '' },
+        { order: 8,  code: 'D-09', name: 'Temperado / Refaldear',            type: 'manufactura', icon: '' },
+        { order: 9,  code: 'D-10', name: 'Adorno 1 (Tafilete + Toquilla)',   type: 'manufactura', icon: '' },
+        { order: 10, code: 'C-03', name: 'Calidad 3 (Producto Terminado)',   type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 11, code: 'D-11', name: 'Embarque & Vale COMPAC',           type: 'logistica',   icon: '' }
       ]
     },
     {
@@ -1068,18 +1068,18 @@ const UanifyState = {
       category: 'Familia Base Laqueados',
       desc: 'Ruta con doble fijado térmico en prensas hidráulicas, barniz poliéster y control riguroso.',
       steps: [
-        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '✂️' },
-        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '🧵' },
-        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '🧪' },
-        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '⚙️' },
-        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '📐' },
-        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '🎨' },
-        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '✨' },
-        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '🤠' },
-        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '🔍', isQualityStop: true },
-        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '🚚' }
+        { order: 1,  code: 'D-01', name: 'Corte de Cuadros',                 type: 'manufactura', icon: '' },
+        { order: 2,  code: 'D-02', name: 'Alambrado de Ala',                 type: 'manufactura', icon: '' },
+        { order: 3,  code: 'D-03', name: 'Englopado Especial Reforzado',      type: 'manufactura', icon: '' },
+        { order: 4,  code: 'C-01', name: 'Calidad 1 (Post-Dope)',            type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 5,  code: 'D-05', name: 'Prensas Hidráulicas Michelagnoli', type: 'manufactura', icon: '' },
+        { order: 6,  code: 'D-06', name: 'Recorte y Refaldeado de Precisión',type: 'manufactura', icon: '' },
+        { order: 7,  code: 'D-07', name: 'Pintura y Secado (Laca Taiwan)',   type: 'manufactura', icon: '' },
+        { order: 8,  code: 'C-02', name: 'Calidad 2 (Post-Pintura)',         type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 9,  code: 'D-08', name: 'Brillo / Acabado Espejo',          type: 'manufactura', icon: '' },
+        { order: 10, code: 'D-10', name: 'Adorno 1 (Badana Piel + Pin)',     type: 'manufactura', icon: '' },
+        { order: 11, code: 'C-03', name: 'Calidad 3 (Liberación Comercial)', type: 'calidad',     icon: '', isQualityStop: true },
+        { order: 12, code: 'D-11', name: 'Embarque & COMPAC',                 type: 'logistica',   icon: '' }
       ]
     }
   ],
@@ -1490,9 +1490,9 @@ function updateUserInterface() {
   const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
   const sidebarUserRoleBadge = document.getElementById('sidebarUserRoleBadge');
 
-  let avatarIcon = '📋';
-  if (user.role === 'admin')     avatarIcon = '👑';
-  if (user.role === 'ingeniero') avatarIcon = '⚙️';
+  let avatarIcon = '';
+  if (user.role === 'admin')     avatarIcon = '';
+  if (user.role === 'ingeniero') avatarIcon = '';
 
   if (sidebarUserAvatar)   sidebarUserAvatar.textContent   = avatarIcon;
   if (sidebarUserName)     sidebarUserName.textContent     = user.name;
@@ -1503,7 +1503,7 @@ function updateUserInterface() {
     const isAllowed = user.permissions.includes(tab) ||
       (tab === 'analytics' && (user.permissions.includes('engineer') || user.permissions.includes('executive') || user.role === 'admin' || user.role === 'ingeniero'));
     
-    // Regla UX RBAC: Jamás mostrar candado 🔒; simplemente ocultar la opción de navegación
+    // Regla UX RBAC: Jamás mostrar candado ; simplemente ocultar la opción de navegación
     const lockIcon = btn.querySelector('.tab-lock-icon');
     if (lockIcon) lockIcon.remove();
     btn.classList.remove('nav-btn-restricted');
@@ -1794,23 +1794,23 @@ function enrichStationWithDefaults(st, idx) {
       if (!usersGrid) return;
       usersGrid.innerHTML = UanifyState.users.map(u => {
         const isSel = u.id === selectedUserId;
-        let icon = '📋';
-        if (u.role === 'admin') icon = '👑';
-        if (u.role === 'ingeniero') icon = '⚙️';
+        let icon = '';
+        if (u.role === 'admin') icon = '';
+        if (u.role === 'ingeniero') icon = '';
         const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts' : u.assignedDepartments.join(', ');
 
         return `
           <div class="login-user-card ${isSel ? 'selected' : ''}" data-user-id="${u.id}">
             <div class="login-user-card-head">
               <span class="login-user-card-icon">${icon}</span>
-              <div class="login-user-card-check">✓</div>
+              <div class="login-user-card-check"></div>
             </div>
             <div>
               <div class="login-user-name">${u.name}</div>
               <div class="login-user-role">${u.roleName}</div>
             </div>
             <div class="login-user-depts">
-              <span>📍</span> <span>${deptsText}</span>
+              <span></span> <span>${deptsText}</span>
             </div>
           </div>
         `;
@@ -1942,10 +1942,10 @@ function enrichStationWithDefaults(st, idx) {
           <tr class="table-empty-row">
             <td colspan="8">
               <div class="table-empty-content">
-                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-icon"></span>
                 <span class="table-empty-title">No se encontraron almacenes coincidentes</span>
                 <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
-                <button type="button" class="btn-reset-filters" onclick="window.resetWhFilters()">🔄 Limpiar Filtros</button>
+                <button type="button" class="btn-reset-filters" onclick="window.resetWhFilters()">Limpiar Filtros</button>
               </div>
             </td>
           </tr>
@@ -1961,7 +1961,7 @@ function enrichStationWithDefaults(st, idx) {
               <td class="col-code"><span class="table-badge-code">${wh.code}</span></td>
               <td class="col-name">
                 <div class="table-cell-primary">${wh.name}</div>
-                <span class="table-cell-subtext">📍 ${wh.location}</span>
+                <span class="table-cell-subtext"> ${wh.location}</span>
               </td>
               <td><span class="badge-subtle">${wh.type}</span></td>
               <td><strong style="font-size:13.5px; font-family:'JetBrains Mono';">${wh.stock}</strong></td>
@@ -1982,7 +1982,7 @@ function enrichStationWithDefaults(st, idx) {
               <td class="col-actions">
                 <div class="action-btns-cell">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.viewWarehouseDetails('${wh.code}')" title="Ver lotes e inventario">
-                    👁️ Ver Lotes
+                    Ver Lotes
                   </button>
                 </div>
               </td>
@@ -2333,10 +2333,10 @@ function enrichStationWithDefaults(st, idx) {
           <tr class="table-empty-row">
             <td colspan="8">
               <div class="table-empty-content">
-                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-icon"></span>
                 <span class="table-empty-title">No se encontraron movimientos registrados</span>
                 <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
-                <button type="button" class="btn-reset-filters" onclick="window.resetKardexFilters()">🔄 Limpiar Filtros</button>
+                <button type="button" class="btn-reset-filters" onclick="window.resetKardexFilters()">Limpiar Filtros</button>
               </div>
             </td>
           </tr>
@@ -2344,10 +2344,10 @@ function enrichStationWithDefaults(st, idx) {
       } else {
         kardexBody.innerHTML = filtered.map(m => {
           let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
-          if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">📥 Entrada MP</span>';
-          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">🚚 Embarque</span>';
-          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">⚠️ Saldos</span>';
-          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">✂️ Rampa</span>';
+          if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">Entrada MP</span>';
+          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);"> Embarque</span>';
+          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);"> Saldos</span>';
+          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);"> Rampa</span>';
 
           return `
             <tr>
@@ -2357,12 +2357,12 @@ function enrichStationWithDefaults(st, idx) {
               <td><strong style="font-weight:700; font-size:12px; color:var(--color-brand);">→ ${m.dest}</strong></td>
               <td><strong>${m.item}</strong></td>
               <td><strong style="font-family:'JetBrains Mono'; font-size:13px;">${m.qty}</strong></td>
-              <td><span style="font-size:11.5px; color:var(--text-secondary);">👤 ${m.user}</span></td>
+              <td><span style="font-size:11.5px; color:var(--text-secondary);"> ${m.user}</span></td>
               <td class="col-status"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px;">${m.doc}</span></td>
               <td class="col-actions">
                 <div class="action-btns-cell">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver vale de traspaso">
-                    👁️ Detalle
+                     Detalle
                   </button>
                 </div>
               </td>
@@ -2399,7 +2399,7 @@ function enrichStationWithDefaults(st, idx) {
     window.UanifyUI.toast(
       `Almacén ${wh.name} (${wh.code}) en ${wh.location}. Existencias: ${wh.stock}. Custodia: ${wh.items}. Ocupación: ${wh.capPercent}%.`,
       'info',
-      '📦 Detalle de Almacén'
+      ' Detalle de Almacén'
     );
   };
 
@@ -2407,7 +2407,7 @@ function enrichStationWithDefaults(st, idx) {
     window.UanifyUI.toast(
       `Vale oficial ${docFolio} registrado en Kárdex. Movimiento verificado por Logística MES para ${item || 'lote'}.`,
       'info',
-      '📋 Vale de Movimiento'
+      ' Vale de Movimiento'
     );
   };
 
@@ -2947,10 +2947,10 @@ function enrichStationWithDefaults(st, idx) {
           <tr class="table-empty-row">
             <td colspan="8">
               <div class="table-empty-content">
-                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-icon"></span>
                 <span class="table-empty-title">No se encontraron operadores coincidentes</span>
                 <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
-                <button type="button" class="btn-reset-filters" onclick="window.resetOperatorFilters()">🔄 Limpiar Filtros</button>
+                <button type="button" class="btn-reset-filters" onclick="window.resetOperatorFilters()">Limpiar Filtros</button>
               </div>
             </td>
           </tr>
@@ -2971,7 +2971,7 @@ function enrichStationWithDefaults(st, idx) {
               <div class="table-cell-primary">${op.name}</div>
             </td>
             <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-            <td style="font-size:12px;">⚙️ ${op.machine}</td>
+            <td style="font-size:12px;"> ${op.machine}</td>
             <td><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
             <td><strong style="color:var(--color-brand); font-size:13px;">${pzas} pzas</strong></td>
             <td class="col-status">
@@ -2982,10 +2982,10 @@ function enrichStationWithDefaults(st, idx) {
             <td class="col-actions">
               <div class="action-btns-cell">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
-                  ✏️ Editar
+                  Editar
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
-                  🗑️ Baja
+                  Baja
                 </button>
               </div>
             </td>

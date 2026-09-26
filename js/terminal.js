@@ -142,10 +142,10 @@ window.initTerminalView = function() {
 
       if (cameraPlaceholder) cameraPlaceholder.style.display = 'none';
       if (cameraReticle)     cameraReticle.style.display = 'flex';
-      if (btnToggleCamera)   btnToggleCamera.textContent = '⏹️ Apagar Cámara Web';
+      if (btnToggleCamera)   btnToggleCamera.textContent = '⏹ Apagar Cámara Web';
       if (btnFlipCamera)     btnFlipCamera.style.display = 'inline-flex';
       if (cameraStatusBadge) {
-        cameraStatusBadge.textContent = '🟢 Cámara en vivo activa';
+        cameraStatusBadge.textContent = ' Cámara en vivo activa';
         cameraStatusBadge.style.background = '#ECFDF5';
         cameraStatusBadge.style.color = '#047857';
       }
@@ -154,7 +154,7 @@ window.initTerminalView = function() {
     } catch (err) {
       console.warn('Error al iniciar cámara:', err);
       if (cameraStatusBadge) {
-        cameraStatusBadge.textContent = '⚠️ Sin acceso a cámara';
+        cameraStatusBadge.textContent = ' Sin acceso a cámara';
         cameraStatusBadge.style.background = '#FEF2F2';
         cameraStatusBadge.style.color = '#B91C1C';
       }
@@ -174,7 +174,7 @@ window.initTerminalView = function() {
     if (videoFeed) videoFeed.srcObject = null;
     if (cameraPlaceholder) cameraPlaceholder.style.display = 'flex';
     if (cameraReticle)     cameraReticle.style.display = 'none';
-    if (btnToggleCamera)   btnToggleCamera.textContent = '▶️ Activar Cámara Web';
+    if (btnToggleCamera)   btnToggleCamera.textContent = '▶ Activar Cámara Web';
     if (btnFlipCamera)     btnFlipCamera.style.display = 'none';
     if (cameraStatusBadge) {
       cameraStatusBadge.textContent = 'Cámara inactiva';
@@ -239,7 +239,7 @@ window.initTerminalView = function() {
             <span>${lotData.oProd}</span>
           </div>
           <div class="traveler-brand-divider">
-            <div class="traveler-hat-logo">🤠 TOMBSTONE®</div>
+            <div class="traveler-hat-logo"> TOMBSTONE®</div>
             <div class="traveler-clase-tag">*** CLASE ***</div>
           </div>
           <div class="traveler-quality-title">${lotData.clase || '1,000X MASTER TELAR'}</div>
@@ -422,9 +422,9 @@ window.initTerminalView = function() {
     
     if (verifyScrapStatus) {
       if (lot.hasScrap) {
-        verifyScrapStatus.innerHTML = `<span style="color:#B91C1C; font-weight:800;">⚠️ Contiene 1 Sombrero con Merma (${lot.scrapReason})</span>`;
+        verifyScrapStatus.innerHTML = `<span style="color:#B91C1C; font-weight:800;"> Contiene 1 Sombrero con Merma (${lot.scrapReason})</span>`;
       } else {
-        verifyScrapStatus.innerHTML = `<span style="color:#15803D; font-weight:700;">✅ Sin Mermas (15 pzas íntegras)</span>`;
+        verifyScrapStatus.innerHTML = `<span style="color:#15803D; font-weight:700;">OK Sin Mermas (15 pzas íntegras)</span>`;
       }
     }
 
@@ -506,7 +506,7 @@ window.initTerminalView = function() {
       window.UanifyUI.toast(
         `Tarjeta viajera verificada. Lote ${activeScannedLot.lotId}${activeScannedLot.sublotNum ? '-' + activeScannedLot.sublotNum : ''} cargado en la terminal. Siguiente paso: depositar en ${activeScannedLot.targetStationName}.`,
         'success',
-        '✅ Tarjeta Confirmada'
+        'OK Tarjeta Confirmada'
       );
     });
   }
@@ -547,14 +547,14 @@ window.initTerminalView = function() {
     if (lotMetaPieces) lotMetaPieces.textContent = `${lot.pieces || 15} piezas`;
 
     if (btnDepositToNextBuffer) {
-      btnDepositToNextBuffer.textContent = `📥 Depositar Lote en Almacén de ${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
+      btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
     }
 
     if (lotScrapBannerContainer) {
       if (lot.hasScrap) {
         lotScrapBannerContainer.innerHTML = `
           <div class="lot-scrap-alert-banner">
-            <span style="font-size:18px;">⚠️</span>
+            <span style="font-size:18px;"></span>
             <div>
               <strong>Contiene 1 sombrero marcado como merma (${lot.scrapReason || 'Defecto en proceso'}):</strong>
               <div style="font-size:11.5px; margin-top:2px; color:#7F1D1D;">
@@ -566,7 +566,7 @@ window.initTerminalView = function() {
       } else {
         lotScrapBannerContainer.innerHTML = `
           <div class="lot-clean-banner">
-            <span style="font-size:16px;">✅</span>
+            <span style="font-size:16px;">OK</span>
             <span><strong>Lote íntegro:</strong> 15 sombreros conformados sin mermas registradas.</span>
           </div>
         `;
@@ -575,7 +575,7 @@ window.initTerminalView = function() {
 
     // Botón Principal de Depósito
     if (btnDepositToNextBuffer) {
-      btnDepositToNextBuffer.textContent = `📥 Depositar Lote en Almacén de ${lot.targetStationCode} ${lot.targetStationName}`;
+      btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode} ${lot.targetStationName}`;
     }
   }
 
@@ -595,7 +595,7 @@ window.initTerminalView = function() {
         window.UanifyUI.toast(
           `No tienes autorización para trasladar este lote. Se encuentra en ${activeScannedLot.currentStationName} (${currentStationCode}), pero tus departamentos asignados son: ${user.assignedDepartments.join(', ')}.`,
           'warning',
-          '🔒 Restricción de Supervisor'
+          ' Restricción de Supervisor'
         );
         return;
       }
@@ -639,7 +639,7 @@ window.initTerminalView = function() {
         window.UanifyUI.toast(
           `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}". Movimiento registrado por ${user.name}.`,
           'success',
-          '📥 Depósito en Almacén Concluido'
+          ' Depósito en Almacén Concluido'
         );
       }
     });
@@ -704,7 +704,7 @@ window.initTerminalView = function() {
         <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}">
           <div class="dept-card-header">
             <div>
-              <span class="dept-code-tag">${st.icon || '🏭'} ${st.code}</span>
+              <span class="dept-code-tag">${st.icon || ''} ${st.code}</span>
               <h4 class="dept-name-heading">${st.name}</h4>
             </div>
             ${isAssigned ? `<span class="dept-assigned-badge">⭐ Mi Depto</span>` : ''}
@@ -723,12 +723,12 @@ window.initTerminalView = function() {
 
           ${scrapWarningCount > 0 ? `
             <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:12px; font-weight:700;">
-              ⚠️ ${scrapWarningCount} lote(s) con sombrero de merma en torre
+               ${scrapWarningCount} lote(s) con sombrero de merma en torre
             </div>
           ` : ''}
 
           <button type="button" class="btn-primary btn-touch-lg" style="width:100%;" onclick="window.openDeptWarehouseModal('${st.code}')">
-            📦 Ver Almacén Intermedio
+             Ver Almacén Intermedio
           </button>
         </div>
       `;
@@ -803,7 +803,7 @@ window.initTerminalView = function() {
     const st = UanifyState.stations.find(s => s.code === deptCode) || { code: deptCode, name: 'Departamento' };
 
     if (deptWarehouseModalTitle) {
-      deptWarehouseModalTitle.textContent = `📦 Almacén Intermedio · ${st.code} ${st.name}`;
+      deptWarehouseModalTitle.textContent = `Almacén Intermedio · ${st.code} ${st.name}`;
     }
     if (deptWarehouseModalSub) {
       deptWarehouseModalSub.textContent = `Lotes y sublotes en proceso o en espera de recolección en este almacén.`;
@@ -911,15 +911,15 @@ window.initTerminalView = function() {
         <td><strong>${item.model}</strong> (${item.clase})</td>
         <td><strong style="color:var(--text-primary);">${item.pieces} pzas</strong></td>
         <td>${item.operator}</td>
-        <td>➔ ${item.targetDept}</td>
+        <td>→ ${item.targetDept}</td>
         <td>
           ${item.hasScrap 
-            ? `<span style="color:#B91C1C; font-weight:800; font-size:11.5px;">⚠️ Sombrero Merma</span>` 
-            : `<span style="color:#16A34A; font-weight:700; font-size:11.5px;">✅ Íntegro</span>`}
+            ? `<span style="color:#B91C1C; font-weight:800; font-size:11.5px;"> Sombrero Merma</span>` 
+            : `<span style="color:#16A34A; font-weight:700; font-size:11.5px;">OK Íntegro</span>`}
         </td>
         <td>
           <button type="button" class="btn-secondary btn-table-action" onclick="window.inspectSpecificLotCard('${item.folio}')">
-            🏷️ Ver Tarjeta
+            Ver Tarjeta
           </button>
         </td>
       </tr>
@@ -986,13 +986,13 @@ window.initTerminalView = function() {
     const trackerProgressBar         = document.getElementById('trackerProgressBar');
 
     if (trackerCurrentStationBadge) {
-      trackerCurrentStationBadge.innerHTML = `📍 UBICACIÓN ACTUAL: ${currentStep.code} ${currentStep.name}`;
+      trackerCurrentStationBadge.innerHTML = `UBICACIÓN ACTUAL: ${currentStep.code} ${currentStep.name}`;
       trackerCurrentStationBadge.style.background = currentStep.type === 'calidad' ? '#D97706' : 'var(--color-brand)';
     }
     if (trackerNextStationText) {
       trackerNextStationText.innerHTML = nextStep 
         ? `Próxima Parada: <strong>${nextStep.code} ${nextStep.name}</strong>`
-        : `<strong style="color:var(--color-green);">🏁 Ruta Finalizada · Listo para Entrega</strong>`;
+        : `<strong style="color:var(--color-green);"> Ruta Finalizada · Listo para Entrega</strong>`;
     }
     if (trackerModelName) trackerModelName.textContent = `${lot.clase || 'Sombrero'} (${lot.model})`;
     if (trackerOProd) trackerOProd.textContent = `#${lot.oProd || '15000'}`;
@@ -1008,15 +1008,15 @@ window.initTerminalView = function() {
       let stateFooter = '⏳ En espera';
       if (idx < currentIdx) {
         stateClass = 'is-completed';
-        stateFooter = '✅ Superado';
+        stateFooter = 'OK Superado';
       } else if (idx === currentIdx) {
         stateClass = 'is-current';
-        stateFooter = `<span class="timeline-current-pill">📍 AQUÍ (${lot.pieces} pz)</span>`;
+        stateFooter = `<span class="timeline-current-pill"> AQUÍ (${lot.pieces} pz)</span>`;
       }
 
       const isQuality = st.type === 'calidad' || st.isQualityStop || st.code.startsWith('C-');
       const isLogistics = st.type === 'logistica' || st.code === 'D-11';
-      let typeLabel = isQuality ? '🔍 Calidad' : isLogistics ? '🚚 Logística' : '🏭 Manufactura';
+      let typeLabel = isQuality ? ' Calidad' : isLogistics ? ' Logística' : ' Manufactura';
 
       return `
         <div class="timeline-step-node ${stateClass} ${isQuality ? 'is-quality' : ''}" data-step-index="${idx}">
@@ -1025,7 +1025,7 @@ window.initTerminalView = function() {
             <span class="timeline-step-type-badge">${typeLabel}</span>
           </div>
           <div class="timeline-step-body">
-            <div class="timeline-step-code">${st.icon || (isQuality ? '🔍' : '🏭')} ${st.code}</div>
+            <div class="timeline-step-code">${st.icon || (isQuality ? '' : '')} ${st.code}</div>
             <div class="timeline-step-name">${st.name}</div>
           </div>
           <div class="timeline-step-footer">
@@ -1072,7 +1072,7 @@ window.initTerminalView = function() {
       window.UanifyUI.toast(
         `Solo puedes mover lotes de tus departamentos asignados (${user.assignedDepartments.join(', ')}). Este lote pertenece a ${lot.currentStation || currentStationCode}.`,
         'warning',
-        '🔒 Restricción de Supervisor'
+        ' Restricción de Supervisor'
       );
       return false;
     }
@@ -1092,7 +1092,7 @@ window.initTerminalView = function() {
         window.UanifyUI.toast(
           `Lote ${res.lot.lotId} avanzó a ${res.targetStep.code} "${res.targetStep.name}".`,
           'success',
-          '⏩ Lote Avanzado'
+          '>> Lote Avanzado'
         );
       }
     });
@@ -1111,7 +1111,7 @@ window.initTerminalView = function() {
         window.UanifyUI.toast(
           `Lote ${res.lot.lotId} retrocedió a ${res.targetStep.code} "${res.targetStep.name}" para reproceso.`,
           'warning',
-          '⏮️ Lote Reubicado'
+          '<< Lote Reubicado'
         );
       }
     });
@@ -1235,7 +1235,7 @@ window.initTerminalView = function() {
       window.UanifyUI.toast(
         `Lote Madre ${cleanId} fraccionado en 4 sublotes de 15 piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de D-05 Prensas de Hormado.`,
         'success',
-        '⚡ Fraccionamiento en Rampa Completado'
+        ' Fraccionamiento en Rampa Completado'
       );
     });
   }
@@ -1270,7 +1270,7 @@ window.initTerminalView = function() {
     if (filtered.length === 0) {
       bufferGrid.innerHTML = `
         <div style="grid-column: 1 / -1; padding:30px; text-align:center; background:#F8FAFC; border-radius:12px; border:1px dashed var(--border-subtle);">
-          <span style="font-size:32px;">📭</span>
+          <span style="font-size:32px;"></span>
           <h4 style="margin:8px 0 4px 0; color:var(--text-primary);">No hay lotes en espera en este almacén</h4>
           <p style="margin:0; font-size:12px; color:var(--text-muted);">Los departamentos previos están procesando piezas o no han depositado en su almacén de salida.</p>
         </div>
@@ -1287,7 +1287,7 @@ window.initTerminalView = function() {
             <div>
               <div class="buffer-route-flow">
                 <span>Almacén Salida: <strong>${item.originDeptCode}</strong></span>
-                <span class="buffer-route-arrow">➔</span>
+                <span class="buffer-route-arrow">→</span>
                 <span>Destino: <strong style="color:var(--color-brand);">${item.targetDeptCode}</strong></span>
               </div>
               <span class="buffer-lot-tag">Folio ${item.lotId}</span>
@@ -1298,7 +1298,7 @@ window.initTerminalView = function() {
           <div class="buffer-lot-meta">
             <div><strong>${item.pieces} Sombreros</strong> · ${item.model}</div>
             <div style="color:var(--text-muted); font-size:11.5px; margin-top:2px;">
-              De: ${item.originDeptName} ➔ Para: ${item.targetDeptName}
+              De: ${item.originDeptName} → Para: ${item.targetDeptName}
             </div>
             <div style="margin-top:6px; font-size:11px; background:rgba(0,0,0,0.03); padding:6px 8px; border-radius:6px; font-style:italic;">
               "${item.notes}"
@@ -1307,10 +1307,10 @@ window.initTerminalView = function() {
 
           <div class="buffer-actions-row">
             <button class="btn-primary btn-touch-lg" style="flex:1;" onclick="window.collectBufferLot('${item.id}')">
-              🚚 Recoger Lote (${item.pieces} pzas)
+               Recoger Lote (${item.pieces} pzas)
             </button>
             <button class="btn-secondary btn-touch-lg" style="padding:8px 12px;" onclick="window.inspectSpecificLotCard('${item.lotId}')" title="Ver en Visor">
-              👁️
+              
             </button>
           </div>
         </div>
@@ -1341,7 +1341,7 @@ window.initTerminalView = function() {
         window.UanifyUI.toast(
           `¡Lote ${item.lotId} recogido con éxito! Custodia trasladada a ${item.targetDeptName}. Traslado registrado por ${user.name}.`,
           'success',
-          '🚚 Lote Recolectado'
+          ' Lote Recolectado'
         );
       },
       'Sí, Recoger Lote',
@@ -1457,7 +1457,7 @@ window.initTerminalView = function() {
       window.UanifyUI.toast(
         `Sublote procesado en ${machineText} por ${opText}. Depositado en Almacén Intermedio de Salida de ${st.name}.`,
         'success',
-        '⚙️ Trabajo en Máquina Concluido'
+        'Trabajo en Máquina Concluido'
       );
     });
   }
@@ -1476,7 +1476,7 @@ window.initTerminalView = function() {
       window.UanifyUI.toast(
         `Se recolectaron ${qty} sombreros del Almacén de ${originSt.name} y se trasladaron al Almacén de ${destSt.name}. Responsable: ${collector}.`,
         'success',
-        '🚚 Traspaso Confirmado'
+        ' Traspaso Confirmado'
       );
     });
   }

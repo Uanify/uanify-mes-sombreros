@@ -1,4 +1,4 @@
-# 📋 ESPECIFICACIÓN DE REQUERIMIENTOS DE SOFTWARE (SRS / PRD)
+#  ESPECIFICACIÓN DE REQUERIMIENTOS DE SOFTWARE (SRS / PRD)
 
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 1. Propósito, Alcance y Metodología de Mantenimiento
+##  1. Propósito, Alcance y Metodología de Mantenimiento
 
 ### 1.1 Propósito
 
@@ -25,7 +25,7 @@ Este documento formaliza y cataloga la totalidad de **Requerimientos Funcionales
 
 ---
 
-## 👥 2. Matriz de Roles y Perfiles de Usuario (RBAC)
+##  2. Matriz de Roles y Perfiles de Usuario (RBAC)
 
 El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** estricto y adaptado a la jerarquía operativa de la planta de sombreros de San Francisco del Rincón.
 
@@ -51,7 +51,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
                  (Jorge, Melany, Pedro Morales, etc.)
 ```
 
-#### 👑 1. Administrador General (`admin`)
+####  1. Administrador General (`admin`)
 - **Usuario de Referencia:** Edmundo González (Director / Gerente General).
 - **Acceso a Módulos:** Acceso total e irrestricto a los **7 módulos** (`andon`, `terminal`, `inventory`, `operators`, `engineer`, `executive`, `config`).
 - **Alcance Departamental:** Global (`*` - Todas las estaciones de planta).
@@ -63,7 +63,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
   - **Control de Metas Globales:** Modificar la meta de producción semanal de planta (ej. 4,250 pzas/semana).
   - **Auditoría Global:** Visualizar la totalidad de métricas de OEE, paros de línea y balances de inventario.
 
-#### 🛠️ 2. Ingeniero de Procesos y Planta (`ingeniero`)
+####  2. Ingeniero de Procesos y Planta (`ingeniero`)
 - **Usuario de Referencia:** Ing. Carlos Ortiz (Jefe de Ingeniería y Mejora Continua).
 - **Acceso a Módulos:** Autorizado en **6 módulos** (`andon`, `terminal`, `inventory`, `operators`, `engineer`, `config`). Módulo de `executive` restringido por defecto.
 - **Alcance Departamental:** Global (`*` - Todas las estaciones de planta).
@@ -76,7 +76,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
   - **Gestión del Padrón de Operadores:** Consultar rendimientos individuales por operador, dar de alta operadores y actualizar sus máquinas asignadas.
   - **Alta de Supervisores:** Registrar nuevos supervisores de línea y asignarles departamentos operativos.
 
-#### 📋 3. Supervisor de Nave / Almacén (`supervisor`)
+####  3. Supervisor de Nave / Almacén (`supervisor`)
 - **Usuarios de Referencia:** Juan Manuel Pérez (Área de Prensas a Terminado, Depts D-05 a D-08), Roberto Méndez (Área de Telar y Preparación, Depts D-01 a D-04).
 - **Acceso a Módulos:** Autorizado en **2 módulos primarios** (`andon`, `terminal`). Los módulos de configuración, finanzas e ingeniería avanzada se mantienen ocultos.
 - **Alcance Departamental:** **Delimitado estrictamente** a los departamentos asignados en su perfil (`assignedDepartments`).
@@ -90,7 +90,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
   - **Registro de Mermas y Segundas:** Tipificar mermas por falla física en máquina (con solicitud de reposición por pieza de saldo) o destinar piezas a "Segundas de Viernes".
   - **Liberación de Filtros de Calidad:** Certificar y autorizar el paso de lotes en las estaciones de control de calidad asignadas.
 
-#### 👷 4. Operador de Planta / Mano de Obra (`operador`)
+####  4. Operador de Planta / Mano de Obra (`operador`)
 - **Usuarios de Referencia:** Jorge, Melany, Pedro Morales, etc.
 - **Acceso a Módulos:** **Sin acceso interactivo directo al software** (no cuentan con usuario ni contraseña en la interfaz digital para evitar distracciones en máquina).
 - **Papel en el Sistema:**
@@ -104,30 +104,30 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 | Acción / Funcionalidad del Sistema                                   | Administrador (`admin`) | Ingeniero (`ingeniero`) | Supervisor (`supervisor`) | Operador (`operador`) |
 | :------------------------------------------------------------------- | :---------------------: | :---------------------: | :-----------------------: | :-------------------: |
-| **Visualizar Tablero Andon General**                                 |           ✅            |           ✅            |            ✅             |       📺 (En TV)      |
-| **Escanear Tarjetas QR con Cámara Web**                              |           ✅            |           ✅            |            ✅             |          ❌           |
-| **Captura Manual de Lote / Folio de Orden**                          |           ✅            |           ✅            |            ✅             |          ❌           |
-| **Avanzar / Retroceder Lotes en Línea de Tiempo**                    |           ✅            |           ✅            |     ✅ (Depts propios)    |          ❌           |
-| **Fraccionar Lote Madre (60 a 15 pzas en Rampa)**                    |           ✅            |           ✅            |     ✅ (Depts propios)    |          ❌           |
-| **Recolectar Lote de Almacén Previo**                                |           ✅            |           ✅            |     ✅ (Depts propios)    |          ❌           |
-| **Registrar Mermas y Segundas de Viernes**                           |           ✅            |           ✅            |     ✅ (Depts propios)    |          ❌           |
-| **Liberar Filtro de Calidad (`C-XX`)**                               |           ✅            |           ✅            |     ✅ (Asignado)         |          ❌           |
-| **Auditar OEE, Takt Time y Balanceo de Línea**                       |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Registrar Paros e Incidencias SMED**                               |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Consultar Almacenes e Inventario de Hormas**                       |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Consultar Padrón de Operadores**                                   |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Crear / Editar / Eliminar Operadores de Planta**                   |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Crear / Editar / Reordenar Rutas de Fabricación**                  |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Dar de Alta Nuevas Áreas de Calidad (`C-XX`)**                     |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Dar de Alta Nuevos Departamentos (`D-XX`)**                        |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Editar Departamentos Asignados a Supervisores**                    |           ✅            |           ✅            |            ❌             |          ❌           |
-| **Gestionar Usuarios del Sistema y Roles RBAC**                      |           ✅            |           ❌            |            ❌             |          ❌           |
-| **Consultar Valuación Financiera y Enlace COMPAC**                   |           ✅            |           ❌            |            ❌             |          ❌           |
-| **Modificar Horario de Turno y Meta Semanal de Planta**              |           ✅            |           ❌            |            ❌             |          ❌           |
+| **Visualizar Tablero Andon General**                                 |           OK            |           OK            |            OK             |        (En TV)      |
+| **Escanear Tarjetas QR con Cámara Web**                              |           OK            |           OK            |            OK             |                     |
+| **Captura Manual de Lote / Folio de Orden**                          |           OK            |           OK            |            OK             |                     |
+| **Avanzar / Retroceder Lotes en Línea de Tiempo**                    |           OK            |           OK            |     OK (Depts propios)    |                     |
+| **Fraccionar Lote Madre (60 a 15 pzas en Rampa)**                    |           OK            |           OK            |     OK (Depts propios)    |                     |
+| **Recolectar Lote de Almacén Previo**                                |           OK            |           OK            |     OK (Depts propios)    |                     |
+| **Registrar Mermas y Segundas de Viernes**                           |           OK            |           OK            |     OK (Depts propios)    |                     |
+| **Liberar Filtro de Calidad (`C-XX`)**                               |           OK            |           OK            |     OK (Asignado)         |                     |
+| **Auditar OEE, Takt Time y Balanceo de Línea**                       |           OK            |           OK            |                         |                     |
+| **Registrar Paros e Incidencias SMED**                               |           OK            |           OK            |                         |                     |
+| **Consultar Almacenes e Inventario de Hormas**                       |           OK            |           OK            |                         |                     |
+| **Consultar Padrón de Operadores**                                   |           OK            |           OK            |                         |                     |
+| **Crear / Editar / Eliminar Operadores de Planta**                   |           OK            |           OK            |                         |                     |
+| **Crear / Editar / Reordenar Rutas de Fabricación**                  |           OK            |           OK            |                         |                     |
+| **Dar de Alta Nuevas Áreas de Calidad (`C-XX`)**                     |           OK            |           OK            |                         |                     |
+| **Dar de Alta Nuevos Departamentos (`D-XX`)**                        |           OK            |           OK            |                         |                     |
+| **Editar Departamentos Asignados a Supervisores**                    |           OK            |           OK            |                         |                     |
+| **Gestionar Usuarios del Sistema y Roles RBAC**                      |           OK            |                       |                         |                     |
+| **Consultar Valuación Financiera y Enlace COMPAC**                   |           OK            |                       |                         |                     |
+| **Modificar Horario de Turno y Meta Semanal de Planta**              |           OK            |                       |                         |                     |
 
 ---
 
-## ⚙️ 3. Requerimientos Funcionales (RF)
+##  3. Requerimientos Funcionales (RF)
 
 ### Bloque A: Tablero Andon & Monitoreo de Piso
 
@@ -160,11 +160,11 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-15` Rastreador de Lotes para Supervisores:** Sub-pestaña interactiva en Terminal (`subtab-terminal-tracker`) que permite a supervisores, ingenieros y directivos consultar la ubicación exacta de cualquier lote en planta.
 - **`RF-16` Línea de Tiempo de Proceso Dinámica:** Gráfico secuencial de nodos horizontales que muestra todas las estaciones de manufactura, almacenes intermedios y paradas de control de calidad por las que debe pasar el lote.
 - **`RF-17` Indicadores de Estado de Nodo en Línea de Tiempo:**
-  - ✅ **Completado:** Estaciones superadas con éxito con borde verde.
-  - 📍 **ACTUAL (AQUÍ ESTÁ EL LOTE):** Nodo resaltado en cuero de marca con badge pulsante, piezas presentes y operador responsable.
+  - OK **Completado:** Estaciones superadas con éxito con borde verde.
+  -  **ACTUAL (AQUÍ ESTÁ EL LOTE):** Nodo resaltado en cuero de marca con badge pulsante, piezas presentes y operador responsable.
   - ⏳ **Pendiente:** Estaciones futuras en espera de arribo.
-- **`RF-18` Diferenciación Visual de Tipo de Parada:** Distinción cromática e iconográfica entre departamentos de manufactura (`🏭`), paradas de control de calidad (`🔍`) y almacenes/embarque (`🚚`).
-- **`RF-19` Controles Operativos de Avance y Retroceso de Lote:** Botones para avanzar (`⏩`) al siguiente departamento o retroceder (`⏮️`) a la estación previa por ajuste o retrabajo.
+- **`RF-18` Diferenciación Visual de Tipo de Parada:** Distinción cromática e iconográfica entre departamentos de manufactura (``), paradas de control de calidad (``) y almacenes/embarque (``).
+- **`RF-19` Controles Operativos de Avance y Retroceso de Lote:** Botones para avanzar (`>>`) al siguiente departamento o retroceder (`<<`) a la estación previa por ajuste o retrabajo.
 - **`RF-20` Reubicación Táctil en Línea de Tiempo:** Capacidad de hacer clic sobre cualquier nodo de la línea de tiempo para reubicar el lote directamente en caso de corrección física en piso.
 - **`RF-21` Liberación de Filtro de Calidad In-App:** Botón contextual que se habilita únicamente cuando el lote se encuentra en una estación de inspección (`C-XX`) para certificar la calidad y permitir su paso.
 
@@ -262,21 +262,21 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-56` Verificación Previa Obligatoria de Tarjeta Viajera Escaneada (Mica Física vs Payload QR):**
   - **Flujo Operativo:** Tras disparar la lectura del código QR (mediante cámara web o pistola USB), el sistema no aplica cambios de estado inmediatamente. En su lugar, despliega un modal de verificación (`#modalVerifyScannedCard`) proyectando la réplica fiel de la tarjeta física (mica de piso) junto con los metadatos desglosados.
   - **Control de Error en Mano:** El supervisor cuenta con dos opciones táctiles:
-    1. **"❌ Tarjeta Incorrecta / Escanear de Nuevo":** Descarta el escaneo sin registrar movimientos ni alterar el lote activo, permitiendo reintentar la lectura.
-    2. **"✅ Confirmar Coincidencia y Proceder":** Confirma la coincidencia entre la mica física en mano y el sistema, cargando el lote para su posterior depósito.
+    1. **"Tarjeta Incorrecta / Escanear de Nuevo":** Descarta el escaneo sin registrar movimientos ni alterar el lote activo, permitiendo reintentar la lectura.
+    2. **"Confirmar Coincidencia y Proceder":** Confirma la coincidencia entre la mica física en mano y el sistema, cargando el lote para su posterior depósito.
 - **`RF-57` Depósito Automático en Almacén Siguiente según Secuencia de Ruta Configurada:**
   - **Cálculo de Destino:** Al confirmar una tarjeta verificada, el sistema consulta automáticamente la ruta de fabricación configurada para el tipo de sombrero (`routeId`). Identifica la posición actual (`currentStepIndex`) y calcula de forma inmediata el departamento siguiente (`targetStep`).
-  - **Acción Táctil:** Habilita el botón prominente: `📥 Depositar Lote en Almacén de [Siguiente Depto]`, transfiriendo la custodia al almacén de entrada de la estación subsecuente.
+  - **Acción Táctil:** Habilita el botón prominente: `Depositar Lote en Almacén de [Siguiente Depto]`, transfiriendo la custodia al almacén de entrada de la estación subsecuente.
 - **`RF-58` Restricción Departamental Estricta de Custodia y Movimiento para Perfil Supervisor:**
   - **Regla RBAC Industrial:** Un supervisor de planta **no puede mover libremente cualquier lote a cualquier departamento**. Únicamente está facultado para operar y trasladar los lotes correspondientes a sus departamentos asignados (`assignedDepartments`).
   - **Seguridad en Piso:** Si un supervisor intenta transferir un lote cuya estación origen no pertenece a su alcance supervisado, el sistema bloquea la acción y emite una advertencia formal con los departamentos bajo su responsabilidad. Los perfiles Administrador e Ingeniero mantienen facultad de auditoría global (`*`).
 - **`RF-59` Mapa General de Planta y Consulta Departamental de Almacenes Intermedios con Filtros:**
   - **Supervisión Macro de Nave:** Sustitución de la consulta restrictiva lote por lote por un mapa general de planta que despliega la totalidad de los 14 departamentos de manufactura y paradas de calidad.
-  - **Modal de Almacén Intermedio:** Cada departamento cuenta con un botón táctil `📦 Ver Almacén Intermedio`, el cual abre una ventana modal (`#modalDeptWarehouse`) listando el inventario en proceso (WIP) y sombreros almacenados en su pulmón, con filtros dinámicos por modelo de sombrero, tipo de lote (Lote Madre 60pz vs Sublote 15pz) y estado de calidad.
+  - **Modal de Almacén Intermedio:** Cada departamento cuenta con un botón táctil ` Ver Almacén Intermedio`, el cual abre una ventana modal (`#modalDeptWarehouse`) listando el inventario en proceso (WIP) y sombreros almacenados en su pulmón, con filtros dinámicos por modelo de sombrero, tipo de lote (Lote Madre 60pz vs Sublote 15pz) y estado de calidad.
   - **Regla de Traspaso:** El movimiento físico y traspaso entre plantas se efectúa exclusivamente mediante el escaneo de la tarjeta viajera física.
 - **`RF-60` Trazabilidad de Piezas con Merma en Tránsito y Escáner QR en Pantalla Completa:**
   - **Comportamiento de Piezas con Merma:** Cuando un sombrero dentro de una torre es clasificado con merma o defecto, la pieza continúa físicamente acompañando al lote en su avance por la línea hasta el filtro de calidad/separación física final, mostrándose un banner de advertencia en el detalle del lote.
-  - **Modo Pantalla Completa:** Opción táctil `⛶ Pantalla Completa` para expandir el visor de escaneo a la totalidad de la pantalla de la tableta, optimizando ergonomía en condiciones de iluminación variable en nave industrial.
+  - **Modo Pantalla Completa:** Opción táctil `Pantalla Completa` para expandir el visor de escaneo a la totalidad de la pantalla de la tableta, optimizando ergonomía en condiciones de iluminación variable en nave industrial.
 - **`RF-61` Ergonomía Táctil Universal y Botones Grandes para Tabletas en TODOS los Módulos:**
   - **Alcance Global:** Estandarización de touch-targets en la totalidad de los 7 módulos (Andon, Terminal, Almacenes/Inventarios, Operadores, Ingeniería, Dirección, Configuración) y modales del sistema MES.
   - **Jerarquía de Alturas Táctiles:** Botones Hero y de acción primordial de 52px a 56px (`.btn-touch-hero`); botones estándar de modales, formularios y filtros de 48px (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`); botones de navegación de 48px (`.nav-btn`); botones de pestañas de 44px a 46px (`.sub-tab-btn`); acciones de tabla y registros de 38px a 42px (`.btn-table-action`, `.btn-sm`); botones de cierre de modal de 44x44px (`.modal-close`); controles de formulario de 48px (`--form-height: 48px`).
@@ -289,7 +289,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-62` CRUD Integral de Departamentos y Almacenes Intermedios para Ingeniería:**
   - **Propósito:** Permitir a ingenieros y administradores configurar la estructura departamental de planta junto con su almacén intermedio asociado y propiedades físicas.
   - **Especificación Funcional (CRUD Completo):**
-    - **Create (Alta):** Generación automática del código correlativo (`D-XX`), captura de Nombre, Tipo de Proceso (Corte, Prensado, Acabado, Ensamble, Empaque, etc.), Almacén Intermedio Asociado (`ALM-XX`), Ubicación en Nave, Capacidad Máxima del Buffer WIP (pzas), Takt Time Teórico (seg/pza), Máquinas/Prensas Asignadas, Supervisor a Cargo, Estatus Operativo (🟢 Activo / 🔴 Inactivo) y checklist multi-selección de Operadores asignados.
+    - **Create (Alta):** Generación automática del código correlativo (`D-XX`), captura de Nombre, Tipo de Proceso (Corte, Prensado, Acabado, Ensamble, Empaque, etc.), Almacén Intermedio Asociado (`ALM-XX`), Ubicación en Nave, Capacidad Máxima del Buffer WIP (pzas), Takt Time Teórico (seg/pza), Máquinas/Prensas Asignadas, Supervisor a Cargo, Estatus Operativo (Activo / Inactivo) y checklist multi-selección de Operadores asignados.
     - **Read (Consulta Maestra):** Tabla exhaustiva en Configuración con columnas de Código, Nombre y Proceso, Almacén Intermedio y Ubicación, Takt Time y Capacidad Buffer WIP, Supervisor, Máquinas, Estatus y Acciones.
     - **Update (Edición Completa):** Modal interactivo (`#modalCreateDepartment`) prellenado con los valores actuales que permite modificar cualquiera de sus propiedades físicas, técnicas u operativas sin alterar el historial de lotes previos.
     - **Delete (Baja Validada):** Supresión controlada con confirmación in-app (`UanifyUI.confirm`) que previene la eliminación accidental si hay lotes activos asignados.
@@ -297,7 +297,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 - **`RF-63` Unificación de Catálogos Maestros y Módulo General de Almacén & Inventarios:**
   - **Eliminación de Redundancia y Duplicidad:** Supresión total del catálogo duplicado de hormas de aluminio que anteriormente coexistía en la Consola de Ingeniería. Centralización única y definitiva del catálogo de moldes y hormas exclusivamente dentro del módulo **Almacén & Control de Inventarios** (`subtab-inventory-molds`).
-  - **Ubicación Exclusiva del Botón "Registrar Horma":** El botón interactivo `🎩 + Registrar Nueva Horma` se despliega única y exclusivamente dentro de la pestaña del catálogo maestro de hormas y moldes (`subtab-inventory-molds`), eliminándose por completo de la cabecera global del módulo para no invadir las pestañas de Almacenes Físicos, Subensambles o Kárdex.
+  - **Ubicación Exclusiva del Botón "Registrar Horma":** El botón interactivo ` + Registrar Nueva Horma` se despliega única y exclusivamente dentro de la pestaña del catálogo maestro de hormas y moldes (`subtab-inventory-molds`), eliminándose por completo de la cabecera global del módulo para no invadir las pestañas de Almacenes Físicos, Subensambles o Kárdex.
   - **Módulo General de Almacén & Inventarios:** Evolución del módulo hacia una plataforma escalable para la custodia de todos los inventarios de planta:
     1. *Almacenes Físicos:* Existencias y capacidades de Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Almacén de Segundas de Viernes y Almacén Fiscal de Producto Terminado.
     2. *Catálogo Maestro de Moldes y Hormas:* Modelos de hormas de aluminio maquinado (Johnson, Sonora, Chaparral, Viejonón, Denver, Bullrider, Laredo, Frontier), estatus de disponibilidad, prensa asignada y alta de nuevos moldes con persistencia (`uanify_custom_molds`).
@@ -316,7 +316,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-64` CRUD Integral de Filtros de Calidad & Tolerancias (`C-XX`):**
   - **Propósito:** Permitir a ingenieros de calidad y administradores dar de alta, consultar, editar y deshabilitar los puntos de inspección y filtros de calidad de la planta de manera independiente y desacoplada de los departamentos de manufactura.
   - **Especificación Funcional (CRUD Completo):**
-    - **Create (Alta de Filtro):** Modal interactivo (`#modalCreateQualityArea`) con generación correlativa del código (`C-01`, `C-02`, etc.), captura de Nombre del Filtro (ej. "Inspección de Prensado y Tolerancia"), Ubicación Física en Nave, Criterios de Aceptación/Rechazo, Tolerancias Numéricas (milímetros/gramaje), Inspector Responsable, Tiempo Estimado de Inspección (segundos/pza) y Estatus Operativo (🟢 Activo / 🔴 Inactivo).
+    - **Create (Alta de Filtro):** Modal interactivo (`#modalCreateQualityArea`) con generación correlativa del código (`C-01`, `C-02`, etc.), captura de Nombre del Filtro (ej. "Inspección de Prensado y Tolerancia"), Ubicación Física en Nave, Criterios de Aceptación/Rechazo, Tolerancias Numéricas (milímetros/gramaje), Inspector Responsable, Tiempo Estimado de Inspección (segundos/pza) y Estatus Operativo (Activo / Inactivo).
     - **Read (Consulta de Filtros):** Sub-pestaña dedicada en Configuración (`subtab-config-quality`) con tabla exhaustiva (`#cfgQualityTable`) que lista Código, Nombre, Ubicación Física, Criterios y Tolerancias, Inspector Asignado, Tiempo de Ciclo, Estatus y Acciones.
     - **Update (Edición Paramétrica):** Edición reactiva que actualiza la definición del filtro y propaga los cambios a todas las rutas que tengan asignado dicho filtro.
     - **Delete (Baja de Filtro):** Supresión segura con confirmación in-app (`UanifyUI.confirm`) que remueve el filtro de `qualityAreas`, de `stations` y de los pasos asignados en cualquier ruta de modelo.
@@ -327,8 +327,8 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
   - **Especificación Funcional:**
     - **Secuencias Dedicadas por Modelo Específico:** Cada modelo de sombrero del catálogo (`El Viejonón`, `Denver Master`, `Chaparral`, `Laredo Ranch`, `Frontier Rodeo`, `Magnum Gold`, `Sonora Classic`, `Bullrider Pro`) cuenta con su propia ruta independiente (`route-model-[id]`), permitiendo variaciones de proceso (ej. pasos adicionales de laqueado, ribeteado o puntos de inspección específicos) sin afectar a otros modelos.
     - **Reordenamiento Intuitivo Drag & Drop (`⠿`):** Elementos de la secuencia configurables mediante arrastre directo (HTML5 Drag & Drop API) con grip icon `⠿`, estilos visuales de elevación, borde punteado y líneas guía (`drag-over-top`, `drag-over-bottom`). Respaldado adicionalmente con controles táctiles `▲` y `▼` para compatibilidad ergonómica total en tabletas.
-    - **Delimitación Estricta de Alcance (Sin Mutación de Estaciones):** En la pantalla de secuencias **únicamente** se pueden añadir o quitar pasos de la asignación de ese modelo (`➕ Asignar al Final de la Secuencia`, `🗑️ Quitar de la Secuencia`). Queda terminantemente prohibido crear, modificar o eliminar departamentos o filtros de calidad desde esta interfaz, preservando la integridad del catálogo maestro.
-    - **Selector Agrupado de Pasos:** El selector de adición de pasos categoriza claramente entre `🏭 Departamentos de Manufactura (D-XX)` y `🔍 Puntos de Inspección de Calidad (C-XX)`.
+    - **Delimitación Estricta de Alcance (Sin Mutación de Estaciones):** En la pantalla de secuencias **únicamente** se pueden añadir o quitar pasos de la asignación de ese modelo (`+ Asignar al Final de la Secuencia`, `Quitar de la Secuencia`). Queda terminantemente prohibido crear, modificar o eliminar departamentos o filtros de calidad desde esta interfaz, preservando la integridad del catálogo maestro.
+    - **Selector Agrupado de Pasos:** El selector de adición de pasos categoriza claramente entre ` Departamentos de Manufactura (D-XX)` y ` Puntos de Inspección de Calidad (C-XX)`.
     - **Persistencia y Trazabilidad en Terminal:** Las secuencias modificadas se persisten en `localStorage` (`uanify_production_routes`) y el método `getLotRoute(lotId)` prioriza la ruta del modelo específico para determinar el siguiente almacén de destino durante la lectura de tarjetas viajeras en la Terminal de Supervisor.
 
 ---
@@ -351,7 +351,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
       - Búsqueda en tiempo real por texto (`input[type="text"]` con clase `.filter-search-box`) filtrando por código, nombre y metadatos relevantes.
       - Selectores contextuales de categoría, tipo de proceso o estatus (`.filter-select-group`).
       - Contador reactivo en vivo (`.filter-count-badge`) con formato *"Mostrando X de Y registros"*.
-      - Botón de reseteo rápido (`.btn-reset-filters`) con icono `🔄 Limpiar` que restaura inputs y muestra la totalidad de registros.
+      - Botón de reseteo rápido (`.btn-reset-filters`) con icono `Limpiar` que restaura inputs y muestra la totalidad de registros.
     - **Jerarquía y Diseño de Columnas Normalizado:**
       - *Columna 1 (Identificador):* `.col-code` con badge monoespaciado `.table-badge-code` en fondo neutro (#F1F5F9).
       - *Columna 2 (Nombre y Descripción):* `.col-name` con título en negrita `.table-cell-primary` y subtítulo explicativo `.table-cell-subtext`.
@@ -360,13 +360,13 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
       - *Columna Final (Acciones):* `.col-actions` con ancho mínimo de 140px y contenedor flexible centrado `.action-btns-cell`.
     - **Sección de Acciones Estandarizada (`.action-btns-cell`):**
       - Botones touch de 38px de altura mínima con tipografía clara y padding ergonómico (8px 14px):
-        - `✏️ Editar` (`.btn-action-edit`) con tono azul suave (#EFF6FF / #2563EB).
-        - `🗑️ Eliminar/Baja` (`.btn-action-delete`) con tono carmesí suave (#FEF2F2 / #DC2626).
-        - `👁️ Ver Lotes/Detalle` (`.btn-action-view`) con tono café/cuero artesanal (#FDF8F6 / #8B5E3C).
-        - `👤 Asignar` (`.btn-action-assign`) con tono verde suave (#F0FDF4 / #16A34A).
+        - `Editar` (`.btn-action-edit`) con tono azul suave (#EFF6FF / #2563EB).
+        - `Eliminar/Baja` (`.btn-action-delete`) con tono carmesí suave (#FEF2F2 / #DC2626).
+        - `Ver Lotes/Detalle` (`.btn-action-view`) con tono café/cuero artesanal (#FDF8F6 / #8B5E3C).
+        - ` Asignar` (`.btn-action-assign`) con tono verde suave (#F0FDF4 / #16A34A).
       - Todo botón interactivo cuenta con `cursor: pointer !important` y micro-animación hover.
     - **Manejo de Estado Vacío (`.table-empty-row`):**
-      - Despliegue de fila con `colspan` total, icono representativo (🔍), leyenda clara ("No se encontraron registros...") y botón interactivo para restablecer filtros.
+      - Despliegue de fila con `colspan` total, icono representativo (), leyenda clara ("No se encontraron registros...") y botón interactivo para restablecer filtros.
 
 ---
 
@@ -393,7 +393,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
-## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
+##  4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
 
@@ -477,21 +477,21 @@ La manufactura de sombreros finos en San Francisco del Rincón combina artesaní
 
 | Paso Físico Real en Planta | Descripción de la Operación en Piso | Estación / Código | Cobertura en el Sistema | Estatus / Soporte Digital |
 | :--- | :--- | :---: | :--- | :---: |
-| **1. Recepción de Materia Prima** | Ingreso de lienzos de telar de paja fina, fieltros de lana/liebre, toquillas, rollos de tafilete de piel y herrajes. | Almacén MP | Módulo `inventory` (Almacén Materia Prima). | ✅ Cubierto |
-| **2. Corte y Troquelado** | Corte de lienzos circulares para falda/ala y piezas de copa con suajes mecánicos. | D-01 Corte | Registrado como estación D-01 en rutas. | ✅ Cubierto |
-| **3. Engomado y Apresto (Dope)** | Inmersión o aspersión en tinas de apresto/resina para conferir rigidez a la fibra. Tiempo de secado en túnel. | D-02 Engomado | Registrado como estación D-02 en rutas. | ✅ Cubierto |
-| **4. Rampa de Ensamble (2 Piezas)** | Cosido de copa con falda en máquina especial de cadeneta. **El lote madre de 60 piezas se fracciona físicamente en 4 grupos de 15 piezas.** | D-03 Rampa | Botón de fraccionamiento a 4 sublotes con tarjetas viajeras 1, 2, 3 y 4 (`RF-08`, `RF-09`). | ✅ Cubierto |
-| **5. Filtro de Calidad Intermedio 1** | Inspección de costura de rampa y simetría antes de someter a calor y prensa. | C-01 Calidad Rampa | Parada de calidad con certificación in-app (`RF-21`, `RF-26`). | ✅ Cubierto |
-| **6. Prensas Hidráulicas y Vapor** | Conformado térmico con vapor a presión (60-80 PSI) y horma de aluminio maquinado caliente a 110-130°C. Planchado de falda y copa. | D-04 Prensas | Mapeo de prensas y catálogo de hormas maquinadas (`RF-44`). | ✅ Cubierto |
-| **7. Rebabado y Recorte de Falda** | Corte perimetral exacto del ancho de ala (ej. falda 3 1/2", 4", 4 1/4") según orden de producción. | D-05 Rebabado | Estación registrada en rutas de fabricación. | ✅ Cubierto |
-| **8. Ribeteado del Ala** | Colocación de cinta de ribete en el borde de la falda con máquina ribeteadora. | D-06 Ribeteado | Estación registrada en rutas de fabricación. | ✅ Cubierto |
-| **9. Filtro de Calidad Intermedio 2** | Inspección de forma, simetría de copa y medida exacta de falda. | C-02 Calidad Horma | Parada de calidad con firma digital. | ✅ Cubierto |
-| **10. Laqueado Nitrocelulósico** | Aplicación de barniz especial en cabina con pistola de aspersión y secado para brillo y resistencia al agua. | D-07 Laqueado | Estación registrada en rutas de fabricación. | ✅ Cubierto |
-| **11. Adorno Exterior** | Colocación de toquilla vaquera (piel, fieltro o listón), pluma decorativa y hebilla metálica de marca Tombstone. | D-08 Adorno | Estación registrada en rutas de fabricación. | ✅ Cubierto |
-| **12. Confección y Montaje de Tafilete** | Corte y grabado foliado en oro del tafilete de piel badana por talla (55 a 60), con costura de hilván interior. | D-09 Tafiletes | Control de stock de tafiletes por talla en `inventory`. | ✅ Cubierto |
-| **13. Empegostado y Pegado de Forro** | Fijación del forro de satín interior con el escudo bordado Tombstone mediante adhesivo térmico. | D-10 Forrado | Estación registrada en rutas de fabricación. | ✅ Cubierto |
-| **14. Inspección Final de Calidad** | Auditoría al 100% de tolerancias: talla, manchado de laca, textura, costura, centrado de toquilla. | C-03 Calidad Final | Filtro de calidad final antes de embalaje. | ✅ Cubierto |
-| **15. Etiquetado, Empaque y COMPAC** | Colocación de tag de precio comercial, guardado en caja de cartón individual Tombstone Hats y traspaso contable. | D-11 Empaque | Generación de vales y enlace con CONTPAQi Comercial (`RF-40`). | ✅ Cubierto |
+| **1. Recepción de Materia Prima** | Ingreso de lienzos de telar de paja fina, fieltros de lana/liebre, toquillas, rollos de tafilete de piel y herrajes. | Almacén MP | Módulo `inventory` (Almacén Materia Prima). | OK Cubierto |
+| **2. Corte y Troquelado** | Corte de lienzos circulares para falda/ala y piezas de copa con suajes mecánicos. | D-01 Corte | Registrado como estación D-01 en rutas. | OK Cubierto |
+| **3. Engomado y Apresto (Dope)** | Inmersión o aspersión en tinas de apresto/resina para conferir rigidez a la fibra. Tiempo de secado en túnel. | D-02 Engomado | Registrado como estación D-02 en rutas. | OK Cubierto |
+| **4. Rampa de Ensamble (2 Piezas)** | Cosido de copa con falda en máquina especial de cadeneta. **El lote madre de 60 piezas se fracciona físicamente en 4 grupos de 15 piezas.** | D-03 Rampa | Botón de fraccionamiento a 4 sublotes con tarjetas viajeras 1, 2, 3 y 4 (`RF-08`, `RF-09`). | OK Cubierto |
+| **5. Filtro de Calidad Intermedio 1** | Inspección de costura de rampa y simetría antes de someter a calor y prensa. | C-01 Calidad Rampa | Parada de calidad con certificación in-app (`RF-21`, `RF-26`). | OK Cubierto |
+| **6. Prensas Hidráulicas y Vapor** | Conformado térmico con vapor a presión (60-80 PSI) y horma de aluminio maquinado caliente a 110-130°C. Planchado de falda y copa. | D-04 Prensas | Mapeo de prensas y catálogo de hormas maquinadas (`RF-44`). | OK Cubierto |
+| **7. Rebabado y Recorte de Falda** | Corte perimetral exacto del ancho de ala (ej. falda 3 1/2", 4", 4 1/4") según orden de producción. | D-05 Rebabado | Estación registrada en rutas de fabricación. | OK Cubierto |
+| **8. Ribeteado del Ala** | Colocación de cinta de ribete en el borde de la falda con máquina ribeteadora. | D-06 Ribeteado | Estación registrada en rutas de fabricación. | OK Cubierto |
+| **9. Filtro de Calidad Intermedio 2** | Inspección de forma, simetría de copa y medida exacta de falda. | C-02 Calidad Horma | Parada de calidad con firma digital. | OK Cubierto |
+| **10. Laqueado Nitrocelulósico** | Aplicación de barniz especial en cabina con pistola de aspersión y secado para brillo y resistencia al agua. | D-07 Laqueado | Estación registrada en rutas de fabricación. | OK Cubierto |
+| **11. Adorno Exterior** | Colocación de toquilla vaquera (piel, fieltro o listón), pluma decorativa y hebilla metálica de marca Tombstone. | D-08 Adorno | Estación registrada en rutas de fabricación. | OK Cubierto |
+| **12. Confección y Montaje de Tafilete** | Corte y grabado foliado en oro del tafilete de piel badana por talla (55 a 60), con costura de hilván interior. | D-09 Tafiletes | Control de stock de tafiletes por talla en `inventory`. | OK Cubierto |
+| **13. Empegostado y Pegado de Forro** | Fijación del forro de satín interior con el escudo bordado Tombstone mediante adhesivo térmico. | D-10 Forrado | Estación registrada en rutas de fabricación. | OK Cubierto |
+| **14. Inspección Final de Calidad** | Auditoría al 100% de tolerancias: talla, manchado de laca, textura, costura, centrado de toquilla. | C-03 Calidad Final | Filtro de calidad final antes de embalaje. | OK Cubierto |
+| **15. Etiquetado, Empaque y COMPAC** | Colocación de tag de precio comercial, guardado en caja de cartón individual Tombstone Hats y traspaso contable. | D-11 Empaque | Generación de vales y enlace con CONTPAQi Comercial (`RF-40`). | OK Cubierto |
 
 ---
 
@@ -515,7 +515,7 @@ A partir del análisis del proceso productivo físico en San Francisco del Rinc�
 
 ---
 
-## 🏷️ 5. Propuestas de Nomenclatura Comercial del Software
+##  5. Propuestas de Nomenclatura Comercial del Software
 
 Para dotar al sistema de una identidad de producto formal que conserve el prestigio de la marca **Tombstone Hats** combinado con un nombre genérico de software industrial o MES (Manufacturing Execution System), se presentan **10 propuestas categorizadas** para consideración del cliente:
 
@@ -562,7 +562,7 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 
 ---
 
-## 🛡️ 6. Requerimientos No Funcionales (RNF)
+##  6. Requerimientos No Funcionales (RNF)
 
 | Código       | Requerimiento No Funcional                          | Especificación Técnica                                                                                                                   |
 | ------------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -581,74 +581,74 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 
 ---
 
-## 📊 7. Matriz de Trazabilidad de Requerimientos vs Versiones
+##  7. Matriz de Trazabilidad de Requerimientos vs Versiones
 
 | Código    | Descripción Sintética                                       | Módulo Afectado              | Versión Introducida | Estado Actual    |
 | --------- | ----------------------------------------------------------- | ---------------------------- | ------------------- | ---------------- |
-| **RF-01** | Tablero Andon con Semáforos en Nave Central                 | Tablero Andon                | `v1.0.0`            | ✅ En Producción |
-| **RF-02** | Takt Time de Referencia (42s)                               | Andon / Terminal             | `v1.0.0`            | ✅ En Producción |
-| **RF-03** | Avance Hora por Hora de Producción                          | Tablero Andon                | `v1.0.0`            | ✅ En Producción |
-| **RF-04** | Bitácora de Paros e Incidencias                             | Tablero Andon                | `v2.0.0`            | ✅ En Producción |
-| **RF-05** | Trazabilidad QR con Cámara Web en Vivo                      | Terminal de Planta           | `v2.8.0`            | ✅ En Producción |
-| **RF-06** | Entrada Alternativa Manual de Códigos                       | Terminal de Planta           | `v2.5.0`            | ✅ En Producción |
-| **RF-07** | Lotes Madre de 60 Piezas                                    | Planta General               | `v2.0.0`            | ✅ En Producción |
-| **RF-08** | Fraccionamiento en Rampa a 15 Piezas                        | Terminal de Planta           | `v2.0.0`            | ✅ En Producción |
-| **RF-09** | Distinción Lote (Vacío) vs Sublote (#) en Tarjeta           | Terminal de Planta           | `v2.8.1`            | ✅ En Producción |
-| **RF-10** | Réplica Oficial de Tarjeta Viajera con Mica                 | Terminal de Planta           | `v2.8.1`            | ✅ En Producción |
-| **RF-11** | Trabajo en Máquina & Almacén de Salida                      | Terminal de Planta           | `v2.8.0`            | ✅ En Producción |
-| **RF-12** | Recolección y Traspaso entre Depts                          | Terminal de Planta           | `v2.8.0`            | ✅ En Producción |
-| **RF-13** | Reporte de Merma y Sustitución de Saldo                     | Terminal de Planta           | `v2.7.0`            | ✅ En Producción |
-| **RF-14** | Segundas para Venta de Viernes                              | Terminal / Dirección         | `v2.7.0`            | ✅ En Producción |
-| **RF-15** | Rastreador de Lote para Supervisores                        | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-16** | Línea de Tiempo de Proceso (Value Stream Map)               | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-17** | Indicador Activo "AQUÍ ESTÁ EL LOTE"                        | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-18** | Diferenciación Manufactura vs Calidad                       | Terminal / Config            | `v2.9.0`            | ✅ En Producción |
-| **RF-19** | Controles de Avance y Retroceso de Lote                     | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-20** | Reubicación Táctil en Línea de Tiempo                       | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-21** | Liberación In-App de Filtro de Calidad                      | Terminal de Planta           | `v2.9.0`            | ✅ En Producción |
-| **RF-22** | Rutas de Fabricación por Modelo de Sombrero                 | Configuración                | `v2.9.0`            | ✅ En Producción |
-| **RF-23** | Reordenamiento de Secuencia (▲ / ▼)                         | Configuración                | `v2.9.0`            | ✅ En Producción |
-| **RF-24** | Inserción y Quitado de Pasos en Rutas                       | Configuración                | `v2.9.0`            | ✅ En Producción |
-| **RF-25** | Persistencia de Rutas en LocalStorage                       | Configuración                | `v2.9.0`            | ✅ En Producción |
-| **RF-26** | Registro de Áreas de Control de Calidad (`C-XX`)            | Configuración                | `v2.9.0`            | ✅ En Producción |
-| **RF-27** | Alta Dinámica de Departamentos (`D-XX`)                     | Configuración                | `v2.8.4`            | ✅ En Producción |
-| **RF-28** | Asignación Multi-Operador a Estaciones                      | Configuración                | `v2.8.4`            | ✅ En Producción |
-| **RF-29** | Padrón de Operadores de Planta                              | Configuración                | `v2.8.0`            | ✅ En Producción |
-| **RF-30** | Delimitación Departamental por Supervisor                   | Terminal / Config            | `v2.8.0`            | ✅ En Producción |
-| **RF-31** | Horario de Turno Informativo Configurable                   | Configuración                | `v2.8.4`            | ✅ En Producción |
-| **RF-32** | Meta Semanal de Planta (4,250 pzas)                         | Configuración                | `v2.8.0`            | ✅ En Producción |
-| **RF-33** | Matriz de Roles y Permisos RBAC                             | Configuración                | `v2.6.0`            | ✅ En Producción |
-| **RF-34** | Ocultamiento Estricto de Módulos (Sin Candados)             | Navegación General           | `v2.8.3`            | ✅ En Producción |
-| **RF-35** | Barra Lateral Plegable con Persistencia                     | Navegación General           | `v2.8.3`            | ✅ En Producción |
-| **RF-36** | Desglose Matemático de OEE de Planta                        | Ingeniería                   | `v2.0.0`            | ✅ En Producción |
-| **RF-37** | Gráficas de Avance Horario vs Takt Time                     | Ingeniería                   | `v2.10.0`           | ✅ En Producción |
-| **RF-38** | Bitácora de Paros e Incidencias SMED                        | Ingeniería                   | `v2.10.0`           | ✅ En Producción |
-| **RF-39** | Valorización Financiera en Tiempo Real                      | Dirección                    | `v2.0.0`            | ✅ En Producción |
-| **RF-40** | Enlace y Vales de Entrega COMPAC                            | Dirección                    | `v2.5.0`            | ✅ En Producción |
-| **RF-41** | Pantalla de Login Formal con Selector de Usuario            | Acceso / Login               | `v2.10.0`           | ✅ En Producción |
-| **RF-42** | Cierre de Sesión y Conmutación Rápida                       | Barra Lateral / Login        | `v2.10.0`           | ✅ En Producción |
-| **RF-43** | Monitor de Almacenes Intermedios & Lotes Listos             | Terminal de Planta           | `v2.10.0`           | ✅ En Producción |
-| **RF-44** | Módulo Central de Almacenes & Hormas (`inventory`)          | Almacenes e Inventarios      | `v2.10.0`           | ✅ En Producción |
-| **RF-45** | Módulo de Padrón de Operadores (`operators`)                | Padrón de Mano de Obra       | `v2.10.0`           | ✅ En Producción |
-| **RF-46** | Consola Especializada de Ingeniería (`engineer`)            | Consola de Ingeniería        | `v2.10.0`           | ✅ En Producción |
-| **RF-47** | Cabeceras de Módulo Fijas con Botones de Acción al Scroll   | Interfaz / Todos los Módulos | `v2.12.0`           | ✅ En Producción |
-| **RF-48** | Estandarización Estricta de Modales (Cabecera y Pie Fijos)  | Modales / Interfaz           | `v2.12.0`           | ✅ En Producción |
-| **RF-49** | CRUD Completo de Supervisores y Asignación Departamental    | Configuración / RBAC         | `v2.12.0`           | ✅ En Producción |
-| **RF-50** | CRUD Completo de Operadores (Altas, Bajas y Modificaciones) | Operadores / Configuración   | `v2.12.0`           | ✅ En Producción |
-| **RF-51** | Notificaciones Toast y Alertas de Éxito Estéticas Premium   | Notificaciones / UX          | `v2.12.0`           | ✅ En Producción |
-| **RF-52** | Réplica Digital de Pizarra Física "1000 X M.T Prensas"      | Andon / Ingeniería           | `v2.13.0`           | ✅ En Producción |
-| **RF-53** | Impresión Oficial de Tarjeta Viajera (PDF/Mica)             | Terminal / Almacén           | `v2.13.0`           | ✅ En Producción |
-| **RF-54** | Ficha Técnica Visual con Fotografía Oficial de Modelo       | Terminal / Calidad           | `v2.13.0`           | ✅ En Producción |
-| **RF-55** | Extracción Integral de Metadatos desde QR (Sin Input Manual)| Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
-| **RF-56** | Verificación Previa Obligatoria de Tarjeta Viajera (Mica)   | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
-| **RF-57** | Depósito Automático en Almacén Siguiente por Ruta de Modelo | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
-| **RF-58** | Restricción Departamental Estricta para Supervisores        | Terminal / Seguridad RBAC    | `v2.14.0`           | ✅ En Producción |
-| **RF-59** | Mapa de Planta y Almacenes Intermedios Departamentales      | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
-| **RF-60** | Trazabilidad de Mermas en Tránsito y Escáner Fullscreen     | Terminal de Supervisor       | `v2.14.0`           | ✅ En Producción |
-| **RF-61** | Ergonomía Táctil Universal y Botones Grandes para Tabletas  | Interfaz / Todos los Módulos | `v2.14.0`           | ✅ En Producción |
-| **RF-62** | CRUD Integral de Departamentos y Almacenes Intermedios      | Configuración de Planta      | `v2.15.0`           | ✅ En Producción |
-| **RF-63** | Unificación de Catálogos de Hormas y Módulo General Almacén | Almacenes e Inventarios      | `v2.15.0`           | ✅ En Producción |
-| **RF-64** | CRUD Integral de Filtros de Calidad & Tolerancias (C-XX)    | Configuración / Calidad      | `v2.16.0`           | ✅ En Producción |
-| **RF-65** | Rutas Específicas por Modelo con Drag & Drop (⠿)            | Configuración / Rutas        | `v2.16.0`           | ✅ En Producción |
-| **RF-66** | Estandarización Universal de Tablas, Filtros y Acciones     | Todos los Módulos / Interfaz | `v2.17.0`           | ✅ En Producción |
+| **RF-01** | Tablero Andon con Semáforos en Nave Central                 | Tablero Andon                | `v1.0.0`            | OK En Producción |
+| **RF-02** | Takt Time de Referencia (42s)                               | Andon / Terminal             | `v1.0.0`            | OK En Producción |
+| **RF-03** | Avance Hora por Hora de Producción                          | Tablero Andon                | `v1.0.0`            | OK En Producción |
+| **RF-04** | Bitácora de Paros e Incidencias                             | Tablero Andon                | `v2.0.0`            | OK En Producción |
+| **RF-05** | Trazabilidad QR con Cámara Web en Vivo                      | Terminal de Planta           | `v2.8.0`            | OK En Producción |
+| **RF-06** | Entrada Alternativa Manual de Códigos                       | Terminal de Planta           | `v2.5.0`            | OK En Producción |
+| **RF-07** | Lotes Madre de 60 Piezas                                    | Planta General               | `v2.0.0`            | OK En Producción |
+| **RF-08** | Fraccionamiento en Rampa a 15 Piezas                        | Terminal de Planta           | `v2.0.0`            | OK En Producción |
+| **RF-09** | Distinción Lote (Vacío) vs Sublote (#) en Tarjeta           | Terminal de Planta           | `v2.8.1`            | OK En Producción |
+| **RF-10** | Réplica Oficial de Tarjeta Viajera con Mica                 | Terminal de Planta           | `v2.8.1`            | OK En Producción |
+| **RF-11** | Trabajo en Máquina & Almacén de Salida                      | Terminal de Planta           | `v2.8.0`            | OK En Producción |
+| **RF-12** | Recolección y Traspaso entre Depts                          | Terminal de Planta           | `v2.8.0`            | OK En Producción |
+| **RF-13** | Reporte de Merma y Sustitución de Saldo                     | Terminal de Planta           | `v2.7.0`            | OK En Producción |
+| **RF-14** | Segundas para Venta de Viernes                              | Terminal / Dirección         | `v2.7.0`            | OK En Producción |
+| **RF-15** | Rastreador de Lote para Supervisores                        | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-16** | Línea de Tiempo de Proceso (Value Stream Map)               | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-17** | Indicador Activo "AQUÍ ESTÁ EL LOTE"                        | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-18** | Diferenciación Manufactura vs Calidad                       | Terminal / Config            | `v2.9.0`            | OK En Producción |
+| **RF-19** | Controles de Avance y Retroceso de Lote                     | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-20** | Reubicación Táctil en Línea de Tiempo                       | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-21** | Liberación In-App de Filtro de Calidad                      | Terminal de Planta           | `v2.9.0`            | OK En Producción |
+| **RF-22** | Rutas de Fabricación por Modelo de Sombrero                 | Configuración                | `v2.9.0`            | OK En Producción |
+| **RF-23** | Reordenamiento de Secuencia (▲ / ▼)                         | Configuración                | `v2.9.0`            | OK En Producción |
+| **RF-24** | Inserción y Quitado de Pasos en Rutas                       | Configuración                | `v2.9.0`            | OK En Producción |
+| **RF-25** | Persistencia de Rutas en LocalStorage                       | Configuración                | `v2.9.0`            | OK En Producción |
+| **RF-26** | Registro de Áreas de Control de Calidad (`C-XX`)            | Configuración                | `v2.9.0`            | OK En Producción |
+| **RF-27** | Alta Dinámica de Departamentos (`D-XX`)                     | Configuración                | `v2.8.4`            | OK En Producción |
+| **RF-28** | Asignación Multi-Operador a Estaciones                      | Configuración                | `v2.8.4`            | OK En Producción |
+| **RF-29** | Padrón de Operadores de Planta                              | Configuración                | `v2.8.0`            | OK En Producción |
+| **RF-30** | Delimitación Departamental por Supervisor                   | Terminal / Config            | `v2.8.0`            | OK En Producción |
+| **RF-31** | Horario de Turno Informativo Configurable                   | Configuración                | `v2.8.4`            | OK En Producción |
+| **RF-32** | Meta Semanal de Planta (4,250 pzas)                         | Configuración                | `v2.8.0`            | OK En Producción |
+| **RF-33** | Matriz de Roles y Permisos RBAC                             | Configuración                | `v2.6.0`            | OK En Producción |
+| **RF-34** | Ocultamiento Estricto de Módulos (Sin Candados)             | Navegación General           | `v2.8.3`            | OK En Producción |
+| **RF-35** | Barra Lateral Plegable con Persistencia                     | Navegación General           | `v2.8.3`            | OK En Producción |
+| **RF-36** | Desglose Matemático de OEE de Planta                        | Ingeniería                   | `v2.0.0`            | OK En Producción |
+| **RF-37** | Gráficas de Avance Horario vs Takt Time                     | Ingeniería                   | `v2.10.0`           | OK En Producción |
+| **RF-38** | Bitácora de Paros e Incidencias SMED                        | Ingeniería                   | `v2.10.0`           | OK En Producción |
+| **RF-39** | Valorización Financiera en Tiempo Real                      | Dirección                    | `v2.0.0`            | OK En Producción |
+| **RF-40** | Enlace y Vales de Entrega COMPAC                            | Dirección                    | `v2.5.0`            | OK En Producción |
+| **RF-41** | Pantalla de Login Formal con Selector de Usuario            | Acceso / Login               | `v2.10.0`           | OK En Producción |
+| **RF-42** | Cierre de Sesión y Conmutación Rápida                       | Barra Lateral / Login        | `v2.10.0`           | OK En Producción |
+| **RF-43** | Monitor de Almacenes Intermedios & Lotes Listos             | Terminal de Planta           | `v2.10.0`           | OK En Producción |
+| **RF-44** | Módulo Central de Almacenes & Hormas (`inventory`)          | Almacenes e Inventarios      | `v2.10.0`           | OK En Producción |
+| **RF-45** | Módulo de Padrón de Operadores (`operators`)                | Padrón de Mano de Obra       | `v2.10.0`           | OK En Producción |
+| **RF-46** | Consola Especializada de Ingeniería (`engineer`)            | Consola de Ingeniería        | `v2.10.0`           | OK En Producción |
+| **RF-47** | Cabeceras de Módulo Fijas con Botones de Acción al Scroll   | Interfaz / Todos los Módulos | `v2.12.0`           | OK En Producción |
+| **RF-48** | Estandarización Estricta de Modales (Cabecera y Pie Fijos)  | Modales / Interfaz           | `v2.12.0`           | OK En Producción |
+| **RF-49** | CRUD Completo de Supervisores y Asignación Departamental    | Configuración / RBAC         | `v2.12.0`           | OK En Producción |
+| **RF-50** | CRUD Completo de Operadores (Altas, Bajas y Modificaciones) | Operadores / Configuración   | `v2.12.0`           | OK En Producción |
+| **RF-51** | Notificaciones Toast y Alertas de Éxito Estéticas Premium   | Notificaciones / UX          | `v2.12.0`           | OK En Producción |
+| **RF-52** | Réplica Digital de Pizarra Física "1000 X M.T Prensas"      | Andon / Ingeniería           | `v2.13.0`           | OK En Producción |
+| **RF-53** | Impresión Oficial de Tarjeta Viajera (PDF/Mica)             | Terminal / Almacén           | `v2.13.0`           | OK En Producción |
+| **RF-54** | Ficha Técnica Visual con Fotografía Oficial de Modelo       | Terminal / Calidad           | `v2.13.0`           | OK En Producción |
+| **RF-55** | Extracción Integral de Metadatos desde QR (Sin Input Manual)| Terminal de Supervisor       | `v2.14.0`           | OK En Producción |
+| **RF-56** | Verificación Previa Obligatoria de Tarjeta Viajera (Mica)   | Terminal de Supervisor       | `v2.14.0`           | OK En Producción |
+| **RF-57** | Depósito Automático en Almacén Siguiente por Ruta de Modelo | Terminal de Supervisor       | `v2.14.0`           | OK En Producción |
+| **RF-58** | Restricción Departamental Estricta para Supervisores        | Terminal / Seguridad RBAC    | `v2.14.0`           | OK En Producción |
+| **RF-59** | Mapa de Planta y Almacenes Intermedios Departamentales      | Terminal de Supervisor       | `v2.14.0`           | OK En Producción |
+| **RF-60** | Trazabilidad de Mermas en Tránsito y Escáner Fullscreen     | Terminal de Supervisor       | `v2.14.0`           | OK En Producción |
+| **RF-61** | Ergonomía Táctil Universal y Botones Grandes para Tabletas  | Interfaz / Todos los Módulos | `v2.14.0`           | OK En Producción |
+| **RF-62** | CRUD Integral de Departamentos y Almacenes Intermedios      | Configuración de Planta      | `v2.15.0`           | OK En Producción |
+| **RF-63** | Unificación de Catálogos de Hormas y Módulo General Almacén | Almacenes e Inventarios      | `v2.15.0`           | OK En Producción |
+| **RF-64** | CRUD Integral de Filtros de Calidad & Tolerancias (C-XX)    | Configuración / Calidad      | `v2.16.0`           | OK En Producción |
+| **RF-65** | Rutas Específicas por Modelo con Drag & Drop (⠿)            | Configuración / Rutas        | `v2.16.0`           | OK En Producción |
+| **RF-66** | Estandarización Universal de Tablas, Filtros y Acciones     | Todos los Módulos / Interfaz | `v2.17.0`           | OK En Producción |
 

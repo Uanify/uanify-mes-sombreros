@@ -2825,7 +2825,7 @@ input.is-valid {
 
 /* Flecha de conexión entre pasos */
 .timeline-step-node:not(:last-child)::after {
-  content: '➔';
+  content: '→';
   position: absolute;
   right: -14px;
   top: 50%;

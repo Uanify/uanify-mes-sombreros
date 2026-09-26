@@ -1,4 +1,4 @@
-# 🤠 Uanify × Tombstone Hats (San Francisco del Rincón)
+# Uanify × Tombstone Hats (San Francisco del Rincón)
 ## Minuta Ejecutiva de Levantamiento en Planta y Propuesta Técnica Integral
 
 > **Documento:** Minuta Técnica de Levantamiento & Propuesta de Solución Industria 4.0  
@@ -12,7 +12,7 @@
 
 ---
 
-## 📋 Resumen Ejecutivo
+##  Resumen Ejecutivo
 
 Con base en la reunión, recorrido técnico y audios grabados en la planta de **Tombstone Hats**, se levantaron a detalle las dinámicas operativas, restricciones físicas y prioridades estratégicas.
 
@@ -21,7 +21,7 @@ El objetivo central acordado (citado literalmente del audio):
 
 ---
 
-## 🏭 1. Diagnóstico Operativo de Planta (Levantamiento en Sitio)
+##  1. Diagnóstico Operativo de Planta (Levantamiento en Sitio)
 
 ### 1.1 Mix de Fabricación y Productos
 
@@ -47,7 +47,7 @@ El Ing. Carlos mostró físicamente las hormas identificadas por **color y nombr
 | **Laredo** | Verde | Prensa Vapor #3 | En mantenimiento |
 | **Frontier** | Gris | Sin asignar | Bodega |
 
-> 📌 Carlos confirma en audio: *"Manejamos dos tipos de máquinas: la parte de prensas y la parte de hidráulicas. Las formas se tienen que cargar al inventario y se puedan ir asignando a las máquinas para hacer la planeación, la programación (PPSP)."*
+>  Carlos confirma en audio: *"Manejamos dos tipos de máquinas: la parte de prensas y la parte de hidráulicas. Las formas se tienen que cargar al inventario y se puedan ir asignando a las máquinas para hacer la planeación, la programación (PPSP)."*
 
 ### 1.3 El Flujo Real de los 14 Puntos de Control (Validado por Carlos)
 
@@ -62,7 +62,7 @@ El Ing. Carlos describió verbalmente y mostró físicamente el flujo completo. 
    ↓ (baño de sellador; secado en camas. CADA CAMA = 1 LOTE. Tarjeta viajera en la cama.)
 [D-04] Refuerzos (Pintola / Brocha)
    ↓ (aplicación de sellador en área de patio exterior)
-[C-01] ✅ CALIDAD 1 — Post-Dope / Refuerzos
+[C-01] OK CALIDAD 1 — Post-Dope / Refuerzos
    ↓ (primer punto de inspección de calidad. Libera o regresa.)
 [D-05] Prensas de Hormado (Copa y Falda)
    ↓ (cuello de botella. Entrada al almacén de alineado: RAMPA → cambio de tarjeta madre
@@ -71,7 +71,7 @@ El Ing. Carlos describió verbalmente y mostró físicamente el flujo completo. 
    ↓ (corte perimetral de falda; área de chicas en patio exterior)
 [D-07] Pintura y Secado
    ↓ (pistola con pintola; ej. Pintura Taiwan 1125)
-[C-02] ✅ CALIDAD 2 — Post-Pintura
+[C-02] OK CALIDAD 2 — Post-Pintura
    ↓ (mismo espacio físico revisa pintura y brillo secuencialmente)
 [D-08] Brillo / Acabado
    ↓
@@ -79,12 +79,12 @@ El Ing. Carlos describió verbalmente y mostró físicamente el flujo completo. 
    ↓
 [D-10] Adorno 1 (Tafilete + Toquilla)
    ↓ (cruce de 3 subensambles: cuerpo + tafilete por talla + toquilla)
-[C-03] ✅ CALIDAD 3 / FINAL — Producto Terminado
+[C-03] OK CALIDAD 3 / FINAL — Producto Terminado
    ↓ (inspector revisa pieza a pieza. Liberados pasan al mezzanine de acumulación diaria)
 [D-11] Embarque → Vale de Salida → COMPAC
 ```
 
-> ⚠️ **PRENSAS = Cuello de Botella confirmado.** Carlos describe que el lote entra y sale múltiples veces de las prensas (copa en el primer paso, falda en el segundo, etc.) antes de avanzar.
+>  **PRENSAS = Cuello de Botella confirmado.** Carlos describe que el lote entra y sale múltiples veces de las prensas (copa en el primer paso, falda en el segundo, etc.) antes de avanzar.
 
 ### 1.4 El Fraccionamiento de Lotes en la Rampa
 
@@ -137,11 +137,11 @@ Sobre el formato de pedidos (citado del audio):
 Sobre la ingeniera de COMPAC (audio):
 > *"Tenemos una persona que nos ayuda con el Compact. Es una muchacha, es una ingeniera. Ella es de Compact. Es una membresía que se paga anual. Tenemos el servicio de todo lo de la contabilidad, la facturación."*
 
-> ⚠️ **Acción pendiente:** Verificar el tipo de licencia de COMPAC con la ingeniera externa para determinar si permite integración API. Carlos comenta: *"Hay unas licencias que a lo mejor te dan lo que necesites, pero si quieres hacer integraciones con otros softwares, pues te bloquea."*
+>  **Acción pendiente:** Verificar el tipo de licencia de COMPAC con la ingeniera externa para determinar si permite integración API. Carlos comenta: *"Hay unas licencias que a lo mejor te dan lo que necesites, pero si quieres hacer integraciones con otros softwares, pues te bloquea."*
 
 ---
 
-## 🛡️ 2. Restricciones Físicas y Ambientales Confirmadas en Audio
+##  2. Restricciones Físicas y Ambientales Confirmadas en Audio
 
 | Restricción | Declaración Exacta en Audio | Solución Uanify |
 |---|---|---|
@@ -152,20 +152,20 @@ Sobre la ingeniera de COMPAC (audio):
 
 ### 2.4 Esquema de Roles de Usuario y Permisos Modulares (RBAC)
 Para garantizar la seguridad y evitar saturación en piso, el sistema implementa **3 perfiles de acceso claramente diferenciados**:
-1. **👑 Administrador (Dirección General / Mundo):**
+1. **Administrador (Dirección General / Mundo):**
    - Acceso total a todos los módulos (Andon, Lotes/QR, Ingeniería, COMPAC, Configuración).
    - Capacidad exclusiva de dar de alta usuarios y configurar permisos modulares específicos para cada puesto.
-2. **⚙️ Ingeniero de Procesos (Ing. Carlos):**
+2. ** Ingeniero de Procesos (Ing. Carlos):**
    - Acceso a Tablero Andon e Ingeniería & Subensambles (OEE, matriz de materiales con cambio masivo en 1 clic, inventario de hormas y stock de tafiletes por talla).
-3. **📋 Supervisor de Nave y Almacenes (iPad en Almacenes Intermedios):**
+3. ** Supervisor de Nave y Almacenes (iPad en Almacenes Intermedios):**
    - Interfaz simplificada y táctil para iPad sin elementos distractores.
    - Escaneo de tarjetas viajeras con QR, fraccionamiento en rampa (60 a 15 pzas), y reporte de mermas/segundas y paros de línea.
 
-> 📌 **Hardware acordado:** Carlos en audio: *"Para mí sería la parte de módulos físicos. Varios módulos físicos. Para que vayamos registrando por lotes. Ahorita no traemos tanto la parte de pieza por pieza."*
+>  **Hardware acordado:** Carlos en audio: *"Para mí sería la parte de módulos físicos. Varios módulos físicos. Para que vayamos registrando por lotes. Ahorita no traemos tanto la parte de pieza por pieza."*
 
 ---
 
-## 🚀 3. Roadmap de Implementación Validado en Reunión
+##  3. Roadmap de Implementación Validado en Reunión
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────┐
@@ -193,7 +193,7 @@ Para garantizar la seguridad y evitar saturación en piso, el sistema implementa
 
 ---
 
-## ❓ 4. Dudas Abiertas para Afinar la Propuesta
+##  4. Dudas Abiertas para Afinar la Propuesta
 
 1. **Integración COMPAC:** Coordinar llamada técnica breve con la ingeniera externa para verificar:
    - ¿Qué versión de licencia tienen? ¿Permite integración API o conexión a base de datos?
@@ -212,7 +212,7 @@ Para garantizar la seguridad y evitar saturación en piso, el sistema implementa
 
 ---
 
-## 📅 5. Compromisos y Calendario
+##  5. Compromisos y Calendario
 
 | Fecha | Hito Acordado | Responsable |
 |---|---|---|

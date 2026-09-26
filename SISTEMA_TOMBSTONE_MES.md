@@ -1,4 +1,4 @@
-# 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
+# SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
 > **Versión Actual:** `v2.18.0` | **Fecha de Actualización:** 25 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
@@ -6,7 +6,7 @@
 
 ---
 
-## 📌 1. Información General y Alcance del Proyecto
+##  1. Información General y Alcance del Proyecto
 
 El sistema **Tombstone Hats MES** (Manufacturing Execution System) es una plataforma digital de control de piso y tablero Andon industrial diseñada específicamente para resolver las ineficiencias de conteo manual, discrepancias en almacenes intermedios, balanceo de líneas y visibilidad directiva en la planta matriz de **Tombstone Hats** en San Francisco del Rincón, Guanajuato.
 
@@ -19,7 +19,7 @@ El sistema **Tombstone Hats MES** (Manufacturing Execution System) es una plataf
 
 ---
 
-## 🏭 2. Mapeo del Proceso Productivo Real (Planta Tombstone)
+##  2. Mapeo del Proceso Productivo Real (Planta Tombstone)
 
 A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edmundo González**) e Ingeniería de Producción (**Carlos Ortiz**), el sistema modela fielmente la realidad física del proceso:
 
@@ -30,7 +30,7 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 
 ---
 
-## 📜 8. Historial de Versiones (SemVer)
+##  8. Historial de Versiones (SemVer)
 
 - **`v2.18.0` (2026-09-25):**
   - **Catálogo de Sombreros Fabricados y Variaciones (`RF-67`):** Registro e inventario maestro de modelos producidos en planta (Denver Master, El Viejonón, Chaparral, Sonora Ranchero, Frontier Western, Magnum 1000X) con variaciones de talla craneal, faldas (3.5" a 4.5"), toquillas y precios B2B.
@@ -45,13 +45,13 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 
 - **`v2.17.0` (2026-09-25):**
   - **Estandarización Universal de Tablas, Columnas y Acciones (Regla 0.35 de AGENTS.md):** Normalización transversal de las 7 tablas maestras del sistema (Departamentos, Filtros de Calidad, Usuarios RBAC, Padrón de Operadores, Almacenes Físicos, Moldes/Hormas y Kárdex) bajo la misma arquitectura de columnas (`.col-code`, `.col-name`, especificaciones técnicas, `.col-status`, `.col-actions`).
-  - **Barra de Filtros Multi-Criterio (`.uanify-filter-toolbar`):** Inclusión en cada tabla de buscador de texto en tiempo real, dropdowns contextuales de filtrado por categoría/estatus, contador "Mostrando X de Y registros" y botón `🔄 Limpiar Filtros`.
-  - **Diseño de Sección de Acciones (`.action-btns-cell`):** Homogeneización de celdas de acción con botones touch de 38px, centrados y con feedback hover (`✏️ Editar`, `🗑️ Eliminar/Baja`, `👁️ Ver Lotes/Detalle`).
+  - **Barra de Filtros Multi-Criterio (`.uanify-filter-toolbar`):** Inclusión en cada tabla de buscador de texto en tiempo real, dropdowns contextuales de filtrado por categoría/estatus, contador "Mostrando X de Y registros" y botón `Limpiar Filtros`.
+  - **Diseño de Sección de Acciones (`.action-btns-cell`):** Homogeneización de celdas de acción con botones touch de 38px, centrados y con feedback hover (`Editar`, `Eliminar/Baja`, `Ver Lotes/Detalle`).
   - **Filas de Estado Vacío (`.table-empty-row`):** Manejo estandarizado con mensaje descriptivo y llamada a la acción para resetear filtros cuando la búsqueda no arroja coincidencias.
 
 - **`v2.16.0` (2026-09-24):**
   - **Rutas y Secuencias Específicas por Modelo con Drag & Drop (`⠿`):** Implementación de reordenamiento visual y táctil mediante arrastre de elementos para las secuencias de manufactura asignadas a cada modelo individual de sombrero (`El Viejonón`, `Denver Master`, `Chaparral`, etc.).
-  - **Delimitación de Alcance en Secuencias:** Restricción estricta para que en el constructor de secuencias únicamente se puedan agregar o quitar asignaciones de pasos de ese modelo (`+ Asignar al Final de la Secuencia`, `🗑️ Quitar de la Secuencia`), impidiendo crear, editar o eliminar departamentos o filtros de calidad maestros desde esta pantalla.
+  - **Delimitación de Alcance en Secuencias:** Restricción estricta para que en el constructor de secuencias únicamente se puedan agregar o quitar asignaciones de pasos de ese modelo (`+ Asignar al Final de la Secuencia`, `Quitar de la Secuencia`), impidiendo crear, editar o eliminar departamentos o filtros de calidad maestros desde esta pantalla.
   - **CRUD Integral de Filtros de Calidad (`C-XX`):** Nueva sección dedicada en Configuración de Planta para dar de alta, editar y eliminar puntos de inspección y tolerancias (`C-01` a `C-04`), vinculando ubicación física, tolerancias paramétricas, inspectores asignados y sincronización automática con `stations`.
   - **Persistencia y Reactividad Global:** Sincronización transparente de las secuencias de ruta y filtros de calidad en `localStorage` con emisión de eventos vía `EventBus`.
 
@@ -125,7 +125,7 @@ Confirmado tras el diagnóstico presencial en la fábrica:
 
 ---
 
-## 👥 4. Matriz de Roles y Permisos (RBAC)
+##  4. Matriz de Roles y Permisos (RBAC)
 
 El sistema cuenta con un motor de permisos modulares persistente en memoria y configurable por el Administrador:
 
@@ -138,19 +138,19 @@ El sistema cuenta con un motor de permisos modulares persistente en memoria y co
 ### Tabla de Usuarios Preconfigurados
 | Usuario ID | Nombre | Rol | Permisos por Defecto | Estado |
 |---|---|---|---|---|
-| `admin-1` | **Edmundo González** | `admin` (👑 Administrador) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
-| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (⚡ Ingeniero de Procesos) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
-| `sup-1` | **Juan Manuel Pérez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
-| `sup-2` | **Roberto Méndez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
+| `admin-1` | **Edmundo González** | `admin` (Administrador) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
+| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (Ingeniero de Procesos) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
+| `sup-1` | **Juan Manuel Pérez** | `supervisor` (Supervisor de Línea) | `andon`, `terminal` | Activo |
+| `sup-2` | **Roberto Méndez** | `supervisor` (Supervisor de Línea) | `andon`, `terminal` | Activo |
 
 ### Comportamiento de Seguridad en UI:
-- **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso según su perfil se ocultan completamente del menú de navegación (`display: none`). No se muestran iconos de candados (`🔒`) ni opciones deshabilitadas, ofreciendo una experiencia limpia y sin distracciones.
+- **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso según su perfil se ocultan completamente del menú de navegación (`display: none`). No se muestran iconos de candados (``) ni opciones deshabilitadas, ofreciendo una experiencia limpia y sin distracciones.
 - El Administrador puede abrir el modal `modalEditPermissions` para marcar/desmarcar módulos individualmente para cualquier usuario, o dar de alta nuevos supervisores con `modalCreateUser`.
 - El Ingeniero de Procesos cuenta con facultades para crear supervisores de planta, dar de alta filtros de calidad (`C-XX`) y modelar rutas de fabricación por modelo.
 
 ---
 
-## 🖥️ 5. Arquitectura de Hardware en Nave Industrial
+##  5. Arquitectura de Hardware en Nave Industrial
 
 Siguiendo las decisiones tomadas en planta con base en los audios de levantamiento:
 
@@ -169,13 +169,13 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 
 ---
 
-## 📋 5.1 Catálogo Oficial de Requerimientos de Software (SRS / PRD)
+##  5.1 Catálogo Oficial de Requerimientos de Software (SRS / PRD)
 Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-01` a `RNF-12`) del sistema se encuentran catalogados y bajo control de versiones formal en el documento:
 - **Documento Oficial de Requerimientos:** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md)
 
 ---
 
-## 🎨 6. Sistema de Diseño: "Tradicional Moderno Contemporáneo"
+## 6. Sistema de Diseño: "Tradicional Moderno Contemporáneo"
 
 - **Estilo:** Light Mode SaaS Industrial con identidad del clúster sombrerero de Guanajuato.
 - **Paleta de Colores Oficial:**
@@ -193,7 +193,7 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 
 ---
 
-## 💻 7. Arquitectura de Software & Despliegue
+##  7. Arquitectura de Software & Despliegue
 
 - **Estructura del Proyecto:**
   ```
@@ -224,13 +224,13 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 
 ---
 
-## 📜 8. Historial de Versiones (SemVer)
+##  8. Historial de Versiones (SemVer)
 
 - **`v2.9.0` (2026-09-24):**
-  - **Mapa de Proceso y Rastreador Visual de Lotes en Planta:** Incorporación de la sub-pestaña `🗺️ Mapa de Proceso & Rastreador de Lote` en la Terminal para que supervisores, ingenieros y dirección consulten con un clic la ubicación física en tiempo real de cualquier lote de producción (`49,633`, `49,386`, `49,842`).
-  - **Línea de Tiempo Interactiva (Value Stream Mapping Industrial):** Visualización tipo cronograma / diagrama de flujo de todas las estaciones y filtros de calidad según el tipo de sombrero, con distinción cromática de estaciones completadas (✅), estación activa con badge pulsante (**📍 AQUÍ ESTÁ EL LOTE**), operador responsable, piezas en proceso y paradas siguientes.
-  - **Desplazamiento Dinámico del Lote:** Capacidad operativa para avanzar (`⏩`) o retroceder (`⏮️`) el lote entre estaciones con sincronización en `UanifyState` y `localStorage`, o reubicarlo directamente haciendo clic sobre cualquier nodo de la línea de tiempo.
-  - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`📐 Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `🗑️ Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
+  - **Mapa de Proceso y Rastreador Visual de Lotes en Planta:** Incorporación de la sub-pestaña ` Mapa de Proceso & Rastreador de Lote` en la Terminal para que supervisores, ingenieros y dirección consulten con un clic la ubicación física en tiempo real de cualquier lote de producción (`49,633`, `49,386`, `49,842`).
+  - **Línea de Tiempo Interactiva (Value Stream Mapping Industrial):** Visualización tipo cronograma / diagrama de flujo de todas las estaciones y filtros de calidad según el tipo de sombrero, con distinción cromática de estaciones completadas (OK), estación activa con badge pulsante (**[AQUÍ ESTÁ EL LOTE]**), operador responsable, piezas en proceso y paradas siguientes.
+  - **Desplazamiento Dinámico del Lote:** Capacidad operativa para avanzar (`>>`) o retroceder (`<<`) el lote entre estaciones con sincronización en `UanifyState` y `localStorage`, o reubicarlo directamente haciendo clic sobre cualquier nodo de la línea de tiempo.
+  - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
   - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta puntos de inspección intermedios y finales (`C-01`, `C-02`, `C-03`, `C-04`...) con captura de tolerancias/criterios de calidad, inspector a cargo y tiempo de ciclo, integrándose automáticamente tanto al catálogo maestro como a las secuencias de rutas.
   - **Ampliación de Permisos para Ingeniería:** Concesión de acceso al módulo de Configuración de Planta al rol Ingeniero (`Ing. Carlos Ortiz`) para modelar y auditar directamente rutas y criterios de calidad.
 - **`v2.8.4` (2026-09-24):**

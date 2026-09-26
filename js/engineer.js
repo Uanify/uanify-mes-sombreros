@@ -45,7 +45,7 @@ window.initEngineerView = function() {
       window.UanifyUI.toast(
         'Se simularon 60 minutos de operación industrial en las 14 estaciones de San Francisco del Rincón.',
         'success',
-        '⚡ Simulación Completada'
+        ' Simulación Completada'
       );
     });
   }
@@ -73,7 +73,7 @@ window.initEngineerView = function() {
       window.UanifyUI.toast(
         'Material actualizado en 47 fichas técnicas: "Pintura Taiwan 1125" reemplazada exitosamente por "Pintura Premium X200" sin edición manual.',
         'success',
-        '🔄 Cambio Masivo de Material'
+        ' Cambio Masivo de Material'
       );
     });
   }
@@ -125,7 +125,7 @@ function renderPipeline() {
     return `
       <div class="pipe-row">
         <span class="pipe-name" style="${isQuality ? 'color:#B45309;' : ''}">
-          ${isQuality ? '🔍 ' : ''}${st.name}
+          ${isQuality ? ' ' : ''}${st.name}
         </span>
         <div class="pipe-track">
           <div class="pipe-fill ${isBottleneck ? 'bottleneck' : ''}" style="width: ${barWidth}%;"></div>
@@ -146,7 +146,7 @@ function renderTafileteStock() {
   container.innerHTML = UanifyState.tafileteStock.map(t => {
     const semaforo = t.available > 60 ? 'Verde' : t.available > 25 ? 'Amarillo' : 'Rojo';
     const semaforoColor = t.available > 60 ? 'var(--color-green)' : t.available > 25 ? 'var(--color-amber)' : 'var(--color-red)';
-    const icon = t.available > 60 ? '🟢' : t.available > 25 ? '🟡' : '🔴';
+    const icon = t.available > 60 ? '' : t.available > 25 ? '' : '';
     return `
       <tr>
         <td><strong>Talla ${t.size} cm</strong></td>

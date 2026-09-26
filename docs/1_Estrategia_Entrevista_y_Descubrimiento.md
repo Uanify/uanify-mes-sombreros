@@ -1,4 +1,4 @@
-# 🤠 Uanify × Tombstone Hats (San Francisco del Rincón)
+# Uanify × Tombstone Hats (San Francisco del Rincón)
 ## Estrategia de Descubrimiento y Levantamiento de Requerimientos de Planta
 
 > **Rol:** Socio técnico & Consultor Senior — Uanify  
@@ -9,7 +9,7 @@
 
 ---
 
-## 🎯 Marco Estratégico General
+##  Marco Estratégico General
 
 Antes de entrar a cualquier reunión, debemos operar con la mentalidad de un **médico que diagnostica, no de un vendedor que presenta**. El cliente debe sentir que lo entendemos mejor de lo que ellos se entienden a sí mismos.
 
@@ -24,7 +24,7 @@ Antes de entrar a cualquier reunión, debemos operar con la mentalidad de un **m
 
 ---
 
-## 🎓 CAPÍTULO CERO: Lo que DEBES Saber del Negocio Sombrerero en San Pancho
+##  CAPÍTULO CERO: Lo que DEBES Saber del Negocio Sombrerero en San Pancho
 *(Guía de supervivencia industrial para consultores de software)*
 
 San Francisco del Rincón ("San Pancho"), Guanajuato, es la **Capital Mundial del Sombrero**: produce 8 de cada 10 sombreros en México y exporta millones a EE.UU. (Texas, California, mercado western/vaquero). Para hablar con Edmundo y el Ingeniero como un par, necesitas dominar estas 5 dimensiones del negocio:
@@ -96,7 +96,7 @@ Llega con estas hipótesis y valídalas o descártalas durante la reunión:
 
 ---
 
-## 🎤 FASE 2: Estructura de la Sesión de Descubrimiento
+##  FASE 2: Estructura de la Sesión de Descubrimiento
 
 ### Agenda Recomendada (90 minutos)
 
@@ -223,7 +223,7 @@ Esto demuestra honestidad y confianza técnica — reduce la guardia del interlo
 
 ---
 
-## 🔍 FASE 3: Recorrido por Planta (Si se logra)
+##  FASE 3: Recorrido por Planta (Si se logra)
 
 ### Qué observar durante el recorrido
 
@@ -247,7 +247,7 @@ Esto demuestra honestidad y confianza técnica — reduce la guardia del interlo
 
 ---
 
-## 📊 FASE 4: Estructuración de la Propuesta Post-Discovery
+##  FASE 4: Estructuración de la Propuesta Post-Discovery
 
 ### 4.1 Mapa de Dolores → Módulos de Solución
 
@@ -309,7 +309,7 @@ Impacto calculado:
 
 ---
 
-## 🏗️ FASE 5: Arquitectura Técnica Preliminar (Para Propuesta)
+##  FASE 5: Arquitectura Técnica Preliminar (Para Propuesta)
 
 ### Stack Recomendado (Escalable, Limpio, Costo-efectivo)
 
@@ -340,7 +340,7 @@ Impacto calculado:
 
 ---
 
-## 🤝 Stakeholders Validados en la Reunión de Planta (Tombstone Hats)
+##  Stakeholders Validados en la Reunión de Planta (Tombstone Hats)
 
 | Interlocutor Real | Rol en la Fábrica | Postura / Necesidad Clave Detectada | Canal de Contacto & Siguiente Paso |
 |---|---|---|---|
@@ -351,7 +351,7 @@ Impacto calculado:
 
 ---
 
-## 🏭 Radiografía Operativa Validada en Planta (Hallazgos Críticos)
+##  Radiografía Operativa Validada en Planta (Hallazgos Críticos)
 
 1. **El Producto Campeón (70% del volumen):**
    * **Sombreros de Telar (Master Telar):** Se fabrican desde cero en la nave (corte de rollos en cuadros, armado, entallado, alambrado, baño de dope para cerrar poros y refuerzo con pistola).
@@ -385,7 +385,7 @@ Impacto calculado:
 
 ---
 
-## 📅 Calendario de Entrega Acordado en la Reunión
+##  Calendario de Entrega Acordado en la Reunión
 
 ```
 DÍA 1-2 (Miércoles/Jueves) → Consolidación de transcripciones y ajuste de prototipo

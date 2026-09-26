@@ -44,7 +44,7 @@ function renderStations() {
       <div class="station-card ${statusClass}" data-station-id="${st.id}" style="${cardBorder}">
         <div class="station-header">
           <div>
-            <span class="station-num">${st.code} ${isQuality ? '· ✅ PUNTO DE CALIDAD' : ''}</span>
+            <span class="station-num">${st.code} ${isQuality ? '· OK PUNTO DE CALIDAD' : ''}</span>
             <h4 class="station-name">${st.name}</h4>
             <small style="font-size:10px; color:#64748B; display:block; margin-top:2px;">${st.desc}</small>
           </div>
@@ -60,7 +60,7 @@ function renderStations() {
           </div>
           <div>
             <span class="sm-label">En Almacén WIP (Cola)</span>
-            <span class="sm-val ${isBottleneck ? 'color-amber' : ''}">${st.wipWaiting} pzas${isBottleneck ? ' ⚠️' : ''}</span>
+            <span class="sm-val ${isBottleneck ? 'color-amber' : ''}">${st.wipWaiting} pzas${isBottleneck ? ' ' : ''}</span>
           </div>
         </div>
 
@@ -75,8 +75,8 @@ function renderStations() {
         </div>
 
         <div class="station-footer">
-          <span>👤 ${st.operator}</span>
-          <span>⚡ Ciclo: ${st.cycleTime}</span>
+          <span> ${st.operator}</span>
+          <span> Ciclo: ${st.cycleTime}</span>
         </div>
       </div>
     `;
@@ -112,7 +112,7 @@ function renderDowntimes() {
   container.innerHTML = UanifyState.downtimes.map(d => `
     <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.05);">
       <div>
-        <strong style="color:#F59E0B; font-size:12px;">🛑 ${d.time} — ${d.station}</strong>
+        <strong style="color:#F59E0B; font-size:12px;"> ${d.time} — ${d.station}</strong>
         <div style="font-size:11px; color:#94A3B8; margin-top:2px;">${d.cause}</div>
       </div>
       <div style="text-align:right; min-width:80px;">

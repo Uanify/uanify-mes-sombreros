@@ -1,8 +1,8 @@
-# 🤠 Uanify × Tombstone Hats — Banco de Proyectos de Planta
+# Uanify × Tombstone Hats — Banco de Proyectos de Planta
 ## Documento Vivo de Soluciones Hardware / Software (Industria 4.0)
 
 > **Cliente:** Tombstone Hats ([tombstone.mx](https://tombstone.mx/)) — San Francisco del Rincón, Gto.  
-> **Estado:** 🟢 Validado en visita de planta (Audios Septiembre 2026)  
+> **Estado:**  Validado en visita de planta (Audios Septiembre 2026)  
 > **Última actualización:** Septiembre 2026 — Post-visita, datos validados en audio de planta  
 > **Contacto Dirección:** Edmundo ("Mundo") | **Contacto Planta:** Ing. Carlos (Jefe de Producción)  
 > **Correo oficial:** making.tombstone@gmail.com  
@@ -10,7 +10,7 @@
 
 ---
 
-## 📌 Contexto Operativo (Capturado del Audio)
+##  Contexto Operativo (Capturado del Audio)
 
 | Aspecto | Estado Actual |
 |---|---|
@@ -28,7 +28,7 @@
 
 ---
 
-## 🚦 Mapa de Prioridades
+##  Mapa de Prioridades
 
 ```
 PRIORIDAD 1 (Fase 1)    ██████████  MES: Seguimiento de lotes/fracciones + Tablero Andon (lo que pide el Ing. Carlos)
@@ -42,10 +42,10 @@ PRIORIDAD 5 (Futuro)    ████░░░░░░  Destajo / Rendimiento po
 
 ---
 
-# ✅ PROYECTO 1 — Sistema MES de Avances por Fracciones, Lotes & Tarjetas Viajeras QR
+# OK PROYECTO 1 — Sistema MES de Avances por Fracciones, Lotes & Tarjetas Viajeras QR
 ## `[PRIORIDAD ALTA — Requerimiento Central Validado en Visita]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 Actualmente el flujo de producción de Tombstone Hats opera con:
 - **Tarjetas Viajeras de papel** impresas en Ingeniería. Supervisores las llevan físicamente a los auxiliares.
 - **Lotes madre de 60 piezas** que al cruzar la rampa hacia la nave de hidráulicos, el auxiliar hace cambio físico de tarjeta madre por **tarjetas hijas de sublote** (15 pzas cada una). El Excel "lotificador" define la subdivisión. El lote `1094` puede generar sublotes `1094-01` hasta `1094-14` (o más, dependiendo del volumen de la orden).
@@ -60,7 +60,7 @@ Actualmente el flujo de producción de Tombstone Hats opera con:
 
 ---
 
-### 📐 Alcance Funcional Validado
+###  Alcance Funcional Validado
 
 | Módulo Funcional | Descripción Operativa en Planta Tombstone |
 |---|---|
@@ -74,9 +74,9 @@ Actualmente el flujo de producción de Tombstone Hats opera con:
 
 ---
 
-### 🔌 Arquitectura de Hardware de Planta (Adaptada a Restricciones de Tombstone)
+###  Arquitectura de Hardware de Planta (Adaptada a Restricciones de Tombstone)
 
-> ⚠️ **Restricción Ambiental Clave:** En el área de prensas y recorte de falda hay **alto nivel de polvo**. Además, los operarios tienen **prohibido el uso de celular**. Por ende, la captura es a través de terminales de supervisor y escáneres específicos.
+>  **Restricción Ambiental Clave:** En el área de prensas y recorte de falda hay **alto nivel de polvo**. Además, los operarios tienen **prohibido el uso de celular**. Por ende, la captura es a través de terminales de supervisor y escáneres específicos.
 
 #### **Esquema de Hardware Recomendado (Módulos Físicos Estratégicos):**
 ```
@@ -90,13 +90,13 @@ Actualmente el flujo de producción de Tombstone Hats opera con:
 │                          existentes en planta, tolerancia a cortes)    │
 └────────────────────────────────────────────────────────────────────────┘
 ```
-- ✅ **Cero riesgo de polvo:** Lectores sellados y tablets con fundas industriales.
-- ✅ **Cero fricción con operarios:** No usan celulares personales; el supervisor o auxiliar valida el lote en 1 segundo con la pistola QR.
-- ✅ **Presupuesto eficiente:** No se compran 50 tablets; solo se instalan **4 a 6 estaciones de escaneo estratégico**.
+- OK **Cero riesgo de polvo:** Lectores sellados y tablets con fundas industriales.
+- OK **Cero fricción con operarios:** No usan celulares personales; el supervisor o auxiliar valida el lote en 1 segundo con la pistola QR.
+- OK **Presupuesto eficiente:** No se compran 50 tablets; solo se instalan **4 a 6 estaciones de escaneo estratégico**.
 
 ---
 
-### 🖥️ Componentes de Software y Arquitectura Resiliente
+###  Componentes de Software y Arquitectura Resiliente
 
 | Componente | Tecnología sugerida | Rol Crítico |
 |---|---|---|
@@ -119,7 +119,7 @@ Actualmente el flujo de producción de Tombstone Hats opera con:
 
 ---
 
-### 🎩 Mapeo Preliminar del Proceso Sombrerero (Para hablar el mismo idioma en San Pancho)
+###  Mapeo Preliminar del Proceso Sombrerero (Para hablar el mismo idioma en San Pancho)
 
 Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos su piso. En San Pancho, las etapas estándar de fabricación de sombrero y accesorios son:
 
@@ -128,7 +128,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
                                ↓
 [2. APRESTO Y ENGOMADO]   → Aplicación de químicos/resinas para dar rigidez al material.
                                ↓
-[3. HORMADO / PRENSADO]   → ⚠️ ETAPA CRÍTICA: Prensas calientes con vapor y moldes metálicos.
+[3. HORMADO / PRENSADO]   →  ETAPA CRÍTICA: Prensas calientes con vapor y moldes metálicos.
                                ↓
 [4. CORTE Y PLANCHADO]    → Corte de sobra de ala (troquelado) y planchado de falda.
                                ↓
@@ -143,7 +143,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
 
 ---
 
-### ❓ Preguntas Clave para el Ingeniero (Visita de Planta)
+###  Preguntas Clave para el Ingeniero (Visita de Planta)
 
 - [ ] ¿En qué etapa del proceso se les hace el mayor cuello de botella (prensado, costura de tafilete, acabado)?
 - [ ] ¿Cómo manejan el cambio de moldes/hormas en las prensas? ¿Cuánto tiempo muerto les toma?
@@ -156,7 +156,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
 
 ---
 
-### ⏱️ Guía Táctica de la Visita (San Pancho — 11:00 AM a 2:00 PM)
+### ⏱ Guía Táctica de la Visita (San Pancho — 11:00 AM a 2:00 PM)
 
 | Horario | Actividad | Objetivo Uanify |
 |---|---|---|
@@ -166,7 +166,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
 | **01:15 – 01:45** | Validación de visión con Edmundo (Dirección) | **Alineación de valor:** Contrastar lo visto en piso con las metas de negocio (crecimiento, reducción de mermas, pedidos a tiempo). |
 | **01:45 – 02:00** | Cierre y calendario de entrega de propuesta | **Compromiso formal:** Agendar fecha exacta para presentar la propuesta técnica/económica formal de Uanify. |
 
-### 📅 Estimación de Tiempos de Implementación (Fase 1)
+###  Estimación de Tiempos de Implementación (Fase 1)
 
 | Etapa | Duración | Entregables Uanify |
 |---|---|---|
@@ -177,7 +177,7 @@ Durante la visita, el Ingeniero de Producción evaluará si realmente entendemos
 
 ---
 
-## 📚 REGLAS DE NEGOCIO INDUSTRIALES QUE DEBES CONOCER PARA LA VISITA
+##  REGLAS DE NEGOCIO INDUSTRIALES QUE DEBES CONOCER PARA LA VISITA
 *(Conceptos esenciales para entender cómo opera la fábrica y cómo estructurar el software)*
 
 ### 1. La "Receta" del Sombrero (BOM — Bill of Materials)
@@ -189,7 +189,7 @@ En manufactura, cada producto terminado tiene una lista de ingredientes fija lla
 * **1 Forro interior** (satín bordado o impreso con la marca).
 * **1 Caja individual o colectiva** (empaque para flete mayorista).
 
-> 💡 **Por qué esto te importa como consultor:**  
+>  **Por qué esto te importa como consultor:**  
 > Cuando el Proyecto 1 (MES) registra que una prensa terminó 100 sombreros, el software puede **descontar en automático** 100 campanas y 63 metros de tafilete en el Proyecto 2 (Inventarios). Eso es lo que impresiona a un director.
 
 ---
@@ -218,64 +218,64 @@ Los sombreros no se producen en cantidades al azar. Se miden en **centímetros d
 
 ---
 
-# 💡 PROYECTO 2 — Control de Subensambles (Tafiletes por Talla) & Matriz de Materiales
+#  PROYECTO 2 — Control de Subensambles (Tafiletes por Talla) & Matriz de Materiales
 ## `[PRIORIDAD MEDIA-ALTA — Fase 2]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 1. **Desabasto en Adorno 1:** Los tafiletes se elaboran en un subensamble paralelo. Actualmente los supervisores se comunican de forma verbal y a gritos: *"¿Tienes tafilete talla 57? Sí, 150"*. Si no hay tafiletes listos de la talla del lote de sombreros que entra a la mesa, la línea se detiene.
 2. **Cambio Masivo de Materiales:** Si cambia el proveedor de una laca o pintura (ej. pintura Taiwan 1125), el Ingeniero tiene que editar manualmente ficha por ficha.
 
-### 📐 Solución Uanify:
+###  Solución Uanify:
 * **Monitor de Stock de Tafiletes por Talla en Pantalla:** Semáforo en vivo (Verde = Abastecido, Amarillo = En Límite, Rojo = Crítico) para tallas 55 a 60 cm.
 * **Matriz Maestra de Materiales:** Cambio masivo de insumos en 1 solo clic aplicado a todos los productos que consumen ese material.
 * **Trazabilidad de Químicos y Rollos de Telar:** Registro de entrada desde factura de compras y descuento automático por lote producido.
 
 ---
 
-# 💡 PROYECTO 3 — Integración CONTPAQi (COMPAC) & Vales de Entrega Mayorista
+#  PROYECTO 3 — Integración CONTPAQi (COMPAC) & Vales de Entrega Mayorista
 ## `[PRIORIDAD ALTA — Fase 2/3]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 Actualmente, cuando el cliente mayorista llega con su camioneta:
 1. Se genera un **vale de salida en papel**.
 2. Ese vale se descuenta manualmente en un archivo de Excel de órdenes de producción.
 3. El papel viaja a oficinas donde una persona vuelve a capturar todo en **COMPAC (CONTPAQi)** para emitir la factura.
 
-### 📐 Solución Uanify:
+###  Solución Uanify:
 * **Vale de Entrega Digital:** El almacén genera el vale de salida escaneando los lotes entregados al camión.
 * **Enlace con COMPAC:** Sincronización mediante la API o base de datos de CONTPAQi (en coordinación con la ingeniera de soporte externa de COMPAC) para timbrar la factura y descontar inventarios contables sin recaptura.
 
 ---
 
-# 💡 PROYECTO 4 — Fichas Técnicas & Costeo de Accesorios (Carteras, Cintos, Horquillas)
+#  PROYECTO 4 — Fichas Técnicas & Costeo de Accesorios (Carteras, Cintos, Horquillas)
 ## `[PRIORIDAD MEDIA-BAJA — Fase 3]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 El 70% de la producción de Tombstone son sombreros y texanas. El 30% restante son accesorios (carteras, cintos, mariconeras, bolsitas, horquillas). Los ingenieros confirmaron que aquí no se requiere un flujo complejo en piso, sino:
 * **Fichas Técnicas Digitales:** Catálogo visual con imágenes, medidas, herrajes y desglose de materiales.
 * **Ficha de Costeo Automático:** Cálculo del costo de producción según los insumos asignados en la ficha.
 
 ---
 
-# 💡 PROYECTO 5 — Control de Calidad, Reparaciones & Registro de Segundas (Viernes)
+#  PROYECTO 5 — Control de Calidad, Reparaciones & Registro de Segundas (Viernes)
 ## `[INTEGRADO EN FASE 1 Y 2]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 En Tombstone existen **4 puntos de inspección de calidad**. Si una pieza sale defectuosa:
 * **Si tiene arreglo:** Se regresa a la fracción previa (ej. volver a aplicar pintura o planchar falda).
 * **Si es defecto cosmético menor:** Se clasifica como **"Producto Regular / Segunda"**. Se aparta en el almacén de saldos y **los días viernes se vende en lote a clientes mayoristas**.
 * **Si es daño destructivo:** Se manda como merma y se repone la pieza para que el lote de 60 salga completo.
 
-### 📐 Solución Uanify:
+###  Solución Uanify:
 * Registro digital de motivos de defecto por operario y máquina.
 * Inventario acumulado de "Segundas" en tiempo real para agilizar la venta de remate de los viernes.
 
 ---
 
-# 💡 PROYECTO 6 — Productividad por Operador & Nómina de Destajo Digital
+#  PROYECTO 6 — Productividad por Operador & Nómina de Destajo Digital
 ## `[EVOLUCIÓN FUTURA — Fase 3]`
 
-### 🎯 Problema que resuelve (Confirmado en Planta)
+###  Problema que resuelve (Confirmado en Planta)
 Los operarios cobran por **destajo** (por pieza terminada). Actualmente los supervisores anotan a mano en tarjetas o libretas lo que hace cada persona, provocando disputas semanales de sueldos.
 * **Solución Uanify:** Al escanear el lote o sublote con la tarjeta viajera, se asocia el número de empleado del operario. El sistema calcula en automático el importe a pagar por destajo por turno y semana, eliminando papel y discusiones.
 * **Impacto:** Transparencia laboral, auditoría automática de piezas producidas y pago justo basado en datos reales del sistema.
@@ -284,7 +284,7 @@ Los operarios cobran por **destajo** (por pieza terminada). Actualmente los supe
 
 ---
 
-## 📊 Matriz de Prioridad — Impacto vs. Esfuerzo
+##  Matriz de Prioridad — Impacto vs. Esfuerzo
 
 ```
 IMPACTO
@@ -310,7 +310,7 @@ O └─────────────────────────
 
 ---
 
-## 🔗 Visión de Integración — Cómo se Conectan los Proyectos
+##  Visión de Integración — Cómo se Conectan los Proyectos
 
 ```
 [P3 Pedidos B2B]  →  Genera Orden de Producción
@@ -330,7 +330,7 @@ O └─────────────────────────
 
 ---
 
-## 📝 Notas de la Visita de Planta
+##  Notas de la Visita de Planta
 *[Sección para llenar durante/después de la visita]*
 
 **Fecha de visita:** _________________  
@@ -345,7 +345,7 @@ O └─────────────────────────
 - Número de máquinas automáticas: ___
 - Número de puestos manuales: ___
 - Tipos de máquinas: ___
-- Conectividad WiFi en planta: ☐ Sí / ☐ No / ☐ Parcial
+- Conectividad WiFi en planta:  Sí /  No /  Parcial
 - Dispositivos existentes en planta: ___
 - Sistemas existentes (ERP/Excel/papel): ___
 

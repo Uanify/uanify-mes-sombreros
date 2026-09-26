@@ -1,4 +1,4 @@
-# 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
+# Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
 [![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.18.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
@@ -13,23 +13,23 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## 🎯 Arquitectura Funcional Tombstone Hats (v2.18.0)
+##  Arquitectura Funcional Tombstone Hats (v2.18.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
-| **0. 🔐 Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
-| **1. 🏷️ Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, Monitor de Almacenes Intermedios y recolección/traspaso táctil. |
-| **2. 📺 Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s), semáforos de estación y comparación hora por hora de producción. |
-| **3. 📦 Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados** con variaciones (tallas, faldas, toquillas) y visor de ficha técnica; **Catálogo de Hormas y Moldes Maquinados** con ciclo de vida, specs térmicas y ficha técnica; carga de fotos con Drag & Drop; 5 almacenes físicos, tafiletes y Kárdex general. |
-| **4. 👷 Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos estandarizados. |
-| **5. 📊 Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, KPIs de supervisores, balanceo de líneas & cuellos de botella, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
-| **6. ⚙️ Configuración & Integración COMPAC** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Monitor Aislado de Integración CONTPAQi ERP (COMPAC)** con prueba de conexión ODBC, mapeo de bodegas y vales B2B. |
+| **0.  Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
+| **1.  Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, Monitor de Almacenes Intermedios y recolección/traspaso táctil. |
+| **2.  Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s), semáforos de estación y comparación hora por hora de producción. |
+| **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados** con variaciones (tallas, faldas, toquillas) y visor de ficha técnica; **Catálogo de Hormas y Moldes Maquinados** con ciclo de vida, specs térmicas y ficha técnica; carga de fotos con Drag & Drop; 5 almacenes físicos, tafiletes y Kárdex general. |
+| **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos estandarizados. |
+| **5.  Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, KPIs de supervisores, balanceo de líneas & cuellos de botella, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
+| **6.  Configuración & Integración COMPAC** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Monitor Aislado de Integración CONTPAQi ERP (COMPAC)** con prueba de conexión ODBC, mapeo de bodegas y vales B2B. |
 
 ---
 
-## 🎩 Proceso Productivo Tombstone Modelado
+##  Proceso Productivo Tombstone Modelado
 
 1. **Engomado & Apresto:** Inmersión y rigidez química de campanas y telares 1000X Master Telar.
 2. **Prensas de Hormado:** Moldeado con vapor a alta temperatura en hormas Denver, Bullrider y Laredo.
@@ -40,7 +40,7 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ---
 
-## 💻 Acceso Directo y Ejecución
+##  Acceso Directo y Ejecución
 
 - **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
@@ -49,7 +49,7 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ---
 
-## 📜 Historial de Versiones (Changelog)
+##  Historial de Versiones (Changelog)
 
 ### [2.18.0] - 2026-09-25
 - **Catálogo de Sombreros Fabricados y Variaciones (`RF-67`):** Nuevo catálogo maestro en Almacenes para registrar y consultar modelos fabricados (Denver Master, El Viejonón, Chaparral, Sonora Ranchero, Frontier Western, Magnum 1000X), variantes de talla (54 a 61), faldas (3.5" a 4.5"), toquillas y precios B2B.
@@ -64,16 +64,16 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ### [2.17.0] - 2026-09-25
 - **Estandarización Universal de Tablas, Columnas y Acciones (Regla 0.35 de AGENTS.md):** Homogeneización visual y funcional estricta en la totalidad de tablas del sistema (Departamentos, Filtros de Calidad, Usuarios RBAC, Padrón de Operadores, Almacenes Físicos, Moldes/Hormas y Kárdex).
-- **Barra de Filtros Multi-Criterio Reactiva (`.uanify-filter-toolbar`):** Búsqueda de texto en vivo por código/nombre/responsable, filtros selectivos contextuales por proceso/tipo/estatus, contador dinámico "Mostrando X de Y registros" y botón `🔄 Limpiar Filtros`.
+- **Barra de Filtros Multi-Criterio Reactiva (`.uanify-filter-toolbar`):** Búsqueda de texto en vivo por código/nombre/responsable, filtros selectivos contextuales por proceso/tipo/estatus, contador dinámico "Mostrando X de Y registros" y botón `Limpiar Filtros`.
 - **Estandarización de Celdas y Jerarquía de Contenido:** Códigos con badge monoespaciado `.table-badge-code`, títulos en `.table-cell-primary` con subtítulos descriptivos `.table-cell-subtext`, y pastillas de estatus `.table-status-pill` con punto luminoso pulsante (`.status-dot`).
-- **Sección de Acciones Uniforme (`.action-btns-cell`):** Botones touch tablet-first de 38px de altura mínima, centrados, con estilos normalizados: `✏️ Editar` (`.btn-action-edit`), `🗑️ Eliminar/Baja` (`.btn-action-delete`), `👁️ Ver Lotes/Detalle` (`.btn-action-view`), todos con `cursor: pointer !important`.
+- **Sección de Acciones Uniforme (`.action-btns-cell`):** Botones touch tablet-first de 38px de altura mínima, centrados, con estilos normalizados: `Editar` (`.btn-action-edit`), `Eliminar/Baja` (`.btn-action-delete`), `Ver Lotes/Detalle` (`.btn-action-view`), todos con `cursor: pointer !important`.
 - **Estado Vacío Estilizado (`.table-empty-row`):** Iconografía temática, mensaje explicativo y botón directo para resetear filtros cuando una búsqueda no arroje resultados.
 
 ### [2.9.0] - 2026-09-24
-- **Mapa de Proceso Interactivo y Rastreador de Lote para Supervisores:** Nueva sub-pestaña `🗺️ Mapa de Proceso & Rastreador de Lote` en Terminal para consultar al instante la ubicación física de cualquier lote (`49,633`, `49,386`, `49,842`).
-- **Línea de Tiempo Visual (Value Stream Map):** Despliegue secuencial de todas las estaciones y filtros de calidad según el modelo de sombrero, indicando pasos completados (✅), estación activa con indicador pulsante (**📍 AQUÍ ESTÁ EL LOTE**), operador a cargo, tiempo de ciclo y próximas paradas.
-- **Acciones Operativas de Desplazamiento:** Controles para avanzar (`⏩`) o retroceder (`⏮️`) el lote a lo largo de la línea de tiempo, o reubicarlo directamente haciendo clic sobre cualquier nodo del mapa.
-- **Rutas de Fabricación y Secuencias Configurables por Modelo:** Nueva pestaña en Configuración (`📐 Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos y filtros de calidad (subir `▲`, bajar `▼`, agregar y remover pasos) según el modelo de sombrero (1000X Telar, Campana Preformada, Laqueados Especiales).
+- **Mapa de Proceso Interactivo y Rastreador de Lote para Supervisores:** Nueva sub-pestaña ` Mapa de Proceso & Rastreador de Lote` en Terminal para consultar al instante la ubicación física de cualquier lote (`49,633`, `49,386`, `49,842`).
+- **Línea de Tiempo Visual (Value Stream Map):** Despliegue secuencial de todas las estaciones y filtros de calidad según el modelo de sombrero, indicando pasos completados (OK), estación activa con indicador pulsante (**[AQUÍ ESTÁ EL LOTE]**), operador a cargo, tiempo de ciclo y próximas paradas.
+- **Acciones Operativas de Desplazamiento:** Controles para avanzar (`>>`) o retroceder (`<<`) el lote a lo largo de la línea de tiempo, o reubicarlo directamente haciendo clic sobre cualquier nodo del mapa.
+- **Rutas de Fabricación y Secuencias Configurables por Modelo:** Nueva pestaña en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos y filtros de calidad (subir `▲`, bajar `▼`, agregar y remover pasos) según el modelo de sombrero (1000X Telar, Campana Preformada, Laqueados Especiales).
 - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta estaciones de inspección de calidad (`C-01`, `C-02`, `C-03`, `C-04`...) con criterios de tolerancia, inspector responsable y tiempo de ciclo, integrándose tanto a la tabla de departamentos como a las rutas de producto.
 - **Ampliación de Permisos de Ingeniería:** Concesión de acceso al módulo de Configuración para el rol Ingeniero (`Ing. Carlos Ortiz`) para modelar flujos de planta y criterios de calidad.
 
@@ -88,7 +88,7 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 - **Versión del Sistema Visible y Prominente:** Rediseño del badge `.system-version-pill` con fondo sólido de marca `#8B5E3C`, texto blanco en negrita y alto contraste para visibilidad instantánea.
 - **Enfoque de Diseño Tablet-First y 100% Responsivo:** Optimización completa para pantallas táctiles de 768px a 1024px (touch targets >= 44px, desplazamiento horizontal táctil suave en tablas y tabs sin desbordamiento lateral).
 - **Supresión de Menciones de Hardware Específico:** Eliminación total de las palabras "iPad" y "Tablet" en la interfaz de usuario, empleando términos profesionales neutros (Terminal de Planta, Cámara de tu dispositivo).
-- **Seguridad RBAC por Ocultamiento Estricto:** Eliminación de iconos de candados 🔒; los módulos no autorizados se ocultan completamente de la barra de navegación para un entorno más limpio y seguro.
+- **Seguridad RBAC por Ocultamiento Estricto:** Eliminación de iconos de candados ; los módulos no autorizados se ocultan completamente de la barra de navegación para un entorno más limpio y seguro.
 
 ### [2.8.2] - 2026-09-24
 - **Corrección Estructural Crítica del Frontend:** Eliminación de etiqueta `</div>` sobrante en el sidebar que provocaba cierre prematuro del `<aside>`, ruptura de la cuadrícula principal y desplazamiento vertical masivo del contenido.
@@ -115,7 +115,7 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ### [2.16.0] - 2026-09-24
 - **Rutas y Secuencias Específicas por Modelo con Drag & Drop (`⠿`):** Reordenamiento interactivo táctil y de cursor para secuencias de manufactura vinculadas estrictamente a modelos específicos de sombreros (`El Viejonón`, `Denver Master`, `Chaparral`, etc.).
-- **Restricción Estricta de Alcance en Secuencias:** El constructor de rutas se limita a asignar y desasignar pasos para el modelo en cuestión (`+ Asignar al Final de la Secuencia`, `🗑️ Quitar de la Secuencia`), garantizando que no se puedan crear, editar ni eliminar departamentos o filtros de calidad desde este editor.
+- **Restricción Estricta de Alcance en Secuencias:** El constructor de rutas se limita a asignar y desasignar pasos para el modelo en cuestión (`+ Asignar al Final de la Secuencia`, `Quitar de la Secuencia`), garantizando que no se puedan crear, editar ni eliminar departamentos o filtros de calidad desde este editor.
 - **CRUD Integral de Filtros de Calidad (`C-XX`):** Nueva sub-pestaña dedicada en Configuración para registrar, editar y dar de baja puntos de inspección y tolerancias de calidad con ubicación física, criterios, tolerancias numéricas e inspector asignado.
 - **Sincronización Reactiva:** Sincronización en tiempo real entre `qualityAreas`, `stations` y secuencias de rutas con almacenamiento persistente en `localStorage`.
 

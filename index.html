@@ -71,10 +71,10 @@
 
       <!-- Perfil de Usuario Activo (chip compacto con nombre + rol + botón cerrar sesión) -->
       <div class="sidebar-user-chip" id="sidebarUserChip">
-        <div class="suc-avatar" id="sidebarUserAvatar">👑</div>
+        <div class="suc-avatar" id="sidebarUserAvatar"></div>
         <div class="suc-info">
           <span class="suc-name" id="sidebarUserName">Edmundo González</span>
-          <span class="suc-role" id="sidebarUserRoleBadge">👑 Admin</span>
+          <span class="suc-role" id="sidebarUserRoleBadge">Admin</span>
         </div>
         <button class="suc-logout-btn" id="btnSidebarLogout" title="Cambiar usuario / Cerrar sesión" aria-label="Cerrar sesión">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -191,10 +191,10 @@
 
         <!-- Sub-navegación por Pestañas del Tablero Andon -->
         <div class="sub-nav-tabs" data-module="andon">
-          <button class="sub-tab-btn active" data-subtab="subtab-andon-stations">🏭 14 Departamentos & Semáforos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">⏱️ Progreso Hora por Hora</button>
-          <button class="sub-tab-btn" data-subtab="subtab-andon-stops">🛑 Bitácora de Paros & Eventos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-andon-whiteboard" style="color:var(--color-brand); font-weight:700;">📋 Pizarra de Línea · 1000X Prensas Secas</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-andon-stations">14 Departamentos & Semáforos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-hourly">⏱ Progreso Hora por Hora</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-stops">Bitácora de Paros & Eventos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-andon-whiteboard" style="color:var(--color-brand); font-weight:700;">Pizarra de Línea · 1000X Prensas Secas</button>
         </div>
 
         <!-- Pestaña 1: Grid de Estaciones -->
@@ -267,17 +267,17 @@
                 <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                   <span class="wb-legend-pill"><span class="dot-green"></span> Verde: Cumple / Supera Meta</span>
                   <span class="wb-legend-pill"><span class="dot-red"></span> Rojo: Déficit / Parada</span>
-                  <span class="wb-legend-pill split-info">📐 Celda partida: Superior = Real | Inferior = Meta</span>
+                  <span class="wb-legend-pill split-info">Celda partida: Superior = Real | Inferior = Meta</span>
                 </div>
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
                   <button type="button" class="btn-secondary" id="btnLoadPhotoData" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
-                    📷 Cargar Datos de Foto de Planta
+                    Cargar Datos de Foto de Planta
                   </button>
                   <button type="button" class="btn-secondary" id="btnSimulateWhiteboardHour" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
-                    ⚡ Simular Registro de Hora
+                    Simular Registro de Hora
                   </button>
                   <button type="button" class="btn-primary" id="btnPrintWhiteboardReport" style="font-size:11.5px; padding:5px 10px; font-weight:700;">
-                    🖨️ Imprimir Pizarra
+                    Imprimir Pizarra
                   </button>
                 </div>
               </div>
@@ -342,8 +342,8 @@
               </div>
 
               <div class="whiteboard-footer-note">
-                <span>📍 Planta Matriz Tombstone Hats · Línea de Prensas Secas & Ensamble Rampa · San Francisco del Rincón, Gto.</span>
-                <span id="whiteboardSyncStatus">🟢 Sincronizado en tiempo real con terminal de supervisor</span>
+                <span>Planta Matriz Tombstone Hats · Línea de Prensas Secas & Ensamble Rampa · San Francisco del Rincón, Gto.</span>
+                <span id="whiteboardSyncStatus">Sincronizado en tiempo real con terminal de supervisor</span>
               </div>
             </div>
           </div>
@@ -371,11 +371,11 @@
 
         <!-- Sub-navegación por Pestañas del Módulo Terminal -->
         <div class="sub-nav-tabs" data-module="terminal">
-          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">📷 Lector QR & Recepción/Depósito</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">🏭 Mapa de Planta & Almacenes Intermedios</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">📦 Monitor General de Almacenes</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">⚙️ Operación en Máquina & Puestos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">🚚 Recolección & Traspaso entre Depts</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">Lector QR & Recepción/Depósito</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">Mapa de Planta & Almacenes Intermedios</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">Monitor General de Almacenes</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">Operación en Máquina & Puestos</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">Recolección & Traspaso entre Depts</button>
         </div>
 
         <!-- Pestaña 1: Lector QR Heroico & Recepción/Depósito en Almacén Siguiente -->
@@ -385,7 +385,7 @@
             <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal">
               <div>
                 <div class="btt-title">
-                  <span>🏷️</span> Ver Tarjeta Viajera Oficial (Mica & Gafete de Piso)
+                  <span></span> Ver Tarjeta Viajera Oficial (Mica & Gafete de Piso)
                 </div>
                 <div class="btt-desc">
                   Réplica exacta reglamentaria con sticker de operador, clase 1000X, horma, acabados y perforación para cordel
@@ -401,7 +401,7 @@
             <div class="card-glass" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                  <span class="model-badge-tag" style="font-size:12px; font-weight:800;">📷 ESCÁNER QR DE PISO (HERO)</span>
+                  <span class="model-badge-tag" style="font-size:12px; font-weight:800;">ESCÁNER QR DE PISO (HERO)</span>
                   <span class="badge-subtle" id="cameraStatusBadge">Cámara inactiva</span>
                 </div>
 
@@ -410,7 +410,7 @@
                   <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
                   
                   <div class="camera-placeholder-msg" id="cameraPlaceholderMsg" style="position:relative; z-index:2; text-align:center; padding:20px; color:#94A3B8;">
-                    <span style="font-size:46px; display:block; margin-bottom:8px;">📷</span>
+                    <span style="font-size:46px; display:block; margin-bottom:8px;"></span>
                     <strong style="color:#FFFFFF; font-size:16px; display:block; margin-bottom:4px;">Cámara de Dispositivo Lista</strong>
                     <span style="font-size:12.5px;">Haz clic en "Activar Cámara Web" o usa la pistola de código de barras USB.</span>
                   </div>
@@ -426,9 +426,9 @@
 
                   <!-- Botón Flotante para Salir de Pantalla Completa (Solo visible en fullscreen) -->
                   <div class="fullscreen-scanner-topbar" id="fsTopBar" style="display:none;">
-                    <span class="fullscreen-scanner-title">📷 Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</span>
+                    <span class="fullscreen-scanner-title">Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</span>
                     <button type="button" class="fullscreen-scanner-exit-btn" id="btnExitFullscreenScanner">
-                      ✖ Salir de Pantalla Completa
+                      Salir de Pantalla Completa
                     </button>
                   </div>
                 </div>
@@ -436,13 +436,13 @@
                 <!-- Barra de Botones de Control de Cámara (Gigantes para Tablet) -->
                 <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
                   <button type="button" class="btn-primary btn-touch-hero" id="btnToggleCamera" style="flex:1.4;">
-                    ▶️ Activar Cámara Web
+                    ▶ Activar Cámara Web
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnToggleFullscreen" style="flex:1;" title="Ampliar a pantalla completa para tablet">
-                    ⛶ Pantalla Completa
+                    Pantalla Completa
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnFlipCamera" style="display:none;">
-                    🔄 Girar Cámara
+                    Girar Cámara
                   </button>
                 </div>
 
@@ -452,7 +452,7 @@
                   <div style="display:flex; gap:10px; align-items:stretch;">
                     <input type="text" id="manualQrInput" class="form-input" placeholder="Apunta la pistola USB o escribe Folio (ej. 49633-3)..." value="49633-3" style="min-height:50px; font-size:15px; font-weight:700; font-family:'JetBrains Mono';">
                     <button class="btn-primary btn-touch-hero" id="btnScanQr" style="flex-shrink:0;">
-                      ⚡ Escanear Código QR
+                      Escanear Código QR
                     </button>
                   </div>
                 </div>
@@ -464,13 +464,13 @@
                   </div>
                   <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     <button type="button" class="btn-secondary" id="btnSimulateScanSublot3" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
-                      🏷️ Sublote #3 (49633-3 · Viejonón)
+                      Sublote #3 (49633-3 · Viejonón)
                     </button>
                     <button type="button" class="btn-secondary" id="btnSimulateScanMotherLot" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
-                      🏷️ Lote Madre (49386 · Chaparral)
+                      Lote Madre (49386 · Chaparral)
                     </button>
                     <button type="button" class="btn-secondary" id="btnSimulateScanScrapLot" style="padding:6px 10px; font-size:11.5px; font-weight:700; color:var(--color-amber);">
-                      ⚠️ Lote con Merma (49842 · Magnum)
+                      Lote con Merma (49842 · Magnum)
                     </button>
                   </div>
                 </div>
@@ -506,20 +506,20 @@
                   <span style="font-size:12px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">O. Prod: #15071</span>
                 </div>
 
-                <!-- Flujo Secuencial Automático de Ruta (De dónde viene ➔ Dónde está ➔ A cuál sigue) -->
+                <!-- Flujo Secuencial Automático de Ruta (De dónde viene → Dónde está → A cuál sigue) -->
                 <div class="route-sequence-flow">
                   <div class="flow-step-chip chip-origin">
                     <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
                     <strong id="lotOriginStationText">D-04 Refuerzos</strong>
                   </div>
-                  <span class="flow-arrow-icon">➔</span>
+                  <span class="flow-arrow-icon">→</span>
                   <div class="flow-step-chip chip-current">
-                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">📍 Ubicación Actual:</span>
+                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">Ubicación Actual:</span>
                     <strong id="lotCurrentStationText">D-05 Prensas de Hormado</strong>
                   </div>
-                  <span class="flow-arrow-icon">➔</span>
+                  <span class="flow-arrow-icon">→</span>
                   <div class="flow-step-chip chip-target">
-                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">⏩ Siguiente Destino:</span>
+                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">>> Siguiente Destino:</span>
                     <strong id="lotTargetStationText">D-06 Recorte y Refaldeado</strong>
                   </div>
                 </div>
@@ -547,7 +547,7 @@
                 <!-- Banner Informativo de Merma en el Lote -->
                 <div id="lotScrapBannerContainer">
                   <div class="lot-clean-banner">
-                    <span style="font-size:16px;">✅</span>
+                    <span style="font-size:16px;">OK</span>
                     <span><strong>Lote íntegro:</strong> Sin sombreros marcados con defecto en este momento.</span>
                   </div>
                 </div>
@@ -556,22 +556,22 @@
               <!-- ACCIÓN PRINCIPAL DE DEPÓSITO (BOTÓN GIGANTE TABLET) -->
               <div style="margin-top:18px;">
                 <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
-                  📥 Depositar Lote en Almacén de D-06 Recorte y Refaldeado
+                  Depositar Lote en Almacén de D-06 Recorte y Refaldeado
                 </button>
                 <div style="font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:6px;">
-                  🔒 Requiere asignación departamental del supervisor activo. Solo puedes mover lotes de tus departamentos.
+                  Requiere asignación departamental del supervisor activo. Solo puedes mover lotes de tus departamentos.
                 </div>
 
                 <!-- Acciones Rápidas Complementarias -->
                 <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="flex:1; border:1.5px solid var(--color-brand); font-weight:700;">
-                    ⚡ Modo Rampa (Fraccionar Lote Madre)
+                    Modo Rampa (Fraccionar Lote Madre)
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnReportScrap" style="color:var(--color-amber);">
-                    ⚠️ Reportar Merma
+                    Reportar Merma
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="color:var(--color-red);">
-                    🛑 Paro de Línea
+                    Paro de Línea
                   </button>
                 </div>
               </div>
@@ -585,7 +585,7 @@
           <div class="card-glass" style="padding:24px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
               <div>
-                <h3 style="font-size:16px; font-weight:700;">⚙️ Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
+                <h3 style="font-size:16px; font-weight:700;">Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
                 <p class="section-desc">El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.</p>
               </div>
               <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: D-05 a D-08</span>
@@ -622,7 +622,7 @@
                 <div style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">15 piezas conformadas y listas para avanzar al almacén de salida.</div>
               </div>
               <button class="btn-primary" id="btnCompleteMachineRun" style="padding:12px 24px; font-size:13.5px;">
-                📥 Finalizar Piezas y Depositar en Almacén Intermedio de Salida
+                Finalizar Piezas y Depositar en Almacén Intermedio de Salida
               </button>
             </div>
           </div>
@@ -632,7 +632,7 @@
         <div class="sub-tab-content" id="subtab-terminal-transfer">
           <div class="card-glass" style="padding:24px;">
             <div style="margin-bottom:18px;">
-              <h3 style="font-size:16px; font-weight:700;">🚚 Recolección y Traspaso al Siguiente Departamento</h3>
+              <h3 style="font-size:16px; font-weight:700;">Recolección y Traspaso al Siguiente Departamento</h3>
               <p class="section-desc">La persona encargada o recolectora del siguiente departamento acude al almacén de salida de la estación anterior, recoge los sombreros y se los lleva a su departamento para iniciar su fase.</p>
             </div>
 
@@ -668,7 +668,7 @@
                 Al confirmar, las piezas salen del almacén de origen y se ingresan al almacén de entrada del departamento receptor para distribuirse a sus operadores.
               </div>
               <button class="btn-primary" id="btnExecuteTransfer" style="padding:12px 24px;">
-                🚚 Confirmar Recolección y Traspaso de Sombreros
+                 Confirmar Recolección y Traspaso de Sombreros
               </button>
             </div>
           </div>
@@ -680,7 +680,7 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px;">
               <div>
                 <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
-                  🏭 Mapa General de Departamentos & Almacenes Intermedios
+                   Mapa General de Departamentos & Almacenes Intermedios
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
                   Supervisión general de planta: inspecciona el inventario en proceso (WIP) y sombreros almacenados en cada departamento. Haz clic en "Ver Almacén Intermedio" de cualquier departamento para revisar sus lotes y filtrar por modelo o estado.
@@ -688,7 +688,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="btn-secondary btn-touch-lg active" id="btnFilterPlantAllDepts">
-                  🏢 Todos los Depts (14)
+                   Todos los Depts (14)
                 </button>
                 <button type="button" class="btn-secondary btn-touch-lg" id="btnFilterPlantMyDepts">
                   ⭐ Mis Depts Asignados
@@ -707,7 +707,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
               <div>
                 <h4 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                  🔍 Auditoría Individual de Lote & Línea de Tiempo de Ruta
+                   Auditoría Individual de Lote & Línea de Tiempo de Ruta
                 </h4>
                 <p class="section-desc" style="margin-bottom:0; font-size:12px;">
                   Inspección de ruta secuencial. Recuerda: el traspaso físico de custodia se efectúa escaneando el código QR de la tarjeta.
@@ -737,7 +737,7 @@
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                   <span class="badge-status" id="trackerCurrentStationBadge" style="background:var(--color-brand); color:#FFFFFF; font-size:12px; font-weight:800; padding:6px 12px; border-radius:8px;">
-                    📍 UBICACIÓN ACTUAL: D-05 Prensas de Hormado
+                    UBICACIÓN ACTUAL: D-05 Prensas de Hormado
                   </span>
                   <span style="font-size:12.5px; color:var(--text-secondary);" id="trackerNextStationText">
                     Próxima Parada: <strong>D-06 Recorte y Refaldeado</strong>
@@ -745,13 +745,13 @@
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnRewindLotStep" title="Regresar al paso anterior (ej. reproceso)">
-                    ⏮️ Retroceder
+                    Retroceder
                   </button>
                   <button type="button" class="btn-primary btn-touch-lg" id="btnAdvanceLotStep">
-                    ⏩ Avanzar Lote a Siguiente Estación
+                    Avanzar Lote a Siguiente Estación
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnApproveQualityStep" style="background:#DCFCE7; color:#15803D; border-color:#86EFAC; display:none;">
-                    ✅ Liberar Filtro de Calidad
+                    Liberar Filtro de Calidad
                   </button>
                 </div>
               </div>
@@ -813,7 +813,7 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
               <div>
                 <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
-                  📦 Monitor de Almacenes Intermedios · Lotes Listos para Recolección
+                  Monitor de Almacenes Intermedios · Lotes Listos para Recolección
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
                   Consulta los almacenes de salida de los demás departamentos para saber cuándo terminaron sus lotes y recogerlos de inmediato para que tu departamento empiece su labor.
@@ -821,7 +821,7 @@
               </div>
               <div style="display:flex; gap:8px; align-items:center;">
                 <span class="badge-subtle" id="bufferReadyCountBadge">6 lotes en espera de recolección</span>
-                <button class="btn-secondary" id="btnRefreshBufferMonitor" style="padding:6px 12px; font-size:12px;">🔄 Actualizar</button>
+                <button class="btn-secondary" id="btnRefreshBufferMonitor" style="padding:6px 12px; font-size:12px;">Actualizar</button>
               </div>
             </div>
 
@@ -841,7 +841,7 @@
                 </select>
               </div>
               <span style="font-size:11.5px; color:var(--text-muted); margin-left:auto;">
-                💡 Presiona "Recoger Lote" para trasladarlo físicamente a tu estación de trabajo y registrar la custodia en tiempo real.
+                Presiona "Recoger Lote" para trasladarlo físicamente a tu estación de trabajo y registrar la custodia en tiempo real.
               </span>
             </div>
 
@@ -971,7 +971,7 @@
           <div class="card-glass" style="padding:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
               <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
-                📋 Registro Oficial de Almacenes de Nave Central
+                Registro Oficial de Almacenes de Nave Central
               </h3>
               <span class="badge-subtle">5 Almacenes Físicos · Tombstone Hats San Francisco del Rincón</span>
             </div>
@@ -980,7 +980,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="whSearchInput" class="form-input" placeholder="Buscar almacén por código, nombre, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -994,13 +994,13 @@
                   </select>
                   <select id="whStatusFilter" class="custom-select">
                     <option value="all">Todos los Estatus</option>
-                    <option value="Normal">🟢 Normal</option>
-                    <option value="Precaución">🟡 Precaución</option>
-                    <option value="Crítico">🔴 Crítico</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Precaución">Precaución</option>
+                    <option value="Crítico"> Crítico</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="whFilteredCountBadge">5 almacenes</span>
-                <button type="button" class="btn-reset-filters" id="btnResetWhFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetWhFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1107,7 +1107,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div>
                 <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                  🧵 Inventario de Subensambles & Tafiletes de Piel por Talla
+                  Inventario de Subensambles & Tafiletes de Piel por Talla
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
                   Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Departamento D-10.
@@ -1126,7 +1126,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div>
                 <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                  📦 Kárdex & Bitácora de Movimientos de Almacenes Intermedios
+                  Kárdex & Bitácora de Movimientos de Almacenes Intermedios
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
                   Trazabilidad de transferencias internas de WIP, ingresos de materias primas, fraccionamiento en rampa y bajas por merma.
@@ -1139,21 +1139,21 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="kardexSearchInput" class="form-input" placeholder="Buscar por lote, material, custodio, folio..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="kardexTypeFilter" class="custom-select">
                     <option value="all">Todos los Movimientos</option>
-                    <option value="Entrada">📥 Entrada MP</option>
-                    <option value="Traspaso">🔄 Traspaso WIP</option>
-                    <option value="Fraccionamiento">✂️ Fraccionamiento Rampa</option>
-                    <option value="Salida">🚚 Embarque / Salida</option>
-                    <option value="Merma">⚠️ Saldos / Segundas</option>
+                    <option value="Entrada">Entrada MP</option>
+                    <option value="Traspaso"> Traspaso WIP</option>
+                    <option value="Fraccionamiento"> Fraccionamiento Rampa</option>
+                    <option value="Salida"> Embarque / Salida</option>
+                    <option value="Merma"> Saldos / Segundas</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="kardexFilteredCountBadge">Movimientos recientes</span>
-                <button type="button" class="btn-reset-filters" id="btnResetKardexFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetKardexFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1192,7 +1192,7 @@
             <p class="view-subtitle">Directorio oficial de personal de piso, máquinas asignadas, piezas procesadas en el turno único y estatus operativo</p>
           </div>
           <div style="display:flex; gap:10px;">
-            <button class="btn-primary" onclick="window.openCreateOperatorModal()">👷 + Registrar Operador</button>
+            <button class="btn-primary" onclick="window.openCreateOperatorModal()">+ Registrar Operador</button>
           </div>
         </div>
 
@@ -1224,7 +1224,7 @@
         <div class="uanify-filter-toolbar">
           <div class="filter-toolbar-inputs">
             <div class="filter-search-box">
-              <span class="search-icon">🔍</span>
+              <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
               <input type="text" id="operatorSearchInput" class="form-input" placeholder="Buscar por nombre, nómina, máquina o departamento..." autocomplete="off">
             </div>
             <div class="filter-select-group">
@@ -1240,13 +1240,13 @@
               </select>
               <select id="operatorStatusFilter" class="custom-select">
                 <option value="all">Todos los Estatus</option>
-                <option value="Activo">🟢 Activos</option>
-                <option value="Incapacidad">🔴 Incapacidad</option>
-                <option value="Capacitación">🟡 En Capacitación</option>
+                <option value="Activo">Activos</option>
+                <option value="Incapacidad">Incapacidad</option>
+                <option value="Capacitación">En Capacitación</option>
               </select>
             </div>
             <span class="filter-count-badge" id="operatorsFilteredCountBadge">Mostrando 7 operadores</span>
-            <button type="button" class="btn-reset-filters" id="btnResetOperatorFilters" title="Restablecer filtros">🔄 Limpiar</button>
+            <button type="button" class="btn-reset-filters" id="btnResetOperatorFilters" title="Restablecer filtros">Limpiar</button>
           </div>
         </div>
 
@@ -1254,7 +1254,7 @@
         <div class="card-glass" style="padding:22px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
             <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
-              👷 Directorio de Operadores de Planta Matriz
+              Directorio de Operadores de Planta Matriz
             </h3>
             <span class="badge-subtle">Mano de Obra Calificada · San Francisco del Rincón</span>
           </div>
@@ -1587,7 +1587,7 @@
             <h1 class="view-title">Configuración de Planta & Catálogos Maestros</h1>
             <p class="view-subtitle">CRUD integral de departamentos y almacenes intermedios, rutas de fabricación por modelo, parámetros de turno y control de acceso RBAC</p>
           </div>
-          <button class="btn-primary" id="btnSaveConfig">💾 Guardar Configuración</button>
+          <button class="btn-primary" id="btnSaveConfig">Guardar Configuración</button>
         </div>
 
         <!-- Sub-navegación por Pestañas del Módulo Configuración -->
@@ -1679,7 +1679,7 @@
 
             <!-- Alertas Andon & Umbrales WIP -->
             <div class="config-card card-glass">
-              <h3>🚨 Umbrales de Alerta Andon (WIP)</h3>
+              <h3>Umbrales de Alerta Andon (WIP)</h3>
               <div class="form-group">
                 <label class="field-label">Alerta de Acumulación en Almacén Intermedio:</label>
                 <input type="number" class="form-input" value="70" id="cfgWipAlert">
@@ -1701,7 +1701,7 @@
 
             <!-- Integración COMPAC / CONTPAQi -->
             <div class="config-card card-glass">
-              <h3>🔗 Enlace con CONTPAQi (COMPAC)</h3>
+              <h3>Enlace con CONTPAQi (COMPAC)</h3>
               <div class="form-group">
                 <label class="field-label">Servidor / Gateway Local:</label>
                 <input type="text" class="form-input" value="192.168.1.120:8080/compac-api">
@@ -1727,11 +1727,11 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>👥 Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
+                <h3>Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
                 <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear administradores, ingenieros y supervisores. Ingeniería puede crear supervisores.</p>
               </div>
               <button class="btn-primary" id="btnOpenCreateUserModal" style="min-height:48px; padding:0 20px; font-weight:700;">
-                ➕ Crear Nuevo Usuario
+                + Crear Nuevo Usuario
               </button>
             </div>
 
@@ -1739,19 +1739,19 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre, correo, departamento..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="userRoleFilter" class="custom-select">
                     <option value="all">Todos los Roles</option>
-                    <option value="admin">👑 Administrador</option>
-                    <option value="ingeniero">⚡ Ingeniero de Producción</option>
-                    <option value="supervisor">📱 Supervisor de Planta</option>
+                    <option value="admin">Administrador</option>
+                    <option value="ingeniero">Ingeniero de Producción</option>
+                    <option value="supervisor">Supervisor de Planta</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="userFilteredCountBadge">4 usuarios</span>
-                <button type="button" class="btn-reset-filters" id="btnResetUserFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetUserFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1781,11 +1781,11 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>👷 Padrón de Operadores de Planta (Mano de Obra)</h3>
+                <h3>Padrón de Operadores de Planta (Mano de Obra)</h3>
                 <p class="section-desc" style="margin-bottom:0;">Registro de operadores que trabajan máquinas en cada departamento. No son usuarios con acceso al sistema; son gestionados por Supervisores, Ingenieros y Administradores.</p>
               </div>
               <button class="btn-primary" id="btnOpenCreateOperatorModal" style="min-height:48px; padding:0 20px; font-weight:700;">
-                ➕ Registrar Operador
+                + Registrar Operador
               </button>
             </div>
 
@@ -1793,7 +1793,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="cfgOperatorSearchInput" class="form-input" placeholder="Buscar por nómina, nombre, departamento, máquina..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1802,13 +1802,13 @@
                   </select>
                   <select id="cfgOperatorStatusFilter" class="custom-select">
                     <option value="all">Todos los Estatus</option>
-                    <option value="Activo">🟢 Activos</option>
-                    <option value="Incapacidad">🔴 Incapacidad</option>
-                    <option value="Capacitación">🟡 En Capacitación</option>
+                    <option value="Activo">Activos</option>
+                    <option value="Incapacidad">Incapacidad</option>
+                    <option value="Capacitación">En Capacitación</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="cfgOperatorCountBadge">7 operadores</span>
-                <button type="button" class="btn-reset-filters" id="btnResetCfgOperatorFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetCfgOperatorFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1838,12 +1838,12 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>🏢 Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
+                <h3>Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
                 <p class="section-desc" style="margin-bottom:0;">Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
-                  ➕ Dar de Alta Departamento & Almacén
+                  + Dar de Alta Departamento & Almacén
                 </button>
               </div>
             </div>
@@ -1852,26 +1852,26 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por código, departamento, supervisor, máquina..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="deptProcessFilter" class="custom-select">
                     <option value="all">Todos los Procesos</option>
-                    <option value="manufactura">🏭 Proceso Productivo</option>
-                    <option value="prensas">💨 Prensas & Vapor</option>
-                    <option value="rampa">✂️ Rampa Fraccionamiento</option>
-                    <option value="calidad">🔍 Control de Calidad</option>
-                    <option value="logistica">📦 Almacén / Logística</option>
+                    <option value="manufactura"> Proceso Productivo</option>
+                    <option value="prensas"> Prensas & Vapor</option>
+                    <option value="rampa"> Rampa Fraccionamiento</option>
+                    <option value="calidad"> Control de Calidad</option>
+                    <option value="logistica"> Almacén / Logística</option>
                   </select>
                   <select id="deptStatusFilter" class="custom-select">
                     <option value="all">Todos los Estatus</option>
-                    <option value="active">🟢 Activos</option>
-                    <option value="inactive">🔴 Inactivos</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="deptFilteredCountBadge">14 departamentos</span>
-                <button type="button" class="btn-reset-filters" id="btnResetDeptFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetDeptFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1903,12 +1903,12 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>🔍 Catálogo Maestro de Puntos de Inspección & Filtros de Calidad (C-XX)</h3>
+                <h3>Catálogo Maestro de Puntos de Inspección & Filtros de Calidad (C-XX)</h3>
                 <p class="section-desc" style="margin-bottom:0;">Configuración técnica de áreas de inspección, tolerancias, tiempos de ciclo e inspectores responsables. Estos filtros se insertan como paradas obligatorias en las secuencias de rutas de fabricación.</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-primary" id="btnOpenCreateQualityModal" onclick="window.openCreateQualityModal()" style="min-height:48px; padding:0 20px; font-weight:700; background:#D97706; border-color:#B45309;">
-                  ➕ Dar de Alta Filtro de Calidad
+                  + Dar de Alta Filtro de Calidad
                 </button>
               </div>
             </div>
@@ -1917,7 +1917,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
                   <input type="text" id="qualitySearchInput" class="form-input" placeholder="Buscar por código, filtro, criterio, inspector, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1926,12 +1926,12 @@
                   </select>
                   <select id="qualityStatusFilter" class="custom-select">
                     <option value="all">Todos los Estatus</option>
-                    <option value="active">🟢 Activos</option>
-                    <option value="inactive">🔴 Inactivos</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="qualityFilteredCountBadge">4 filtros de calidad</span>
-                <button type="button" class="btn-reset-filters" id="btnResetQualityFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetQualityFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
 
@@ -1961,17 +1961,17 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>📐 Rutas de Fabricación y Secuencias Departamentales por Modelo</h3>
+                <h3>Rutas de Fabricación y Secuencias Departamentales por Modelo</h3>
                 <p class="section-desc" style="margin-bottom:0;">Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad.</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <button class="btn-primary" id="btnSaveRouteSequence" style="min-height:48px; padding:0 22px; font-weight:700;">💾 Guardar Secuencia de Ruta</button>
+                <button class="btn-primary" id="btnSaveRouteSequence" style="min-height:48px; padding:0 22px; font-weight:700;">Guardar Secuencia de Ruta</button>
               </div>
             </div>
 
             <!-- Banner Informativo de Asignación Exclusiva -->
             <div style="background:var(--color-brand-light); border:1px solid var(--color-brand-border); border-radius:10px; padding:14px 18px; margin-top:16px; margin-bottom:16px; display:flex; gap:14px; align-items:center;">
-              <span style="font-size:24px;">ℹ️</span>
+              <span style="font-size:24px;"></span>
               <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">
                 <strong style="color:var(--color-brand); font-size:13px;">Asignación Exclusiva de Secuencia por Modelo:</strong> En esta sección configuras el flujo específico del modelo seleccionado arrastrando los pasos con <strong style="color:var(--text-primary);">⠿ Drag & Drop</strong> o usando los botones <strong>▲ ▼</strong>. <strong style="color:var(--text-primary);">Aquí únicamente se añaden o retiran pasos de la asignación a este modelo</strong>; los Departamentos y Filtros de Calidad maestros se crean, editan o eliminan en sus pestañas dedicadas.
               </div>
@@ -2001,13 +2001,13 @@
               <!-- Agregar Parada a la Secuencia -->
               <div style="display:flex; gap:12px; align-items:center; background:#F1F5F9; border:1px solid var(--border-medium); border-radius:10px; padding:14px 16px; margin-bottom:18px; flex-wrap:wrap;">
                 <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                  <span>➕</span> Asignar Estación o Parada de Calidad a este Modelo:
+                  <span>+ </span> Asignar Estación o Parada de Calidad a este Modelo:
                 </span>
                 <select id="addStepStationSelect" class="custom-select" style="flex:1; min-width:240px; font-size:13px; min-height:48px;">
                   <!-- Llenado dinámico con optgroups por JS -->
                 </select>
                 <button type="button" class="btn-primary" id="btnAddStepToRoute" style="min-height:48px; padding:0 18px; font-size:13px; font-weight:700;">
-                  ➕ Asignar al Final de la Secuencia
+                  + Asignar al Final de la Secuencia
                 </button>
               </div>
 
@@ -2153,7 +2153,7 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3>⚠️ Clasificación de Calidad · Defecto / Segunda</h3>
+          <h3>Clasificación de Calidad · Defecto / Segunda</h3>
           <p class="modal-header-sub">Selecciona la tipificación para control de mermas y venta de viernes</p>
         </div>
         <button class="modal-close" id="btnCloseScrapModal">&times;</button>
@@ -2162,19 +2162,19 @@
         <p style="font-size:13px; color:var(--text-secondary);">Selecciona si la pieza es regular/segunda (recuperable para venta de viernes) o merma total:</p>
         <div class="scrap-options">
           <button class="scrap-opt-btn" data-type="segunda" data-reason="Detalle estético leve en telar (Pasa a Segunda de Viernes)" style="border-color:var(--color-amber-border); background:var(--color-amber-bg); color:var(--color-amber);">
-            📦 Producto Regular / Segunda (Para venta de Viernes al 50%)
+            Producto Regular / Segunda (Para venta de Viernes al 50%)
           </button>
           <button class="scrap-opt-btn" data-type="merma" data-reason="Quemado en prensa de hormado por exceso de calor/vapor">
-            🔥 Quemado por vapor/prensa (Merma total)
+            Quemado por vapor/prensa (Merma total)
           </button>
           <button class="scrap-opt-btn" data-type="merma" data-reason="Falla en engomado / mancha de resina en telar">
-            🧪 Mancha de apresto o laca (Merma total)
+            Mancha de apresto o laca (Merma total)
           </button>
           <button class="scrap-opt-btn" data-type="merma" data-reason="Rotura de campana / ala rasgada al troquelar">
-            ✂️ Rotura de ala o campana (Merma total)
+             Rotura de ala o campana (Merma total)
           </button>
           <button class="scrap-opt-btn" data-type="merma" data-reason="Costura chueca / tafilete torcido en badana">
-            🧵 Costura o tafilete chueco
+            Costura o tafilete chueco
           </button>
         </div>
       </div>
@@ -2191,7 +2191,7 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3>🛑 Registrar Paro de Línea · Tombstone</h3>
+          <h3>Registrar Paro de Línea · Tombstone</h3>
           <p class="modal-header-sub">Notificación inmediata al Tablero Andon y registro de cronómetro</p>
         </div>
         <button class="modal-close" id="btnCloseStopModal">&times;</button>
@@ -2200,19 +2200,19 @@
         <p style="font-size:13px; color:var(--text-secondary);">Indica la causa para notificar al Tablero Andon y registrar el tiempo de paro:</p>
         <div class="stop-options">
           <button class="stop-opt-btn" data-stop="Cambio de horma / molde (Denver, Viejonón, Laredo, Roper SMED)">
-            🔧 Cambio de horma / molde (SMED)
+            Cambio de horma / molde (SMED)
           </button>
           <button class="stop-opt-btn" data-stop="Falta de presión de vapor en caldera matriz">
-            💨 Falta de vapor / caldera baja
+            Falta de vapor / caldera baja
           </button>
           <button class="stop-opt-btn" data-stop="Falta de tafiletes o toquillas en estación">
-            📦 Falta de tafiletes / subensambles en puesto
+            Falta de tafiletes / subensambles en puesto
           </button>
           <button class="stop-opt-btn" data-stop="Falla mecánica en prensa o troqueladora">
-            ⚙️ Falla mecánica en prensa
+            Falla mecánica en prensa
           </button>
           <button class="stop-opt-btn" data-stop="Descanso de personal / comida (12:00 - 12:45)">
-            🥪 Descanso de personal / comida (12:00 - 12:45)
+            Descanso de personal / comida (12:00 - 12:45)
           </button>
         </div>
       </div>
@@ -2229,7 +2229,7 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3>👤 Crear Nuevo Usuario de Planta</h3>
+          <h3>Crear Nuevo Usuario de Planta</h3>
           <p class="modal-header-sub">Alta de supervisores, ingenieros o administradores de sistema</p>
         </div>
         <button class="modal-close" id="btnCloseCreateUserModal" type="button">&times;</button>
@@ -2247,9 +2247,9 @@
           <div class="form-group">
             <label class="field-label">Rol del Usuario:</label>
             <select id="newRoleSelect" class="custom-select">
-              <option value="supervisor" selected>📋 Supervisor de Piso y Almacenes</option>
-              <option value="ingeniero">⚙️ Ingeniero (Procesos, OEE y Subensambles)</option>
-              <option value="admin">👑 Administrador (Acceso y Configuración Total)</option>
+              <option value="supervisor" selected> Supervisor de Piso y Almacenes</option>
+              <option value="ingeniero"> Ingeniero (Procesos, OEE y Subensambles)</option>
+              <option value="admin">Administrador (Acceso y Configuración Total)</option>
             </select>
           </div>
           <div class="form-group">
@@ -2297,7 +2297,7 @@
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3>✏️ Editar Usuario & Departamentos Asignados</h3>
+          <h3>Editar Usuario & Departamentos Asignados</h3>
           <p class="modal-header-sub">
             Usuario: <strong id="editUserNameTitle" style="color:var(--text-primary);">-</strong>
             <span id="editUserRoleBadge" class="role-badge" style="margin-left:6px;">-</span>
@@ -2323,9 +2323,9 @@
           <div class="form-group">
             <label class="field-label">Rol del Usuario:</label>
             <select id="editUserRoleSelect" class="custom-select">
-              <option value="supervisor">📋 Supervisor de Piso y Almacenes</option>
-              <option value="ingeniero">⚙️ Ingeniero de Procesos y OEE</option>
-              <option value="admin">👑 Administrador General</option>
+              <option value="supervisor"> Supervisor de Piso y Almacenes</option>
+              <option value="ingeniero"> Ingeniero de Procesos y OEE</option>
+              <option value="admin">Administrador General</option>
             </select>
           </div>
 
@@ -2333,7 +2333,7 @@
           <div id="editSupervisorDeptsSection" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:16px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <div>
-                <strong style="font-size:13px; color:var(--text-primary);">🏢 Departamentos Asignados al Supervisor</strong>
+                <strong style="font-size:13px; color:var(--text-primary);">Departamentos Asignados al Supervisor</strong>
                 <p style="font-size:11.5px; color:var(--text-muted); margin:2px 0 0 0;">Estaciones sobre las cuales este supervisor tiene mando y control de lotes:</p>
               </div>
               <div style="display:flex; gap:6px;">
@@ -2385,7 +2385,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="document.getElementById('modalEditPermissions').classList.remove('active')">Cancelar</button>
-          <button type="submit" class="btn-primary" id="btnSaveEditUser">💾 Guardar Cambios</button>
+          <button type="submit" class="btn-primary" id="btnSaveEditUser">Guardar Cambios</button>
         </div>
       </form>
     </div>
@@ -2834,7 +2834,7 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3 id="operatorModalTitle">👷 Registrar Operador de Planta (Mano de Obra)</h3>
+          <h3 id="operatorModalTitle">Registrar Operador de Planta (Mano de Obra)</h3>
           <p class="modal-header-sub" id="operatorModalSubtitle">Asignación de personal de piso a máquinas y estaciones</p>
         </div>
         <button class="modal-close" id="btnCloseRegisterOperatorModal" type="button">&times;</button>
@@ -2901,7 +2901,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-secondary" id="btnCancelOperatorModal" onclick="document.getElementById('modalRegisterOperator').classList.remove('active')">Cancelar</button>
-          <button type="submit" class="btn-primary" id="btnSubmitOperator">💾 Guardar Operador</button>
+          <button type="submit" class="btn-primary" id="btnSubmitOperator">Guardar Operador</button>
         </div>
       </form>
     </div>
@@ -2914,7 +2914,7 @@
     <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
-          <h3 id="deptModalTitle">🏢 Dar de Alta Nuevo Departamento & Almacén Intermedio</h3>
+          <h3 id="deptModalTitle">Dar de Alta Nuevo Departamento & Almacén Intermedio</h3>
           <p class="modal-header-sub" id="deptModalSubtitle">Definición de estación de proceso, almacén intermedio WIP y asignación técnica</p>
         </div>
         <button class="modal-close" id="btnCloseCreateDeptModal" type="button">&times;</button>
@@ -2975,8 +2975,8 @@
             <div class="form-group">
               <label class="field-label">Estado Operativo:</label>
               <select id="newDeptStatus" class="custom-select">
-                <option value="running">🟢 Activo en Operación</option>
-                <option value="stopped">🔴 Inactivo / Fuera de Línea</option>
+                <option value="running">Activo en Operación</option>
+                <option value="stopped">Inactivo / Fuera de Línea</option>
               </select>
             </div>
           </div>
@@ -3033,7 +3033,7 @@
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3 id="modalQualityTitle">🔍 Registrar Filtro de Control de Calidad</h3>
+          <h3 id="modalQualityTitle">Registrar Filtro de Control de Calidad</h3>
           <p class="modal-header-sub" id="modalQualitySub">Estación técnica de inspección, tolerancias y certificación de lotes</p>
         </div>
         <button class="modal-close" id="btnCloseCreateQualityModal">&times;</button>
@@ -3080,8 +3080,8 @@
             <div class="form-group">
               <label class="field-label">Estatus:</label>
               <select id="newQualityStatus" class="custom-select" style="min-height:48px;">
-                <option value="Activo">🟢 Activo</option>
-                <option value="Inactivo">🔴 Inactivo</option>
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
               </select>
             </div>
           </div>
@@ -3091,7 +3091,7 @@
             Cancelar
           </button>
           <button type="submit" class="btn-primary btn-touch-hero" id="btnSubmitQualityModal" style="flex:1.4; background:#D97706; border-color:#B45309;">
-            💾 Guardar Filtro de Calidad
+            Guardar Filtro de Calidad
           </button>
         </div>
       </form>
@@ -3105,7 +3105,7 @@
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
         <div>
-          <h3>🖨️ Impresión Oficial de Tarjeta Viajera</h3>
+          <h3> Impresión Oficial de Tarjeta Viajera</h3>
           <p class="modal-header-sub">Formato de planta listo para mica protectora y cordel</p>
         </div>
         <button type="button" class="modal-close" id="btnClosePrintModal">&times;</button>
@@ -3121,7 +3121,7 @@
       <div class="modal-footer">
         <button type="button" class="btn-secondary" id="btnCancelPrintModal">Cerrar</button>
         <button type="button" class="btn-primary" id="btnExecuteCardPrint" style="background:var(--color-brand); border-color:var(--color-brand-dark);">
-          🖨️ Mandar a Impresión (Impresora / PDF)
+          Mandar a Impresión (Impresora / PDF)
         </button>
       </div>
     </div>
@@ -3134,7 +3134,7 @@
     <div class="modal-box card-glass" style="max-width:720px;">
       <div class="modal-header">
         <div>
-          <h3 id="hatSpecTitle">📋 Ficha Técnica Oficial · 1000X Master Telar Denver</h3>
+          <h3 id="hatSpecTitle">Ficha Técnica Oficial · 1000X Master Telar Denver</h3>
           <p class="modal-header-sub">Especificaciones de acabado, tolerancias y muestra visual para piso</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseHatSpecModal">&times;</button>
@@ -3173,7 +3173,7 @@
                 <!-- Pluma decorativa de faisán -->
                 <path d="M 90 106 Q 115 80 125 70" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" />
               </svg>
-              <div class="spec-photo-tag">🤠 MUESTRA DE REFERENCIA VISUAL</div>
+              <div class="spec-photo-tag">MUESTRA DE REFERENCIA VISUAL</div>
             </div>
             <div style="margin-top:10px; font-size:11.5px; color:var(--text-muted); text-align:center;">
               Control visual para estación de Adorno y Calidad Final
@@ -3242,7 +3242,7 @@
     <div class="modal-box card-glass" style="max-width:760px;">
       <div class="modal-header">
         <div>
-          <h3>🔍 Verificación de Tarjeta Viajera Escaneada</h3>
+          <h3>Verificación de Tarjeta Viajera Escaneada</h3>
           <p class="modal-header-sub">Comprueba que la tarjeta física en la mica coincida con los datos leídos del código QR</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseVerifyCardModal">&times;</button>
@@ -3254,7 +3254,7 @@
           </div>
           <div class="verify-data-meta-box">
             <div style="font-weight:800; font-size:13.5px; color:var(--color-brand); margin-bottom:2px; display:flex; align-items:center; gap:6px;">
-              <span>⚡</span> Metadatos Extraídos del QR:
+              <span></span> Metadatos Extraídos del QR:
             </div>
             <div class="verify-meta-row">
               <span class="verify-meta-label">Folio de Lote:</span>
@@ -3290,17 +3290,17 @@
             </div>
             <div class="verify-meta-row">
               <span class="verify-meta-label">Estado de Mermas:</span>
-              <span class="verify-meta-val" id="verifyScrapStatus">✅ Sin mermas</span>
+              <span class="verify-meta-val" id="verifyScrapStatus">OK Sin mermas</span>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
         <button type="button" class="btn-secondary btn-touch-lg" id="btnRejectScannedCard" style="flex:1;">
-          ❌ Tarjeta Incorrecta / Escanear de Nuevo
+          Tarjeta Incorrecta / Escanear de Nuevo
         </button>
         <button type="button" class="btn-primary btn-touch-hero" id="btnConfirmScannedCard" style="flex:1.3;">
-          ✅ Confirmar Coincidencia y Proceder
+          Confirmar Coincidencia y Proceder
         </button>
       </div>
     </div>
@@ -3313,7 +3313,7 @@
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
         <div>
-          <h3>🏷️ Tarjeta Viajera Oficial (Mica & Gafete de Piso)</h3>
+          <h3>Tarjeta Viajera Oficial (Mica & Gafete de Piso)</h3>
           <p class="modal-header-sub">Formato reglamentario de planta con sticker de operador y especificaciones físicas</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseTravelerCardModal">&times;</button>
@@ -3324,7 +3324,7 @@
         </div>
         <div style="margin-top:16px; width:100%; display:flex; justify-content:center; gap:8px;">
           <button type="button" class="btn-secondary btn-touch-lg" id="btnModalViewHatSpec" style="color:var(--color-amber);">
-            📋 Ver Ficha Técnica Oficial c/Foto
+            Ver Ficha Técnica Oficial c/Foto
           </button>
         </div>
       </div>
@@ -3343,7 +3343,7 @@
     <div class="modal-box card-glass" style="max-width:920px;">
       <div class="modal-header">
         <div>
-          <h3 id="deptWarehouseModalTitle">📦 Almacén Intermedio · D-05 Prensas de Hormado</h3>
+          <h3 id="deptWarehouseModalTitle">Almacén Intermedio · D-05 Prensas de Hormado</h3>
           <p class="modal-header-sub" id="deptWarehouseModalSub">Lotes en espera de procesamiento o listos para recolección en este departamento</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseDeptWarehouseModal">&times;</button>
@@ -3400,7 +3400,7 @@
         </div>
 
         <div style="margin-top:14px; padding:10px 14px; background:var(--color-brand-light); border-radius:8px; border:1px solid var(--color-brand-border); font-size:12px; color:var(--color-brand-dark);">
-          💡 <strong>Regla Operativa Tombstone:</strong> El traspaso de lotes entre departamentos se ejecuta exclusivamente escaneando el código QR de la tarjeta con el lector del supervisor.
+          <strong>Regla Operativa Tombstone:</strong> El traspaso de lotes entre departamentos se ejecuta exclusivamente escaneando el código QR de la tarjeta con el lector del supervisor.
         </div>
       </div>
       <div class="modal-footer">
@@ -3422,7 +3422,7 @@
             <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">ESTACIÓN D-04 · RAMPA DE ENSAMBLE</span>
             <span class="badge-subtle" style="font-weight:700;">Modo Operativo Especial</span>
           </div>
-          <h3 style="margin-top:4px;">⚡ Modo Fraccionamiento de Lote Madre (60 pzas ➔ 4 Sublotes de 15 pzas)</h3>
+          <h3 style="margin-top:4px;">Modo Fraccionamiento de Lote Madre (60 pzas → 4 Sublotes de 15 pzas)</h3>
           <p class="modal-header-sub">División oficial de torres de sombreros ensamblados para su ingreso a Prensas Hidráulicas</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseRampaModal">&times;</button>
@@ -3441,7 +3441,7 @@
             </div>
             <div>
               <button type="button" class="btn-secondary btn-touch-lg" id="btnRampaScanAnotherMother" style="font-size:12.5px;">
-                🔍 Seleccionar / Cambiar Lote Madre
+                Seleccionar / Cambiar Lote Madre
               </button>
             </div>
           </div>
@@ -3450,7 +3450,7 @@
         <!-- Explicación Visual de la Conversión -->
         <div style="margin-bottom:16px;">
           <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary); margin-bottom:8px;">
-            📦 Generación de las 4 Torres de Sublote (15 pzas c/u):
+            Generación de las 4 Torres de Sublote (15 pzas c/u):
           </div>
           <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
             <!-- Sublote 1 -->
@@ -3458,28 +3458,28 @@
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #1</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub1Folio">49386-1</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
-              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "1"</div>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "1"</div>
             </div>
             <!-- Sublote 2 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #2</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub2Folio">49386-2</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
-              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "2"</div>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "2"</div>
             </div>
             <!-- Sublote 3 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #3</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub3Folio">49386-3</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
-              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "3"</div>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "3"</div>
             </div>
             <!-- Sublote 4 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #4</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub4Folio">49386-4</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
-              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">🏷️ Mica con "4"</div>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "4"</div>
             </div>
           </div>
         </div>
@@ -3498,7 +3498,7 @@
         <!-- Banner de Puntos Operativos Pendientes (GAP-11) -->
         <div style="background:#FEF3C7; border:1.5px solid #FCD34D; border-radius:10px; padding:12px 16px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:800; color:#92400E; margin-bottom:4px;">
-            <span>📌 Puntos Operativos Pendientes de Validar con Tombstone (GAP-11):</span>
+            <span>Puntos Operativos Pendientes de Validar con Tombstone (GAP-11):</span>
           </div>
           <ul style="margin:0; padding-left:18px; font-size:11.5px; color:#B45309; line-height:1.45;">
             <li><strong>¿Qué pasa con la tarjeta del Lote Madre?</strong> Se definirá con el cliente si se archiva en Rampa o acompaña al primer sublote.</li>
@@ -3511,7 +3511,7 @@
           Cancelar / Salir del Modo
         </button>
         <button type="button" class="btn-primary btn-touch-hero" id="btnExecuteRampaFraccionamiento" style="flex:1.4; background:linear-gradient(135deg, #8B5E3C 0%, #6E4426 100%);">
-          ✂️ Ejecutar Fraccionamiento a 4 Sublotes
+          Ejecutar Fraccionamiento a 4 Sublotes
         </button>
       </div>
     </div>
