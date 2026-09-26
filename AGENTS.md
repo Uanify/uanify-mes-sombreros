@@ -532,15 +532,19 @@ Queda estrictamente prohibido que el código o las decisiones operativas avancen
 ### Suite Documental Viva del Proyecto (Mantenimiento Continuo Obligatorio):
 1. **`SISTEMA_TOMBSTONE_MES.md` (Documento Maestro / Single Source of Truth):**
    - Actualizar versión, arquitectura de módulos, procesos de planta, matrices de roles/permisos, especificaciones físicas de tarjetas viajeras y el Historial de Versiones (SemVer).
-2. **`README.md` (Presentación y Bitácora Pública):**
+2. **`docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md` (Reglas de Negocio y Operación Actual de Planta):**
+   - Sustento técnico y operativo fidedigno de cómo trabaja actualmente Tombstone Hats (mix de telar 1 y 2 piezas, régimen de turno único, 14 puntos de control, fraccionamiento en rampa de 60 a 15 pzas, tarjetas viajeras físicas con micas y stickers, coordinación de subensambles en adorno, vales en papel y facturación en COMPAC). Solo incluye información confirmada y validada en planta o por Dirección.
+3. **`README.md` (Presentación y Bitácora Pública):**
    - Mantener al día los badges de versión, la tabla de arquitectura funcional y el Changelog detallado de cada versión desplegada.
-3. **`docs/REQUERIMIENTOS_DEL_SISTEMA.md` (SRS / PRD Formal):**
+4. **`docs/REQUERIMIENTOS_DEL_SISTEMA.md` (SRS / PRD Formal):**
    - Incorporar y actualizar cada Requerimiento Funcional (`RF-01` a `RF-XX`), criterios de negocio, requerimientos no funcionales y matriz de trazabilidad.
-4. **`docs/HISTORIAS_DE_USUARIO.md` (Catálogo Ágil de Historias de Usuario):**
+5. **`docs/HISTORIAS_DE_USUARIO.md` (Catálogo Ágil de Historias de Usuario):**
    - Añadir, ajustar o reclasificar las historias de usuario (`US-01` a `US-XX`), actualizando su estatus (`[Implementado]`, `[En Revisión / Propuesto]`, `[Fase 2 / Escalabilidad]`) y criterios de aceptación específicos.
-5. **`docs/CASOS_DE_PRUEBA.md` (Matriz Exhaustiva de QA / Test Cases):**
+6. **`docs/CASOS_DE_PRUEBA.md` (Matriz Exhaustiva de QA / Test Cases):**
    - Mantener al día los Casos de Prueba (`TC-01` a `TC-XX`) cubriendo Happy Path, Casos Negativos/Bloqueo, Edge Cases y Pruebas Táctiles en Tablet para cada historia de usuario.
-6. **`package.json` y metadatos del código (`app.js`, `index.html`):**
+7. **`docs/DUDAS_Y_VALIDACIONES_CLIENTE.md` (Banco Oficial de Dudas Técnicas para Reunión):**
+   - Banco estructurado de preguntas, contexto operativo e impacto en software para validar con Edmundo González y Carlos Ortiz.
+8. **`package.json` y metadatos del código (`app.js`, `index.html`):**
    - Sincronizar números de versión y descriptores técnicos.
 
 ### Protocolo de Actualización Documental:
