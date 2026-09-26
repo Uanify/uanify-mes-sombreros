@@ -97,15 +97,15 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
   * El sistema consulta la secuencia del modelo (`El Viejonón`, `Denver`, etc.) y transfiere el lote al almacén de amortiguamiento de la siguiente estación.
   * Se genera una notificación toast de confirmación y se actualiza el contador de piezas en rampa.
 
-### US-08: Asignación del Operador Responsable (Estaciones con Destajo / Nómina Individual)
+### US-08: Rastreabilidad Universal de Operador por Lote (Todos los Departamentos D-01 a D-14)
 * **Estatus:** `[Implementado v2.18.0]`
-* **Como:** Supervisor de línea en estaciones con pago por destajo o máquina individual (ej. Prensas D-03, Troquelado D-04, Ribeteado D-06, Adorno D-08).
-* **Quiero:** Seleccionar con un toque táctil el nombre del operador que procesó la torre en la máquina antes de dar la salida. En departamentos grupales o logísticos (Almacenes D-01/D-05, Engomado D-02, Empaque D-13), este paso es opcional o se omite para agilizar el flujo.
-* **Para:** Registrar el récord de mano de obra y acumular las piezas procesadas al destajo del operador únicamente en las estaciones que manejan sticker o trabajo individual.
+* **Como:** Supervisor de línea en cualquier departamento de planta.
+* **Quiero:** Que en todos los departamentos del proceso (D-01 a D-14) quede registrado de forma obligatoria qué operador o cuadrilla procesó el lote antes de autorizar la transferencia.
+* **Para:** Garantizar el 100% de trazabilidad de mano de obra en toda la ruta del sombrero, extendiendo la cobertura digital a las estaciones que hoy en día no pegan sticker físico de papel (como almacenes, engomado, rampa o empaque).
 * **Criterios de Aceptación:**
-  * Selector rápido con los operadores asignados a esa estación (ej. `Jorge Mendoza`, `Melany Ramos`).
-  * Si la estación no está configurada como destajo/individual, la transferencia se ejecuta directamente sin forzar selección de operario.
-  * El récord guarda: `Fecha`, `Hora`, `Lote`, `Estación`, `Operador`, `Piezas`.
+  * En estaciones con destajo individual (Prensas D-03, Troquelado D-04, Ribeteado D-06, Adorno D-08), el supervisor selecciona o confirma al operario específico de la máquina.
+  * En estaciones logísticas o de proceso continuo que hoy no manejan sticker (Almacén MP D-01, Engomado D-02, Rampa D-05, Calidad D-11, Empaque D-13), el sistema pre-selecciona automáticamente al operador titular del turno (o cuadrilla asignada), permitiendo validar el movimiento con 1 solo toque sin fricción.
+  * El récord histórico del lote almacena invariablemente: `Fecha`, `Hora`, `Lote`, `Estación`, `Operador Asignado`, `Piezas`.
 
 ### US-09: Fraccionamiento de Lote Madre (60 a 15 piezas) en Rampa (D-05)
 * **Estatus:** `[Implementado v2.18.0]`

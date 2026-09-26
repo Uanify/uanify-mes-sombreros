@@ -131,11 +131,11 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Resultado Esperado:** El modal se cierra, la cámara se reinicia y el lote permanece sin cambios en su estación previa.
 * **Estatus:** `[Pasa - v2.18.0]`
 
-### TC-TERM-14: Asignación de Operador en Estaciones con Destajo
-* **HU:** `US-08` | **Categoría:** Validación de Entrada.
-* **Objetivo:** Comprobar que en estaciones con pago por destajo (Prensas, Troquelado, Ribeteado) se requiera seleccionar el operario responsable, omitiéndose en estaciones logísticas o grupales.
-* **Pasos:** 1. En Terminal de estación D-03 (Prensas), intentar pulsar `Completar Estación` sin seleccionar operador. 2. En estación D-01 (Materia Prima), transferir lote sin seleccionar operador.
-* **Resultado Esperado:** En D-03 la acción se bloquea solicitando operario; en D-01 la transferencia se realiza de inmediato sin fricción.
+### TC-TERM-14: Rastreabilidad Universal de Operador por Lote (100% Cobertura D-01 a D-14)
+* **HU:** `US-08` | **Categoría:** Validación de Entrada / Trazabilidad Total.
+* **Objetivo:** Comprobar que todos los lotes registren operador en las 14 estaciones, utilizando pre-selección inteligente del titular en estaciones que hoy no usan sticker físico.
+* **Pasos:** 1. En Terminal de estación D-03 (Prensas), verificar que el supervisor seleccione al operario de máquina (`Jorge Mendoza`). 2. En estación D-01 (Materia Prima) o D-05 (Rampa), verificar que el sistema presente pre-seleccionado al operario titular del turno (`J. Alatorre` / `J. M. Pérez`), permitiendo confirmar el avance con 1 toque.
+* **Resultado Esperado:** En ambos casos el lote queda formalmente firmado con operario en el kárdex e historial sin frenar el flujo en estaciones logísticas.
 * **Estatus:** `[Pasa - v2.18.0]`
 
 ### TC-TERM-15: Depósito Automático por Secuencia de Ruta del Modelo

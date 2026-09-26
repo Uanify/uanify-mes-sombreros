@@ -63,13 +63,14 @@ Su objetivo es servir como guía de entrevista ejecutiva en las sesiones de vali
 
 ## 3. Asignación de Operadores y Pago por Destajo
 
-### DUD-05: Alcance de los Stickers de Operador por Departamento
-* **Pregunta para el Cliente:** ¿En qué departamentos específicos es obligatorio registrar qué operador procesó el lote? Sabemos que en algunas estaciones no se maneja sticker individual (por ejemplo en almacenes o engomado químico). ¿Cuáles estaciones sí pagan destajo por operador y cuáles son de trabajo grupal/logístico?
-* **Justificación / Origen:** En la evidencia fotográfica vimos stickers individuales (ej. JORGE en prensas, MELANY en adorno). No todas las 14 estaciones requieren forzar la selección de un operador individual al transferir el lote.
+### DUD-05: Digitalización Universal de Operadores en las 14 Estaciones (Sustituir y Extender el Sticker Físico)
+* **Pregunta para el Cliente:** En el sistema MES registraremos **obligatoriamente el operador que procesó el lote en la totalidad de los departamentos (D-01 a D-14)** para garantizar 100% de trazabilidad de mano de obra. Dado que hoy en planta física los stickers individuales solo se usan en ciertas estaciones (Prensas, Adorno), ¿cómo organizan el personal en las estaciones restantes (Almacén MP, Engomado, Rampa, Empaque)? ¿Tienen un operario titular por turno o trabajan en cuadrillas rotativas?
+* **Justificación / Origen:** Andrés definió como regla mandatoria que ningún lote avance sin tener operador registrado en cualquier departamento. Para cerrar la brecha con las estaciones que actualmente no pegan calcomanía física en la mica, el sistema digitalizará la asignación directa desde la tablet sin requerir papel ni stickers.
 * **Impacto en el Software:**
-  * En el catálogo de departamentos se añade la casilla: `Requiere Operador Individual (Destajo)` [Sí / No].
-  * Si la estación no lo requiere, la Terminal del Supervisor omite el paso de seleccionar operador y transfiere de inmediato, agilizando el flujo.
-* **Estatus:** Validado internamente con Andrés · Por mapear lista exacta con Carlos Ortiz.
+  * **Cobertura 100%:** Todas las 14 estaciones exigen operador registrado al completar el paso.
+  * **Pre-selección Inteligente (Zero Fricción):** En departamentos de proceso continuo o almacenes, la tablet presenta pre-seleccionado al operador titular del turno (o cuadrilla asignada), permitiendo confirmar con 1 solo toque sin entorpecer el ritmo de planta.
+  * En estaciones con destajo individual (Prensas, Troquelado, Ribeteado), el supervisor confirma el operario específico de la máquina.
+* **Estatus:** Definición estratégica validada con Andrés · Por mapear plantilla de operarios por departamento con Carlos Ortiz.
 * **Respuesta / Minuta del Cliente:** [Espacio para captura en reunión]
 
 ---
