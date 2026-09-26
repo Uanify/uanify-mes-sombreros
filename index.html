@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.18.0">
-  <link rel="stylesheet" href="css/components.css?v=2.18.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.19.0">
+  <link rel="stylesheet" href="css/components.css?v=2.19.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.18.0</span>
+        <span class="system-version-pill login-version-pill">v2.19.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.17.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.19.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1977,8 +1977,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-code">Código</th>
-                    <th class="col-name">Departamento & Proceso</th>
+                    <th class="col-name" style="min-width:220px;">Departamento & Proceso</th>
                     <th>Almacén Intermedio (Buffer)</th>
                     <th>Takt Time</th>
                     <th>Capacidad WIP</th>
@@ -3616,6 +3615,84 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: CONSOLA MAESTRA SUPERADMIN UANIFY (EXCLUSIVO INTERNO DEVTOOLS)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalUanifySuperAdmin" style="display:none; z-index:99999;">
+    <div class="modal-box card-glass uanify-superadmin-box" style="max-width:640px; border:2px solid #8B5E3C; background:#0F172A; color:#F8FAFC; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div class="modal-header" style="border-bottom:1px solid #334155; padding-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:12px; height:12px; border-radius:50%; background:#10B981; box-shadow:0 0 10px #10B981;"></div>
+          <h3 style="color:#F8FAFC; margin:0; font-family:'JetBrains Mono', monospace; font-size:15px; letter-spacing:0.5px;">UANIFY ENGINEERING CONSOLE</h3>
+          <span style="background:rgba(139,94,60,0.35); color:#F59E0B; border:1px solid rgba(245,158,11,0.5); font-size:10px; font-weight:800; padding:2px 8px; border-radius:4px; font-family:'JetBrains Mono', monospace;">MASTER DEVTOOLS</span>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseSuperAdminModal" style="color:#94A3B8; font-size:24px;" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding:20px; font-size:13px; color:#CBD5E1;">
+        <!-- Banner Informativo -->
+        <div style="background:#1E293B; border-left:4px solid #8B5E3C; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
+          <div style="font-weight:700; color:#FFFFFF; margin-bottom:4px; font-family:'JetBrains Mono', monospace;">Entorno Exclusivo Uanify (Oculto para Tombstone)</div>
+          <div style="font-size:12px; color:#94A3B8; line-height:1.5;">
+            Esta consola permite alternar entre el <strong>Dataset Mock de Demostración</strong> y una <strong>Sesión Limpia en Cero</strong> para realizar corridas de prueba en piso. También permite descargar y cargar snapshots JSON sin servidores de pago.
+          </div>
+        </div>
+
+        <!-- Indicador de Modo Actual -->
+        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:16px; margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:#94A3B8; font-weight:700;">Modo de Datos Activo:</span>
+            <span id="superAdminCurrentModeBadge" style="font-family:'JetBrains Mono', monospace; font-weight:800; font-size:11.5px; padding:4px 10px; border-radius:6px; background:#10B981; color:#064E3B;">
+              MODO MOCK DEMOSTRACIÓN (ACTIVO)
+            </span>
+          </div>
+          <div id="superAdminModeDesc" style="font-size:12px; color:#94A3B8; line-height:1.45;">
+            El sistema contiene lotes demostrativos de la orden 49,633, métricas históricas de Andon y piezas acumuladas en almacenes intermedios.
+          </div>
+        </div>
+
+        <!-- Acciones de Dataset -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
+          <button type="button" id="btnSuperAdminSetClean" class="btn-touch-lg" style="background:#DC2626; color:#FFFFFF; border:none; border-radius:8px; padding:14px; font-weight:700; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:4px; transition:transform 0.15s ease;">
+            <span style="font-size:13px; font-family:'JetBrains Mono', monospace;">Limpiar a Cero (Sesión Limpia)</span>
+            <span style="font-size:11px; opacity:0.85; font-weight:normal; line-height:1.35;">Vacía lotes, almacenes y métricas para probar corrida desde 0</span>
+          </button>
+
+          <button type="button" id="btnSuperAdminSetMock" class="btn-touch-lg" style="background:#8B5E3C; color:#FFFFFF; border:none; border-radius:8px; padding:14px; font-weight:700; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:4px; transition:transform 0.15s ease;">
+            <span style="font-size:13px; font-family:'JetBrains Mono', monospace;">Restaurar Datos Mock Fábrica</span>
+            <span style="font-size:11px; opacity:0.85; font-weight:normal; line-height:1.35;">Recarga el dataset completo de demostración de Tombstone</span>
+          </button>
+        </div>
+
+        <!-- Snapshots JSON ($0 USD Gratis) -->
+        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:16px;">
+          <div style="font-weight:700; color:#FFFFFF; margin-bottom:8px; font-size:12px; font-family:'JetBrains Mono', monospace;">
+            RESPALDO & PORTABILIDAD DE PRUEBAS ($0 USD)
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="btnSuperAdminExportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:42px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
+              Descargar Snapshot JSON
+            </button>
+            <button type="button" id="btnSuperAdminImportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:42px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
+              Cargar Snapshot JSON
+            </button>
+            <input type="file" id="superAdminFileInput" accept=".json" style="display:none;">
+          </div>
+          <div style="font-size:11px; color:#64748B; margin-top:8px; line-height:1.4;">
+            Guarda en tu laptop el estado exacto de una corrida limpia o de prueba para volver a montarla en cualquier momento sin internet ni servidores de cobro.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top:1px solid #334155; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px; color:#64748B; font-family:'JetBrains Mono', monospace;">Atajos: Ctrl+Shift+U · PIN: 0000 · 5 taps en logo</span>
+        <button type="button" class="btn-secondary" id="btnCloseSuperAdminFooter" style="background:#334155; color:#FFFFFF; border:none; padding:8px 18px; font-weight:700; border-radius:6px; cursor:pointer;">
+          Cerrar Consola
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: CONFIRMACIÓN ESTANDARIZADA IN-APP (SIN ALERT / CONFIRM NATIVO)
        ====================================================================== -->
   <div class="modal-backdrop" id="uanifyConfirmModal">
@@ -3638,11 +3715,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.18.0"></script>
-  <script src="js/andon.js?v=2.18.0"></script>
-  <script src="js/terminal.js?v=2.18.0"></script>
-  <script src="js/engineer.js?v=2.18.0"></script>
-  <script src="js/executive.js?v=2.18.0"></script>
-  <script src="js/config.js?v=2.18.0"></script>
+  <script src="js/app.js?v=2.19.0"></script>
+  <script src="js/andon.js?v=2.19.0"></script>
+  <script src="js/terminal.js?v=2.19.0"></script>
+  <script src="js/engineer.js?v=2.19.0"></script>
+  <script src="js/executive.js?v=2.19.0"></script>
+  <script src="js/config.js?v=2.19.0"></script>
 </body>
 </html>

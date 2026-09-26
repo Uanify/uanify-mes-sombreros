@@ -167,7 +167,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.18.0',
+  version: '2.19.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -1989,6 +1989,25 @@ function enrichStationWithDefaults(st, idx) {
 
     function verifyPin() {
       isVerifyingPin = true;
+
+      // Código Maestro SuperAdmin Uanify (Secreto para Pruebas Internas)
+      if (enteredPin === '0000' || enteredPin === '9999') {
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById(`pinDot${i}`);
+          if (dot) dot.classList.add('success');
+        }
+        if (pinStatusMsg) {
+          pinStatusMsg.innerHTML = `<span style="color:#10B981; font-weight:800; font-family:'JetBrains Mono', monospace;">UANIFY DEVTOOLS DESBLOQUEADO</span>`;
+        }
+        setTimeout(() => {
+          resetPin();
+          if (window.UanifySuperAdmin) {
+            window.UanifySuperAdmin.openConsole();
+          }
+        }, 220);
+        return;
+      }
+
       const matched = UanifyState.users.find(u => u.pin === enteredPin || u.payrollNumber === enteredPin);
 
       if (matched) {
@@ -3291,6 +3310,335 @@ function enrichStationWithDefaults(st, idx) {
     if (avgPzasEl) avgPzasEl.textContent = total > 0 ? (87.4).toFixed(1) : '0';
     if (effEl) effEl.textContent = '92.3%';
   };
+
+  // ========================================================================
+  // SISTEMA SUPERADMIN EXCLUSIVO UANIFY (INTERNO & SECRETO DEVTOOLS)
+  // ========================================================================
+  const UanifySuperAdmin = {
+    modalEl: null,
+    currentModeBadge: null,
+    modeDescEl: null,
+    fileInputEl: null,
+    factorySnapshot: null,
+
+    init() {
+      this.modalEl = document.getElementById('modalUanifySuperAdmin');
+      this.currentModeBadge = document.getElementById('superAdminCurrentModeBadge');
+      this.modeDescEl = document.getElementById('superAdminModeDesc');
+      this.fileInputEl = document.getElementById('superAdminFileInput');
+
+      // Guardar snapshot de fábrica si aún no existe
+      try {
+        const storedFactory = localStorage.getItem('uanify_factory_mock_state');
+        if (!storedFactory) {
+          this.factorySnapshot = {
+            activeLots: JSON.parse(JSON.stringify(UanifyState.activeLots || [])),
+            bufferReadyLots: JSON.parse(JSON.stringify(UanifyState.bufferReadyLots || [])),
+            inventoryMovements: JSON.parse(JSON.stringify(UanifyState.inventoryMovements || [])),
+            producedTotal: UanifyState.producedTotal,
+            scrapTotal: UanifyState.scrapTotal,
+            secondGradeTotal: UanifyState.secondGradeTotal,
+            stationsData: (UanifyState.stations || []).map(s => ({ code: s.code, produced: s.produced, wipWaiting: s.wipWaiting, scrap: s.scrap, status: s.status }))
+          };
+          localStorage.setItem('uanify_factory_mock_state', JSON.stringify(this.factorySnapshot));
+        } else {
+          this.factorySnapshot = JSON.parse(storedFactory);
+        }
+      } catch (err) {
+        console.warn('SuperAdmin factory snapshot init:', err);
+      }
+
+      // Si el modo guardado era "clean", aplicar modo limpio al arranque
+      const savedMode = localStorage.getItem('uanify_active_dataset_mode');
+      if (savedMode === 'clean') {
+        this.applyCleanStateSilently();
+      }
+
+      this.bindButtons();
+      this.bindTriggers();
+    },
+
+    openConsole() {
+      if (!this.modalEl) this.modalEl = document.getElementById('modalUanifySuperAdmin');
+      if (this.modalEl) {
+        this.modalEl.style.display = 'flex';
+        this.refreshUI();
+      }
+    },
+
+    closeConsole() {
+      if (!this.modalEl) this.modalEl = document.getElementById('modalUanifySuperAdmin');
+      if (this.modalEl) this.modalEl.style.display = 'none';
+    },
+
+    refreshUI() {
+      const mode = localStorage.getItem('uanify_active_dataset_mode') || 'mock';
+      this.currentModeBadge = document.getElementById('superAdminCurrentModeBadge');
+      this.modeDescEl = document.getElementById('superAdminModeDesc');
+
+      if (this.currentModeBadge && this.modeDescEl) {
+        if (mode === 'clean') {
+          this.currentModeBadge.textContent = 'MODO SESIÓN LIMPIA (CERO ACTIVO)';
+          this.currentModeBadge.style.background = '#DC2626';
+          this.currentModeBadge.style.color = '#FFFFFF';
+          this.modeDescEl.textContent = 'Lotes, almacenes intermedios y contadores en CERO. Infraestructura de planta lista para registrar una corrida real desde cero.';
+        } else {
+          this.currentModeBadge.textContent = 'MODO MOCK DEMOSTRACIÓN (ACTIVO)';
+          this.currentModeBadge.style.background = '#10B981';
+          this.currentModeBadge.style.color = '#064E3B';
+          this.modeDescEl.textContent = 'El sistema contiene lotes demostrativos de la orden 49,633, métricas históricas de Andon y piezas acumuladas en almacenes intermedios.';
+        }
+      }
+    },
+
+    applyCleanStateSilently() {
+      UanifyState.activeLots = [];
+      UanifyState.bufferReadyLots = [];
+      UanifyState.inventoryMovements = [];
+      UanifyState.producedTotal = 0;
+      UanifyState.scrapTotal = 0;
+      UanifyState.secondGradeTotal = 0;
+      if (UanifyState.shiftSchedule) {
+        UanifyState.shiftSchedule.actualStartTime = null;
+        UanifyState.shiftSchedule.firstLotId = null;
+      }
+      (UanifyState.stations || []).forEach(st => {
+        st.produced = 0;
+        st.wipWaiting = 0;
+        st.scrap = 0;
+      });
+      const termEl = document.getElementById('terminalProduced');
+      if (termEl) termEl.textContent = '0 pzas';
+    },
+
+    setCleanMode() {
+      // 1. Respaldar estado mock actual si venía de mock
+      try {
+        const currentMock = {
+          activeLots: JSON.parse(JSON.stringify(UanifyState.activeLots || [])),
+          bufferReadyLots: JSON.parse(JSON.stringify(UanifyState.bufferReadyLots || [])),
+          inventoryMovements: JSON.parse(JSON.stringify(UanifyState.inventoryMovements || [])),
+          producedTotal: UanifyState.producedTotal,
+          scrapTotal: UanifyState.scrapTotal,
+          secondGradeTotal: UanifyState.secondGradeTotal,
+          stationsData: (UanifyState.stations || []).map(s => ({ code: s.code, produced: s.produced, wipWaiting: s.wipWaiting, scrap: s.scrap, status: s.status }))
+        };
+        localStorage.setItem('uanify_saved_mock_state', JSON.stringify(currentMock));
+      } catch (e) {}
+
+      // 2. Limpiar contadores y lotes a CERO
+      this.applyCleanStateSilently();
+      localStorage.setItem('uanify_active_dataset_mode', 'clean');
+
+      // 3. Refrescar vistas
+      this.refreshAllSystemViews();
+      this.refreshUI();
+
+      if (window.UanifyUI && window.UanifyUI.toast) {
+        window.UanifyUI.toast(
+          'Sesión limpia activada. Se han reseteado lotes y contadores a 0. Lista la planta para iniciar corrida desde cero.',
+          'info',
+          'Uanify SuperAdmin DevTools'
+        );
+      }
+    },
+
+    setMockMode() {
+      // 1. Restaurar desde factory snapshot o saved mock
+      let mockData = this.factorySnapshot;
+      try {
+        const savedMock = localStorage.getItem('uanify_saved_mock_state');
+        if (savedMock) mockData = JSON.parse(savedMock);
+      } catch (e) {}
+
+      if (mockData) {
+        UanifyState.activeLots = JSON.parse(JSON.stringify(mockData.activeLots || []));
+        UanifyState.bufferReadyLots = JSON.parse(JSON.stringify(mockData.bufferReadyLots || []));
+        UanifyState.inventoryMovements = JSON.parse(JSON.stringify(mockData.inventoryMovements || []));
+        UanifyState.producedTotal = mockData.producedTotal || 612;
+        UanifyState.scrapTotal = mockData.scrapTotal || 14;
+        UanifyState.secondGradeTotal = mockData.secondGradeTotal || 26;
+
+        if (mockData.stationsData) {
+          mockData.stationsData.forEach(sd => {
+            const st = (UanifyState.stations || []).find(s => s.code === sd.code);
+            if (st) {
+              st.produced = sd.produced;
+              st.wipWaiting = sd.wipWaiting;
+              st.scrap = sd.scrap;
+              st.status = sd.status || 'running';
+            }
+          });
+        }
+      }
+
+      localStorage.setItem('uanify_active_dataset_mode', 'mock');
+      this.refreshAllSystemViews();
+      this.refreshUI();
+
+      if (window.UanifyUI && window.UanifyUI.toast) {
+        window.UanifyUI.toast(
+          'Datos demostrativos de fábrica restaurados con éxito.',
+          'success',
+          'Uanify SuperAdmin DevTools'
+        );
+      }
+    },
+
+    exportSnapshot() {
+      const mode = localStorage.getItem('uanify_active_dataset_mode') || 'mock';
+      const nowStr = new Date().toISOString().replace(/[:.]/g, '-');
+      const snapshot = {
+        app: 'Tombstone Hats MES',
+        exportedBy: 'Uanify Engineering Master Console',
+        mode: mode,
+        version: UanifyState.version,
+        timestamp: new Date().toISOString(),
+        data: {
+          activeLots: UanifyState.activeLots,
+          bufferReadyLots: UanifyState.bufferReadyLots,
+          inventoryMovements: UanifyState.inventoryMovements,
+          producedTotal: UanifyState.producedTotal,
+          scrapTotal: UanifyState.scrapTotal,
+          secondGradeTotal: UanifyState.secondGradeTotal,
+          stations: UanifyState.stations,
+          operators: UanifyState.operators,
+          customMolds: UanifyState.customMolds,
+          productionRoutes: UanifyState.productionRoutes
+        }
+      };
+
+      const jsonStr = JSON.stringify(snapshot, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `uanify-mes-snapshot-${mode}-${nowStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (window.UanifyUI && window.UanifyUI.toast) {
+        window.UanifyUI.toast('Snapshot descargado en tu laptop a costo $0 USD.', 'success', 'Snapshot JSON');
+      }
+    },
+
+    importSnapshotFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported.data) throw new Error('Estructura de snapshot inválida');
+
+          const d = imported.data;
+          if (d.activeLots) UanifyState.activeLots = d.activeLots;
+          if (d.bufferReadyLots) UanifyState.bufferReadyLots = d.bufferReadyLots;
+          if (d.inventoryMovements) UanifyState.inventoryMovements = d.inventoryMovements;
+          if (typeof d.producedTotal === 'number') UanifyState.producedTotal = d.producedTotal;
+          if (typeof d.scrapTotal === 'number') UanifyState.scrapTotal = d.scrapTotal;
+          if (typeof d.secondGradeTotal === 'number') UanifyState.secondGradeTotal = d.secondGradeTotal;
+          if (d.stations) UanifyState.stations = d.stations;
+
+          localStorage.setItem('uanify_active_dataset_mode', imported.mode || 'custom');
+          this.refreshAllSystemViews();
+          this.refreshUI();
+
+          if (window.UanifyUI && window.UanifyUI.toast) {
+            window.UanifyUI.toast(`Snapshot cargado con éxito (${imported.mode || 'personalizado'}).`, 'success', 'Snapshot JSON');
+          }
+        } catch (err) {
+          if (window.UanifyUI && window.UanifyUI.toast) {
+            window.UanifyUI.toast(`Error al leer archivo JSON: ${err.message}`, 'danger', 'Error de Importación');
+          }
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    refreshAllSystemViews() {
+      if (window.renderPlantDepartmentsGrid) window.renderPlantDepartmentsGrid();
+      if (window.renderAndonCards) window.renderAndonCards();
+      if (window.renderInventorySection) window.renderInventorySection();
+      if (window.renderDeptWarehouseTable) window.renderDeptWarehouseTable();
+      const termEl = document.getElementById('terminalProduced');
+      if (termEl) termEl.textContent = `${UanifyState.producedTotal} pzas`;
+      window.dispatchEvent(new CustomEvent('uanify-dataset-changed', { detail: { mode: localStorage.getItem('uanify_active_dataset_mode') } }));
+    },
+
+    bindButtons() {
+      const btnClean = document.getElementById('btnSuperAdminSetClean');
+      const btnMock = document.getElementById('btnSuperAdminSetMock');
+      const btnExport = document.getElementById('btnSuperAdminExportSnapshot');
+      const btnImport = document.getElementById('btnSuperAdminImportSnapshot');
+      const closeTop = document.getElementById('btnCloseSuperAdminModal');
+      const closeFooter = document.getElementById('btnCloseSuperAdminFooter');
+
+      if (btnClean) btnClean.addEventListener('click', () => this.setCleanMode());
+      if (btnMock) btnMock.addEventListener('click', () => this.setMockMode());
+      if (btnExport) btnExport.addEventListener('click', () => this.exportSnapshot());
+      if (btnImport && this.fileInputEl) {
+        btnImport.addEventListener('click', () => this.fileInputEl.click());
+        this.fileInputEl.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) {
+            this.importSnapshotFile(e.target.files[0]);
+            this.fileInputEl.value = '';
+          }
+        });
+      }
+      if (closeTop) closeTop.addEventListener('click', () => this.closeConsole());
+      if (closeFooter) closeFooter.addEventListener('click', () => this.closeConsole());
+    },
+
+    bindTriggers() {
+      // 1. Atajo Global de Teclado: Ctrl + Shift + U
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'U' || e.key === 'u')) {
+          e.preventDefault();
+          this.openConsole();
+        }
+        if (e.key === 'Escape' && this.modalEl && this.modalEl.style.display !== 'none') {
+          this.closeConsole();
+        }
+      });
+
+      // 2. Trigger Táctil Oculto: 5 taps rápidos en el logo del sidebar
+      let logoTapCount = 0;
+      let lastTapTime = 0;
+      const logoEl = document.querySelector('.sidebar-brand-name') || document.querySelector('.sidebar-brand-logo');
+      if (logoEl) {
+        logoEl.style.cursor = 'pointer';
+        logoEl.addEventListener('click', () => {
+          const now = Date.now();
+          if (now - lastTapTime < 600) {
+            logoTapCount++;
+          } else {
+            logoTapCount = 1;
+          }
+          lastTapTime = now;
+
+          if (logoTapCount >= 5) {
+            logoTapCount = 0;
+            this.openConsole();
+          }
+        });
+      }
+
+      // 3. Trigger por URL Hash (#uanify-master)
+      if (window.location.hash === '#uanify-master' || window.location.hash === '#superadmin') {
+        setTimeout(() => this.openConsole(), 400);
+      }
+      window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#uanify-master' || window.location.hash === '#superadmin') {
+          this.openConsole();
+        }
+      });
+    }
+  };
+
+  window.UanifySuperAdmin = UanifySuperAdmin;
+  UanifySuperAdmin.init();
 
   initLoginScreen();
   initSubTabs();

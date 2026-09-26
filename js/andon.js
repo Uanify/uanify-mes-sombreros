@@ -57,7 +57,7 @@ function renderStations() {
       <div class="station-card ${statusClass}" data-station-id="${st.id}" style="${cardBorder}">
         <div class="station-header">
           <div>
-            <span class="station-num">${st.code} ${isQuality ? '· OK PUNTO DE CALIDAD' : ''}</span>
+            <span class="station-num">${isQuality ? 'Punto de Calidad' : 'Estación de Piso'}</span>
             <h4 class="station-name">${st.name}</h4>
             <small style="font-size:10px; color:#64748B; display:block; margin-top:2px;">${st.desc}</small>
           </div>

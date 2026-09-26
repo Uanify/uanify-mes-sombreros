@@ -748,18 +748,41 @@ Para garantizar una cobertura rigurosa y no quedarnos solo con el "camino feliz"
 * **Resultado Esperado:** Las 15 piezas se mueven al inventario de mostrador y las 5 se purgan como costo de merma definitivo, sin depender de un día rígido preestablecido.
 * **Estatus:** `[Por Validar / Especificación]`
 
+### TC-SEC-09: Apertura y Operación de Consola SuperAdmin Uanify (PIN 0000 / Ctrl+Shift+U)
+* **HU:** `US-46` | **Categoría:** Seguridad / DevTools Internas Uanify.
+* **Objetivo:** Comprobar el acceso sigiloso a la consola maestra de ingeniería y alternancia entre datos mock y sesión limpia a cero.
+* **Pasos:**
+  1. En pantalla de login, digitar `0000` en el Numpad táctil.
+  2. Verificar que se abra el modal `#modalUanifySuperAdmin` con título *"UANIFY ENGINEERING CONSOLE"*.
+  3. Pulsar botón `Limpiar a Cero (Sesión Limpia)` y verificar que el badge cambie a rojo *"MODO SESIÓN LIMPIA (CERO ACTIVO)"*.
+  4. Pulsar botón `Restaurar Datos Mock Fábrica` y comprobar retorno a verde *"MODO MOCK DEMOSTRACIÓN (ACTIVO)"*.
+  5. Probar atajo de teclado `Ctrl + Shift + U` desde cualquier otra pantalla para confirmar apertura global.
+* **Resultado Esperado:** La consola se abre de forma invisible para el cliente y conmuta limpiamente los datos sin recargar la aplicación ni incurrir en costos de servidor.
+* **Estatus:** `[Pasa - v2.19.0]`
+
+### TC-CFG-98: Navegación Ergonómica por Chips en Sub-Pestañas y Priorización del Nombre del Departamento
+* **HU:** `US-47` | **Categoría:** UI / Ergonomía Tablet.
+* **Objetivo:** Verificar la eliminación del scroll horizontal antiestético en sub-tabs y la visualización directa del nombre de estación sin IDs técnicos.
+* **Pasos:**
+  1. Acceder a `Configuración de Planta`.
+  2. Comprobar que las 7 sub-pestañas se distribuyen en pastillas/chips limpias sin barra de scrollbar horizontal.
+  3. En la tabla de departamentos, verificar que la primera columna muestra directamente *"Departamento & Proceso"* (*Prensas de Hormado*, *Corte de Cuadros*, etc.) sin columna de código obligatoria.
+  4. En la Terminal, comprobar que el selector y los botones de depósito muestran directamente *"Prensas de Hormado"* o *"Recorte y Refaldeado"*.
+* **Resultado Esperado:** Interfaz industrial limpia, sin scrollbars toscos y con protagonismo pleno a los nombres reales de las áreas.
+* **Estatus:** `[Pasa - v2.19.0]`
+
 ---
 
 ##  Matriz Consolidada de Cobertura de QA
 
 | Módulo del Sistema | Happy Path | Negativos / Bloqueo | Edge Cases / Alertas | Tablet / Táctil | Total Casos de Prueba |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **0. Seguridad y RBAC** | 3 | 3 | 1 | 1 | **8** |
+| **0. Seguridad y RBAC** | 4 | 3 | 1 | 1 | **9** |
 | **1. Terminal y Escaneo QR** | 5 | 5 | 5 | 3 | **18** |
 | **2. Tablero Andon** | 4 | 0 | 5 | 2 | **11** |
 | **3. Almacenes, Sombreros y Hormas** | 7 | 2 | 5 | 4 | **18** |
 | **4. Padrón de Operadores** | 4 | 2 | 2 | 1 | **9** |
 | **5. Analítica & KPIs de Planta** | 5 | 0 | 5 | 2 | **12** |
-| **6. Configuración y COMPAC** | 6 | 3 | 2 | 2 | **13** |
+| **6. Configuración, UX y COMPAC** | 7 | 3 | 2 | 2 | **14** |
 | **7. Tarjetas, Pedidos y Offline** | 3 | 1 | 3 | 1 | **8** |
-| **TOTALES CONSOLIDADOS** | **37** | **16** | **28** | **16** | **97 Casos de Prueba** |
+| **TOTALES CONSOLIDADOS** | **39** | **16** | **28** | **16** | **99 Casos de Prueba** |

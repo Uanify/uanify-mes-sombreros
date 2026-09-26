@@ -117,15 +117,14 @@ window.initConfigView = function() {
 
         return `
           <tr>
-            <td class="col-code"><span class="table-badge-code">${st.code || 'D-' + String(idx+1).padStart(2,'0')}</span></td>
             <td class="col-name">
-              <div class="table-cell-primary">${st.name}</div>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${st.name}</div>
               <span class="badge-subtle" style="${badgeStyle}; margin-top:4px; display:inline-block;">${typeLabel}</span>
               ${st.desc ? `<span class="table-cell-subtext">${st.desc}</span>` : ''}
             </td>
             <td>
-              <strong style="color:var(--text-primary); font-size:12.5px;"> ${warehouseName}</strong>
-              <span class="table-cell-subtext"> ${warehouseLoc}</span>
+              <strong style="color:var(--text-primary); font-size:12.5px;">${warehouseName}</strong>
+              <span class="table-cell-subtext">${warehouseLoc}</span>
             </td>
             <td>
               <span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span>
@@ -1807,9 +1806,8 @@ window.initConfigView = function() {
              data-code="${st.code}">
           <div class="sequence-item-info">
             ${canEdit ? `<span class="drag-handle-grip" title="Arrastrar con el ratón o dedo para reordenar la secuencia">⠿</span>` : ''}
-            <span class="sequence-order-badge">#${idx + 1}</span>
-            <strong style="font-family:var(--font-mono); color:${isQuality ? '#D97706' : 'var(--color-brand)'}; font-size:13px; min-width:46px;">${st.code}</strong>
-            <span style="font-weight:700; color:var(--text-primary); font-size:13.5px;">${st.name}</span>
+            <span class="sequence-order-badge">Paso #${idx + 1}</span>
+            <span style="font-weight:700; color:var(--text-primary); font-size:14px;">${st.name}</span>
             ${typeTag}
             <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">Ciclo: ${st.cycleTime || '30s'}</span>
           </div>
@@ -1817,7 +1815,7 @@ window.initConfigView = function() {
           <div class="sequence-controls">
             <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir este paso">▲</button>
             <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar este paso">▼</button>
-            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo"></button>
+            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo">×</button>
           </div>
           ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
         </div>

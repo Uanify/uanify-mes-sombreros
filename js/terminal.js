@@ -542,13 +542,13 @@ window.initTerminalView = function() {
     }
 
     if (lotOriginStationText) {
-      lotOriginStationText.textContent = `${lot.originStationCode || 'D-04'} ${lot.originStationName || 'Rampa de Ensamble'}`;
+      lotOriginStationText.textContent = lot.originStationName || 'Rampa de Ensamble';
     }
     if (lotCurrentStationText) {
-      lotCurrentStationText.textContent = `${lot.currentStationCode || 'D-04'} ${lot.currentStationName || 'Rampa de Ensamble'}`;
+      lotCurrentStationText.textContent = lot.currentStationName || 'Rampa de Ensamble';
     }
     if (lotTargetStationText) {
-      lotTargetStationText.textContent = `${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
+      lotTargetStationText.textContent = lot.targetStationName || 'Prensas de Hormado';
     }
 
     const modelName = lot.model || lot.modelName || 'Chaparral';
@@ -595,7 +595,7 @@ window.initTerminalView = function() {
     }
 
     if (btnDepositToNextBuffer) {
-      btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
+      btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationName || 'Prensas de Hormado'} (+${lot.pieces || 15} pzas)`;
     }
 
     if (lotScrapBannerContainer) {
@@ -781,14 +781,15 @@ window.initTerminalView = function() {
       const lotCount = countLotsAtStation(st.code);
       const scrapWarningCount = countScrapLotsAtStation(st.code);
 
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
       return `
         <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}">
           <div class="dept-card-header">
             <div>
-              <span class="dept-code-tag">${st.icon || ''} ${st.code}</span>
+              <span class="dept-code-tag">${isQuality ? 'Punto de Calidad' : 'Estación Productiva'}</span>
               <h4 class="dept-name-heading">${st.name}</h4>
             </div>
-            ${isAssigned ? `<span class="dept-assigned-badge">⭐ Mi Depto</span>` : ''}
+            ${isAssigned ? `<span class="dept-assigned-badge">Mi Departamento Asignado</span>` : ''}
           </div>
 
           <div class="dept-card-stats">
@@ -804,12 +805,12 @@ window.initTerminalView = function() {
 
           ${scrapWarningCount > 0 ? `
             <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:12px; font-weight:700;">
-               ${scrapWarningCount} lote(s) con sombrero de merma en torre
+              Atención: ${scrapWarningCount} lote(s) con sombrero de merma en torre
             </div>
           ` : ''}
 
           <button type="button" class="btn-primary btn-touch-lg" style="width:100%;" onclick="window.openDeptWarehouseModal('${st.code}')">
-             Ver Almacén Intermedio
+            Ver Almacén Intermedio
           </button>
         </div>
       `;
@@ -884,7 +885,7 @@ window.initTerminalView = function() {
     const st = UanifyState.stations.find(s => s.code === deptCode) || { code: deptCode, name: 'Departamento' };
 
     if (deptWarehouseModalTitle) {
-      deptWarehouseModalTitle.textContent = `Almacén Intermedio · ${st.code} ${st.name}`;
+      deptWarehouseModalTitle.textContent = `Almacén Intermedio · ${st.name}`;
     }
     if (deptWarehouseModalSub) {
       deptWarehouseModalSub.textContent = `Lotes y sublotes en proceso o en espera de recolección en este almacén.`;
@@ -1106,8 +1107,7 @@ window.initTerminalView = function() {
             <span class="timeline-step-type-badge">${typeLabel}</span>
           </div>
           <div class="timeline-step-body">
-            <div class="timeline-step-code">${st.icon || (isQuality ? '' : '')} ${st.code}</div>
-            <div class="timeline-step-name">${st.name}</div>
+            <div class="timeline-step-name" style="font-weight:700; font-size:13.5px; color:var(--text-primary);">${st.name}</div>
           </div>
           <div class="timeline-step-footer">
             ${stateFooter}
@@ -1464,29 +1464,33 @@ window.initTerminalView = function() {
         return user.assignedDepartments && user.assignedDepartments.includes(st.code);
       });
       if (supervisorDeptsBadge) {
-        supervisorDeptsBadge.textContent = `Mis Depts Asignados: ${user.assignedDepartments.join(', ')}`;
+        const deptNames = user.assignedDepartments.map(code => {
+          const s = UanifyState.stations.find(st => st.code === code);
+          return s ? s.name : code;
+        }).join(', ');
+        supervisorDeptsBadge.textContent = `Mis Departamentos Asignados: ${deptNames}`;
       }
     } else {
       if (supervisorDeptsBadge) {
-        supervisorDeptsBadge.textContent = `Acceso Global: Todos los Depts (D-01 a D-14)`;
+        supervisorDeptsBadge.textContent = `Acceso Global: Todas las Estaciones de Planta`;
       }
     }
 
     if (workflowDeptSelect) {
       workflowDeptSelect.innerHTML = allowedStations.map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
+        <option value="${st.code}">${st.name}</option>
       `).join('');
       populateMachinesAndOperators();
     }
 
     if (transferOriginDept) {
       transferOriginDept.innerHTML = UanifyState.stations.map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
+        <option value="${st.code}">${st.name}</option>
       `).join('');
     }
     if (transferDestDept) {
       transferDestDept.innerHTML = UanifyState.stations.slice(1).map(st => `
-        <option value="${st.code}">${st.code} · ${st.name}</option>
+        <option value="${st.code}">${st.name}</option>
       `).join('');
     }
   }

@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.17.0` | **Versión:** `v2.17.0`  
-> **Fecha de Emisión / Última Actualización:** 25 de Septiembre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.19.0` | **Versión:** `v2.19.0`  
+> **Fecha de Emisión / Última Actualización:** 26 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -507,6 +507,28 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque Q: Consola Maestra SuperAdmin Uanify, Portabilidad de Sesiones Limpias y Priorización de Nombres de Departamentos (v2.19.0)
+
+- **`RF-71` Consola Maestra SuperAdmin Uanify (Exclusivo Interno & DevTools):**
+  - **Acceso Sigiloso Blindado:** Acceso invisible para el cliente Tombstone mediante cuatro vías alternativas:
+    1. PIN maestro `0000` o `9999` en el Numpad táctil de inicio de sesión.
+    2. Atajo global de teclado `Ctrl + Shift + U` en cualquier vista del sistema.
+    3. 5 toques rápidos en el isotipo de Tombstone del sidebar.
+    4. Hash de URL `#uanify-master` o `#superadmin`.
+  - **Alternador Instantáneo de Dataset:** Conmutación de un toque entre:
+    * **Modo Demostración Mock (Fábrica):** Restaura el conjunto completo y enriquecido de datos demostrativos (lotes 49,633-1 a 4, mermas, órdenes y métricas históricas de Andon).
+    * **Modo Sesión Limpia (Cero Absoluto):** Vacía lotes en planta, piezas producidas, almacenes intermedios, paros y kárdex a 0, conservando la infraestructura base (los 14 departamentos, modelos base, hormas, usuarios y padrón de operadores) para iniciar una corrida limpia de prueba desde cero.
+  - **Portabilidad de Snapshots ($0 USD Gratis):** Descarga directa en el navegador de un archivo `.json` con el estado completo del sistema y selector de archivo para restaurar cualquier sesión previa en cualquier momento sin servidores de cobro recurrente.
+
+- **`RF-72` Navegación Ergonómica por Chips en Sub-Pestañas y Priorización Visual del Nombre del Departamento:**
+  - **Supresión de Scrollbar Horizontal Antiestético:** Rediseño de `.sub-nav-tabs` con `flex-wrap: wrap; gap: 8px;`, visualización en pastillas/chips limpias (`#F8FAFC` con borde `#E2E8F0` y activo en `#8B5E3C`), y supresión absoluta de la barra de scroll tosca de Windows mediante `scrollbar-width: none;` y `::-webkit-scrollbar { display: none; }`.
+  - **Priorización Visual del Nombre del Departamento:** Eliminación de los códigos de departamento (ej. `D-01`, `D-05`) como identificador visual primario en toda la interfaz de usuario:
+    * La tabla de departamentos en Configuración destaca como primera columna el **Nombre del Departamento & Proceso** (*Prensas de Hormado*, *Corte de Cuadros*, *Alambrado de Ala*).
+    * La tarjeta de estación en el Tablero Andon destaca el nombre del departamento y la clasificación funcional (*Punto de Calidad* o *Estación de Piso*).
+    * Los selectores de departamento en Terminal, modales de almacén intermedio, líneas de tiempo y botones de depósito muestran directamente el nombre del departamento de origen y destino sin forzar códigos técnicos que el personal de piso desconoce.
+
+---
+
 ##  4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -765,4 +787,10 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-64** | CRUD Integral de Filtros de Calidad & Tolerancias (C-XX)    | Configuración / Calidad      | `v2.16.0`           | OK En Producción |
 | **RF-65** | Rutas Específicas por Modelo con Drag & Drop (⠿)            | Configuración / Rutas        | `v2.16.0`           | OK En Producción |
 | **RF-66** | Estandarización Universal de Tablas, Filtros y Acciones     | Todos los Módulos / Interfaz | `v2.17.0`           | OK En Producción |
+| **RF-67** | Catálogo de Sombreros Fabricados, Fotos y Fichas Técnicas   | Almacén y Catálogos          | `v2.18.0`           | OK En Producción |
+| **RF-68** | Módulo Único Centralizado de Analítica & KPIs de Planta     | Analítica de Planta          | `v2.18.0`           | OK En Producción |
+| **RF-69** | Integración Aislada de CONTPAQi ERP (COMPAC)                | Configuración de Planta      | `v2.18.0`           | OK En Producción |
+| **RF-70** | Estilo Industrial Tradición Moderno y Sub-pestañas Sticky   | Todos los Módulos            | `v2.18.0`           | OK En Producción |
+| **RF-71** | Consola SuperAdmin Uanify y Portabilidad de Sesión Limpia   | SuperAdmin / DevTools        | `v2.19.0`           | OK En Producción |
+| **RF-72** | Navegación por Chips en Sub-tabs y Prioridad a Nombres Dept | Configuración / Terminal     | `v2.19.0`           | OK En Producción |
 

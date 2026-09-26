@@ -439,21 +439,40 @@ Cada historia de usuario cuenta con un indicador de estado para facilitar tu rev
   * Pantalla de revisión de segundas con registro de causas de defecto (mancha, deformación, costura) y reasignación de estatus en inventario.
   * La periodicidad y operativa de revisión se adaptará formalmente tras la reunión de validación (`DUD-07`).
 
+### US-46: Consola Maestra SuperAdmin Uanify y Portabilidad de Sesión Limpia / Mock
+* **Estatus:** `[Implementado v2.19.0]`
+* **Como:** Equipo de Ingeniería y QA de Uanify (exclusivo interno, oculto para el cliente).
+* **Quiero:** Acceder de forma sigilosa mediante atajo `Ctrl+Shift+U`, PIN `0000`/`9999` o 5 toques en el logo para conmutar de inmediato entre el dataset demostrativo mock de fábrica y una sesión limpia en cero absoluto.
+* **Para:** Probar corridas completas desde cero en planta sin interferencia de datos previos y descargar/cargar snapshots JSON offline sin servicios externos de cobro ($0 USD).
+* **Criterios de Aceptación:**
+  * Acceso invisible para el cliente Tombstone sin botones o enlaces expuestos en la interfaz pública.
+  * El modo sesión limpia resetea a 0 lotes, piezas producidas, buffers y paros, manteniendo intacta la infraestructura base de la planta (departamentos, modelos, hormas y operadores).
+  * El botón de exportación genera un archivo `.json` descargable de inmediato con el snapshot de prueba.
+
+### US-47: Navegación Ergonómica por Chips en Sub-Pestañas y Priorización Visual del Nombre de Departamento
+* **Estatus:** `[Implementado v2.19.0]`
+* **Como:** Supervisor y Operario de planta.
+* **Quiero:** Que las sub-pestañas se organicen de forma limpia en chips/pastillas sin scroll horizontal tosco y que todas las pantallas muestren los departamentos por su nombre real en lugar de un código técnico ID.
+* **Para:** Navegar ágilmente en tablets industriales y reconocer de inmediato en qué estación física me encuentro sin memorizar códigos como D-01 o D-05.
+* **Criterios de Aceptación:**
+  * Envoltorio flexible `flex-wrap: wrap` con barras de scroll horizontal ocultas en `.sub-nav-tabs`.
+  * La tabla de departamentos, tarjetas de terminal, timeline, Andon y botones de depósito destacan como dato primario el Nombre del Departamento (*Prensas de Hormado*, *Corte de Cuadros*, *Alambrado de Ala*).
+
 ---
 
 ##  Matriz de Resumen y Cobertura
 
-| Módulo | Historias Implementadas (`v2.18.0`) | Historias Propuestas / Por Validar | Total Historias |
+| Módulo | Historias Implementadas (`v2.19.0`) | Historias Propuestas / Por Validar | Total Historias |
 |---|:---:|:---:|:---:|
-| **0. Seguridad y RBAC** | 4 (US-01 a US-04) | 0 | 4 |
+| **0. Seguridad y RBAC** | 5 (US-01 a US-04, US-46) | 0 | 5 |
 | **1. Terminal y Escaneo QR** | 8 (US-05 a US-12) | 0 | 8 |
 | **2. Tablero Andon** | 4 (US-13 a US-16) | 1 (US-17) | 5 |
 | **3. Almacenes, Sombreros y Hormas** | 8 (US-18 a US-25) | 0 | 8 |
 | **4. Padrón de Operadores** | 3 (US-26 a US-28) | 0 | 3 |
 | **5. Analítica & KPIs** | 6 (US-29 a US-34) | 0 | 6 |
-| **6. Configuración y COMPAC** | 6 (US-35 a US-40) | 0 | 6 |
+| **6. Configuración, UX y COMPAC** | 7 (US-35 a US-40, US-47) | 0 | 7 |
 | **7. Tarjetas, Pedidos y Compras** | 0 | 5 (US-41 a US-45) | 5 |
-| **TOTAL GENERAL** | **39 Historias Listas** | **6 Historias a Validar** | **45 Historias** |
+| **TOTAL GENERAL** | **41 Historias Listas** | **6 Historias a Validar** | **47 Historias** |
 
 ---
 
