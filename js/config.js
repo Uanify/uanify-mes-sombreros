@@ -1439,7 +1439,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       cfgQualityTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="6">
+          <td colspan="7">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
@@ -1460,22 +1460,24 @@ window.initConfigView = function() {
       return `
         <tr>
           <td class="col-code">
-            <span class="table-badge-code" style="color:#D97706; background:rgba(217, 119, 6, 0.08); border-color:rgba(217, 119, 6, 0.25);">${q.code}</span>
+            <span class="table-badge-code" style="color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25);">${q.code}</span>
           </td>
           <td class="col-name">
-            <div class="table-cell-primary">${q.name}</div>
-            <span class="table-cell-subtext"> ${q.location || 'Nave de Producción'}</span>
+            <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${q.name}</div>
+            <span class="table-cell-subtext">${q.location || 'Nave de Producción'}</span>
           </td>
           <td>
             <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${q.tolerances || 'Tolerancia estándar'}</div>
-            <span class="table-cell-subtext">${q.criteria || q.desc || '—'}</span>
+            <span class="table-cell-subtext">${q.criteria || q.desc || 'Inspección visual de primera'}</span>
           </td>
           <td>
-            <div style="font-size:12px; font-weight:700; color:var(--text-primary);"> ${q.inspector || 'Inspectora de Calidad'}</div>
-            <span class="table-cell-subtext">Ciclo: <strong>${q.cycleTime || '18s'}</strong></span>
+            <div style="font-size:12.5px; font-weight:600; color:var(--text-primary);">${q.inspector || 'Inspectora de Turno'}</div>
           </td>
-          <td class="col-status">
-            <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}">
+          <td style="text-align:center;">
+            <span style="font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12.5px; color:var(--text-primary);">${q.cycleTime || '18s'}</span>
+          </td>
+          <td class="col-status" style="text-align:center;">
+            <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}" style="margin:0 auto;">
               <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
