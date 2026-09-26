@@ -215,7 +215,7 @@ const UanifyState = {
       name: 'Juan Manuel Pérez',
       email: 'jperez@tombstone.mx',
       role: 'supervisor',
-      roleName: 'Supervisor de Nave (Depts 05-08)',
+      roleName: 'Supervisor de Hormado & Acabado',
       pin: '1234',
       payrollNumber: '103',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
@@ -227,7 +227,7 @@ const UanifyState = {
       name: 'Roberto Méndez',
       email: 'rmendez@tombstone.mx',
       role: 'supervisor',
-      roleName: 'Supervisor de Preparación (Depts 01-04)',
+      roleName: 'Supervisor de Preparación & Dope',
       pin: '4321',
       payrollNumber: '104',
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
@@ -2067,7 +2067,12 @@ function enrichStationWithDefaults(st, idx) {
       if (!usersGrid) return;
       usersGrid.innerHTML = UanifyState.users.map(u => {
         const isSel = u.id === selectedUserId;
-        const deptsText = u.assignedDepartments.includes('*') ? 'Todos los Depts' : u.assignedDepartments.join(', ');
+        const deptsText = u.assignedDepartments.includes('*')
+          ? 'Todos los Departamentos'
+          : u.assignedDepartments.map(code => {
+              const st = (UanifyState.stations || []).find(s => s.code === code);
+              return st ? st.name : code;
+            }).join(' · ');
 
         return `
           <div class="login-user-card ${isSel ? 'selected' : ''}" data-user-id="${u.id}">

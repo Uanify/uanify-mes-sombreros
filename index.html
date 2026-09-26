@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.19.0</span>
+        <span class="system-version-pill login-version-pill">v2.20.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.19.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.20.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -571,17 +571,17 @@
                 <div class="route-sequence-flow">
                   <div class="flow-step-chip chip-origin">
                     <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
-                    <strong id="lotOriginStationText">D-04 Refuerzos</strong>
+                    <strong id="lotOriginStationText">Refuerzos de Corona</strong>
                   </div>
                   <span class="flow-arrow-icon">→</span>
                   <div class="flow-step-chip chip-current">
                     <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">Ubicación Actual:</span>
-                    <strong id="lotCurrentStationText">D-05 Prensas de Hormado</strong>
+                    <strong id="lotCurrentStationText">Prensas de Hormado</strong>
                   </div>
                   <span class="flow-arrow-icon">→</span>
                   <div class="flow-step-chip chip-target">
                     <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">>> Siguiente Destino:</span>
-                    <strong id="lotTargetStationText">D-06 Recorte y Refaldeado</strong>
+                    <strong id="lotTargetStationText">Recorte y Alambrado</strong>
                   </div>
                 </div>
 
@@ -630,7 +630,7 @@
               <!-- ACCIÓN PRINCIPAL DE DEPÓSITO (BOTÓN GIGANTE TABLET) -->
               <div>
                 <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
-                  Depositar Lote en Almacén de D-06 Recorte y Refaldeado
+                  Depositar Lote en Almacén de Recorte y Alambrado
                 </button>
                 <div style="font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:6px;">
                   Requiere asignación departamental del supervisor activo. Solo puedes mover lotes de tus departamentos.
@@ -662,7 +662,7 @@
                 <h3 style="font-size:16px; font-weight:700;">Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
                 <p class="section-desc">El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.</p>
               </div>
-              <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: D-05 a D-08</span>
+              <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: Prensas de Hormado a Brillo y Pulido</span>
             </div>
 
             <div class="config-grid" style="margin-bottom:20px;">
@@ -811,10 +811,10 @@
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                   <span class="badge-status" id="trackerCurrentStationBadge" style="background:var(--color-brand); color:#FFFFFF; font-size:12px; font-weight:800; padding:6px 12px; border-radius:8px;">
-                    UBICACIÓN ACTUAL: D-05 Prensas de Hormado
+                    UBICACIÓN ACTUAL: Prensas de Hormado
                   </span>
                   <span style="font-size:12.5px; color:var(--text-secondary);" id="trackerNextStationText">
-                    Próxima Parada: <strong>D-06 Recorte y Refaldeado</strong>
+                    Próxima Parada: <strong>Recorte y Alambrado</strong>
                   </span>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -906,12 +906,12 @@
                 <select id="bufferFilterScope" class="custom-select select-sm">
                   <option value="all">Ver Todos los Almacenes de Salida</option>
                   <option value="my-depts">Solo Lotes Listos para Mis Departamentos</option>
-                  <option value="D-01">Almacén Salida D-01 Corte</option>
-                  <option value="D-02">Almacén Salida D-02 Englopado y Camas</option>
-                  <option value="D-05">Almacén Salida D-05 Prensas Hidráulicas</option>
-                  <option value="D-06">Almacén Salida D-06 Recorte y Alambrado</option>
-                  <option value="D-09">Almacén Salida D-09 Pintura y Matizado</option>
-                  <option value="D-12">Almacén Salida D-12 Adorno (Tafilete y Toquilla)</option>
+                  <option value="D-01">Almacén Salida · Corte de Telar</option>
+                  <option value="D-02">Almacén Salida · Englopado y Camas</option>
+                  <option value="D-05">Almacén Salida · Prensas de Hormado</option>
+                  <option value="D-06">Almacén Salida · Recorte y Alambrado</option>
+                  <option value="D-09">Almacén Salida · Pintura y Matizado</option>
+                  <option value="D-12">Almacén Salida · Adorno (Tafilete y Toquilla)</option>
                 </select>
               </div>
               <span style="font-size:11.5px; color:var(--text-muted); margin-left:auto;">
@@ -1184,7 +1184,7 @@
                   Inventario de Subensambles & Tafiletes de Piel por Talla
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
-                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Departamento D-10.
+                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Ribete de Ala.
                 </p>
               </div>
             </div>
@@ -1304,13 +1304,13 @@
             <div class="filter-select-group">
               <select id="operatorDeptFilter" class="custom-select">
                 <option value="all">Todos los Departamentos</option>
-                <option value="D-01">D-01 Corte de Telar</option>
-                <option value="D-02">D-02 Englopado y Camas</option>
-                <option value="D-03">D-03 Refuerzos de Corona</option>
-                <option value="D-05">D-05 Prensas Hidráulicas</option>
-                <option value="D-06">D-06 Recorte y Alambrado</option>
-                <option value="D-09">D-09 Pintura y Matizado</option>
-                <option value="D-12">D-12 Adorno (Tafilete y Toquilla)</option>
+                <option value="D-01">Corte de Telar</option>
+                <option value="D-02">Englopado y Camas</option>
+                <option value="D-03">Refuerzos de Corona</option>
+                <option value="D-05">Prensas de Hormado</option>
+                <option value="D-06">Recorte y Alambrado</option>
+                <option value="D-09">Pintura y Matizado</option>
+                <option value="D-12">Adorno (Tafilete y Toquilla)</option>
               </select>
               <select id="operatorStatusFilter" class="custom-select">
                 <option value="all">Todos los Estatus</option>
@@ -1554,7 +1554,7 @@
                 <tbody id="supervisorKpisTableBody">
                   <tr>
                     <td><strong>Juan Manuel Pérez</strong></td>
-                    <td><span class="badge-subtle">D-05 Prensas a D-08 Brillo</span></td>
+                    <td><span class="badge-subtle">Prensas de Hormado a Brillo y Pulido</span></td>
                     <td><span style="font-family:var(--font-mono); font-weight:700;">41.2s</span></td>
                     <td><strong style="color:var(--color-green);">94.8%</strong></td>
                     <td>1.8%</td>
@@ -1562,7 +1562,7 @@
                   </tr>
                   <tr>
                     <td><strong>Roberto Méndez</strong></td>
-                    <td><span class="badge-subtle">D-01 Corte a D-04 Refuerzos</span></td>
+                    <td><span class="badge-subtle">Corte de Telar a Engomado y Secado</span></td>
                     <td><span style="font-family:var(--font-mono); font-weight:700;">36.4s</span></td>
                     <td><strong style="color:var(--color-brand);">91.2%</strong></td>
                     <td>2.1%</td>
@@ -1570,7 +1570,7 @@
                   </tr>
                   <tr>
                     <td><strong>Auxiliar de Rampa</strong></td>
-                    <td><span class="badge-subtle">D-05 Rampa Fraccionamiento</span></td>
+                    <td><span class="badge-subtle">Prensas de Hormado (Rampa)</span></td>
                     <td><span style="font-family:var(--font-mono); font-weight:700;">14.8s</span></td>
                     <td><strong style="color:var(--color-green);">98.0%</strong></td>
                     <td>0.2%</td>
@@ -2954,20 +2954,20 @@
           <div class="form-group">
             <label class="field-label">Departamento Productivo Asignado:</label>
             <select id="newOperatorDept" class="custom-select">
-              <option value="D-01">D-01 · Corte de Telar</option>
-              <option value="D-02">D-02 · Englopado y Camas</option>
-              <option value="D-03">D-03 · Refuerzos de Corona</option>
-              <option value="D-04">D-04 · Engomado y Secado</option>
-              <option value="D-05" selected>D-05 · Prensas Hidráulicas</option>
-              <option value="D-06">D-06 · Recorte y Alambrado</option>
-              <option value="D-07">D-07 · Planchado y Horno</option>
-              <option value="D-08">D-08 · Brillo y Pulido</option>
-              <option value="D-09">D-09 · Pintura y Matizado</option>
-              <option value="D-10">D-10 · Ribete de Ala</option>
-              <option value="D-11">D-11 · Hormado Final</option>
-              <option value="D-12">D-12 · Adorno (Tafilete y Toquilla)</option>
-              <option value="D-13">D-13 · Inspección Final</option>
-              <option value="D-14">D-14 · Empaque y Embarque</option>
+              <option value="D-01">Corte de Telar</option>
+              <option value="D-02">Englopado y Camas</option>
+              <option value="D-03">Refuerzos de Corona</option>
+              <option value="D-04">Engomado y Secado</option>
+              <option value="D-05" selected>Prensas de Hormado</option>
+              <option value="D-06">Recorte y Alambrado</option>
+              <option value="D-07">Planchado y Horno</option>
+              <option value="D-08">Brillo y Pulido</option>
+              <option value="D-09">Pintura y Matizado</option>
+              <option value="D-10">Ribete de Ala</option>
+              <option value="D-11">Hormado Final</option>
+              <option value="D-12">Adorno (Tafilete y Toquilla)</option>
+              <option value="D-13">Inspección Final</option>
+              <option value="D-14">Empaque y Embarque</option>
             </select>
           </div>
 
@@ -3379,11 +3379,11 @@
             </div>
             <div class="verify-meta-row">
               <span class="verify-meta-label">Ubicación Actual:</span>
-              <span class="verify-meta-val" style="color:var(--color-brand);" id="verifyOriginStation">D-05 Prensas de Hormado</span>
+              <span class="verify-meta-val" style="color:var(--color-brand);" id="verifyOriginStation">Prensas de Hormado</span>
             </div>
             <div class="verify-meta-row">
               <span class="verify-meta-label">Destino Automático:</span>
-              <span class="verify-meta-val" style="color:var(--color-green);" id="verifyTargetStation">D-06 Recorte y Refaldeado</span>
+              <span class="verify-meta-val" style="color:var(--color-green);" id="verifyTargetStation">Recorte y Alambrado</span>
             </div>
             <div class="verify-meta-row">
               <span class="verify-meta-label">Estado de Mermas:</span>
@@ -3440,7 +3440,7 @@
     <div class="modal-box card-glass" style="max-width:920px;">
       <div class="modal-header">
         <div>
-          <h3 id="deptWarehouseModalTitle">Almacén Intermedio · D-05 Prensas de Hormado</h3>
+          <h3 id="deptWarehouseModalTitle">Almacén Intermedio · Prensas de Hormado</h3>
           <p class="modal-header-sub" id="deptWarehouseModalSub">Lotes en espera de procesamiento o listos para recolección en este departamento</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseDeptWarehouseModal">&times;</button>
@@ -3516,7 +3516,7 @@
       <div class="modal-header">
         <div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">ESTACIÓN D-04 · RAMPA DE ENSAMBLE</span>
+            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">RAMPA DE ENSAMBLE</span>
             <span class="badge-subtle" style="font-weight:700;">Modo Operativo Especial</span>
           </div>
           <h3 style="margin-top:4px;">Modo Fraccionamiento de Lote Madre (60 pzas → 4 Sublotes de 15 pzas)</h3>

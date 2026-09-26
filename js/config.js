@@ -238,7 +238,11 @@ window.initConfigView = function() {
             <span class="table-cell-subtext">Supervisión total · ${totalOps} operadores</span>
           `;
         } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
-          const pills = u.assignedDepartments.map(d => `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${d}</span>`).join(' ');
+          const pills = u.assignedDepartments.map(d => {
+            const st = (UanifyState.stations || []).find(s => s.code === d);
+            const name = st ? st.name : d;
+            return `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${name}</span>`;
+          }).join(' ');
           const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
           deptsInfo = `
             <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; max-width:240px;">${pills}</div>
@@ -1014,7 +1018,11 @@ window.initConfigView = function() {
         user.badge = ' Ingeniero';
         user.assignedDepartments = ['*'];
       } else {
-        user.roleName = `Supervisor (${selectedDepts.length > 0 ? selectedDepts.join(', ') : 'Sin Deptos'})`;
+        const deptNames = selectedDepts.map(c => {
+          const st = (UanifyState.stations || []).find(s => s.code === c);
+          return st ? st.name : c;
+        });
+        user.roleName = `Supervisor (${deptNames.length > 0 ? deptNames.join(', ') : 'Sin Deptos'})`;
         user.badge = ' Supervisor';
         user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : [];
       }
@@ -1029,8 +1037,15 @@ window.initConfigView = function() {
         }
       }
 
+      const savedDeptNames = user.assignedDepartments.includes('*')
+        ? 'Todos los Departamentos'
+        : user.assignedDepartments.map(c => {
+            const st = (UanifyState.stations || []).find(s => s.code === c);
+            return st ? st.name : c;
+          }).join(', ');
+
       window.UanifyUI.toast(
-        `Usuario "${user.name}" actualizado. Departamentos asignados: ${user.assignedDepartments.join(', ') || 'Ninguno'}.`,
+        `Usuario "${user.name}" actualizado. Departamentos asignados: ${savedDeptNames || 'Ninguno'}.`,
         'success',
         'OK Usuario y Deptos Actualizados'
       );

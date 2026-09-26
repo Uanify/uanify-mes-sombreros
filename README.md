@@ -45,16 +45,22 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 ---
 
-##  Acceso Directo y Ejecución
+## Acceso Directo y Ejecución
 
 - **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
-- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-72`), no funcionales y matriz de trazabilidad.
+- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-73`), no funcionales y matriz de trazabilidad.
 - **Documentación Ejecutiva:** Consulta la carpeta `docs/` con las guías de descubrimiento y banco de proyectos adaptadas a Tombstone Hats.
 
 ---
 
-##  Historial de Versiones (Changelog)
+## Historial de Versiones (Changelog)
+
+### [2.20.0] - 2026-09-26
+- **Erradicación Total de Códigos Técnicos de Departamento en Login y Pantallas de Planta (`RF-72`, `RF-73`):**
+  - **Selector de Perfiles de Login:** Los supervisores ya no muestran `(Depts 05-08)` en su rol ni listas de códigos `D-05, D-06...` en su ficha de acceso; ahora visualizan sus nombres de cargo y tramo departamental real (*Supervisor de Hormado & Acabado · Prensas de Hormado · Recorte y Alambrado · Planchado y Horno · Brillo y Pulido*).
+  - **Terminal, Timeline y Modales:** Sustitución integral de textos estáticos y dinámicos que contenían `D-01` a `D-14` por sus nombres industriales oficiales (*Corte de Telar, Englopado y Camas, Refuerzos de Corona, Engomado y Secado, Prensas de Hormado, Recorte y Alambrado, etc.*) en el visor de tarjeta viajera, almacén intermedio, flujo secuencial de ruta, modales de verificación y selector de altas de operadores.
+  - **Preservación de Capa Lógica:** Los identificadores técnicos internos (`code`, `deptCode`, `assignedDepartments`) se mantienen intactos a nivel de lógica de datos, garantizando cero impacto en validaciones de permisos RBAC y trazabilidad.
 
 ### [2.19.0] - 2026-09-26
 - **Consola Maestra SuperAdmin Uanify (`RF-71`):** Entorno exclusivo y sigiloso para Uanify (oculto para el cliente) accesible mediante PIN maestro `0000`/`9999` en login, atajo `Ctrl+Shift+U` o 5 toques en el logo de la barra lateral. Permite alternar de inmediato entre el **Modo Demostración Mock** (datos enriquecidos de fábrica) y el **Modo Sesión Limpia** (0 lotes y contadores reseteados para pruebas en vivo desde cero), con descarga gratuita de snapshots JSON ($0 USD) y carga de respaldos locales.

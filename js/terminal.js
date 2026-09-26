@@ -640,10 +640,14 @@ window.initTerminalView = function() {
 
       // Validación de Restricción Departamental
       if (!isSuperUser && (!user.assignedDepartments || !user.assignedDepartments.includes(currentStationCode))) {
+        const myDeptNames = user.assignedDepartments.map(c => {
+          const st = (UanifyState.stations || []).find(s => s.code === c);
+          return st ? st.name : c;
+        }).join(', ');
         window.UanifyUI.toast(
-          `No tienes autorización para trasladar este lote. Se encuentra en ${activeScannedLot.currentStationName} (${currentStationCode}), pero tus departamentos asignados son: ${user.assignedDepartments.join(', ')}.`,
+          `No tienes autorización para trasladar este lote. Se encuentra en ${activeScannedLot.currentStationName}, pero tus departamentos asignados son: ${myDeptNames}.`,
           'warning',
-          ' Restricción de Supervisor'
+          'Restricción de Supervisor'
         );
         return;
       }
@@ -946,7 +950,7 @@ window.initTerminalView = function() {
         clase: '1,000X MASTER TELAR',
         pieces: 15,
         operator: 'Jorge',
-        targetDept: 'D-06 Recorte',
+        targetDept: 'Recorte y Alambrado',
         hasScrap: false
       });
       lotsList.push({
@@ -956,7 +960,7 @@ window.initTerminalView = function() {
         clase: '1,000X MASTER TELAR',
         pieces: 60,
         operator: 'Pedro Morales',
-        targetDept: 'D-05 Prensas',
+        targetDept: 'Prensas de Hormado',
         hasScrap: false
       });
     }
@@ -1150,10 +1154,14 @@ window.initTerminalView = function() {
 
     const currentStationCode = lot.currentStationCode || 'D-05';
     if (!isSuperUser && (!user.assignedDepartments || !user.assignedDepartments.includes(currentStationCode))) {
+      const myDeptNames = user.assignedDepartments.map(c => {
+        const st = (UanifyState.stations || []).find(s => s.code === c);
+        return st ? st.name : c;
+      }).join(', ');
       window.UanifyUI.toast(
-        `Solo puedes mover lotes de tus departamentos asignados (${user.assignedDepartments.join(', ')}). Este lote pertenece a ${lot.currentStation || currentStationCode}.`,
+        `Solo puedes mover lotes de tus departamentos asignados (${myDeptNames}). Este lote pertenece a ${lot.currentStationName || lot.currentStation || 'otra estación'}.`,
         'warning',
-        ' Restricción de Supervisor'
+        'Restricción de Supervisor'
       );
       return false;
     }
@@ -1314,9 +1322,9 @@ window.initTerminalView = function() {
       closeRampaModal();
 
       window.UanifyUI.toast(
-        `Lote Madre ${cleanId} fraccionado en 4 sublotes de 15 piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de D-05 Prensas de Hormado.`,
+        `Lote Madre ${cleanId} fraccionado en 4 sublotes de 15 piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de Prensas de Hormado.`,
         'success',
-        ' Fraccionamiento en Rampa Completado'
+        'Fraccionamiento en Rampa Completado'
       );
     });
   }
