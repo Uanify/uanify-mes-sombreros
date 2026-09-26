@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.21.0</span>
+        <span class="system-version-pill login-version-pill">v2.22.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.21.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.22.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1054,7 +1054,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="whSearchInput" class="form-input" placeholder="Buscar almacén por código, nombre, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1213,7 +1213,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="kardexSearchInput" class="form-input" placeholder="Buscar por lote, material, custodio, folio..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1298,7 +1298,7 @@
         <div class="uanify-filter-toolbar">
           <div class="filter-toolbar-inputs">
             <div class="filter-search-box">
-              <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+              <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               <input type="text" id="operatorSearchInput" class="form-input" placeholder="Buscar por nombre, nómina, máquina o departamento..." autocomplete="off">
             </div>
             <div class="filter-select-group">
@@ -1837,7 +1837,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre, correo, departamento..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1891,7 +1891,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="cfgOperatorSearchInput" class="form-input" placeholder="Buscar por nómina, nombre, departamento, máquina..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1950,7 +1950,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por código, departamento, supervisor, máquina..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1977,14 +1977,12 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:220px;">Departamento & Proceso</th>
+                    <th class="col-name" style="min-width:200px;">Departamento & Proceso</th>
                     <th>Almacén Intermedio (Buffer)</th>
-                    <th>Takt Time</th>
-                    <th>Capacidad WIP</th>
-                    <th>Supervisor Responsable</th>
-                    <th>Maquinaria / Prensas</th>
-                    <th class="col-status">Estatus</th>
-                    <th class="col-actions">Acciones</th>
+                    <th>Takt Time & Capacidad</th>
+                    <th>Supervisor & Maquinaria</th>
+                    <th class="col-status" style="width:110px; text-align:center;">Estatus</th>
+                    <th class="col-actions" style="width:90px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgDepartmentsTable">
@@ -2004,7 +2002,7 @@
                 <p class="section-desc" style="margin-bottom:0;">Configuración técnica de áreas de inspección, tolerancias, tiempos de ciclo e inspectores responsables. Estos filtros se insertan como paradas obligatorias en las secuencias de rutas de fabricación.</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn-primary" id="btnOpenCreateQualityModal" onclick="window.openCreateQualityModal()" style="min-height:48px; padding:0 20px; font-weight:700; background:#D97706; border-color:#B45309;">
+                <button class="btn-primary" id="btnOpenCreateQualityModal" onclick="window.openCreateQualityModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
                   + Dar de Alta Filtro de Calidad
                 </button>
               </div>
@@ -2014,7 +2012,7 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon" style="font-weight:700; font-size:12px; opacity:0.6;">BUSCAR</span>
+                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                   <input type="text" id="qualitySearchInput" class="form-input" placeholder="Buscar por código, filtro, criterio, inspector, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -2036,13 +2034,12 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-code">Código</th>
-                    <th class="col-name">Filtro de Calidad & Área</th>
-                    <th>Criterios & Tolerancias Técnicas</th>
-                    <th>Inspector Responsable</th>
-                    <th>Tiempo de Ciclo</th>
-                    <th class="col-status">Estatus</th>
-                    <th class="col-actions">Acciones</th>
+                    <th class="col-code" style="width:85px;">Código</th>
+                    <th class="col-name" style="min-width:200px;">Filtro de Calidad & Área</th>
+                    <th>Criterios & Tolerancias</th>
+                    <th>Inspector & Ciclo</th>
+                    <th class="col-status" style="width:110px; text-align:center;">Estatus</th>
+                    <th class="col-actions" style="width:90px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgQualityTable">
@@ -3187,7 +3184,7 @@
           <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelCreateQuality" style="flex:1;">
             Cancelar
           </button>
-          <button type="submit" class="btn-primary btn-touch-hero" id="btnSubmitQualityModal" style="flex:1.4; background:#D97706; border-color:#B45309;">
+          <button type="submit" class="btn-primary btn-touch-hero" id="btnSubmitQualityModal" style="flex:1.4;">
             Guardar Filtro de Calidad
           </button>
         </div>
@@ -3607,7 +3604,7 @@
         <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelRampaModal" style="flex:1;">
           Cancelar / Salir del Modo
         </button>
-        <button type="button" class="btn-primary btn-touch-hero" id="btnExecuteRampaFraccionamiento" style="flex:1.4; background:linear-gradient(135deg, #8B5E3C 0%, #6E4426 100%);">
+        <button type="button" class="btn-primary btn-touch-hero" id="btnExecuteRampaFraccionamiento" style="flex:1.4;">
           Ejecutar Fraccionamiento a 4 Sublotes
         </button>
       </div>
@@ -3715,11 +3712,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.19.0"></script>
-  <script src="js/andon.js?v=2.19.0"></script>
-  <script src="js/terminal.js?v=2.19.0"></script>
-  <script src="js/engineer.js?v=2.19.0"></script>
-  <script src="js/executive.js?v=2.19.0"></script>
-  <script src="js/config.js?v=2.19.0"></script>
+  <script src="js/app.js?v=2.22.0"></script>
+  <script src="js/andon.js?v=2.22.0"></script>
+  <script src="js/terminal.js?v=2.22.0"></script>
+  <script src="js/engineer.js?v=2.22.0"></script>
+  <script src="js/executive.js?v=2.22.0"></script>
+  <script src="js/config.js?v=2.22.0"></script>
 </body>
 </html>

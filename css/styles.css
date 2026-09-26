@@ -1428,11 +1428,17 @@ body.industrial-theme {
     min-height: 48px;
   }
 
-  .btn-sm,
-  .btn-table-action {
+  .btn-sm {
     min-height: 40px;
     padding: 0 14px;
     font-size: 13px;
+  }
+
+  .btn-table-action {
+    width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
   }
 
   .btn-icon {

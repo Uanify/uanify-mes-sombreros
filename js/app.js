@@ -2262,9 +2262,9 @@ function enrichStationWithDefaults(st, idx) {
                 </span>
               </td>
               <td class="col-actions">
-                <div class="action-btns-cell">
+                <div class="action-btns-cell" style="justify-content:center;">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.viewWarehouseDetails('${wh.code}')" title="Ver lotes e inventario">
-                    Ver Lotes
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   </button>
                 </div>
               </td>
@@ -2381,18 +2381,15 @@ function enrichStationWithDefaults(st, idx) {
                 </span>
               </td>
               <td class="col-actions">
-                <div class="action-btns-cell">
+                <div class="action-btns-cell" style="justify-content:center;">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.openHatTechnicalSheet('${h.id}')" title="Ver ficha técnica oficial con foto">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    Ficha
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </button>
                   <button type="button" class="btn-table-action btn-action-edit" onclick="window.editHat('${h.id}')" title="Editar especificaciones de modelo">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Editar
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
                   <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteHat('${h.id}')" title="Descontinuar modelo del catálogo">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Baja
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
               </td>
@@ -2509,18 +2506,15 @@ function enrichStationWithDefaults(st, idx) {
                 </span>
               </td>
               <td class="col-actions">
-                <div class="action-btns-cell">
+                <div class="action-btns-cell" style="justify-content:center;">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.openMoldTechnicalSheet('${m.code}')" title="Ver ficha técnica y ciclos de prensado">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    Ficha
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </button>
                   <button type="button" class="btn-table-action btn-action-edit" onclick="window.editMold('${m.code}')" title="Editar especificación de molde">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Editar
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
                   <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteMold('${m.code}')" title="Dar de baja molde">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Baja
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
               </td>
@@ -2641,10 +2635,10 @@ function enrichStationWithDefaults(st, idx) {
               <td><strong style="font-family:'JetBrains Mono'; font-size:13px;">${m.qty}</strong></td>
               <td><span style="font-size:11.5px; color:var(--text-secondary);"> ${m.user}</span></td>
               <td class="col-status"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px;">${m.doc}</span></td>
-              <td class="col-actions">
-                <div class="action-btns-cell">
+              <td class="col-actions" style="text-align:center;">
+                <div class="action-btns-cell" style="justify-content:center;">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver vale de traspaso">
-                     Detalle
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   </button>
                 </div>
               </td>
@@ -3261,13 +3255,13 @@ function enrichStationWithDefaults(st, idx) {
                 <span class="status-dot"></span>${op.status}
               </span>
             </td>
-            <td class="col-actions">
-              <div class="action-btns-cell">
+            <td class="col-actions" style="text-align:center;">
+              <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
-                  Editar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
-                  Baja
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
             </td>

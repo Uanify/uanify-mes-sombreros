@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.19.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.22.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-##  Arquitectura Funcional Tombstone Hats (v2.19.0)
+## Arquitectura Funcional Tombstone Hats (v2.22.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
@@ -135,6 +135,14 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 - **Catálogo de Hormas:** Registro de moldes de sombreros de San Francisco del Rincón con asignación a prensas de vapor.
 - **KPIs Exclusivos:** Rendimiento de departamentos y supervisores restringido a Ingeniería y Dirección.
 - **Alertas Estandarizadas In-App:** Supresión total de alertas nativas del navegador (`alert`, `confirm`); estandarización con notificaciones toast y modales in-app `UanifyUI`.
+
+### [2.22.0] - 2026-09-26
+- **Estandarización Universal de Inputs y Selects:** Todos los dropdowns `<select>` implementan flecha chevron SVG industrial estilizada (`appearance: none; background-image: data:image/svg+xml`), padding de seguridad a 36px y foco cuero de marca `#8B5E3C`.
+- **Buscadores sin Empalme:** Reemplazo de texto plano en buscadores por vector SVG de lupa posicionado a 12px con padding izquierdo seguro a 38px en todos los módulos.
+- **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas en Departamentos y Filtros de Calidad; eliminación de descripciones largas innecesarias en celdas para evitar saturación visual y sobrecarga de información.
+- **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Los botones de fila en todas las tablas (`.btn-table-action`) se estandarizaron como botones cuadrados compactos de 32x32px con iconos SVG claros (Editar en gris suave `#F1F5F9`/`#E2E8F0`, Eliminar en rojo pastel `#FEF2F2`/`#FEE2E2`, Ver/Ficha en verde pastel `#F0FDF4`/`#DCFCE7`), sin texto intrusivo y con tooltips nativos en `title`.
+- **Estandarización de Paleta de Botones del Sistema:** Unificación de todos los botones primarios a `--color-brand` artesanal, eliminando colores arbitrarios o ad-hoc en módulos aislados.
+- **Regla 0.35 y 0.37 en AGENTS.md:** Documentación exhaustiva de los estándares de tablas, inputs y botones para garantizar la escalabilidad y consistencia futura del software.
 
 ### [2.16.0] - 2026-09-24
 - **Rutas y Secuencias Específicas por Modelo con Drag & Drop (`⠿`):** Reordenamiento interactivo táctil y de cursor para secuencias de manufactura vinculadas estrictamente a modelos específicos de sombreros (`El Viejonón`, `Denver Master`, `Chaparral`, etc.).

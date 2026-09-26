@@ -1,15 +1,17 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
+
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.21.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
+> **Versión Actual:** `v2.22.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
 ### Suite de Documentación Viva del Proyecto:
-* **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
-* **Requerimientos del Sistema (PRD / SRS):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
-* **Historias de Usuario (45 US):** [docs/HISTORIAS_DE_USUARIO.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/HISTORIAS_DE_USUARIO.md)
-* **Matriz de Casos de Prueba (97 TC):** [docs/CASOS_DE_PRUEBA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/CASOS_DE_PRUEBA.md)
-* **Banco Oficial de Dudas Técnicas para Reunión:** [docs/DUDAS_Y_VALIDACIONES_CLIENTE.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DUDAS_Y_VALIDACIONES_CLIENTE.md)
+
+- **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
+- **Requerimientos del Sistema (PRD / SRS):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
+- **Historias de Usuario (45 US):** [docs/HISTORIAS_DE_USUARIO.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/HISTORIAS_DE_USUARIO.md)
+- **Matriz de Casos de Prueba (97 TC):** [docs/CASOS_DE_PRUEBA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/CASOS_DE_PRUEBA.md)
+- **Banco Oficial de Dudas Técnicas para Reunión:** [docs/DUDAS_Y_VALIDACIONES_CLIENTE.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DUDAS_Y_VALIDACIONES_CLIENTE.md)
 
 ---
 
@@ -18,6 +20,7 @@
 El sistema **Tombstone Hats MES** (Manufacturing Execution System) es una plataforma digital de control de piso y tablero Andon industrial diseñada específicamente para resolver las ineficiencias de conteo manual, discrepancias en almacenes intermedios, balanceo de líneas y visibilidad directiva en la planta matriz de **Tombstone Hats** en San Francisco del Rincón, Guanajuato.
 
 ### Objetivos Clave de Negocio
+
 1. **Eliminar el papel y los "vales de libreta":** Digitalizar el avance de piezas y nómina por destajo mediante escaneo de códigos QR en tarjetas viajeras.
 2. **Tablero Andon Digital en Nave Central:** Sustituir pizarrones manuales por una pantalla Smart TV de 50" con semáforos en tiempo real, Takt Time y estado hora por hora.
 3. **Control de Almacenes Intermedios (WIP):** Evitar acumulaciones y cuellos de botella mediante alertas automáticas al superar umbrales (ej. >70 piezas en rampa).
@@ -138,23 +141,24 @@ graph TD
 
 ---
 
-##  2. Mapeo del Proceso Productivo Real (Planta Tombstone)
+## 2. Mapeo del Proceso Productivo Real (Planta Tombstone)
 
 A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edmundo González**) e Ingeniería de Producción (**Carlos Ortiz**), el sistema modela fielmente la realidad física del proceso:
 
 ### Tipos de Producto
+
 1. **Sombreros de 2 Piezas (Producto Campeón):** Copa y falda moldeadas y termo-fusionadas con adhesivo especial y calor. Requiere fraccionamiento de lote en rampa.
 2. **Campana Preformada (Fieltro/Lana):** Proceso directo y corto de una sola pieza, saltando etapas de ensamble de copa/falda.
 3. **Línea de Accesorios y Toquillas:** Taller paralelo para toquillas de piel, herrajes metálicos y plumas.
 
 ---
 
-##  8. Historial de Versiones (SemVer)
+## 8. Historial de Versiones (SemVer)
 
 - **`v2.19.0` (2026-09-26):**
   - **Consola Maestra SuperAdmin Uanify (`RF-71`):** Entorno exclusivo y sigiloso para Uanify (oculto para el cliente) accesible mediante PIN maestro `0000`/`9999` en login, atajo `Ctrl+Shift+U` o 5 toques en el logo de la barra lateral. Permite alternar de inmediato entre el **Modo Demostración Mock** (datos enriquecidos de fábrica) y el **Modo Sesión Limpia** (0 lotes y contadores reseteados para pruebas en vivo desde cero), con descarga gratuita de snapshots JSON ($0 USD) y carga de respaldos locales.
   - **Navegación Ergonómica por Chips en Sub-Pestañas (`RF-72`):** Rediseño de la barra interna de sub-pestañas (`.sub-nav-tabs`) con disposición flex-wrap responsive, eliminación definitiva del scrollbar horizontal antiestético en Windows y optimización visual tipo chips/pastillas industriales.
-  - **Priorización Visual del Nombre del Departamento (`RF-72`):** Erradicación de los códigos técnicos (ej. `D-01`, `D-05`) como elemento visual primario forzado; la interfaz ahora muestra protagónica y claramente los nombres reales de planta (*Prensas de Hormado*, *Corte de Cuadros*, *Alambrado de Ala*, *Rampa de Ensamble*) en tablas, tarjetas, selectores de terminal, timeline y botones de depósito.
+  - **Priorización Visual del Nombre del Departamento (`RF-72`):** Erradicación de los códigos técnicos (ej. `D-01`, `D-05`) como elemento visual primario forzado; la interfaz ahora muestra protagónica y claramente los nombres reales de planta (_Prensas de Hormado_, _Corte de Cuadros_, _Alambrado de Ala_, _Rampa de Ensamble_) en tablas, tarjetas, selectores de terminal, timeline y botones de depósito.
   - **Teclado Táctil Numpad de PIN de 4 Dígitos con Auto-Submit (`US-01`, `TC-SEC-08`):** Acceso rápido de piso en menos de 2 segundos, con feedback luminoso en dots y animación de sacudida en error.
 
 - **`v2.18.0` (2026-09-25):**
@@ -191,14 +195,16 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
   - **Rediseño Ergonómico de Terminal y Verificación de Mica:** Extracción total de datos por QR sin captura manual, verificación previa de tarjeta física escaneada, depósito automático por secuencia de ruta y restricción departamental para supervisores.
   - **Botones Grandes y Ergonomía Táctil Universal:** Alturas de 48px a 56px para optimización táctil en tabletas.
 
-
 ### Tamaño de Lotes y Trazabilidad Viajera
+
 - **Lote Madre:** **60 piezas** que ingresan desde almacén de materia prima (copas y faldas sin conformar).
 - **Rampa de Fraccionamiento:** Al llegar a la rampa de ensamble, el lote madre de 60 se divide en **4 sublotes de 15 piezas** (ej. lote `49,633` se desglosa en sublotes `1`, `2`, `3` y `4`).
 - **Tarjeta Viajera Física con Código QR:** Cada torre de 15 piezas lleva adherida una tarjeta viajera protegida en mica transparente que viaja con el lote hasta empaque.
 
 ### 2.1 Anatomía y Especificación Oficial de la Tarjeta Viajera (Evidencia Fotográfica de Planta)
+
 A partir de las tarjetas viajeras capturadas directamente en las líneas de ensamble de San Francisco del Rincón:
+
 1. **Porta-Gafete y Mica Protectora:** Funda plástica transparente con orificio superior reforzado para colgar de la torre de sombreros con cordel.
 2. **Sticker Redondo de Operador (Esquina Superior Izquierda):** Calcomanía azul rotulada con el nombre del operario responsable (ej. `JORGE`).
 3. **Encabezado de Ruta Departamental:** `TARJETA HIDRÁULICAS - ADORNO` (define el tramo del flujo entre estaciones).
@@ -219,28 +225,30 @@ A partir de las tarjetas viajeras capturadas directamente en las líneas de ensa
     - **Digitalización QR:** El lector web y cámara decodifican la tarjeta viajera identificando automáticamente si es lote madre o el sublote específico.
 
 ### Los 14 Departamentos y Almacenes Modelados
-| Código | Departamento / Estación | Tipo | Takt Time Std | Capacidad Turno Único | Supervisor / Responsable |
-|---|---|---|---|---|---|
-| **D-01** | Almacén Materia Prima & Campanas | Logística | 20s | 850 pzas | J. Alatorre |
-| **D-02** | Engomado & Apresto Químico | Proceso | 35s | 850 pzas | R. Méndez |
-| **D-03** | Prensas de Hormado a Vapor (Matriz) | Proceso Cuello de Botella | 42s | 850 pzas | C. Ortiz |
-| **D-04** | Troquelado & Asentado de Falda | Proceso | 30s | 850 pzas | M. Torres |
-| **D-05** | Almacén Intermedio: Rampa (Fracc. 15 pzas) | Almacén WIP | 15s | 850 pzas | J. M. Pérez |
-| **D-06** | Ribeteado & Tafilete Interior | Proceso | 45s | 850 pzas | L. García |
-| **D-07** | Subensamble: Taller de Toquillas & Piel | Subproceso | 25s | 850 pzas | E. Rocha |
-| **D-08** | Montaje de Toquillas, Plumas & Herrajes | Proceso | 38s | 850 pzas | S. Vargas |
-| **D-09** | Enformado & Planchado Final | Proceso | 32s | 850 pzas | F. Delgado |
-| **D-10** | Almacén Pulmón Pre-Calidad | Almacén WIP | 15s | 850 pzas | J. M. Pérez |
-| **D-11** | Inspección de Calidad (Audit 100%) | Control de Calidad | 40s | 850 pzas | B. Fonseca |
-| **D-12** | Almacén de Merma & Retrabajo | Calidad / Scrap | N/A | — | B. Fonseca |
-| **D-13** | Empaque B2B & Embalaje de Cajas | Empaque | 28s | 850 pzas | G. Luna |
-| **D-14** | Embarques & Salida a Mayoristas | Distribución | 20s | 850 pzas | H. Estrada |
+
+| Código   | Departamento / Estación                    | Tipo                      | Takt Time Std | Capacidad Turno Único | Supervisor / Responsable |
+| -------- | ------------------------------------------ | ------------------------- | ------------- | --------------------- | ------------------------ |
+| **D-01** | Almacén Materia Prima & Campanas           | Logística                 | 20s           | 850 pzas              | J. Alatorre              |
+| **D-02** | Engomado & Apresto Químico                 | Proceso                   | 35s           | 850 pzas              | R. Méndez                |
+| **D-03** | Prensas de Hormado a Vapor (Matriz)        | Proceso Cuello de Botella | 42s           | 850 pzas              | C. Ortiz                 |
+| **D-04** | Troquelado & Asentado de Falda             | Proceso                   | 30s           | 850 pzas              | M. Torres                |
+| **D-05** | Almacén Intermedio: Rampa (Fracc. 15 pzas) | Almacén WIP               | 15s           | 850 pzas              | J. M. Pérez              |
+| **D-06** | Ribeteado & Tafilete Interior              | Proceso                   | 45s           | 850 pzas              | L. García                |
+| **D-07** | Subensamble: Taller de Toquillas & Piel    | Subproceso                | 25s           | 850 pzas              | E. Rocha                 |
+| **D-08** | Montaje de Toquillas, Plumas & Herrajes    | Proceso                   | 38s           | 850 pzas              | S. Vargas                |
+| **D-09** | Enformado & Planchado Final                | Proceso                   | 32s           | 850 pzas              | F. Delgado               |
+| **D-10** | Almacén Pulmón Pre-Calidad                 | Almacén WIP               | 15s           | 850 pzas              | J. M. Pérez              |
+| **D-11** | Inspección de Calidad (Audit 100%)         | Control de Calidad        | 40s           | 850 pzas              | B. Fonseca               |
+| **D-12** | Almacén de Merma & Retrabajo               | Calidad / Scrap           | N/A           | —                     | B. Fonseca               |
+| **D-13** | Empaque B2B & Embalaje de Cajas            | Empaque                   | 28s           | 850 pzas              | G. Luna                  |
+| **D-14** | Embarques & Salida a Mayoristas            | Distribución              | 20s           | 850 pzas              | H. Estrada               |
 
 ---
 
 ## 3. Régimen Operativo de Turno Único y Arranque Dinámico (US-17)
 
 Confirmado tras el diagnóstico presencial en la fábrica:
+
 - **Jornada de Trabajo:** **Turno Único** de Lunes a Viernes, de **07:00 a 15:30 hrs** (8.5 horas totales).
 - **Receso de Almuerzo:** **12:00 a 12:45 hrs** (45 minutos de comedor de personal).
 - **Tiempo Efectivo de Producción:** 465 minutos netos por turno.
@@ -251,7 +259,7 @@ Confirmado tras el diagnóstico presencial en la fábrica:
 
 ---
 
-##  4. Matriz de Roles y Permisos (RBAC)
+## 4. Matriz de Roles y Permisos (RBAC)
 
 El sistema cuenta con un motor de permisos modulares persistente en memoria y configurable por el Administrador:
 
@@ -262,21 +270,23 @@ El sistema cuenta con un motor de permisos modulares persistente en memoria y co
 ```
 
 ### Tabla de Usuarios Preconfigurados
-| Usuario ID | Nombre | Rol | Permisos por Defecto | Estado |
-|---|---|---|---|---|
-| `admin-1` | **Edmundo González** | `admin` (Administrador) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
-| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (Ingeniero de Procesos) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
-| `sup-1` | **Juan Manuel Pérez** | `supervisor` (Supervisor de Línea) | `andon`, `terminal` | Activo |
-| `sup-2` | **Roberto Méndez** | `supervisor` (Supervisor de Línea) | `andon`, `terminal` | Activo |
+
+| Usuario ID | Nombre                | Rol                                 | Permisos por Defecto                                                 | Estado |
+| ---------- | --------------------- | ----------------------------------- | -------------------------------------------------------------------- | ------ |
+| `admin-1`  | **Edmundo González**  | `admin` (Administrador)             | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
+| `ing-1`    | **Ing. Carlos Ortiz** | `ingeniero` (Ingeniero de Procesos) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
+| `sup-1`    | **Juan Manuel Pérez** | `supervisor` (Supervisor de Línea)  | `andon`, `terminal`                                                  | Activo |
+| `sup-2`    | **Roberto Méndez**    | `supervisor` (Supervisor de Línea)  | `andon`, `terminal`                                                  | Activo |
 
 ### Comportamiento de Seguridad en UI:
+
 - **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso según su perfil se ocultan completamente del menú de navegación (`display: none`). No se muestran iconos de candados (``) ni opciones deshabilitadas, ofreciendo una experiencia limpia y sin distracciones.
 - El Administrador puede abrir el modal `modalEditPermissions` para marcar/desmarcar módulos individualmente para cualquier usuario, o dar de alta nuevos supervisores con `modalCreateUser`.
 - El Ingeniero de Procesos cuenta con facultades para crear supervisores de planta, dar de alta filtros de calidad (`C-XX`) y modelar rutas de fabricación por modelo.
 
 ---
 
-##  5. Arquitectura de Hardware en Nave Industrial
+## 5. Arquitectura de Hardware en Nave Industrial
 
 Siguiendo las decisiones tomadas en planta con base en los audios de levantamiento:
 
@@ -295,8 +305,10 @@ Siguiendo las decisiones tomadas en planta con base en los audios de levantamien
 
 ---
 
-##  5.1 Catálogo Oficial de Requerimientos de Software (SRS / PRD)
+## 5.1 Catálogo Oficial de Requerimientos de Software (SRS / PRD)
+
 Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-01` a `RNF-12`) del sistema se encuentran catalogados y bajo control de versiones formal en el documento:
+
 - **Documento Oficial de Requerimientos:** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md)
 
 ---
@@ -319,9 +331,10 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 
 ---
 
-##  7. Arquitectura de Software & Despliegue
+## 7. Arquitectura de Software & Despliegue
 
 - **Estructura del Proyecto:**
+
   ```
   uanify-mes-sombreros/
   ├── assets/                # Logotipos SVG y recursos visuales
@@ -350,7 +363,7 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 
 ---
 
-##  8. Historial de Versiones (SemVer)
+## 8. Historial de Versiones (SemVer)
 
 - **`v2.9.0` (2026-09-24):**
   - **Mapa de Proceso y Rastreador Visual de Lotes en Planta:** Incorporación de la sub-pestaña ` Mapa de Proceso & Rastreador de Lote` en la Terminal para que supervisores, ingenieros y dirección consulten con un clic la ubicación física en tiempo real de cualquier lote de producción (`49,633`, `49,386`, `49,842`).
@@ -359,6 +372,13 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
   - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta puntos de inspección intermedios y finales (`C-01`, `C-02`, `C-03`, `C-04`...) con captura de tolerancias/criterios de calidad, inspector a cargo y tiempo de ciclo, integrándose automáticamente tanto al catálogo maestro como a las secuencias de rutas.
   - **Ampliación de Permisos para Ingeniería:** Concesión de acceso al módulo de Configuración de Planta al rol Ingeniero (`Ing. Carlos Ortiz`) para modelar y auditar directamente rutas y criterios de calidad.
+- **`v2.22.0` (2026-09-26):**
+  - **Estandarización Universal de Inputs y Selectores:** Implementación universal de flecha SVG chevron industrial para todos los controles `<select>` y `.custom-select`, eliminación total del caret nativo y padding seguro de 36px.
+  - **Buscadores sin Empalme:** Corrección de la superposición de texto en buscadores mediante vector SVG de lupa posicionado a 12px y padding-left estricto de 38px en todos los módulos del sistema.
+  - **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas entre encabezados `<th>` y celdas `<td>` en Departamentos y Filtros de Calidad; aligeramiento visual al remover descripciones extensas redundantes en celdas para evitar sobrecarga de información.
+  - **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Rediseño completo de botones de fila en tablas a botones cuadrados compactos de 32x32px con iconos SVG nítidos y paleta pastel clara (Editar en `#F1F5F9`/`#E2E8F0`, Eliminar en `#FEF2F2`/`#FEE2E2`, Ver en `#F0FDF4`/`#DCFCE7`), sin texto intrusivo.
+  - **Estandarización de Paleta de Botones:** Unificación estricta de todos los botones primarios a `--color-brand` artesanal `#8B5E3C`, eliminando fondos discordantes ad-hoc.
+  - **Formalización de Reglas 0.35 y 0.37:** Blindaje de los estándares de tablas, inputs y botones en `AGENTS.md` para garantizar la escalabilidad y consistencia del software.
 - **`v2.8.4` (2026-09-24):**
   - **Corrección de Arquitectura de Sub-Pestañas en Todos los Módulos:** Resolución de conflicto de especificidad CSS entre `.sub-tab-content.d-none` y `.active`. Se garantizó la alternancia limpia e instantánea de vistas secundarias en Andon, Terminal de Almacenes, Consola de Ingeniería, Dashboard Directivo y Configuración de Planta.
   - **Definición Informativa del Horario de Turno:** Incorporación de formulario de configuración de turno (Entrada, Salida, Horario de Comida/Descanso, Días Laborables) con previsualización en tiempo real y persistencia en almacenamiento local para sincronización con el pie de la barra lateral.
@@ -368,7 +388,7 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Barra Lateral Plegable (Icon-Only Mode):** Integración de botón toggle en encabezado del sidebar para colapsar la barra lateral a 72px, ganando espacio horizontal en piso y persistiendo en `localStorage`.
   - **Versión del Sistema Prominente y de Alto Contraste:** Rediseño del badge `.system-version-pill` con fondo sólido de marca `#8B5E3C` y texto `#FFFFFF` en negrita, garantizando total visibilidad en el navbar.
   - **Enfoque de Diseño Tablet-First y 100% Responsivo:** Adaptación ergonómica integral para pantallas táctiles de 768px a 1024px, zonas táctiles mínimas de 44px para dedos, y desplazamiento horizontal táctil suave en tablas de datos y sub-pestañas.
-  - **Supresión de Menciones de Hardware Específico:** Eliminación de los términos "iPad" y "Tablet" en la interfaz gráfica, estandarizando la terminología industrial neutra (*Terminal de Planta*, *Cámara de tu dispositivo*).
+  - **Supresión de Menciones de Hardware Específico:** Eliminación de los términos "iPad" y "Tablet" en la interfaz gráfica, estandarizando la terminología industrial neutra (_Terminal de Planta_, _Cámara de tu dispositivo_).
   - **Seguridad RBAC por Ocultamiento Estricto:** Los módulos a los que el usuario no tiene acceso no muestran candados ni advertencias disuasorias; se ocultan completamente del menú de navegación.
 - **`v2.8.2` (2026-09-24):**
   - **Corrección de Cuadrícula Principal (Frontend):** Remoción de etiqueta `</div>` sobrante en el sidebar que provocaba la ruptura del layout principal y el desplazamiento vertical hacia abajo.

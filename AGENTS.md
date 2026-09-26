@@ -492,34 +492,61 @@ Excepciones permitidas con style="":
 
 **Todos los listados, tablas y catálogos del sistema MES (Departamentos, Filtros de Calidad, Almacenes Físicos, Hormas y Moldes, Kárdex, Padrón de Operadores, Usuarios RBAC y Bitácoras) DEBEN compartir exactamente la misma arquitectura estructural, jerarquía de columnas, diseño de sección de acciones y capacidades avanzadas de filtrado reactivo.**
 
-1. **Estructura Jerárquica Universal de Columnas:**
-   - **Columna 1 — Identificador / Código Maestro (`.col-code`):** Siempre al extremo izquierdo. Ancho compacto. Tipografía monoespaciada (`'JetBrains Mono', monospace`), peso negrita 700, presentada como badge delimitado (`.table-badge-code`, ej. `D-01`, `C-02`, `ALM-03`, `M-05`, `OP-104`).
-   - **Columna 2 — Entidad Principal & Nombre Comercial (`.col-name`):** Título principal en negrita de alta visibilidad (`font-size: 13.5px; font-weight: 700; color: var(--text-primary);`), complementado invariablemente con texto explicativo secundario (`.table-cell-subtext`) con descripción, alias o modelo.
-   - **Columnas Intermedias — Especificaciones Técnicas y Operativas:** Presentadas con alineación limpia, badges semánticos sutiles para categorías o procesos, y métricas cuantitativas con unidades claras (`pzas`, `seg`, `MXN`).
-   - **Penúltima Columna — Estatus Operativo Estandarizado (`.col-status`):** Indicador visual unificado en píldora (`.table-status-pill`) con punto de color identificativo:
-     -  **Activo / Operativo / Normal:** Verde industrial (`#16A34A`, fondo `#DCFCE7`).
-     -  **En Mantenimiento / Calibración / WIP Alto:** Ámbar preventivo (`#D97706`, fondo `#FEF3C7`).
-     -  **Inactivo / Detenido / Bloqueado:** Rojo crítico (`#DC2626`, fondo `#FEE2E2`).
-   - **Última Columna — Celda de Acciones Estandarizada (`.col-actions`, `.action-btns-cell`):** Encabezado `"Acciones"` centrado (`text-align: center`), con ancho mínimo reservado de 140px a 180px. Los botones deben estar alojados en un contenedor flex (`.action-btns-cell`) centrado con separación constante (`gap: 6px` a `8px`).
+1. **Correspondencia Estricta 1:1 entre `<th>` y `<td>` (Prevención de Desfase de Columnas):**
+   - El número de elementos `<th>` en el `<thead>` debe ser idéntico al número de celdas `<td>` renderizadas dinámicamente en cada fila del `<tbody>` y en el `colspan` del estado vacío.
+   - Queda estrictamente prohibido que por discrepancias en columnas los datos de una entidad, estatus o botones de acción se desplacen visualmente a columnas que no les corresponden.
 
-2. **Diseño Estandarizado de la Sección de Acciones (`.action-btns-cell`):**
-   - **Botón Editar (`.btn-action.btn-action-edit`):** Icono `` + etiqueta `"Editar"` (o botón táctil compacto con tooltip). Fondo suave neutro, borde sutil, texto primario o cuero de marca (`#8B5E3C`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
-   - **Botón Eliminar / Baja (`.btn-action.btn-action-delete`):** Icono `` + etiqueta `"Eliminar"` o `"Baja"`. Fondo rojo tenue (`#FEF2F2`), borde carmesí (`#FCA5A5`), texto rojo intenso (`#DC2626`), altura ergonómica mínima de 38px a 40px, `cursor: pointer !important`.
-   - **Botón Ver / Detalle (`.btn-action.btn-action-view`):** Icono `` + etiqueta `"Ver"` o `"Detalle"`. Fondo azul tenue (`#EFF6FF`), borde azul (`#BFDBFE`), texto azul (`#1D4ED8`).
-   - **Queda estrictamente prohibido:** Usar estilos inline discordantes, variar los anchos o alturas entre tablas, o dejar acciones desalineadas sin contenedor estandarizado.
+2. **Estructura Jerárquica Universal de Columnas:**
+   - **Columna 1 — Identificador / Código Maestro (`.col-code` o nombre principal):** Presentada como badge delimitado (`.table-badge-code`) o título principal de entidad (`.table-cell-primary`, `font-size: 13.5px; font-weight: 700; color: var(--text-primary);`), complementado con badge sutil de tipo/proceso.
+   - **Columnas Intermedias — Especificaciones Técnicas y Operativas Sintetizadas:** Presentadas con alineación limpia, tipografía monoespaciada para tiempos y cantidades (`'JetBrains Mono', monospace`), y texto secundario conciso.
+   - **Prohibición de Sobrecarga Visual:** No incluir párrafos largos de descripción técnica directamente en las celdas de las tablas maestras. Toda descripción extensa debe consultarse vía modal o ficha técnica para mantener listados visualmente limpios, ejecutivos y ágiles.
+   - **Penúltima Columna — Estatus Operativo Estandarizado (`.col-status`):** Indicador visual unificado en píldora (`.table-status-pill`) con punto identificativo, centrado (`text-align: center`).
+   - **Última Columna — Celda de Acciones Estandarizada (`.col-actions`, `.action-btns-cell`):** Encabezado `"Acciones"` centrado (`text-align: center`), con ancho compacto (80px a 110px). Botones alojados en contenedor flex centrado con separación constante (`gap: 6px`).
 
-3. **Barra de Filtrado Multi-Criterio Obligatoria en TODO Listado (`.uanify-filter-toolbar`):**
-   - **Sin excepción:** Toda tabla o listado de registros debe poseer inmediatamente sobre ella su barra de filtrado estandarizada (`.uanify-filter-toolbar`), compuesta por:
-     1. **Caja de Búsqueda Rápida en Tiempo Real (`.filter-search-box`):** Input de texto con lupa integrada (``), placeholder contextual (ej. `"Buscar por código, nombre, supervisor..."`), con filtrado reactivo inmediato (`input` event).
-     2. **Selectores Desplegables de Clasificación (`.filter-select`):** Mínimo dos filtros específicos:
-        - **Filtro por Estatus:** `"Todos los Estatus"`, `"Activos"`, `"Inactivos"`, etc.
-        - **Filtro por Tipo / Proceso / Categoría:** Según la entidad de la tabla (ej. Tipo de Proceso en Departamentos, Tipo de Horma en Moldes, Tipo de Movimiento en Kárdex, Departamento en Operadores, Rol en Usuarios).
-     3. **Badge de Conteo Dinámico (`.filter-count-badge`):** Muestra reactivamente `"Mostrando X de Y registros"` actualizándose con cada pulsación o selección.
-     4. **Botón de Restablecimiento (`.btn-reset-filters`):** Botón táctil `" Limpiar"` o `"Restablecer"` que revierte todos los filtros a sus valores predeterminados de un solo toque.
-     5. **Botón de Creación / Alta Alineado a la Derecha:** Botón principal de módulo (ej. ` Dar de Alta...`) colocado armónicamente a la derecha del toolbar o en la cabecera de la tarjeta.
+3. **Botones de Acción en Tablas Estandarizados (`.btn-table-action`):**
+   - **Diseño Ergonómico de Icono Puro (32x32px):** Todo botón de acción dentro de una fila de tabla debe ser un botón cuadrado compacto de 32x32px (`width: 32px !important; height: 32px !important; padding: 0 !important; border-radius: 6px;`) con icono SVG stroke centrado y tooltip nativo explicativo vía atributo `title`. Cero texto en el botón para evitar saturación visual y saltos de línea indeseados.
+   - **Paleta de Colores Claros y Suaves Pastel (Estandarizada):**
+     - **Botón Editar (`.btn-action-edit`):** Fondo gris claro suave (`#F1F5F9`), borde `#E2E8F0`, icono/texto `#475569`, hover `#E2E8F0` / cuero de marca (`#8B5E3C`).
+     - **Botón Eliminar / Baja (`.btn-action-delete`):** Fondo rojo claro suave (`#FEF2F2`), borde `#FEE2E2`, icono/texto `#EF4444`, hover `#FEE2E2` / rojo intenso (`#DC2626`).
+     - **Botón Ver / Ficha / Detalle (`.btn-action-view`):** Fondo verde claro suave (`#F0FDF4`), borde `#DCFCE7`, icono/texto `#16A34A`, hover `#DCFCE7` / verde oscuro (`#15803D`).
+     - **Botón Asignar / Permisos (`.btn-action-assign`):** Fondo púrpura claro suave (`#FAF5FF`), borde `#F3E8FF`, icono/texto `#7E22CE`.
+   - **Queda estrictamente prohibido:** Usar texto en botones de fila de tablas estándar o estilos inline discordantes.
 
-4. **Estado Vacío Estandarizado (`.table-empty-row`):**
-   - Si la búsqueda o los filtros no devuelven registros coincidentes, la tabla debe desplegar una fila elegante con colspan completo que contenga: icono explicativo (), mensaje claro (`"No se encontraron registros que coincidan con los filtros aplicados"`) y un enlace o botón táctil para limpiar los filtros (`"Limpiar filtros de búsqueda"`).
+4. **Barra de Filtrado Multi-Criterio Obligatoria en TODO Listado (`.uanify-filter-toolbar`):**
+   - Toda tabla debe contar inmediatamente arriba con su barra de filtrado estandarizada:
+     1. **Caja de Búsqueda Rápida (`.filter-search-box`):** Icono SVG de lupa limpio (`<svg class="search-icon"...>`) centrado a la izquierda a 12px con `pointer-events: none` (prohibido usar texto `"BUSCAR"`), input con `padding-left: 38px !important;` y filtrado reactivo en tiempo real.
+     2. **Selectores Desplegables de Clasificación (`.custom-select`):** Con flecha SVG chevron integrada obligatoria.
+     3. **Badge de Conteo Dinámico (`.filter-count-badge`):** Muestra reactivamente `"Mostrando X de Y registros"`.
+     4. **Botón de Restablecimiento (`.btn-reset-filters`):** Botón táctil `"Limpiar"` que revierte los filtros a sus valores iniciales.
+
+5. **Estado Vacío Estandarizado (`.table-empty-row`):**
+   - Colspan exacto al número de columnas de la tabla con mensaje claro y botón de restablecimiento.
+
+---
+
+## REGLA 0.37: Estandarización Universal de Inputs, Dropdowns/Selects y Paleta de Botones del Sistema (MANDATORIA)
+
+**Para garantizar la escalabilidad, la consistencia visual y la mantenibilidad de todos los módulos actuales y futuros, todos los controles de entrada y botones deben regirse por los siguientes estándares arquitectónicos:**
+
+1. **Selectores y Dropdowns (`select`, `.custom-select`):**
+   - **Cero Estilo Nativo Anti-estético:** Todo elemento `<select>` debe anular el estilo por defecto del sistema operativo (`appearance: none; -webkit-appearance: none;`).
+   - **Flecha Chevron SVG Integrada:** Debe incorporar una flecha SVG vectorial estilizada como imagen de fondo (`background-image: url("data:image/svg+xml,...")`) alineada a la derecha a 12px.
+   - **Padding de Seguridad:** Padding horizontal estricto de `0 36px 0 13px !important;` para asegurar que el texto seleccionado jamás colisione ni se sobreponga a la flecha desplegable.
+   - **Borde y Focus:** Borde sutil `#CBD5E1`, fondo `#FFFFFF`, y al recibir foco (`:focus`) el borde y la flecha transicionan al color de marca cuero (`#8B5E3C`) con anillo de sombra suave de 3px (`box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.15)`).
+
+2. **Buscadores e Inputs de Texto (`.filter-search-box`, `.form-input`, `input[type="text"]`):**
+   - **Icono SVG Limpio:** El indicador de búsqueda debe ser exclusivamente un vector SVG de lupa posicionado absolutamente a la izquierda (`left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;`). Queda estrictamente prohibido inyectar palabras de texto ("BUSCAR") que se encimen sobre el placeholder o el texto digitado.
+   - **Padding Izquierdo:** Todo input con icono debe tener un padding izquierdo mínimo de `38px` (`padding-left: 38px !important;`).
+   - **Inputs Numéricos y Fechas:** Ocultar spinners nativos toscos en `input[type="number"]`, formatear con `font-variant-numeric: tabular-nums;` y tipografía monoespaciada para alineación decimal perfecta.
+
+3. **Estandarización Estricta de Paleta de Botones por Propósito Operativo:**
+   - **Botón Primario (`.btn-primary`):** Destinado exclusivamente a la acción principal del contexto (Guardar, Registrar Entrada/Salida, Crear Departamento, etc.). Color mandatorio: cuero de marca artesanal (`--color-brand`: `#8B5E3C` con hover `#6E4426`). **Queda terminantemente prohibido utilizar colores ad-hoc o arbitrarios (como naranja `#D97706` o tonos no corporativos) en botones primarios de módulos individuales.**
+   - **Botón Secundario (`.btn-secondary`):** Destinado a acciones secundarias o de descarte (Cancelar, Volver, Salir). Fondo `#FFFFFF` o `#F8FAFC`, borde `#CBD5E1`, texto `#334155`, hover `#F1F5F9`.
+   - **Botón de Peligro / Paro (`.btn-danger`):** Reservado para paros de emergencia, descartes de calidad críticos o confirmaciones destructivas. Fondo rojo `#DC2626` o rojo tenue según el nivel de advertencia.
+   - **Botones de Fila de Tabla (`.btn-table-action`):** Formato cuadrado compacto de 32x32px con iconos SVG y fondos pastel suaves según lo especificado en la Regla 0.35.
+
+4. **Autonomía Técnica para la Mejora Continua de las Reglas:**
+   - Todo estándar, patrón de diseño o necesidad de armonización detectada durante la evolución del sistema debe ser incorporado inmediatamente a este archivo de reglas (`AGENTS.md`) para blindar el crecimiento ordenado y homogéneo del software MES.
 
 ---
 

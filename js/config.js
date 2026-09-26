@@ -77,7 +77,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       tableBody.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="7">
+          <td colspan="6">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron departamentos coincidentes</span>
@@ -95,19 +95,19 @@ window.initConfigView = function() {
         const isLogistics = st.type === 'logistica' || (st.id && st.id.includes('almacen')) || st.code === 'D-11';
 
         let badgeStyle = 'background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);';
-        let typeLabel = ' Manufactura';
+        let typeLabel = 'Manufactura';
         if (isQuality) {
           badgeStyle = 'background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);';
-          typeLabel = ' Calidad';
+          typeLabel = 'Calidad';
         } else if (isPress) {
           badgeStyle = 'background:#FFFBEB; color:#B45309; border:1px solid #FCD34D;';
-          typeLabel = ' Prensas';
+          typeLabel = 'Prensas';
         } else if (isRampa) {
           badgeStyle = 'background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;';
-          typeLabel = ' Rampa';
+          typeLabel = 'Rampa';
         } else if (isLogistics) {
           badgeStyle = 'background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);';
-          typeLabel = ' Logística';
+          typeLabel = 'Logística';
         }
 
         const warehouseName = st.intermediateWarehouse || `Almacén Intermedio ${st.name} (ALM-INT-${st.code || idx+1})`;
@@ -118,34 +118,33 @@ window.initConfigView = function() {
         return `
           <tr>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${st.name}</div>
-              <span class="badge-subtle" style="${badgeStyle}; margin-top:4px; display:inline-block;">${typeLabel}</span>
-              ${st.desc ? `<span class="table-cell-subtext">${st.desc}</span>` : ''}
+              <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${st.name}</div>
+              <span class="badge-subtle" style="${badgeStyle}; margin-top:3px; display:inline-block; font-size:10.5px; padding:2px 7px;">${typeLabel}</span>
             </td>
             <td>
               <strong style="color:var(--text-primary); font-size:12.5px;">${warehouseName}</strong>
               <span class="table-cell-subtext">${warehouseLoc}</span>
             </td>
             <td>
-              <span style="font-family:'JetBrains Mono'; font-weight:700;">${st.cycleTime || '35s'}</span>
+              <span style="font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12.5px;">${st.cycleTime || '35s'}</span>
               <span class="table-cell-subtext">Cap: <strong>${st.wipCapacity || st.target || 150}</strong> pzas WIP</span>
             </td>
             <td>
-              <strong style="font-size:12px;"> ${st.operator}</strong>
-              <span class="table-cell-subtext"> ${machines}</span>
+              <strong style="font-size:12px; color:var(--text-primary);">${st.operator || 'Supervisor Asignado'}</strong>
+              <span class="table-cell-subtext">${machines}</span>
             </td>
-            <td class="col-status">
-              <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}">
+            <td class="col-status" style="text-align:center;">
+              <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}" style="margin:0 auto;">
                 <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
               </span>
             </td>
-            <td class="col-actions">
-              <div class="action-btns-cell">
+            <td class="col-actions" style="text-align:center;">
+              <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditDepartmentModal('${st.code || st.id}')" title="Editar departamento y almacén">
-                  Editar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteDepartment('${st.code || st.id}')" title="Eliminar departamento">
-                  Eliminar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
             </td>
@@ -277,16 +276,16 @@ window.initConfigView = function() {
                 <span class="status-dot"></span>Activo
               </span>
             </td>
-            <td class="col-actions">
-              <div class="action-btns-cell">
+            <td class="col-actions" style="text-align:center;">
+              <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos">
-                  Editar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 ${u.id !== 'admin-1' ? `
                   <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
-                    Eliminar
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
-                ` : '<span style="font-size:11px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
+                ` : '<span style="font-size:10.5px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
               </div>
             </td>
           </tr>
@@ -390,13 +389,13 @@ window.initConfigView = function() {
                 <span class="status-dot"></span>${op.status}
               </span>
             </td>
-            <td class="col-actions">
-              <div class="action-btns-cell">
+            <td class="col-actions" style="text-align:center;">
+              <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
-                  Editar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
-                  Eliminar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
             </td>
@@ -1480,14 +1479,14 @@ window.initConfigView = function() {
               <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-          <td class="col-actions">
+          <td class="col-actions" style="text-align:center;">
             ${canManage ? `
-              <div class="action-btns-cell">
+              <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar criterios y tolerancias">
-                  Editar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteQualityFilter('${q.code}')" title="Eliminar filtro de calidad">
-                  Eliminar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
             ` : `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">Solo lectura</span>`}
