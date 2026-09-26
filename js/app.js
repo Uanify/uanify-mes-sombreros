@@ -167,7 +167,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.17.0',
+  version: '2.18.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -187,9 +187,9 @@ const UanifyState = {
       email: 'egonzalez@tombstone.mx',
       role: 'admin',
       roleName: 'Administrador General',
-      permissions: ['terminal', 'andon', 'inventory', 'operators', 'engineer', 'executive', 'config'],
+      permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
-      badge: '👑 Admin'
+      badge: 'Admin'
     },
     {
       id: 'ing-1',
@@ -197,9 +197,9 @@ const UanifyState = {
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
       roleName: 'Ingeniero de Procesos',
-      permissions: ['terminal', 'andon', 'inventory', 'operators', 'engineer', 'config'],
+      permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
       assignedDepartments: ['*'],
-      badge: '⚙️ Ingeniero'
+      badge: 'Ingeniero'
     },
     {
       id: 'sup-1',
@@ -412,15 +412,277 @@ const UanifyState = {
   ],
 
   // Catálogo Oficial de Hormas y Moldes de San Francisco del Rincón (Validado en Fábrica)
+  // Catálogo Oficial de Hormas y Moldes de San Francisco del Rincón (Validado en Fábrica)
   molds: [
-    { code: 'HRM-JHN-54', name: '#54 JOHNSON LONA', tipo: 'Johnson', material: 'Aluminio Termo-Fundido', size: '54 (6 3/4)', machine: 'Prensa Hidráulica Michelagnoli P-01', status: 'En Uso' },
-    { code: 'HRM-JHN-53', name: '#53 JOHNSON LONA', tipo: 'Johnson', material: 'Aluminio Termo-Fundido', size: '53 (6 5/8)', machine: 'Prensa Hidráulica Michelagnoli P-01', status: 'Disponible' },
-    { code: 'HRM-SNR-57', name: '#57 SONORA', tipo: 'Sonora', material: 'Aluminio Termo-Fundido', size: '57 (7 1/8)', machine: 'Prensa Hidráulica Michelagnoli P-02', status: 'En Uso' },
-    { code: 'HRM-CHP-53', name: '#53 CHAPARRAL LONA', tipo: 'Chaparral', material: 'Aluminio Termo-Fundido', size: '53 (6 5/8)', machine: 'Prensa Hidráulica P-03', status: 'Disponible' },
-    { code: 'HRM-CHP-56', name: '#56 CHAPARRAL', tipo: 'Chaparral', material: 'Aluminio Termo-Fundido', size: '56 (7)', machine: 'Prensa Hidráulica P-03', status: 'En Uso' },
-    { code: 'HRM-VJN-55', name: '#55 EL VIEJONÓN', tipo: 'Viejón', material: 'Aluminio Termo-Fundido', size: '55 (6 7/8)', machine: 'Prensa Hidráulica P-02', status: 'En Uso' },
-    { code: 'HRM-DNV-58', name: '#58 DENVER MASTER', tipo: 'Roper', material: 'Aluminio Termo-Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-01', status: 'Disponible' },
-    { code: 'HRM-BLR-58', name: '#58 BULLRIDER RODEO', tipo: 'Bullrider', material: 'Hierro Fundido', size: '58 (7 1/4)', machine: 'Prensa Hidráulica P-04', status: 'Disponible' }
+    {
+      code: 'HRM-JHN-54',
+      name: '#54 JOHNSON LONA',
+      tipo: 'Johnson',
+      material: 'Aluminio Maquinado 6061-T6',
+      alloy: 'Aluminio Maquinado 6061-T6',
+      size: '54 (6 3/4)',
+      machine: 'Prensa Hidráulica Michelagnoli P-01',
+      status: 'En Uso',
+      crown: '4 1/4" Gota Regular',
+      brim: '4 1/4" Doblado Abajo',
+      operatingTemp: '115°C - 125°C',
+      pressure: '70 PSI Continuos',
+      cycleCount: 6420,
+      maxCycles: 10000,
+      lastMaint: '12-Sep-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum)" stroke="#F8FAFC" stroke-width="2"/><path d="M 145 150 Q 205 165 265 150" fill="none" stroke="#F1F5F9" stroke-width="1.5" opacity="0.75"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-JHN-54</text></svg>')
+    },
+    {
+      code: 'HRM-JHN-53',
+      name: '#53 JOHNSON LONA',
+      tipo: 'Johnson',
+      material: 'Aluminio Maquinado 6061-T6',
+      alloy: 'Aluminio Maquinado 6061-T6',
+      size: '53 (6 5/8)',
+      machine: 'Prensa Hidráulica Michelagnoli P-01',
+      status: 'Disponible',
+      crown: '4 1/8" Regular',
+      brim: '4" Doblado Abajo',
+      operatingTemp: '115°C - 125°C',
+      pressure: '70 PSI Continuos',
+      cycleCount: 3180,
+      maxCycles: 10000,
+      lastMaint: '05-Sep-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum2)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-JHN-53</text></svg>')
+    },
+    {
+      code: 'HRM-SNR-57',
+      name: '#57 SONORA',
+      tipo: 'Sonora',
+      material: 'Aluminio Fundido A-356',
+      alloy: 'Aluminio Termo-Fundido A-356',
+      size: '57 (7 1/8)',
+      machine: 'Prensa Hidráulica Michelagnoli P-02',
+      status: 'En Uso',
+      crown: '4 1/4" Sonora Plana',
+      brim: '4 1/4" Perfil Plano',
+      operatingTemp: '120°C - 130°C',
+      pressure: '75 PSI Continuos',
+      cycleCount: 8910,
+      maxCycles: 12000,
+      lastMaint: '18-Ago-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum3)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-SNR-57</text></svg>')
+    },
+    {
+      code: 'HRM-CHP-53',
+      name: '#53 CHAPARRAL LONA',
+      tipo: 'Chaparral',
+      material: 'Aluminio Maquinado 6061-T6',
+      alloy: 'Aluminio Maquinado 6061-T6',
+      size: '53 (6 5/8)',
+      machine: 'Prensa Hidráulica P-03',
+      status: 'Disponible',
+      crown: '4 1/2" Texana Tradicional',
+      brim: '9.0 cm Curvatura Abajo',
+      operatingTemp: '115°C - 125°C',
+      pressure: '70 PSI',
+      cycleCount: 4230,
+      maxCycles: 10000,
+      lastMaint: '10-Sep-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum4)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-CHP-53</text></svg>')
+    },
+    {
+      code: 'HRM-CHP-56',
+      name: '#56 CHAPARRAL',
+      tipo: 'Chaparral',
+      material: 'Aluminio Maquinado 6061-T6',
+      alloy: 'Aluminio Maquinado 6061-T6',
+      size: '56 (7)',
+      machine: 'Prensa Hidráulica P-03',
+      status: 'En Uso',
+      crown: '4 1/2" Texana Tradicional',
+      brim: '9.0 cm Curvatura Abajo',
+      operatingTemp: '115°C - 125°C',
+      pressure: '70 PSI',
+      cycleCount: 7520,
+      maxCycles: 10000,
+      lastMaint: '28-Ago-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum5)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-CHP-56</text></svg>')
+    },
+    {
+      code: 'HRM-VJN-55',
+      name: '#55 EL VIEJONÓN',
+      tipo: 'Viejón',
+      material: 'Aluminio Termo-Fundido CNC',
+      alloy: 'Aluminio Termo-Fundido CNC',
+      size: '55 (6 7/8)',
+      machine: 'Prensa Hidráulica P-02',
+      status: 'En Uso',
+      crown: '5" Corona Viejón',
+      brim: '9 1/2" Curva Arriba',
+      operatingTemp: '125°C - 135°C',
+      pressure: '80 PSI',
+      cycleCount: 9400,
+      maxCycles: 10000,
+      lastMaint: '20-Ago-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum6)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-VJN-55</text></svg>')
+    },
+    {
+      code: 'HRM-DNV-58',
+      name: '#58 DENVER MASTER',
+      tipo: 'Roper',
+      material: 'Aluminio Maquinado 6061-T6',
+      alloy: 'Aluminio Maquinado 6061-T6',
+      size: '58 (7 1/4)',
+      machine: 'Prensa Hidráulica P-01',
+      status: 'Disponible',
+      crown: '4 1/4" Gota Tear Drop',
+      brim: '4 1/4" Curva Arriba',
+      operatingTemp: '115°C - 125°C',
+      pressure: '70 PSI',
+      cycleCount: 5120,
+      maxCycles: 10000,
+      lastMaint: '01-Sep-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gAlum7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="50%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><circle cx="95" cy="227" r="5" fill="#94A3B8"/><circle cx="305" cy="227" r="5" fill="#94A3B8"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gAlum7)" stroke="#F8FAFC" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#1E293B"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-DNV-58</text></svg>')
+    },
+    {
+      code: 'HRM-BLR-58',
+      name: '#58 BULLRIDER RODEO',
+      tipo: 'Bullrider',
+      material: 'Hierro Gris Fundido Nodular',
+      alloy: 'Hierro Nodular Pesado',
+      size: '58 (7 1/4)',
+      machine: 'Prensa Hidráulica P-04',
+      status: 'Disponible',
+      crown: '4 3/4" Rodeo Rígido',
+      brim: '4 1/2" Curva Pronunciada',
+      operatingTemp: '130°C - 140°C',
+      pressure: '85 PSI',
+      cycleCount: 1820,
+      maxCycles: 15000,
+      lastMaint: '14-Jul-2026',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="gIron" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#64748B"/><stop offset="50%" stop-color="#475569"/><stop offset="100%" stop-color="#1E293B"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#1E293B"/><circle cx="95" cy="227" r="5" fill="#64748B"/><circle cx="305" cy="227" r="5" fill="#64748B"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="url(#gIron)" stroke="#94A3B8" stroke-width="2"/><rect x="150" y="172" width="100" height="20" rx="3" fill="#0F172A"/><text x="200" y="186" fill="#F8FAFC" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">HRM-BLR-58</text></svg>')
+    }
+  ],
+
+  // ─── CATÁLOGO OFICIAL DE SOMBREROS TERMINADOS (TOMBSTONE HATS) ─────────────
+  // Con variaciones de talla, faldas, toquillas, horma asignada y fotografía técnica
+  hatCatalog: [
+    {
+      id: 'SOM-01',
+      code: 'TB-1000X-DNV',
+      name: '1000X Master Telar Denver',
+      family: 'Telar Shantung',
+      material: 'Telar Shantung 1000X Fino',
+      category: 'Texana Vaquera de Gala',
+      crown: '4 1/4" Gota (Tear Drop)',
+      brim: '4 1/4" Curvada Arriba',
+      band: 'Toquilla Piel Vacuno Chocolate c/Herraje Plata',
+      moldCode: 'HRM-DNV-58',
+      moldName: '#58 DENVER MASTER',
+      sizes: ['55', '56', '57', '58', '59', '60'],
+      taktTime: '42s / estación',
+      price: 1450,
+      status: 'Activo',
+      finish: 'Nitrocelulósica Satinada',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#EAD7BB"/><stop offset="100%" stop-color="#B8976C"/></linearGradient><linearGradient id="bGrd1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8C6843"/><stop offset="20%" stop-color="#EAD7BB"/><stop offset="80%" stop-color="#EAD7BB"/><stop offset="100%" stop-color="#8C6843"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 40 185 C 80 225, 320 225, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="url(#bGrd1)" stroke="#8C6843" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cGrad1)" stroke="#8C6843" stroke-width="2"/><path d="M 180 65 Q 200 95 220 65" fill="none" stroke="#684A2C" stroke-width="3" stroke-linecap="round"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#3E2713"/><circle cx="200" cy="187" r="4.5" fill="#E2E8F0" stroke="#475569"/></svg>'),
+      notes: 'Tejido shantung 1000X cerrado con baño de laca nitrocelulósica satinada. Ribete reforzado de precisión en San Francisco del Rincón.'
+    },
+    {
+      id: 'SOM-02',
+      code: 'TB-1000X-VJN',
+      name: '1000X Master Telar El Viejonón',
+      family: 'Telar Shantung',
+      material: 'Master Telar Fino / Horma Viejón',
+      category: 'Texana Clásica Norteña',
+      crown: '5" Corona Viejón',
+      brim: '9 1/2" Curva Arriba',
+      band: 'Toquilla Cinta Negra con Pespunte Marfil',
+      moldCode: 'HRM-VJN-55',
+      moldName: '#55 EL VIEJONÓN',
+      sizes: ['54', '55', '56', '57', '58'],
+      taktTime: '45s / estación',
+      price: 1310,
+      status: 'Activo',
+      finish: 'Laqueado Semi-Brillo',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#D4A373"/><stop offset="100%" stop-color="#A97142"/></linearGradient><linearGradient id="bGrd2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#70441D"/><stop offset="20%" stop-color="#D4A373"/><stop offset="80%" stop-color="#D4A373"/><stop offset="100%" stop-color="#70441D"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 35 180 C 80 230, 320 230, 365 180 C 330 165, 270 195, 200 195 C 130 195, 70 165, 35 180 Z" fill="url(#bGrd2)" stroke="#70441D" stroke-width="2"/><path d="M 125 185 C 118 105, 140 60, 165 55 C 185 52, 200 75, 200 75 C 200 75, 215 52, 235 55 C 260 60, 282 105, 275 185 Z" fill="url(#cGrad2)" stroke="#70441D" stroke-width="2"/><path d="M 180 55 Q 200 88 220 55" fill="none" stroke="#502E11" stroke-width="3.5" stroke-linecap="round"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#0F172A"/><circle cx="200" cy="187" r="4.5" fill="#F1F5F9" stroke="#94A3B8"/></svg>'),
+      notes: 'Modelo emblema de la fábrica Tombstone. Corona profunda con hendidura tradicional de vaquero bravío.'
+    },
+    {
+      id: 'SOM-03',
+      code: 'TB-1000X-CHP',
+      name: '1000X Master Telar Chaparral',
+      family: 'Telar Shantung',
+      material: 'Telar Shantung Blanco / Toquilla Texana',
+      category: 'Línea de Trabajo Pesado & Lienzo',
+      crown: '4 1/2" Copa Chaparral',
+      brim: '9.0 cm Curvatura Abajo',
+      band: 'Toquilla Cuero Natural Repujado',
+      moldCode: 'HRM-CHP-56',
+      moldName: '#56 CHAPARRAL',
+      sizes: ['55', '56', '57', '58'],
+      taktTime: '40s / estación',
+      price: 1310,
+      status: 'Activo',
+      finish: 'Sellado Repelente al Agua',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad3" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FAEDCD"/><stop offset="100%" stop-color="#D4A373"/></linearGradient><linearGradient id="bGrd3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#99582A"/><stop offset="20%" stop-color="#FAEDCD"/><stop offset="80%" stop-color="#FAEDCD"/><stop offset="100%" stop-color="#99582A"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 40 185 C 80 225, 320 225, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="url(#bGrd3)" stroke="#99582A" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cGrad3)" stroke="#99582A" stroke-width="2"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#78350F"/><circle cx="200" cy="187" r="4.5" fill="#F8FAFC" stroke="#B45309"/></svg>'),
+      notes: 'Horma de 1 sola pieza con falda de caída suave para protección solar extrema en jaripeos y faenas.'
+    },
+    {
+      id: 'SOM-04',
+      code: 'TB-LQ-SNR',
+      name: 'Laqueado Especial Sonora Blanco',
+      family: 'Telar Shantung',
+      material: 'Laca Nitro Blanco Espejo / Telar Fino',
+      category: 'Gala & Artistas',
+      crown: '4 1/4" Sonora Plana',
+      brim: '4 1/4" Perfil Plano Rígido',
+      band: 'Toquilla Charol Negro con Broche Niquelado',
+      moldCode: 'HRM-SNR-57',
+      moldName: '#57 SONORA',
+      sizes: ['56', '57', '58', '59'],
+      taktTime: '48s / estación',
+      price: 1450,
+      status: 'Activo',
+      finish: 'Laca Espejo Extra Blanco',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad4" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#E2E8F0"/></linearGradient><linearGradient id="bGrd4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#94A3B8"/><stop offset="20%" stop-color="#FFFFFF"/><stop offset="80%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient></defs><rect width="100%" height="100%" fill="#0F172A" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.3"/><path d="M 40 185 C 80 220, 320 220, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="url(#bGrd4)" stroke="#CBD5E1" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cGrad4)" stroke="#CBD5E1" stroke-width="2"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#0F172A"/><circle cx="200" cy="187" r="4.5" fill="#E2E8F0" stroke="#94A3B8"/></svg>'),
+      notes: 'Pintura y matizado blanco nieve en cabina PT-01 con 3 capas de sellador epóxico y pulido a espejo.'
+    },
+    {
+      id: 'SOM-05',
+      code: 'TB-1000X-FRN',
+      name: '1000X Master Telar Frontier F9',
+      family: 'Telar Shantung',
+      material: 'Telar / Copa Gota de Agua Reforzada',
+      category: 'Rodeo Competencia',
+      crown: '4 3/4" Gota Alta',
+      brim: '4 1/2" Curva Arriba',
+      band: 'Toquilla Piel Pespuntada Hilo Encerado',
+      moldCode: 'HRM-DNV-58',
+      moldName: '#58 DENVER MASTER',
+      sizes: ['55', '56', '57', '58', '59'],
+      taktTime: '42s / estación',
+      price: 1310,
+      status: 'Activo',
+      finish: 'Satinado Térmico',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad5" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#E9EDC9"/><stop offset="100%" stop-color="#CCD5AE"/></linearGradient><linearGradient id="bGrd5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7F8760"/><stop offset="20%" stop-color="#E9EDC9"/><stop offset="80%" stop-color="#E9EDC9"/><stop offset="100%" stop-color="#7F8760"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 40 185 C 80 225, 320 225, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="url(#bGrd5)" stroke="#7F8760" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cGrad5)" stroke="#7F8760" stroke-width="2"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#3F4E28"/><circle cx="200" cy="187" r="4.5" fill="#E2E8F0" stroke="#475569"/></svg>'),
+      notes: 'Construcción en 2 piezas (copa + falda pegadas con calor en Rampa) con alambre de memoria cal. 19.'
+    },
+    {
+      id: 'SOM-06',
+      code: 'TB-500X-MGN',
+      name: 'Campana Fieltro Magnum 500X',
+      family: 'Fieltro Lana',
+      material: 'Fieltro Lana Fina / Copa Redonda',
+      category: 'Invierno & Charro Ligero',
+      crown: '4 1/4" Copa Redonda',
+      brim: '4 1/4" Doblez Suave',
+      band: 'Toquilla Fieltro Tono a Tono con Herraje Bronce',
+      moldCode: 'HRM-BLR-58',
+      moldName: '#58 BULLRIDER RODEO',
+      sizes: ['56', '57', '58', '59', '60'],
+      taktTime: '36s (Proceso Corto Campana)',
+      price: 1150,
+      status: 'Bajo Pedido',
+      finish: 'Cepillado Fino',
+      photo: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cGrad6" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#334155"/><stop offset="100%" stop-color="#0F172A"/></linearGradient><linearGradient id="bGrd6" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#020617"/><stop offset="20%" stop-color="#334155"/><stop offset="80%" stop-color="#334155"/><stop offset="100%" stop-color="#020617"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 40 185 C 80 225, 320 225, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="url(#bGrd6)" stroke="#0F172A" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cGrad6)" stroke="#0F172A" stroke-width="2"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#B45309"/><circle cx="200" cy="187" r="4.5" fill="#FDE68A" stroke="#78350F"/></svg>'),
+      notes: 'Campana preformada de proceso corto. Prensado en seco con vapor caliente sin etapa de corte de rollo.'
+    }
   ],
 
   // Verificar si el usuario activo tiene acceso a operar sobre un departamento
@@ -1209,10 +1471,11 @@ function getCurrentUser() {
 const ModuleNames = {
   terminal: 'Terminal de Supervisor & Lotes',
   andon: 'Tablero Andon (Piso)',
-  inventory: 'Almacenes & Hormas',
+  inventory: 'Catálogos & Almacenes',
   operators: 'Padrón de Operadores',
-  engineer: 'Consola de Ingeniería & Rendimiento',
-  executive: 'Dirección & COMPAC',
+  analytics: 'Analítica & KPIs de Planta',
+  engineer: 'Analítica & KPIs de Planta',
+  executive: 'Analítica & KPIs de Planta',
   config: 'Configuración de Planta & Usuarios'
 };
 
@@ -1237,7 +1500,8 @@ function updateUserInterface() {
 
   navBtns.forEach(btn => {
     const tab = btn.getAttribute('data-tab');
-    const isAllowed = user.permissions.includes(tab);
+    const isAllowed = user.permissions.includes(tab) ||
+      (tab === 'analytics' && (user.permissions.includes('engineer') || user.permissions.includes('executive') || user.role === 'admin' || user.role === 'ingeniero'));
     
     // Regla UX RBAC: Jamás mostrar candado 🔒; simplemente ocultar la opción de navegación
     const lockIcon = btn.querySelector('.tab-lock-icon');
@@ -1267,7 +1531,10 @@ window.switchActiveUser = function(userId) {
   updateUserInterface();
   
   // Si el usuario actual no tiene permiso a la pestaña activa, moverlo a la primera permitida
-  if (!user.permissions.includes(UanifyState.activeTab)) {
+  const hasAccessToActive = user.permissions.includes(UanifyState.activeTab) ||
+    (UanifyState.activeTab === 'analytics' && (user.permissions.includes('engineer') || user.permissions.includes('executive') || user.role === 'admin' || user.role === 'ingeniero'));
+
+  if (!hasAccessToActive) {
     const fallbackTab = user.permissions[0] || 'andon';
     const fallbackBtn = document.querySelector(`.nav-btn[data-tab="${fallbackTab}"]`);
     if (fallbackBtn) fallbackBtn.click();
@@ -1320,8 +1587,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetTab = btn.getAttribute('data-tab');
       const user = getCurrentUser();
 
-      // Validación de Permisos por Rol (RBAC)
-      if (!user.permissions.includes(targetTab)) {
+      // Validación de Permisos por Rol (RBAC) con retrocompatibilidad para analytics
+      const isAllowed = user.permissions.includes(targetTab) ||
+        (targetTab === 'analytics' && (user.permissions.includes('engineer') || user.permissions.includes('executive') || user.role === 'admin' || user.role === 'ingeniero'));
+
+      if (!isAllowed) {
         UanifyUI.toast(
           `Tu usuario (${user.name} - ${user.roleName}) no tiene permisos para acceder a "${ModuleNames[targetTab] || targetTab}". Solicita acceso a un Administrador en Configuración.`,
           'error',
@@ -1744,7 +2014,136 @@ function enrichStationWithDefaults(st, idx) {
     }
     renderWarehousesTable();
 
-    // Tabla de moldes y hormas de aluminio (con Filtros y Acciones - Regla 0.35)
+    // ── 1. Catálogo Oficial de Sombreros (con Filtros, Ficha Técnica y Fotos - RF-67) ──
+    const hatsTableBody = document.getElementById('tblInventoryHatsBody');
+    let hatFiltersBound = false;
+
+    function renderHatCatalogTable() {
+      if (!hatsTableBody || !UanifyState.hatCatalog) return;
+      const searchInput = document.getElementById('hatSearchInput');
+      const materialFilter = document.getElementById('hatMaterialFilter');
+      const statusFilter = document.getElementById('hatStatusFilter');
+      const countBadge = document.getElementById('hatFilteredCountBadge');
+      const btnReset = document.getElementById('btnResetHatFilters');
+
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const mat = materialFilter ? materialFilter.value : 'all';
+      const st = statusFilter ? statusFilter.value : 'all';
+
+      const filtered = UanifyState.hatCatalog.filter(h => {
+        const matchSearch = !q ||
+          h.name.toLowerCase().includes(q) ||
+          h.code.toLowerCase().includes(q) ||
+          (h.family && h.family.toLowerCase().includes(q)) ||
+          (h.material && h.material.toLowerCase().includes(q)) ||
+          (h.moldName && h.moldName.toLowerCase().includes(q)) ||
+          (h.crown && h.crown.toLowerCase().includes(q));
+        const matchMat = mat === 'all' || (h.family && h.family.toLowerCase().includes(mat.toLowerCase())) || (h.material && h.material.toLowerCase().includes(mat.toLowerCase()));
+        const matchStatus = st === 'all' || h.status === st;
+        return matchSearch && matchMat && matchStatus;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.hatCatalog.length} modelos`;
+      }
+
+      if (filtered.length === 0) {
+        hatsTableBody.innerHTML = `
+          <tr class="table-empty-row">
+            <td colspan="8">
+              <div class="table-empty-content">
+                <span class="table-empty-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <span class="table-empty-title">No se encontraron modelos de sombrero coincidentes</span>
+                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <button type="button" class="btn-reset-filters" onclick="window.resetHatFilters()">Limpiar Filtros</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        hatsTableBody.innerHTML = filtered.map(h => {
+          const isActive = h.status === 'Activo';
+          const sizeChips = (h.sizes || []).map(s => `<span class="hat-size-chip">${s}</span>`).join('');
+          return `
+            <tr>
+              <td class="col-code"><span class="table-badge-code">${h.code}</span></td>
+              <td class="col-name">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="table-thumb-wrapper" onclick="window.openHatTechnicalSheet('${h.id}')" title="Ver ficha técnica" style="cursor:pointer;">
+                    <img src="${h.photo}" class="table-thumb-img" alt="${h.name}">
+                  </div>
+                  <div>
+                    <div class="table-cell-primary" style="cursor:pointer;" onclick="window.openHatTechnicalSheet('${h.id}')">${h.name}</div>
+                    <span class="table-cell-subtext">${h.material} · ${h.category}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div style="font-size:12px;"><strong>Copa:</strong> ${h.crown || 'Regular'}</div>
+                <div style="font-size:11.5px; color:var(--text-secondary);"><strong>Falda:</strong> ${h.brim || '4 1/4"'}</div>
+              </td>
+              <td>
+                <div class="hat-variations-cell">${sizeChips}</div>
+              </td>
+              <td>
+                <span class="badge-subtle" style="font-family:'JetBrains Mono'; font-weight:700;">${h.moldName || h.moldCode || 'Horma Std'}</span>
+              </td>
+              <td>
+                <strong style="color:var(--color-green); font-family:'JetBrains Mono'; font-size:13px;">$${Number(h.price || 1310).toLocaleString()} MXN</strong>
+              </td>
+              <td class="col-status">
+                <span class="table-status-pill ${isActive ? 'status-active' : 'status-warning'}">
+                  <span class="status-dot"></span>${h.status}
+                </span>
+              </td>
+              <td class="col-actions">
+                <div class="action-btns-cell">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.openHatTechnicalSheet('${h.id}')" title="Ver ficha técnica oficial con foto">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Ficha
+                  </button>
+                  <button type="button" class="btn-table-action btn-action-edit" onclick="window.editHat('${h.id}')" title="Editar especificaciones de modelo">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editar
+                  </button>
+                  <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteHat('${h.id}')" title="Descontinuar modelo del catálogo">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Baja
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (!hatFiltersBound) {
+        hatFiltersBound = true;
+        if (searchInput) searchInput.addEventListener('input', renderHatCatalogTable);
+        if (materialFilter) materialFilter.addEventListener('change', renderHatCatalogTable);
+        if (statusFilter) statusFilter.addEventListener('change', renderHatCatalogTable);
+        if (btnReset) {
+          btnReset.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (materialFilter) materialFilter.value = 'all';
+            if (statusFilter) statusFilter.value = 'all';
+            renderHatCatalogTable();
+          });
+        }
+        window.resetHatFilters = function() {
+          if (searchInput) searchInput.value = '';
+          if (materialFilter) materialFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderHatCatalogTable();
+        };
+      }
+    }
+    renderHatCatalogTable();
+    window.renderHatCatalogTable = renderHatCatalogTable;
+
+    // ── 2. Tabla de moldes y hormas de aluminio (con Filtros, Foto y Ficha - RF-67) ──
     let moldFiltersBound = false;
     function renderInventoryMoldsTable() {
       if (!moldsTableBody || !UanifyState.molds) return;
@@ -1763,7 +2162,8 @@ function enrichStationWithDefaults(st, idx) {
           m.name.toLowerCase().includes(q) ||
           m.code.toLowerCase().includes(q) ||
           (m.machine && m.machine.toLowerCase().includes(q)) ||
-          (m.material && m.material.toLowerCase().includes(q));
+          (m.material && m.material.toLowerCase().includes(q)) ||
+          (m.alloy && m.alloy.toLowerCase().includes(q));
         const matchType = type === 'all' || (m.name && m.name.toLowerCase().includes(type.toLowerCase())) || (m.tipo && m.tipo.toLowerCase().includes(type.toLowerCase()));
         const matchStatus = st === 'all' || m.status === st;
         return matchSearch && matchType && matchStatus;
@@ -1776,12 +2176,14 @@ function enrichStationWithDefaults(st, idx) {
       if (filtered.length === 0) {
         moldsTableBody.innerHTML = `
           <tr class="table-empty-row">
-            <td colspan="8">
+            <td colspan="9">
               <div class="table-empty-content">
-                <span class="table-empty-icon">🔍</span>
+                <span class="table-empty-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
                 <span class="table-empty-title">No se encontraron moldes de horma coincidentes</span>
                 <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
-                <button type="button" class="btn-reset-filters" onclick="window.resetMoldFilters()">🔄 Limpiar Filtros</button>
+                <button type="button" class="btn-reset-filters" onclick="window.resetMoldFilters()">Limpiar Filtros</button>
               </div>
             </td>
           </tr>
@@ -1789,17 +2191,36 @@ function enrichStationWithDefaults(st, idx) {
       } else {
         moldsTableBody.innerHTML = filtered.map(m => {
           const isAvailable = m.status === 'Disponible';
+          const cyclePercent = Math.min(100, Math.round(((m.cycleCount || 0) / (m.maxCycles || 10000)) * 100));
           return `
             <tr>
               <td class="col-code"><span class="table-badge-code">${m.code}</span></td>
               <td class="col-name">
-                <div class="table-cell-primary">${m.name}</div>
-                <span class="table-cell-subtext">Copa ${m.crown || 'Regular'} · Falda ${m.brim || '4 1/4"'}</span>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="table-thumb-wrapper" onclick="window.openMoldTechnicalSheet('${m.code}')" title="Ver ficha técnica de molde" style="cursor:pointer;">
+                    <img src="${m.photo || ''}" class="table-thumb-img" alt="${m.name}">
+                  </div>
+                  <div>
+                    <div class="table-cell-primary" style="cursor:pointer;" onclick="window.openMoldTechnicalSheet('${m.code}')">${m.name}</div>
+                    <span class="table-cell-subtext">Copa ${m.crown || 'Regular'} · Falda ${m.brim || '4 1/4"'}</span>
+                  </div>
+                </div>
               </td>
               <td><span class="badge-subtle">${m.tipo || 'Horma Texana'}</span></td>
               <td><strong>${m.size}</strong></td>
-              <td style="font-size:12px;">${m.material || 'Aluminio Maquinado'}</td>
+              <td style="font-size:12px;">${m.alloy || m.material || 'Aluminio Maquinado'}</td>
               <td><span style="font-size:12px; font-family:'JetBrains Mono'; font-weight:700;">${m.machine || 'Prensa Vapor'}</span></td>
+              <td>
+                <div style="min-width:110px;">
+                  <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; font-family:'JetBrains Mono';">
+                    <span>${(m.cycleCount || 0).toLocaleString()} / ${(m.maxCycles || 10000).toLocaleString()}</span>
+                    <span style="color:var(--text-muted); font-size:10px;">${cyclePercent}%</span>
+                  </div>
+                  <div class="progress-track" style="height:5px;">
+                    <div class="progress-fill fill-brand" style="width:${cyclePercent}%;"></div>
+                  </div>
+                </div>
+              </td>
               <td class="col-status">
                 <span class="table-status-pill ${isAvailable ? 'status-active' : 'status-warning'}">
                   <span class="status-dot"></span>${m.status}
@@ -1807,11 +2228,17 @@ function enrichStationWithDefaults(st, idx) {
               </td>
               <td class="col-actions">
                 <div class="action-btns-cell">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.openMoldTechnicalSheet('${m.code}')" title="Ver ficha técnica y ciclos de prensado">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Ficha
+                  </button>
                   <button type="button" class="btn-table-action btn-action-edit" onclick="window.editMold('${m.code}')" title="Editar especificación de molde">
-                    ✏️ Editar
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editar
                   </button>
                   <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteMold('${m.code}')" title="Dar de baja molde">
-                    🗑️ Baja
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Baja
                   </button>
                 </div>
               </td>
@@ -1842,6 +2269,7 @@ function enrichStationWithDefaults(st, idx) {
       }
     }
     renderInventoryMoldsTable();
+    window.renderInventoryMoldsTable = renderInventoryMoldsTable;
 
     // Inventario de subensambles (Tafiletes)
     if (tafileteGrid) {
@@ -1983,88 +2411,508 @@ function enrichStationWithDefaults(st, idx) {
     );
   };
 
-  window.editMold = function(moldCode) {
-    const m = (UanifyState.molds || []).find(x => x.code === moldCode);
-    if (!m) return;
-    const nameInput = document.getElementById('newMoldName');
-    const codeInput = document.getElementById('newMoldCode');
-    const crownInput = document.getElementById('newMoldCrown');
-    const modal = document.getElementById('modalRegisterMold');
-    if (nameInput) nameInput.value = m.name;
-    if (codeInput) codeInput.value = m.code;
-    if (crownInput) crownInput.value = m.crown || '';
-    if (modal) modal.classList.add('active');
-  };
+  // ── GESTIÓN DE FOTOGRAFÍAS Y MODALES DE CATÁLOGO (RF-67) ──
+  function initPhotoUploads() {
+    // Configuración de foto para Sombreros
+    const hatDropzone = document.getElementById('hatPhotoDropzone');
+    const hatFileInput = document.getElementById('hatPhotoFileInput');
+    const hatPrompt = document.getElementById('hatPhotoDropzonePrompt');
+    const hatPreviewWrap = document.getElementById('hatPhotoPreviewWrap');
+    const hatPreviewImg = document.getElementById('hatPhotoPreviewImg');
+    const hatPhotoData = document.getElementById('newHatPhotoData');
+    const btnRemoveHat = document.getElementById('btnRemoveHatPhoto');
 
-  window.deleteMold = function(moldCode) {
-    window.UanifyUI.confirm(
-      'Dar de Baja Molde de Horma',
-      `¿Confirmas la baja del molde de aluminio ${moldCode}? Se retirará de las opciones de asignación de prensas de vapor.`,
-      () => {
-        UanifyState.molds = (UanifyState.molds || []).filter(x => x.code !== moldCode);
-        try {
-          localStorage.setItem('uanify_custom_molds', JSON.stringify(UanifyState.molds));
-        } catch (e) {}
-        renderInventorySection();
-        window.UanifyUI.toast(`Molde ${moldCode} dado de baja exitosamente.`, 'success', 'Molde Retirado');
+    if (hatDropzone && hatFileInput) {
+      hatDropzone.addEventListener('click', (e) => {
+        if (e.target.closest('#btnRemoveHatPhoto')) return;
+        hatFileInput.click();
+      });
+
+      hatDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        hatDropzone.classList.add('dragover');
+      });
+
+      hatDropzone.addEventListener('dragleave', () => {
+        hatDropzone.classList.remove('dragover');
+      });
+
+      hatDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        hatDropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleHatFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      hatFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleHatFile(e.target.files[0]);
+        }
+      });
+
+      function handleHatFile(file) {
+        if (!file.type.startsWith('image/')) {
+          window.UanifyUI.toast('Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP).', 'warning');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataUrl = ev.target.result;
+          if (hatPhotoData) hatPhotoData.value = dataUrl;
+          if (hatPreviewImg) hatPreviewImg.src = dataUrl;
+          if (hatPrompt) hatPrompt.style.display = 'none';
+          if (hatPreviewWrap) hatPreviewWrap.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
       }
-    );
-  };
 
-  // Manejo del Modal de Registro de Hormas (Catálogo Oficial de Almacén)
-  const modalRegisterMold = document.getElementById('modalRegisterMold');
-  const btnCloseRegisterMold = document.getElementById('btnCloseRegisterMoldModal');
-  const formRegisterMold = document.getElementById('formRegisterMold');
+      if (btnRemoveHat) {
+        btnRemoveHat.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (hatFileInput) hatFileInput.value = '';
+          if (hatPhotoData) hatPhotoData.value = '';
+          if (hatPreviewImg) hatPreviewImg.src = '';
+          if (hatPreviewWrap) hatPreviewWrap.style.display = 'none';
+          if (hatPrompt) hatPrompt.style.display = 'flex';
+        });
+      }
+    }
 
-  if (btnCloseRegisterMold && modalRegisterMold) {
-    btnCloseRegisterMold.onclick = () => modalRegisterMold.classList.remove('active');
+    // Configuración de foto para Moldes / Hormas
+    const moldDropzone = document.getElementById('moldPhotoDropzone');
+    const moldFileInput = document.getElementById('moldPhotoFileInput');
+    const moldPrompt = document.getElementById('moldPhotoDropzonePrompt');
+    const moldPreviewWrap = document.getElementById('moldPhotoPreviewWrap');
+    const moldPreviewImg = document.getElementById('moldPhotoPreviewImg');
+    const btnRemoveMold = document.getElementById('btnRemoveMoldPhoto');
+    let currentMoldPhotoBase64 = '';
+
+    if (moldDropzone && moldFileInput) {
+      moldDropzone.addEventListener('click', (e) => {
+        if (e.target.closest('#btnRemoveMoldPhoto')) return;
+        moldFileInput.click();
+      });
+
+      moldDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        moldDropzone.classList.add('dragover');
+      });
+
+      moldDropzone.addEventListener('dragleave', () => {
+        moldDropzone.classList.remove('dragover');
+      });
+
+      moldDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        moldDropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleMoldFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      moldFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleMoldFile(e.target.files[0]);
+        }
+      });
+
+      function handleMoldFile(file) {
+        if (!file.type.startsWith('image/')) {
+          window.UanifyUI.toast('Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP).', 'warning');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          currentMoldPhotoBase64 = ev.target.result;
+          if (moldPreviewImg) moldPreviewImg.src = currentMoldPhotoBase64;
+          if (moldPrompt) moldPrompt.style.display = 'none';
+          if (moldPreviewWrap) moldPreviewWrap.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (btnRemoveMold) {
+        btnRemoveMold.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (moldFileInput) moldFileInput.value = '';
+          currentMoldPhotoBase64 = '';
+          if (moldPreviewImg) moldPreviewImg.src = '';
+          if (moldPreviewWrap) moldPreviewWrap.style.display = 'none';
+          if (moldPrompt) moldPrompt.style.display = 'flex';
+        });
+      }
+
+      window.getUploadedMoldPhoto = () => currentMoldPhotoBase64;
+      window.setUploadedMoldPhoto = (url) => {
+        currentMoldPhotoBase64 = url;
+        if (url) {
+          if (moldPreviewImg) moldPreviewImg.src = url;
+          if (moldPrompt) moldPrompt.style.display = 'none';
+          if (moldPreviewWrap) moldPreviewWrap.style.display = 'block';
+        } else {
+          if (moldFileInput) moldFileInput.value = '';
+          if (moldPreviewImg) moldPreviewImg.src = '';
+          if (moldPreviewWrap) moldPreviewWrap.style.display = 'none';
+          if (moldPrompt) moldPrompt.style.display = 'flex';
+        }
+      };
+    }
   }
 
-  if (formRegisterMold) {
-    formRegisterMold.onsubmit = (e) => {
-      e.preventDefault();
-      const name = document.getElementById('newMoldName')?.value.trim();
-      const code = document.getElementById('newMoldCode')?.value.trim();
-      const brim = document.getElementById('newMoldBrim')?.value;
-      const crown = document.getElementById('newMoldCrown')?.value.trim();
-      const location = document.getElementById('newMoldLocation')?.value;
+  // ── MODALES Y CRUD DE CATÁLOGOS (RF-67) ──
+  function initCatalogModals() {
+    // Modal Registrar Sombrero
+    const btnOpenHat = document.getElementById('btnOpenRegisterHatModal');
+    const modalHat = document.getElementById('modalRegisterHat');
+    const btnCloseHat = document.getElementById('btnCloseRegisterHatModal');
+    const btnCancelHat = document.getElementById('btnCancelRegisterHatModal');
+    const formHat = document.getElementById('formRegisterHat');
 
-      if (!name || !code) return;
+    if (btnOpenHat && modalHat) {
+      btnOpenHat.addEventListener('click', () => {
+        document.getElementById('hatEditMode').value = 'create';
+        document.getElementById('origHatId').value = '';
+        document.getElementById('modalRegisterHatTitle').textContent = 'Registrar Modelo de Sombrero';
+        if (formHat) formHat.reset();
+        const codeInput = document.getElementById('newHatCode');
+        if (codeInput) codeInput.value = `SOM-0${(UanifyState.hatCatalog || []).length + 1}`;
+        const removePhotoBtn = document.getElementById('btnRemoveHatPhoto');
+        if (removePhotoBtn) removePhotoBtn.click();
+        modalHat.style.display = 'flex';
+      });
+    }
 
-      const newMold = {
-        code,
-        name,
-        tipo: crown || 'Roper',
-        material: 'Aluminio Termo-Fundido',
-        size: brim || '4 1/4"',
-        machine: location || 'Prensa Vapor Matriz #1',
-        status: 'Disponible'
-      };
+    const closeHatModal = () => { if (modalHat) modalHat.style.display = 'none'; };
+    if (btnCloseHat) btnCloseHat.addEventListener('click', closeHatModal);
+    if (btnCancelHat) btnCancelHat.addEventListener('click', closeHatModal);
 
-      if (!UanifyState.molds) UanifyState.molds = [];
-      UanifyState.molds.unshift(newMold);
+    if (formHat) {
+      formHat.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const editMode = document.getElementById('hatEditMode').value;
+        const origId = document.getElementById('origHatId').value;
+        const code = document.getElementById('newHatCode').value.trim();
+        const name = document.getElementById('newHatName').value.trim();
+        const family = document.getElementById('newHatFamily').value;
+        const price = parseFloat(document.getElementById('newHatPrice').value) || 1310;
+        const crown = document.getElementById('newHatCrown').value.trim();
+        const brim = document.getElementById('newHatBrim').value.trim();
+        const band = document.getElementById('newHatBand').value.trim();
+        const moldCode = document.getElementById('newHatMold').value;
+        const moldObj = (UanifyState.molds || []).find(m => m.code === moldCode);
+        const moldName = moldObj ? moldObj.name : moldCode;
+        const photoData = document.getElementById('newHatPhotoData').value;
 
-      try {
-        localStorage.setItem('uanify_custom_molds', JSON.stringify(UanifyState.molds));
-      } catch (err) {
-        console.warn('Error saving custom mold:', err);
+        const checkedSizes = [];
+        document.querySelectorAll('.hat-size-cb:checked').forEach(cb => checkedSizes.push(cb.value));
+
+        const photoUrl = photoData || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><defs><linearGradient id="cG" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#EAD7BB"/><stop offset="100%" stop-color="#B8976C"/></linearGradient></defs><rect width="100%" height="100%" fill="#F8FAFC" rx="12"/><ellipse cx="200" cy="225" rx="140" ry="16" fill="#000" opacity="0.12"/><path d="M 40 185 C 80 225, 320 225, 360 185 C 330 170, 270 195, 200 195 C 130 195, 70 170, 40 185 Z" fill="#B8976C" stroke="#8C6843" stroke-width="2"/><path d="M 125 185 C 120 115, 140 70, 165 65 C 185 62, 200 82, 200 82 C 200 82, 215 62, 235 65 C 260 70, 280 115, 275 185 Z" fill="url(#cG)" stroke="#8C6843" stroke-width="2"/><path d="M 124 175 Q 200 190 276 175 L 275 186 Q 200 200 125 186 Z" fill="#3E2713"/></svg>');
+
+        if (editMode === 'edit') {
+          const item = (UanifyState.hatCatalog || []).find(h => h.id === origId);
+          if (item) {
+            item.code = code;
+            item.name = name;
+            item.family = family;
+            item.material = `${family} Fino Especial`;
+            item.price = price;
+            item.crown = crown;
+            item.brim = brim;
+            item.band = band;
+            item.moldCode = moldCode;
+            item.moldName = moldName;
+            item.sizes = checkedSizes.length ? checkedSizes : ['55', '56', '57', '58'];
+            if (photoData) item.photo = photoUrl;
+            window.UanifyUI.toast(`Modelo "${name}" actualizado correctamente en el catálogo.`, 'success', 'Ficha Actualizada');
+          }
+        } else {
+          const newHat = {
+            id: `SOM-${String((UanifyState.hatCatalog || []).length + 1).padStart(2, '0')}`,
+            code,
+            name,
+            family,
+            material: `${family} Calidad Exportación`,
+            category: 'Texana Fina San Francisco del Rincón',
+            crown,
+            brim,
+            band,
+            moldCode,
+            moldName,
+            sizes: checkedSizes.length ? checkedSizes : ['55', '56', '57', '58'],
+            taktTime: '42s / estación',
+            price,
+            status: 'Activo',
+            finish: 'Nitrocelulósica Satinada',
+            photo: photoUrl,
+            notes: 'Registrado desde la consola industrial Uanify MES.'
+          };
+          UanifyState.hatCatalog.push(newHat);
+          window.UanifyUI.toast(`Modelo "${name}" (${code}) registrado exitosamente con ficha técnica y foto.`, 'success', 'Nuevo Modelo Registrado');
+        }
+
+        closeHatModal();
+        if (typeof window.renderHatCatalogTable === 'function') window.renderHatCatalogTable();
+      });
+    }
+
+    // Modales de Fichas Técnicas
+    const sheetHatModal = document.getElementById('modalHatTechnicalSheet');
+    const btnCloseHatSheet = document.getElementById('btnCloseHatSheetModal');
+    const btnOkHatSheet = document.getElementById('btnOkHatSheetModal');
+    const btnPrintHatSheet = document.getElementById('btnPrintHatTechnicalSheet');
+
+    const closeHatSheet = () => { if (sheetHatModal) sheetHatModal.style.display = 'none'; };
+    if (btnCloseHatSheet) btnCloseHatSheet.addEventListener('click', closeHatSheet);
+    if (btnOkHatSheet) btnOkHatSheet.addEventListener('click', closeHatSheet);
+    if (btnPrintHatSheet) {
+      btnPrintHatSheet.addEventListener('click', () => {
+        window.UanifyUI.toast('Enviando ficha técnica de producto a la impresora de Ingeniería...', 'info', 'Impresión de Ficha Técnica');
+      });
+    }
+
+    const sheetMoldModal = document.getElementById('modalMoldTechnicalSheet');
+    const btnCloseMoldSheet = document.getElementById('btnCloseMoldSheetModal');
+    const btnOkMoldSheet = document.getElementById('btnOkMoldSheetModal');
+
+    const closeMoldSheet = () => { if (sheetMoldModal) sheetMoldModal.style.display = 'none'; };
+    if (btnCloseMoldSheet) btnCloseMoldSheet.addEventListener('click', closeMoldSheet);
+    if (btnOkMoldSheet) btnOkMoldSheet.addEventListener('click', closeMoldSheet);
+
+    // Modal Registrar Mold
+    const formMold = document.getElementById('formRegisterMold');
+    if (formMold) {
+      formMold.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = document.getElementById('newMoldCode').value.trim();
+        const name = document.getElementById('newMoldName').value.trim();
+        const tipo = document.getElementById('newMoldType').value;
+        const size = document.getElementById('newMoldSize').value.trim();
+        const alloy = document.getElementById('newMoldAlloy').value.trim();
+        const machine = document.getElementById('newMoldLocation').value;
+        const temp = document.getElementById('newMoldTemp').value.trim();
+        const status = document.getElementById('newMoldStatus').value;
+        const photo = (typeof window.getUploadedMoldPhoto === 'function' && window.getUploadedMoldPhoto()) ||
+          'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280"><rect width="100%" height="100%" fill="#0F172A" rx="12"/><rect x="70" y="215" width="260" height="24" rx="4" fill="#334155"/><path d="M 90 215 C 105 180, 130 190, 140 140 C 145 100, 165 75, 185 70 C 200 68, 205 82, 205 82 C 205 82, 210 68, 225 70 C 245 75, 265 100, 270 140 C 280 190, 305 180, 320 215 Z" fill="#94A3B8" stroke="#F8FAFC" stroke-width="2"/><text x="200" y="186" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">' + code + '</text></svg>');
+
+        const existing = (UanifyState.molds || []).find(m => m.code === code);
+        if (existing) {
+          existing.name = name;
+          existing.tipo = tipo;
+          existing.size = size;
+          existing.alloy = alloy;
+          existing.machine = machine;
+          existing.operatingTemp = temp;
+          existing.status = status;
+          if (photo) existing.photo = photo;
+          window.UanifyUI.toast(`Horma "${name}" actualizada en el catálogo maestro.`, 'success', 'Molde Actualizado');
+        } else {
+          UanifyState.molds.push({
+            code,
+            name,
+            tipo,
+            size,
+            alloy,
+            material: alloy,
+            machine,
+            operatingTemp: temp,
+            pressure: '70 PSI Continuos',
+            status,
+            crown: '4 1/4" Regular',
+            brim: '4 1/4" Doblado Abajo',
+            cycleCount: 0,
+            maxCycles: 10000,
+            lastMaint: 'Fecha de Alta',
+            photo
+          });
+          window.UanifyUI.toast(`Horma "${name}" (${code}) registrada en catálogo de moldes maquinados con foto técnica.`, 'success', 'Molde Registrado');
+        }
+
+        const modalRegisterMold = document.getElementById('modalRegisterMold');
+        if (modalRegisterMold) modalRegisterMold.classList.remove('active');
+        if (typeof window.renderInventoryMoldsTable === 'function') window.renderInventoryMoldsTable();
+      });
+    }
+
+    // Operaciones globales edit / delete para sombreros y moldes
+    window.editHat = function(hatId) {
+      const hat = (UanifyState.hatCatalog || []).find(h => h.id === hatId);
+      if (!hat) return;
+      const modalHat = document.getElementById('modalRegisterHat');
+      if (!modalHat) return;
+
+      document.getElementById('hatEditMode').value = 'edit';
+      document.getElementById('origHatId').value = hat.id;
+      document.getElementById('modalRegisterHatTitle').textContent = `Editar Modelo · ${hat.name}`;
+      document.getElementById('newHatCode').value = hat.code;
+      document.getElementById('newHatName').value = hat.name;
+      document.getElementById('newHatFamily').value = hat.family;
+      document.getElementById('newHatPrice').value = hat.price;
+      document.getElementById('newHatCrown').value = hat.crown;
+      document.getElementById('newHatBrim').value = hat.brim;
+      document.getElementById('newHatBand').value = hat.band;
+      document.getElementById('newHatMold').value = hat.moldCode;
+
+      // Checkboxes de tallas
+      document.querySelectorAll('.hat-size-cb').forEach(cb => {
+        cb.checked = (hat.sizes || []).includes(cb.value);
+      });
+
+      // Preview de foto
+      const hatPhotoData = document.getElementById('newHatPhotoData');
+      const hatPreviewImg = document.getElementById('hatPhotoPreviewImg');
+      const hatPreviewWrap = document.getElementById('hatPhotoPreviewWrap');
+      const hatPrompt = document.getElementById('hatPhotoDropzonePrompt');
+      if (hatPhotoData) hatPhotoData.value = hat.photo || '';
+      if (hatPreviewImg) hatPreviewImg.src = hat.photo || '';
+      if (hatPrompt) hatPrompt.style.display = hat.photo ? 'none' : 'flex';
+      if (hatPreviewWrap) hatPreviewWrap.style.display = hat.photo ? 'block' : 'none';
+
+      modalHat.style.display = 'flex';
+    };
+
+    window.deleteHat = function(hatId) {
+      const hat = (UanifyState.hatCatalog || []).find(h => h.id === hatId);
+      if (!hat) return;
+      window.UanifyUI.confirm(
+        '¿Descontinuar Modelo de Sombrero?',
+        `¿Confirmas dar de baja del catálogo activo al modelo "${hat.name}" (${hat.code})? Su historial de órdenes pasadas se mantendrá intacto.`,
+        () => {
+          hat.status = 'Descontinuado';
+          if (typeof window.renderHatCatalogTable === 'function') window.renderHatCatalogTable();
+          window.UanifyUI.toast(`Modelo "${hat.name}" marcado como descontinuado.`, 'info', 'Catálogo Actualizado');
+        },
+        'Sí, Descontinuar',
+        'Cancelar'
+      );
+    };
+
+    window.editMold = function(moldCode) {
+      const mold = (UanifyState.molds || []).find(m => m.code === moldCode);
+      if (!mold) return;
+      const modalRegisterMold = document.getElementById('modalRegisterMold');
+      if (!modalRegisterMold) return;
+
+      document.getElementById('newMoldCode').value = mold.code;
+      document.getElementById('newMoldName').value = mold.name;
+      document.getElementById('newMoldType').value = mold.tipo || 'Denver';
+      document.getElementById('newMoldSize').value = mold.size;
+      document.getElementById('newMoldAlloy').value = mold.alloy || mold.material || 'Aluminio Maquinado 6061-T6';
+      document.getElementById('newMoldLocation').value = mold.machine;
+      document.getElementById('newMoldTemp').value = mold.operatingTemp || '115°C - 125°C';
+      document.getElementById('newMoldStatus').value = mold.status;
+
+      if (typeof window.setUploadedMoldPhoto === 'function') {
+        window.setUploadedMoldPhoto(mold.photo || '');
       }
 
-      renderInventorySection();
-      formRegisterMold.reset();
-      if (modalRegisterMold) modalRegisterMold.classList.remove('active');
+      modalRegisterMold.classList.add('active');
+    };
 
-      if (typeof EventBus !== 'undefined') {
-        EventBus.emit('molds-updated', UanifyState.molds);
-      }
-
-      window.UanifyUI.toast(
-        `Horma ${code} "${name}" registrada exitosamente en el catálogo de moldes de Almacén.`,
-        'success',
-        '🎩 Horma Registrada'
+    window.deleteMold = function(moldCode) {
+      const mold = (UanifyState.molds || []).find(m => m.code === moldCode);
+      if (!mold) return;
+      window.UanifyUI.confirm(
+        '¿Dar de Baja Horma de Aluminio?',
+        `¿Confirmas la baja técnica de la horma "${mold.name}" (${mold.code}) de la prensa "${mold.machine}"?`,
+        () => {
+          mold.status = 'Mantenimiento';
+          if (typeof window.renderInventoryMoldsTable === 'function') window.renderInventoryMoldsTable();
+          window.UanifyUI.toast(`Horma "${mold.name}" retirada de servicio a taller de mantenimiento.`, 'info', 'Horma en Mantenimiento');
+        },
+        'Sí, Dar de Baja',
+        'Cancelar'
       );
     };
   }
+
+  // ── FICHA TÉCNICA OFICIAL DE SOMBRERO ──
+  window.openHatTechnicalSheet = function(hatId) {
+    const hat = (UanifyState.hatCatalog || []).find(h => h.id === hatId || h.code === hatId);
+    const modal = document.getElementById('modalHatTechnicalSheet');
+    if (!hat || !modal) return;
+
+    const title = document.getElementById('hatTechnicalSheetTitle');
+    const img = document.getElementById('hatSheetImg');
+    const pName = document.getElementById('hatSheetPhotoName');
+    const pMat = document.getElementById('hatSheetPhotoMaterial');
+    const pCode = document.getElementById('hatSheetPhotoCode');
+    const pPrice = document.getElementById('hatSheetPhotoPrice');
+    const crown = document.getElementById('hatSheetCrown');
+    const brim = document.getElementById('hatSheetBrim');
+    const band = document.getElementById('hatSheetBand');
+    const finish = document.getElementById('hatSheetFinish');
+    const mold = document.getElementById('hatSheetMold');
+    const sizesCont = document.getElementById('hatSheetSizesContainer');
+
+    if (title) title.textContent = `Ficha Técnica · ${hat.name}`;
+    if (img) img.src = hat.photo || '';
+    if (pName) pName.textContent = hat.name;
+    if (pMat) pMat.textContent = `${hat.material} · ${hat.family}`;
+    if (pCode) pCode.textContent = hat.code;
+    if (pPrice) pPrice.textContent = `$${Number(hat.price || 1310).toLocaleString()} MXN`;
+    if (crown) crown.textContent = hat.crown || '4 1/4" Tear Drop';
+    if (brim) brim.textContent = hat.brim || '4 1/4" Curvada Arriba';
+    if (band) band.textContent = hat.band || 'Toquilla Piel Vacuno';
+    if (finish) finish.textContent = hat.finish || 'Nitrocelulósica Satinada';
+    if (mold) mold.textContent = hat.moldName || hat.moldCode || '#58 DENVER MASTER';
+
+    if (sizesCont) {
+      sizesCont.innerHTML = (hat.sizes || []).map(s => `<span class="hat-size-chip">${s}</span>`).join('');
+    }
+
+    modal.style.display = 'flex';
+  };
+
+  // ── FICHA TÉCNICA DE MOLDE DE ALUMINIO ──
+  window.openMoldTechnicalSheet = function(moldCode) {
+    const mold = (UanifyState.molds || []).find(m => m.code === moldCode);
+    const modal = document.getElementById('modalMoldTechnicalSheet');
+    if (!mold || !modal) return;
+
+    const title = document.getElementById('moldSheetTitle');
+    const img = document.getElementById('moldSheetImg');
+    const pCode = document.getElementById('moldSheetPhotoCode');
+    const pName = document.getElementById('moldSheetPhotoName');
+    const alloy = document.getElementById('moldSheetAlloy');
+    const size = document.getElementById('moldSheetSize');
+    const crown = document.getElementById('moldSheetCrown');
+    const brim = document.getElementById('moldSheetBrim');
+    const machine = document.getElementById('moldSheetMachine');
+    const temp = document.getElementById('moldSheetTemp');
+    const pressure = document.getElementById('moldSheetPressure');
+    const cyclesText = document.getElementById('moldSheetCyclesText');
+    const cyclesPercent = document.getElementById('moldSheetCyclesPercent');
+    const cyclesBar = document.getElementById('moldSheetCyclesBar');
+    const statusCont = document.getElementById('moldSheetStatusContainer');
+
+    if (title) title.textContent = `Ficha Técnica de Molde · ${mold.name}`;
+    if (img) img.src = mold.photo || '';
+    if (pCode) pCode.textContent = mold.code;
+    if (pName) pName.textContent = mold.name;
+    if (alloy) alloy.textContent = mold.alloy || mold.material || 'Aluminio Maquinado 6061-T6';
+    if (size) size.textContent = mold.size || '55 (6 7/8)';
+    if (crown) crown.textContent = mold.crown || '4 1/4" Regular';
+    if (brim) brim.textContent = mold.brim || '4 1/4" Doblado Abajo';
+    if (machine) machine.textContent = mold.machine || 'Prensa Michelagnoli P-01';
+    if (temp) temp.textContent = mold.operatingTemp || '115°C - 125°C';
+    if (pressure) pressure.textContent = mold.pressure || '70 PSI Continuos';
+
+    const cyc = mold.cycleCount || 0;
+    const maxCyc = mold.maxCycles || 10000;
+    const pct = Math.min(100, Math.round((cyc / maxCyc) * 100));
+
+    if (cyclesText) cyclesText.textContent = `${cyc.toLocaleString()} / ${maxCyc.toLocaleString()}`;
+    if (cyclesPercent) cyclesPercent.textContent = `${pct}%`;
+    if (cyclesBar) cyclesBar.style.width = `${pct}%`;
+
+    if (statusCont) {
+      const isAvail = mold.status === 'Disponible' || mold.status === 'En Uso';
+      statusCont.innerHTML = `<span class="table-status-pill ${isAvail ? 'status-active' : 'status-warning'}"><span class="status-dot"></span> ${mold.status}</span>`;
+    }
+
+    modal.style.display = 'flex';
+  };
 
   window.renderInventorySection = renderInventorySection;
 
@@ -2189,6 +3037,8 @@ function enrichStationWithDefaults(st, idx) {
   initLoginScreen();
   initSubTabs();
   updateUserInterface();
+  initPhotoUploads();
+  initCatalogModals();
   renderInventorySection();
   renderOperatorsDirectory();
   window.updateOperatorStats();

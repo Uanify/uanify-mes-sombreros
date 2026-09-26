@@ -1,7 +1,7 @@
 # 🤠 Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.17.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.18.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -13,20 +13,19 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## 🎯 Arquitectura Funcional Tombstone Hats (v2.17.0)
+## 🎯 Arquitectura Funcional Tombstone Hats (v2.18.0)
 
-El sistema MES está estructurado en 7 módulos especializados con autenticación visual por roles (RBAC):
+El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
-| **0. 🔐 Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04) con persistencia de sesión y logout. |
-| **1. 🏷️ Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, **Monitor de Almacenes Intermedios** (lotes listos para recolección entre departamentos) y recolección/traspaso. |
-| **2. 📺 Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s) y comparación hora por hora de producción. |
-| **3. 📦 Almacén & Control de Inventarios** | Almacenistas, Supervisores e Ingeniería | Módulo unificado para 5 almacenes físicos (Materia Prima, Rampa WIP, Pulmón Pre-Prensas, Terminado, Merma de Viernes), catálogo unificado de moldes/hormas de aluminio maquinado con alta interactiva, stock de tafiletes por talla y Kárdex general de movimientos con filtrado avanzado y acciones estandarizadas. |
+| **0. 🔐 Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
+| **1. 🏷️ Terminal de Supervisor** | Supervisores y Operación | Registro de QR con cámara web en vivo, visor oficial de tarjeta viajera, mapa de proceso/tracker de lotes, Monitor de Almacenes Intermedios y recolección/traspaso táctil. |
+| **2. 📺 Tablero Andon (Piso)** | Pantallas Nave Central | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s), semáforos de estación y comparación hora por hora de producción. |
+| **3. 📦 Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados** con variaciones (tallas, faldas, toquillas) y visor de ficha técnica; **Catálogo de Hormas y Moldes Maquinados** con ciclo de vida, specs térmicas y ficha técnica; carga de fotos con Drag & Drop; 5 almacenes físicos, tafiletes y Kárdex general. |
 | **4. 👷 Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos estandarizados. |
-| **5. 📊 Consola de Ingeniería** | Ingeniero de Procesos | Análisis de OEE desagregado (Disponibilidad, Rendimiento, Calidad), balanceo de líneas & cuellos de botella, matriz de materiales (BOM) con cambio de proveedor y KPIs. |
-| **6. 💼 Dirección & COMPAC** | Edmundo (Dirección) | Métricas ejecutivas, valorización del lote en catálogo ($1,310 MXN), vales de entrega digital y enlace con CONTPAQi. |
-| **7. ⚙️ Configuración & Catálogos Maestros** | Admin & Ingeniero | CRUD integral de Departamentos y Almacenes Intermedios, Rutas y Secuencias por Modelo con Drag & Drop, Filtros de Calidad y Tolerancias, Usuarios RBAC y parámetros de turno con tablas normalizadas. |
+| **5. 📊 Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, KPIs de supervisores, balanceo de líneas & cuellos de botella, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
+| **6. ⚙️ Configuración & Integración COMPAC** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Monitor Aislado de Integración CONTPAQi ERP (COMPAC)** con prueba de conexión ODBC, mapeo de bodegas y vales B2B. |
 
 ---
 
@@ -45,12 +44,23 @@ El sistema MES está estructurado en 7 módulos especializados con autenticació
 
 - **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
-- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-66`), no funcionales y matriz de trazabilidad.
+- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-70`), no funcionales y matriz de trazabilidad.
 - **Documentación Ejecutiva:** Consulta la carpeta `docs/` con las guías de descubrimiento y banco de proyectos adaptadas a Tombstone Hats.
 
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### [2.18.0] - 2026-09-25
+- **Catálogo de Sombreros Fabricados y Variaciones (`RF-67`):** Nuevo catálogo maestro en Almacenes para registrar y consultar modelos fabricados (Denver Master, El Viejonón, Chaparral, Sonora Ranchero, Frontier Western, Magnum 1000X), variantes de talla (54 a 61), faldas (3.5" a 4.5"), toquillas y precios B2B.
+- **Visor de Ficha Técnica de Producto (`RF-67`):** Modal interactivo con fotografía industrial, dimensiones de copa y falda, horma de prensa requerida, materiales de ensamble y parámetros estándar de manufactura.
+- **Hormas y Moldes Maquinados con Ficha Técnica (`RF-68`):** Enriquecimiento del catálogo de hormas de aluminio maquinado (aleación, temperatura óptima 165°C-180°C, presión 6-8 bar, ciclos acumulados con barra de vida útil y moldes complementarios).
+- **Carga de Fotos en Sombreros y Hormas con Drag & Drop (`RF-67`, `RF-68`):** Dropzone interactivo de imagen con soporte para arrastrar o examinar archivo local, conversión instantánea a Base64 offline y previsualización en vivo.
+- **Estilo Industrial Tradición Moderno y Reemplazo de Emojis (`RF-69`):** Sustitución de emojis informales en navegación, botones y encabezados por iconografía SVG de precisión técnica y badges industriales sobrios en paleta pizarra (`#0F172A`), blanco frío (`#F8FAFC`) y cuero artesanal (`#8B5E3C`).
+- **Sub-pestañas Fijas con el Scroll (Sticky Sub-tabs · `RF-69`):** Fijación flotante de las sub-tabs (`position: sticky; top: 76px; z-index: 95; backdrop-filter: blur(12px)`) en todos los módulos para navegación continua sin regresar a la parte superior.
+- **Ergonomía Táctil y Botones Tablet-First (`RF-69`):** Zonas táctiles de 42-46px en modales y 38-42px en tablas, estados activos con micro-interacción `:active { transform: scale(0.97) }` y `cursor: pointer !important`.
+- **Integración Aislada de CONTPAQi ERP (COMPAC) en Configuración (`RF-70`):** Reubicación de la integración ERP dentro de una sub-pestaña técnica en Configuración, con monitor de enlace ODBC, prueba de ping, mapeo de almacenes B2B y emisor de vales de camioneta.
+- **Módulo Único Centralizado de Analítica & KPIs de Planta (`RF-70`):** Fusión de la consola de ingeniería y el dashboard directivo en una sola vista integral (`Analítica & KPIs de Planta`), accesible para Administradores e Ingenieros con 6 sub-pestañas especializadas (OEE, Finanzas de Lote, Rendimiento de Supervisores, Balanceo & Cuellos, Bitácora SMED y Matriz BOM).
 
 ### [2.17.0] - 2026-09-25
 - **Estandarización Universal de Tablas, Columnas y Acciones (Regla 0.35 de AGENTS.md):** Homogeneización visual y funcional estricta en la totalidad de tablas del sistema (Departamentos, Filtros de Calidad, Usuarios RBAC, Padrón de Operadores, Almacenes Físicos, Moldes/Hormas y Kárdex).

@@ -669,12 +669,11 @@ window.initTerminalView = function() {
   if (btnModalViewHatSpec) {
     btnModalViewHatSpec.addEventListener('click', () => {
       closeTravelerModal();
-      if (hatSpecModal) hatSpecModal.style.display = 'flex';
+      if (typeof window.openHatTechnicalSheet === 'function') {
+        window.openHatTechnicalSheet('SOM-02');
+      }
     });
   }
-
-  if (btnCloseHatSpecModal) btnCloseHatSpecModal.addEventListener('click', () => hatSpecModal.style.display = 'none');
-  if (btnOkHatSpecModal)    btnOkHatSpecModal.addEventListener('click',    () => hatSpecModal.style.display = 'none');
 
   // ── 8. MAPA GENERAL DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (RF-59) ──────
   function renderPlantDepartmentsGrid() {

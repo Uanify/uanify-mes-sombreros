@@ -38,6 +38,12 @@ function updateExecutiveMetrics() {
 }
 
 window.emitirValeEntrega = function() {
-  const c = UanifyState.compacSync;
-  alert(`🚚 VALE DE ENTREGA GENERADO Y ENVIADO A COMPAC:\n\nCliente: ${c.customer}\nOrden de Compra: ${c.activeOrderB2B}\nLote entregado: 350 texanas Master Telar\nTransporte: Camioneta del cliente en andén de carga\n\n✅ Pre-factura emitida y descuento de inventario procesado en CONTPAQi.`);
+  const c = UanifyState.compacSync || { customer: 'Sombreros La Herradura S.A. de C.V.', activeOrderB2B: 'OC-2026-8841' };
+  if (window.UanifyUI && window.UanifyUI.alert) {
+    window.UanifyUI.alert(
+      'Vale de Entrega Digital & CONTPAQi ERP',
+      `Cliente: ${c.customer}\nOrden de Compra: ${c.activeOrderB2B}\nLote entregado: 350 texanas Master Telar\nTransporte: Camioneta del cliente en andén de carga B2B\n\nPre-factura emitida y descuento de inventario procesado en CONTPAQi.`
+    );
+  }
 };
+

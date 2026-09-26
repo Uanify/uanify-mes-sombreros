@@ -84,8 +84,8 @@ window.initEngineerView = function() {
 // ── RESTRICCIÓN DE ACCESO A SUBTAB KPIS (SOLO INGENIEROS Y ADMIN) ────────────
 function checkKpisAccess() {
   const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
-  const kpisBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-kpis"]');
-  const kpisContent = document.getElementById('subtab-engineer-kpis');
+  const kpisBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-analytics-kpis"]') || document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-kpis"]');
+  const kpisContent = document.getElementById('subtab-analytics-kpis') || document.getElementById('subtab-engineer-kpis');
 
   const canAccess = (user.role === 'admin' || user.role === 'ingeniero');
 
@@ -101,7 +101,7 @@ function checkKpisAccess() {
 
   if (kpisContent && !canAccess && kpisContent.classList.contains('active')) {
     // Si el usuario no tiene acceso y está visualizando esta subtab, regresarlo a la primera
-    const firstBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-oee"]');
+    const firstBtn = document.querySelector('.sub-tab-btn[data-subtab="subtab-analytics-oee"]') || document.querySelector('.sub-tab-btn[data-subtab="subtab-engineer-oee"]');
     if (firstBtn) firstBtn.click();
     window.UanifyUI.toast(
       'El apartado de KPIs de Supervisores y Departamentos es de acceso exclusivo para Ingeniería y Dirección.',

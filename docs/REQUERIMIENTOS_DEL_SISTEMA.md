@@ -370,6 +370,29 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque P: Catálogo de Sombreros, Hormas c/Fotos, Fichas Técnicas, Módulo Único de Analítica & Integración COMPAC en Configuración (v2.18.0)
+
+- **`RF-67` Catálogo de Sombreros Fabricados, Variaciones, Fichas Técnicas y Carga de Fotografías:**
+  - **Catálogo de Sombreros:** Registro centralizado en Almacén (`subtab-inventory-hats`) de los modelos fabricados en San Francisco del Rincón (1000X Denver, El Viejonón, Chaparral, Sonora Blanco, Frontier, Magnum) con sus variaciones de tallas (54 a 60), copas (Gota, Sonora, Viejón, Roper), faldas (4 1/4", 9 1/2", doblado arriba/abajo), toquillas exteriores con herraje, acabados y precio de catálogo.
+  - **Ficha Técnica Oficial con Fotografía:** Visualizador modal (`#modalHatTechnicalSheet`) que proyecta la imagen técnica del sombrero en alta definición, dimensiones, tolerancias perimetrales (±1.0 mm), horma maquinada requerida, prensa compatible, takt time y variaciones de talla habilitadas con opción a impresión.
+  - **Catálogo de Hormas y Moldes Maquinados c/Fotos:** Especificaciones mecánicas y térmicas de moldes en fundición de aluminio maquinado CNC 6061-T6 y hierro nodular, temperatura operativa (115°C - 135°C), presión continua de vapor (70-85 PSI), prensa vinculada, control de fatiga térmica con barra de progreso de ciclos acumulados (ej. 6,420 / 10,000) y ficha técnica oficial modal (`#modalMoldTechnicalSheet`).
+  - **Carga de Fotografía Offline para Sombreros y Hormas:** Zona de arrastre y soltado Drag & Drop (`#hatPhotoDropzone`, `#moldPhotoDropzone`) con compatibilidad para selección de archivos locales (JPG, PNG, WEBP), conversión automática a Base64 via `FileReader`, vista previa instantánea en vivo, botón de remoción y persistencia local sin dependencias de servicios externos de pago.
+
+- **`RF-68` Módulo Único y Centralizado de Analítica, Rendimiento & KPIs de Planta (`analytics`):**
+  - **Unificación de Vistas:** Consolidación de la antigua Consola de Ingeniería y el Dashboard de Dirección en un único módulo superior en la barra de navegación: **`Analítica & KPIs de Planta`** (`data-tab="analytics"`).
+  - **Acceso Exclusivo para Administradores e Ingenieros:** Restricción RBAC unificada que garantiza que la totalidad de métricas, OEE global y desagregado (Disponibilidad, Rendimiento, Calidad), resumen financiero de producción ($1,310 - $1,450 MXN/pza), costo de merma, valorización de segundas, KPIs de supervisores de nave, balanceo de línea & cuellos de botella WIP, bitácora de paros SMED y matriz de materiales (BOM) se consulten en un solo espacio estructurado mediante 6 sub-pestañas especializadas.
+
+- **`RF-69` Aislamiento e Integración de CONTPAQi ERP (COMPAC) en Configuración:**
+  - **Sub-pestaña Aislada:** Reubicación de toda la información y conectividad con COMPAC dentro de una sub-pestaña dedicada en Configuración: **`subtab-config-compac`**.
+  - **Componentes de Enlace:** Monitor del estado del enlace ODBC local (puerto 1583, DSN local LAN con prueba de ping en 14ms sin latencia de nube), mapeo de almacenes MES a cuentas CONTPAQi (Rollos, WIP, PT, Merma), emisor digital de vales de entrega B2B para camionetas de clientes mayoristas en andén de carga y bitácora de transacciones sincronizadas.
+
+- **`RF-70` Estilo Industrial Tradición Moderno, Sub-pestañas Sticky y Optimización Táctil en Tablet:**
+  - **Diseño Industrial Sin Emojis Informales:** Reemplazo de emojis masivos por iconografía vectorial SVG nítida en navegación, pestañas, cabeceras de tablas y botones, proyectando una estética sobria, técnica y moderna (#0F172A, #F8FAFC, acentos cuero artesanal #8B5E3C).
+  - **Sub-pestañas Fijas al Scroll (Sticky):** Fijación de la barra de sub-pestañas (`.sub-nav-tabs`) con scroll vertical a `top: 76px; z-index: 95; backdrop-filter: blur(12px);`, garantizando visibilidad y conmutación fluida entre secciones sin tener que regresar al inicio de la página.
+  - **Ergonomía Táctil en Tablet:** Botones touch de 42-46px en modales y 38-42px en celdas de tabla, alto contraste, micro-interacción activa (`transform: scale(0.97)`), `cursor: pointer !important` y supresión de delay táctil.
+
+---
+
 ## 🏭 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.

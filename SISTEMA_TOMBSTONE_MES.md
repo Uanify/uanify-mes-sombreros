@@ -1,6 +1,6 @@
 # 🤠 SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.17.0` | **Fecha de Actualización:** 25 de Septiembre de 2026  
+> **Versión Actual:** `v2.18.0` | **Fecha de Actualización:** 25 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -31,6 +31,17 @@ A partir del diagnóstico técnico y entrevistas en planta con Dirección (**Edm
 ---
 
 ## 📜 8. Historial de Versiones (SemVer)
+
+- **`v2.18.0` (2026-09-25):**
+  - **Catálogo de Sombreros Fabricados y Variaciones (`RF-67`):** Registro e inventario maestro de modelos producidos en planta (Denver Master, El Viejonón, Chaparral, Sonora Ranchero, Frontier Western, Magnum 1000X) con variaciones de talla craneal, faldas (3.5" a 4.5"), toquillas y precios B2B.
+  - **Visor de Ficha Técnica de Producto (`RF-67`):** Modal interactivo con fotografía industrial, dimensiones de copa y falda, horma de prensa requerida, materiales de ensamble y parámetros estándar de manufactura.
+  - **Hormas y Moldes Maquinados con Ficha Técnica (`RF-68`):** Enriquecimiento del catálogo de moldes de aluminio maquinado (aleación, temperatura óptima 165°C-180°C, presión 6-8 bar, ciclos acumulados con barra de vida útil y moldes complementarios).
+  - **Carga de Fotos en Sombreros y Hormas con Drag & Drop (`RF-67`, `RF-68`):** Dropzone interactivo de imagen con soporte para arrastrar o examinar archivo local, conversión instantánea a Base64 offline y previsualización en vivo.
+  - **Estilo Industrial Tradición Moderno y Reemplazo de Emojis (`RF-69`):** Sustitución de emojis informales en navegación, botones y encabezados por iconografía SVG de precisión técnica y badges industriales sobrios en paleta pizarra (`#0F172A`), blanco frío (`#F8FAFC`) y cuero artesanal (`#8B5E3C`).
+  - **Sub-pestañas Fijas con el Scroll (Sticky Sub-tabs · `RF-69`):** Fijación flotante de las sub-tabs (`position: sticky; top: 76px; z-index: 95; backdrop-filter: blur(12px)`) en todos los módulos para navegación continua sin regresar a la parte superior.
+  - **Ergonomía Táctil y Botones Tablet-First (`RF-69`):** Zonas táctiles de 42-46px en modales y 38-42px en tablas, estados activos con micro-interacción `:active { transform: scale(0.97) }` y `cursor: pointer !important`.
+  - **Integración Aislada de CONTPAQi ERP (COMPAC) en Configuración (`RF-70`):** Reubicación de la integración ERP dentro de una sub-pestaña técnica en Configuración, con monitor de enlace ODBC, prueba de ping, mapeo de almacenes B2B y emisor de vales de camioneta.
+  - **Módulo Único Centralizado de Analítica & KPIs de Planta (`RF-70`):** Fusión de la consola de ingeniería y el dashboard directivo en una sola vista integral (`Analítica & KPIs de Planta`), accesible para Administradores e Ingenieros con 6 sub-pestañas especializadas (OEE, Finanzas de Lote, Rendimiento de Supervisores, Balanceo & Cuellos, Bitácora SMED y Matriz BOM).
 
 - **`v2.17.0` (2026-09-25):**
   - **Estandarización Universal de Tablas, Columnas y Acciones (Regla 0.35 de AGENTS.md):** Normalización transversal de las 7 tablas maestras del sistema (Departamentos, Filtros de Calidad, Usuarios RBAC, Padrón de Operadores, Almacenes Físicos, Moldes/Hormas y Kárdex) bajo la misma arquitectura de columnas (`.col-code`, `.col-name`, especificaciones técnicas, `.col-status`, `.col-actions`).
@@ -119,16 +130,16 @@ Confirmado tras el diagnóstico presencial en la fábrica:
 El sistema cuenta con un motor de permisos modulares persistente en memoria y configurable por el Administrador:
 
 ```
-[Administrador (Edmundo)] ───► Acceso Total + Gestión de Usuarios & Permisos
-[Ingeniero (Carlos)]     ───► Andon + Terminal + Consola Ingeniería + Rutas & Calidad
+[Administrador (Edmundo)] ───► Acceso Total + Gestión de Usuarios & Permisos + COMPAC ERP
+[Ingeniero (Carlos)]     ───► Andon + Terminal + Almacenes & Hormas + Operadores + Analítica & KPIs + Configuración
 [Supervisor (Juan M.)]   ───► Tablero Andon + Terminal de Planta (Lotes & QR) [Ocultamiento Estricto]
 ```
 
 ### Tabla de Usuarios Preconfigurados
 | Usuario ID | Nombre | Rol | Permisos por Defecto | Estado |
 |---|---|---|---|---|
-| `admin-1` | **Edmundo González** | `admin` (👑 Administrador) | `andon`, `terminal`, `engineer`, `executive`, `config` | Activo |
-| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (⚡ Ingeniero de Procesos) | `andon`, `terminal`, `engineer`, `config` | Activo |
+| `admin-1` | **Edmundo González** | `admin` (👑 Administrador) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
+| `ing-1` | **Ing. Carlos Ortiz** | `ingeniero` (⚡ Ingeniero de Procesos) | `andon`, `terminal`, `inventory`, `operators`, `analytics`, `config` | Activo |
 | `sup-1` | **Juan Manuel Pérez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
 | `sup-2` | **Roberto Méndez** | `supervisor` (📱 Supervisor de Línea) | `andon`, `terminal` | Activo |
 

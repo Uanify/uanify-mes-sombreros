@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.17.0">
-  <link rel="stylesheet" href="css/components.css?v=2.17.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.18.0">
+  <link rel="stylesheet" href="css/components.css?v=2.18.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.17.0</span>
+        <span class="system-version-pill login-version-pill">v2.18.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -83,52 +83,60 @@
 
       <!-- Sidebar Navigation Groups -->
       <nav class="sidebar-nav" id="mainNav">
-        <!-- Grupo 1: Piso y Operaciones -->
+        <!-- Grupo 1: Operación en Piso -->
         <div class="nav-group-title">Operación en Piso</div>
         <div class="nav-tabs">
           <button class="nav-btn active" data-tab="terminal">
-            <span class="tab-icon">🏷️</span>
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+            </span>
             <span class="tab-label">Terminal de Supervisor</span>
           </button>
           <button class="nav-btn" data-tab="andon">
-            <span class="tab-icon">📺</span>
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </span>
             <span class="tab-label">Tablero Andon (Piso)</span>
             <span class="tab-badge">En Vivo</span>
           </button>
         </div>
 
-        <!-- Grupo 2: Almacenes & Logística -->
-        <div class="nav-group-title">Almacenes & Logística</div>
+        <!-- Grupo 2: Almacenes & Personal -->
+        <div class="nav-group-title">Almacén & Personal</div>
         <div class="nav-tabs">
           <button class="nav-btn" data-tab="inventory">
-            <span class="tab-icon">📦</span>
-            <span class="tab-label">Almacén & Control de Inventarios</span>
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </span>
+            <span class="tab-label">Almacén & Inventarios</span>
           </button>
           <button class="nav-btn" data-tab="operators">
-            <span class="tab-icon">👷</span>
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
             <span class="tab-label">Padrón de Operadores</span>
           </button>
         </div>
 
-        <!-- Grupo 3: Ingeniería y Rendimiento -->
-        <div class="nav-group-title">Ingeniería & Rendimiento</div>
+        <!-- Grupo 3: Analítica & KPIs (Unificado para Admins e Ingenieros) -->
+        <div class="nav-group-title">Analítica & Control</div>
         <div class="nav-tabs">
-          <button class="nav-btn" data-tab="engineer">
-            <span class="tab-icon">📊</span>
-            <span class="tab-label">Consola de Ingeniería</span>
-          </button>
-          <button class="nav-btn" data-tab="executive">
-            <span class="tab-icon">💼</span>
-            <span class="tab-label">Dirección & COMPAC</span>
+          <button class="nav-btn" data-tab="analytics">
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            <span class="tab-label">Analítica & KPIs de Planta</span>
           </button>
         </div>
 
-        <!-- Grupo 4: Administración & Catálogos -->
-        <div class="nav-group-title">Administración & Catálogos</div>
+        <!-- Grupo 4: Configuración de Planta -->
+        <div class="nav-group-title">Configuración</div>
         <div class="nav-tabs">
           <button class="nav-btn" data-tab="config">
-            <span class="tab-icon">⚙️</span>
-            <span class="tab-label">Configuración & Catálogos Maestros</span>
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span class="tab-label">Configuración & Catálogos</span>
           </button>
         </div>
       </nav>
@@ -858,14 +866,102 @@
 
         <!-- Sub-navegación de Almacenes e Inventarios -->
         <div class="sub-nav-tabs" data-module="inventory">
-          <button class="sub-tab-btn active" data-subtab="subtab-inventory-warehouses">🏭 Almacenes Físicos de Planta & WIP</button>
-          <button class="sub-tab-btn" data-subtab="subtab-inventory-molds">🎩 Catálogo Maestro de Hormas & Moldes</button>
-          <button class="sub-tab-btn" data-subtab="subtab-inventory-subassemblies">🧵 Subensambles (Tafiletes por Talla)</button>
-          <button class="sub-tab-btn" data-subtab="subtab-inventory-kardex">📦 Kárdex & Movimientos de Almacén</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-inventory-hats">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17h20M6 17v-4a6 6 0 0 1 12 0v4M4 17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg>
+            Catálogo de Sombreros & Fichas
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-molds">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/></svg>
+            Hormas & Moldes Maquinados
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-warehouses">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            Almacenes Físicos & WIP
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-subassemblies">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+            Subensambles (Tafiletes)
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-inventory-kardex">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Kárdex & Movimientos
+          </button>
+        </div>
+
+        <!-- Subpestaña 0: Catálogo de Sombreros & Fichas Técnicas -->
+        <div class="sub-tab-content active" id="subtab-inventory-hats" style="display:block !important;">
+          <div class="card-glass" style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
+                  Catálogo Maestro de Sombreros & Variaciones
+                </h3>
+                <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                  Modelos de producción, especificaciones de falda, copa, tallas, toquillas y fichas técnicas oficiales
+                </p>
+              </div>
+              <button class="btn-primary" id="btnOpenRegisterHatModal" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 20px; font-weight:700;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Registrar Nuevo Sombrero
+              </button>
+            </div>
+
+            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="hatSearchInput" class="form-input" placeholder="Buscar modelo por código, nombre, material, horma..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="hatMaterialFilter" class="custom-select">
+                    <option value="all">Todos los Materiales</option>
+                    <option value="Telar Shantung">Telar Shantung 1000X</option>
+                    <option value="Paja">Paja Bangora / Híbrida</option>
+                    <option value="Fieltro">Fieltro Lana 4X</option>
+                    <option value="Palma">Palma Fina</option>
+                  </select>
+                  <select id="hatStatusFilter" class="custom-select">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="Activo">Activo en Catálogo</option>
+                    <option value="Bajo Pedido">Bajo Pedido</option>
+                    <option value="Descontinuado">Descontinuado</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="hatFilteredCountBadge">Cargando...</span>
+                <button type="button" class="btn-reset-filters" id="btnResetHatFilters" title="Restablecer filtros">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table" id="tblInventoryHats">
+                <thead>
+                  <tr>
+                    <th class="col-code">Código</th>
+                    <th class="col-name" style="min-width: 220px;">Modelo de Sombrero</th>
+                    <th>Copa & Falda</th>
+                    <th>Tallas Disponibles</th>
+                    <th>Horma Compatible</th>
+                    <th>Valor Catálogo</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions" style="min-width: 220px;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tblInventoryHatsBody">
+                  <!-- Renderizado dinámico desde app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <!-- Subpestaña 1: Almacenes Físicos de Planta & WIP -->
-        <div class="sub-tab-content active" id="subtab-inventory-warehouses">
+        <div class="sub-tab-content" id="subtab-inventory-warehouses" style="display:none !important;">
           <!-- Overview Cards de Almacenes -->
           <div class="warehouses-overview-grid" id="warehousesOverviewGrid">
             <!-- Renderizado dinámicamente por app.js -->
@@ -936,14 +1032,15 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div>
                 <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                  🎩 Catálogo Maestro de Moldes de Hormas de Aluminio (Prensas de Vapor)
+                  Catálogo Maestro de Hormas & Moldes Maquinados (Prensas de Vapor)
                 </h3>
                 <p class="section-desc" style="margin-bottom:0;">
                   Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas de San Francisco del Rincón.
                 </p>
               </div>
-              <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="min-height:48px; padding:0 20px; font-weight:700;">
-                🎩 + Registrar Nueva Horma
+              <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 20px; font-weight:700;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Registrar Nueva Horma
               </button>
             </div>
 
@@ -951,7 +1048,9 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <span class="search-icon">🔍</span>
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
                   <input type="text" id="moldSearchInput" class="form-input" placeholder="Buscar por código, nombre de horma, modelo, prensa..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -967,12 +1066,15 @@
                   </select>
                   <select id="moldStatusFilter" class="custom-select">
                     <option value="all">Todos los Estatus</option>
-                    <option value="Disponible">🟢 Disponibles</option>
-                    <option value="En Uso">⚙️ En Uso</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="En Uso">En Uso</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="moldsFilteredCountBadge">18 moldes</span>
-                <button type="button" class="btn-reset-filters" id="btnResetMoldFilters" title="Restablecer filtros">🔄 Limpiar</button>
+                <button type="button" class="btn-reset-filters" id="btnResetMoldFilters" title="Restablecer filtros">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Limpiar
+                </button>
               </div>
             </div>
 
@@ -981,13 +1083,14 @@
                 <thead>
                   <tr>
                     <th class="col-code">Código</th>
-                    <th class="col-name">Modelo / Nombre de Horma</th>
-                    <th>Tipo de Horma</th>
-                    <th>Talla (US/MX)</th>
-                    <th>Material</th>
+                    <th class="col-name" style="min-width: 200px;">Horma & Modelo</th>
+                    <th>Tipo</th>
+                    <th>Talla</th>
+                    <th>Aleación</th>
                     <th>Prensa Asignada</th>
-                    <th class="col-status">Estatus Operativo</th>
-                    <th class="col-actions">Acciones</th>
+                    <th>Ciclos Prensado</th>
+                    <th class="col-status">Estatus</th>
+                    <th class="col-actions" style="min-width: 220px;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryMoldsTableBody">
@@ -1180,28 +1283,58 @@
       <!-- ======================================================================
            TAB 3: CONSOLA DE INGENIERÍA & SUBENSAMBLES (TAFILETES)
            ====================================================================== -->
-      <section class="view-panel" id="view-engineer">
+      <!-- ======================================================================
+           SECCIÓN: ANALÍTICA & RENDIMIENTO DE PLANTA (CONSOLA UNIFICADA)
+           Consolidación única de OEE, Finanzas, KPIs, Balanceo, SMED y BOM
+           ====================================================================== -->
+      <section class="view-panel" id="view-analytics">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Consola de Control de Ingeniería & Subensambles</h1>
-            <p class="view-subtitle">Balanceo de líneas, stock de tafiletes por talla en tiempo real y OEE en planta Tombstone</p>
+            <h1 class="view-title">Analítica & Rendimiento de Planta</h1>
+            <p class="view-subtitle">Consola unificada de KPIs, OEE matemático, valorización de producción, balanceo de líneas y auditoría de paros</p>
           </div>
-          <div style="display:flex; gap:10px;">
-            <button class="btn-primary" id="btnSimulateShift">⚡ Simular +1 Hora de Producción</button>
-            <button class="btn-secondary" id="btnResetSimulation">🔄 Reiniciar Datos Turno Único</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-primary" id="btnSimulateShift" style="display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Simular +1 Hora de Producción
+            </button>
+            <button class="btn-secondary" id="btnResetSimulation" style="display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Reiniciar Datos Turno Único
+            </button>
           </div>
         </div>
 
-        <!-- Sub-navegación por Pestañas del Módulo Ingeniería -->
-        <div class="sub-nav-tabs" data-module="engineer">
-          <button class="sub-tab-btn active" data-subtab="subtab-engineer-oee">📊 OEE & Eficiencia Global</button>
-          <button class="sub-tab-btn" data-subtab="subtab-engineer-balancing">⚖️ Balanceo de Líneas & Cuellos de Botella</button>
-          <button class="sub-tab-btn" data-subtab="subtab-engineer-materials">🔄 Matriz de Materiales & Fichas (BOM)</button>
-          <button class="sub-tab-btn" data-subtab="subtab-engineer-kpis">🏆 KPIs de Rendimiento (Supervisores y Depts)</button>
+        <!-- Sub-navegación Unificada de Analítica -->
+        <div class="sub-nav-tabs" data-module="analytics">
+          <button class="sub-tab-btn active" data-subtab="subtab-analytics-oee">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            OEE & Eficiencia Global
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-analytics-financial">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Resumen Financiero & Valorización
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-analytics-kpis">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            KPIs de Rendimiento
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-analytics-balancing">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Balanceo de Líneas & Cuellos
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-analytics-stops">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            Bitácora de Paros & SMED
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-analytics-materials">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.5 9.4 7.55 4.24a1.78 1.78 0 0 0-2.5 1.55v12.42a1.78 1.78 0 0 0 2.5 1.55L16.5 14.6a1.78 1.78 0 0 0 0-3.2z"/></svg>
+            Matriz de Materiales (BOM)
+          </button>
         </div>
 
         <!-- Pestaña 1: OEE & Eficiencia Global -->
-        <div class="sub-tab-content active" id="subtab-engineer-oee">
+        <div class="sub-tab-content active" id="subtab-analytics-oee" style="display:block !important;">
           <!-- OEE Breakdown -->
           <div class="oee-summary-grid">
             <div class="oee-card card-glass">
@@ -1239,150 +1372,10 @@
               <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
             </div>
           </div>
-
-          <!-- Bitácora de Paros Recientes -->
-          <div class="card-glass downtime-card" style="margin-top:20px; padding:20px;">
-            <div class="card-head">
-              <h3>Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
-              <span class="badge-subtle">Cálculo de minutos perdidos en planta</span>
-            </div>
-            <div class="downtime-table-wrapper">
-              <table class="data-table" id="downtimeTable">
-                <thead>
-                  <tr>
-                    <th>Hora</th>
-                    <th>Estación</th>
-                    <th>Causa de Paro</th>
-                    <th>Duración</th>
-                    <th>Impacto</th>
-                  </tr>
-                </thead>
-                <tbody id="downtimeTbody">
-                  <!-- Inyectado por JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
-        <!-- Pestaña 2: Balanceo de Líneas & Cuellos de Botella -->
-        <div class="sub-tab-content" id="subtab-engineer-balancing">
-          <div class="card-glass bottleneck-card" style="padding:22px;">
-            <div class="card-head">
-              <div>
-                <h3>⚖️ Detección de Cuellos de Botella & Acumulación de WIP en Espera</h3>
-                <p class="section-desc" style="margin-bottom:0;">Monitoreo de inventario intermedio retenido entre almacenes intermedios para balanceo táctico de operadores.</p>
-              </div>
-              <span class="badge-alert" id="bottleneckAlert">⚠️ Acumulación en Prensas de Hormado</span>
-            </div>
-            <div class="pipeline-viz" id="pipelineViz" style="margin-top:16px;">
-              <!-- Renderizado dinámico por engineer.js -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Pestaña 3: Matriz de Materiales (BOM) & Fichas Técnicas -->
-        <div class="sub-tab-content" id="subtab-engineer-materials">
-          <!-- Matriz de Materiales con Cambio Masivo -->
-          <div class="card-glass" style="padding:22px;">
-            <div class="card-head" style="flex-wrap:wrap; gap:10px;">
-              <div>
-                <h3>🔄 Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Si cambias un material (ej. pintura Taiwan 1125 por nuevo proveedor), se actualiza en todas las fichas técnicas en 1 clic.</p>
-              </div>
-              <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
-                🔄 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
-              </button>
-            </div>
-            <div class="downtime-table-wrapper" style="margin-top:16px;">
-              <table class="data-table">
-                <thead>
-                  <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
-                </thead>
-                <tbody id="materialMatrixBody">
-                  <!-- Inyectado por JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pestaña 4: KPIs de Rendimiento (Supervisores y Depts) - EXCLUSIVO INGENIEROS Y ADMIN -->
-        <div class="sub-tab-content" id="subtab-engineer-kpis">
-          <div class="card-glass" style="padding:22px;">
-            <div class="card-head">
-              <div>
-                <h3>🏆 KPIs de Rendimiento por Departamento & Supervisores</h3>
-                <span class="badge-subtle" style="color:var(--color-brand); font-weight:700;">ACCESO EXCLUSIVO: INGENIERÍA Y DIRECCIÓN</span>
-              </div>
-            </div>
-            <p class="section-desc">Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.</p>
-            
-            <div class="downtime-table-wrapper" style="margin-top:14px;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Supervisor a Cargo</th>
-                    <th>Departamentos Asignados</th>
-                    <th>Takt Promedio</th>
-                    <th>Cumplimiento Meta</th>
-                    <th>Merma Scrap</th>
-                    <th>Calificación de Turno</th>
-                  </tr>
-                </thead>
-                <tbody id="supervisorKpisTableBody">
-                  <tr>
-                    <td><strong>Juan Manuel Pérez</strong></td>
-                    <td><span class="badge-subtle">D-05 Prensas a D-08 Brillo</span></td>
-                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">41.2s</span></td>
-                    <td><strong style="color:var(--color-green);">94.8%</strong></td>
-                    <td>1.8%</td>
-                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong>Roberto Méndez</strong></td>
-                    <td><span class="badge-subtle">D-01 Corte a D-04 Refuerzos</span></td>
-                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">36.4s</span></td>
-                    <td><strong style="color:var(--color-brand);">91.2%</strong></td>
-                    <td>2.1%</td>
-                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Sobresaliente (A)</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong>Auxiliar de Rampa</strong></td>
-                    <td><span class="badge-subtle">D-05 Rampa Fraccionamiento</span></td>
-                    <td><span style="font-family:'JetBrains Mono'; font-weight:700;">14.8s</span></td>
-                    <td><strong style="color:var(--color-green);">98.0%</strong></td>
-                    <td>0.2%</td>
-                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           TAB 4: DASHBOARD EJECUTIVO PARA EDMUNDO & ENLACE CONTPAQi
-           ====================================================================== -->
-      <section class="view-panel" id="view-executive">
-        <div class="view-hero-bar">
-          <div>
-            <h1 class="view-title">Dashboard Directivo · Visión de Negocio & Enlace COMPAC</h1>
-            <p class="view-subtitle">Métricas financieras en tiempo real y flujo de órdenes de entrega facturables</p>
-          </div>
-          <div class="badge-executive">Dirección General Tombstone · Confidencial</div>
-        </div>
-
-        <!-- Sub-navegación por Pestañas del Módulo Dirección -->
-        <div class="sub-nav-tabs" data-module="executive">
-          <button class="sub-tab-btn active" data-subtab="subtab-executive-summary">💰 Resumen Financiero & Valor de Producción</button>
-          <button class="sub-tab-btn" data-subtab="subtab-executive-b2b">📦 Pedidos B2B Mayoristas & COMPAC</button>
-          <button class="sub-tab-btn" data-subtab="subtab-executive-roi">🚀 Retorno de Inversión (ROI) & Fases</button>
-        </div>
-
-        <!-- Pestaña 1: Resumen Financiero -->
-        <div class="sub-tab-content active" id="subtab-executive-summary">
+        <!-- Pestaña 2: Resumen Financiero & Valorización -->
+        <div class="sub-tab-content" id="subtab-analytics-financial" style="display:none !important;">
           <!-- Tarjetas Financieras -->
           <div class="exec-kpi-grid">
             <div class="exec-card card-glass">
@@ -1409,74 +1402,177 @@
               <span class="exec-trend">14 piezas con daño total (2.2% merma)</span>
             </div>
           </div>
-        </div>
 
-        <!-- Pestaña 2: Pedidos B2B y COMPAC -->
-        <div class="sub-tab-content" id="subtab-executive-b2b">
-          <!-- Enlace con CONTPAQi / COMPAC -->
-          <div class="card-glass" style="padding:22px; margin-bottom:20px; border-left: 4px solid var(--color-brand);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-              <div>
-                <span class="badge-subtle" style="color:var(--color-brand); background:var(--color-brand-light); border:1px solid var(--color-brand-border);">MÓDULO DE INTEGRACIÓN COMPAC (CONTPAQi)</span>
-                <h3 style="font-family:'Outfit'; font-size:18px; margin-top:8px;">Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)</h3>
-                <p style="font-size:12.5px; color:var(--text-secondary); margin-top:4px;">Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes</p>
-              </div>
-              <button class="btn-primary" id="btnEmitDeliverySlip" style="padding:10px 18px; font-size:13px;">
-                🚚 Emitir Vale de Entrega para Camioneta
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pestaña 3: ROI y Fases -->
-        <div class="sub-tab-content" id="subtab-executive-roi">
           <!-- Comparativa Business Case Uanify MES -->
-          <div class="exec-insights-grid">
+          <div class="exec-insights-grid" style="margin-top:20px;">
             <div class="card-glass roi-comparison">
-              <h3>Retorno de Inversión (ROI) Estimado para Tombstone Hats</h3>
+              <h3 style="font-size:15px; font-weight:800; margin-bottom:12px;">Retorno de Inversión (ROI) Estimado para Tombstone Hats</h3>
               <div class="roi-columns">
                 <div class="roi-col before">
                   <h4>Antes (Papel, Pizarrones y Tarjetas a Mano)</h4>
                   <ul>
-                    <li>❌ Lotes de 60 fraccionados en Excel y cambiados a mano</li>
-                    <li>❌ Supervisores preguntando a gritos por tafiletes</li>
-                    <li>❌ Paros en prensas no analizados (caldera y hormas)</li>
-                    <li>❌ Doble captura manual entre almacén y COMPAC</li>
-                    <li>❌ 15 hrs semanales de oficina pasando notas</li>
+                    <li>Lotes de 60 fraccionados en Excel y cambiados a mano</li>
+                    <li>Supervisores preguntando a gritos por tafiletes</li>
+                    <li>Paros en prensas no analizados (caldera y hormas)</li>
+                    <li>Doble captura manual entre almacén y COMPAC</li>
+                    <li>15 hrs semanales de oficina pasando notas</li>
                   </ul>
                 </div>
                 <div class="roi-col after">
                   <h4>Con Uanify MES (Digitalización de Planta)</h4>
                   <ul>
-                    <li>✅ <strong>Tarjetas Viajeras con QR</strong> escaneadas en 0.2 seg</li>
-                    <li>✅ Fraccionamiento de 60 a 15 pzas automático</li>
-                    <li>✅ <strong>Stock de tafiletes por talla</strong> visible en pantalla</li>
-                    <li>✅ Generación de vales de entrega directo a COMPAC</li>
-                    <li>✅ <strong>Payback estimado de implementación: 2.1 meses</strong></li>
+                    <li><strong>Tarjetas Viajeras con QR</strong> escaneadas en 0.2 seg</li>
+                    <li>Fraccionamiento de 60 a 15 pzas automático</li>
+                    <li><strong>Stock de tafiletes por talla</strong> visible en pantalla</li>
+                    <li>Generación de vales de entrega directo a COMPAC</li>
+                    <li><strong>Payback estimado de implementación: 2.1 meses</strong></li>
                   </ul>
                 </div>
               </div>
             </div>
 
             <div class="card-glass quote-summary">
-              <h3>Propuesta Modular para Tombstone Hats</h3>
+              <h3 style="font-size:15px; font-weight:800; margin-bottom:12px;">Ruta de Escalabilidad Digital Tombstone Hats</h3>
               <div class="tier-pill-box">
                 <div class="tier-item">
-                  <span class="tier-badge">FASE 1 · QUICK WIN (4 Semanas)</span>
+                  <span class="tier-badge">FASE 1 · CONTROL DE PISO</span>
                   <strong>MES de Piso + QR en Tarjetas Viajeras + Prensas</strong>
                   <p>Escaneo de lotes de 60 pzas, fraccionamiento a 15 pzas en rampa, pantallas Andon y tiempos de ciclo.</p>
                 </div>
                 <div class="tier-item highlight">
-                  <span class="tier-badge">FASE 2 · CONTROL TOTAL (8 Semanas)</span>
+                  <span class="tier-badge">FASE 2 · CONTROL INTEGRAL</span>
                   <strong>Control de Subensambles (Tafiletes) + Inventarios</strong>
                   <p>Balanceo de stock de tafiletes por talla y descuento automático de telares y químicos.</p>
                 </div>
                 <div class="tier-item">
-                  <span class="tier-badge">FASE 3 · ECOSISTEMA B2B (12 Semanas)</span>
+                  <span class="tier-badge">FASE 3 · ECOSISTEMA B2B</span>
                   <strong>Enlace Directo con COMPAC + Portal Mayoristas</strong>
                   <p>Sincronización de pedidos B2B, facturación automática y vales de camioneta digitales.</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: KPIs de Rendimiento por Supervisor y Departamento -->
+        <div class="sub-tab-content" id="subtab-analytics-kpis" style="display:none !important;">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head">
+              <div>
+                <h3 style="font-size:15px; font-weight:800;">KPIs de Rendimiento por Departamento & Supervisores</h3>
+                <span class="badge-subtle" style="color:var(--color-brand); font-weight:700;">ACCESO EXCLUSIVO: INGENIERÍA Y DIRECCIÓN</span>
+              </div>
+            </div>
+            <p class="section-desc">Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.</p>
+            
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Supervisor a Cargo</th>
+                    <th>Departamentos Asignados</th>
+                    <th>Takt Promedio</th>
+                    <th>Cumplimiento Meta</th>
+                    <th>Merma Scrap</th>
+                    <th>Calificación de Turno</th>
+                  </tr>
+                </thead>
+                <tbody id="supervisorKpisTableBody">
+                  <tr>
+                    <td><strong>Juan Manuel Pérez</strong></td>
+                    <td><span class="badge-subtle">D-05 Prensas a D-08 Brillo</span></td>
+                    <td><span style="font-family:var(--font-mono); font-weight:700;">41.2s</span></td>
+                    <td><strong style="color:var(--color-green);">94.8%</strong></td>
+                    <td>1.8%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Roberto Méndez</strong></td>
+                    <td><span class="badge-subtle">D-01 Corte a D-04 Refuerzos</span></td>
+                    <td><span style="font-family:var(--font-mono); font-weight:700;">36.4s</span></td>
+                    <td><strong style="color:var(--color-brand);">91.2%</strong></td>
+                    <td>2.1%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Sobresaliente (A)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Auxiliar de Rampa</strong></td>
+                    <td><span class="badge-subtle">D-05 Rampa Fraccionamiento</span></td>
+                    <td><span style="font-family:var(--font-mono); font-weight:700;">14.8s</span></td>
+                    <td><strong style="color:var(--color-green);">98.0%</strong></td>
+                    <td>0.2%</td>
+                    <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">Excelente (A+)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: Balanceo de Líneas & Cuellos de Botella -->
+        <div class="sub-tab-content" id="subtab-analytics-balancing" style="display:none !important;">
+          <div class="card-glass bottleneck-card" style="padding:22px;">
+            <div class="card-head">
+              <div>
+                <h3 style="font-size:15px; font-weight:800;">Detección de Cuellos de Botella & Acumulación de WIP en Espera</h3>
+                <p class="section-desc" style="margin-bottom:0;">Monitoreo de inventario intermedio retenido entre almacenes intermedios para balanceo táctico de operadores.</p>
+              </div>
+              <span class="badge-alert" id="bottleneckAlert">Acumulación en Prensas de Hormado</span>
+            </div>
+            <div class="pipeline-viz" id="pipelineViz" style="margin-top:16px;">
+              <!-- Renderizado dinámico por engineer.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 5: Bitácora de Paros & SMED -->
+        <div class="sub-tab-content" id="subtab-analytics-stops" style="display:none !important;">
+          <div class="card-glass downtime-card" style="padding:20px;">
+            <div class="card-head">
+              <div>
+                <h3 style="font-size:15px; font-weight:800;">Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Cálculo de minutos perdidos en planta y análisis SMED</p>
+              </div>
+            </div>
+            <div class="downtime-table-wrapper" style="margin-top:14px;">
+              <table class="data-table" id="downtimeTable">
+                <thead>
+                  <tr>
+                    <th>Hora</th>
+                    <th>Estación</th>
+                    <th>Causa de Paro</th>
+                    <th>Duración</th>
+                    <th>Impacto</th>
+                  </tr>
+                </thead>
+                <tbody id="downtimeTbody">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 6: Matriz de Materiales (BOM) & Fichas Técnicas -->
+        <div class="sub-tab-content" id="subtab-analytics-materials" style="display:none !important;">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:15px; font-weight:800;">Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+                <p class="section-desc" style="margin-bottom:0;">Actualización de insumos en recetas de producto al cambiar de proveedor o formulación.</p>
+              </div>
+              <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
+                Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
+              </button>
+            </div>
+            <div class="downtime-table-wrapper" style="margin-top:16px;">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Material</th><th>Categoría</th><th>Fichas que lo usan</th><th>Unidad</th><th>Notas</th></tr>
+                </thead>
+                <tbody id="materialMatrixBody">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1496,12 +1592,34 @@
 
         <!-- Sub-navegación por Pestañas del Módulo Configuración -->
         <div class="sub-nav-tabs" data-module="config">
-          <button class="sub-tab-btn active" data-subtab="subtab-config-depts">🏢 Departamentos & Almacenes Intermedios</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-quality">🔍 Filtros de Calidad & Tolerancias</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-routes">📐 Rutas & Secuencias por Modelo</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-params">⏰ Parámetros & Meta Semanal</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-users">👥 Usuarios del Sistema (RBAC)</button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-operators">👷 Padrón de Operadores de Planta</button>
+          <button class="sub-tab-btn active" data-subtab="subtab-config-depts">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
+            Departamentos & Almacenes
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-quality">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Filtros de Calidad
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-routes">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/></svg>
+            Rutas & Secuencias
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-params">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Parámetros & Turno
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-users">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Usuarios (RBAC)
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-operators">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Padrón de Operadores
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-compac">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            Integración COMPAC / ERP
+          </button>
         </div>
 
         <!-- Pestaña: Parámetros Generales & Horario de Turno -->
@@ -1908,6 +2026,121 @@
             </div>
           </div>
         </div>
+
+        <!-- Pestaña: Integración COMPAC / CONTPAQi ERP -->
+        <div class="sub-tab-content" id="subtab-config-compac" style="display:none !important;">
+          <div class="compac-dashboard-wrapper">
+            <!-- Hero Card de Conexión -->
+            <div class="compac-hero-card card-glass">
+              <div class="compac-info-group">
+                <span class="badge-subtle" style="color:var(--color-brand); background:var(--color-brand-light); border:1px solid var(--color-brand-border); width:fit-content;">
+                  ENLACE CONTPAQi COMERCIAL · SERVICIO LOCAL
+                </span>
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:6px 0 2px 0;">
+                  Conector ERP CONTPAQi · Tombstone Hats S.A. de C.V.
+                </h3>
+                <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
+                  Sincronización bidireccional de traspasos de producción a almacenes fiscales y órdenes de entrega B2B
+                </p>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div class="compac-status-pill">
+                  <span class="compac-status-dot"></span>
+                  Conexión ODBC Activa
+                </div>
+                <button type="button" class="btn-secondary" id="btnTestCompacConn" style="min-height:42px; padding:0 16px; font-weight:700; font-size:12.5px;">
+                  Probar Enlace ODBC
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards Grid: Parámetros y Mapeo de Almacenes -->
+            <div class="compac-cards-grid">
+              <!-- Parámetros Técnicos -->
+              <div class="compac-card card-glass">
+                <div class="compac-card-header">
+                  <span class="compac-card-title">Parámetros del Servidor ODBC</span>
+                  <span class="badge-subtle">Red Local</span>
+                </div>
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label class="field-label" style="font-size:11px;">Host / IP del Servidor:</label>
+                  <input type="text" class="form-input" id="cfgCompacHost" value="192.168.1.50:9005" style="font-family:var(--font-mono); font-size:12px;">
+                </div>
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label class="field-label" style="font-size:11px;">Base de Datos de Empresa:</label>
+                  <input type="text" class="form-input" id="cfgCompacDb" value="ct_tombstone_comercial" style="font-family:var(--font-mono); font-size:12px;">
+                </div>
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label class="field-label" style="font-size:11px;">Empresa Vinculada:</label>
+                  <input type="text" class="form-input" value="TOMBSTONE HATS S.A. DE C.V." readonly style="background:#F1F5F9; font-size:12px; font-weight:700;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="field-label" style="font-size:11px;">Frecuencia de Polling / Sincronización:</label>
+                  <select id="cfgCompacSyncFreq" class="custom-select" style="font-size:12px;">
+                    <option value="5" selected>Cada 5 minutos (Automático)</option>
+                    <option value="15">Cada 15 minutos</option>
+                    <option value="manual">Manual bajo demanda</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Mapeo de Almacenes MES vs COMPAC -->
+              <div class="compac-card card-glass">
+                <div class="compac-card-header">
+                  <span class="compac-card-title">Mapeo de Almacenes Homologados</span>
+                  <span class="badge-subtle">4 Almacenes</span>
+                </div>
+                <table class="compac-table">
+                  <thead>
+                    <tr><th>Almacén MES</th><th>Código COMPAC</th><th>Nombre en ERP</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>ALM-01 Materia Prima</td><td><span class="table-badge-code">ALM-1</span></td><td>Bodega MP Paja & Fieltro</td></tr>
+                    <tr><td>ALM-02 Rampa WIP</td><td><span class="table-badge-code">ALM-2</span></td><td>Producción en Proceso WIP</td></tr>
+                    <tr><td>ALM-04 Terminado</td><td><span class="table-badge-code">ALM-3</span></td><td>Bodega Embarques Mayoreo</td></tr>
+                    <tr><td>ALM-05 Segundas</td><td><span class="table-badge-code">ALM-4</span></td><td>Saldos Remate Viernes</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Pedidos Mayoristas y Emisión de Vales -->
+            <div class="card-glass" style="padding:22px; border-left: 4px solid var(--color-brand);">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                  <span class="badge-subtle" style="color:var(--color-brand); font-weight:800;">ORDEN DE ENTREGA B2B COMPAC</span>
+                  <h3 style="font-family:'Outfit'; font-size:17px; margin-top:6px; color:var(--text-primary);">
+                    Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)
+                  </h3>
+                  <p style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">
+                    Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes
+                  </p>
+                </div>
+                <button type="button" class="btn-primary" id="btnEmitDeliverySlip" style="padding:10px 18px; font-size:13px; font-weight:700;">
+                  Emitir Vale de Entrega para Camioneta
+                </button>
+              </div>
+            </div>
+
+            <!-- Bitácora de Sincronización Reciente -->
+            <div class="card-glass" style="padding:20px;">
+              <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                Bitácora de Sincronizaciones Recientes con COMPAC
+              </h4>
+              <table class="compac-table">
+                <thead>
+                  <tr><th>Timestamp</th><th>Tipo Operación</th><th>Documento / Lote</th><th>Unidades</th><th>Estatus</th></tr>
+                </thead>
+                <tbody id="compacSyncLogBody">
+                  <tr><td>Hoy 12:45</td><td>Traspaso PT</td><td>Lote #49,633 (Viejonón)</td><td>60 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
+                  <tr><td>Hoy 11:20</td><td>Entrada MP</td><td>Remisión #REM-4412</td><td>4 rollos</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
+                  <tr><td>Hoy 10:40</td><td>Merma Segundas</td><td>Folio #SAL-0145</td><td>2 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
+                  <tr><td>Hoy 09:30</td><td>Salida B2B</td><td>Vale #VAL-0982</td><td>60 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
 
     </main>
@@ -2024,31 +2257,27 @@
             <div class="permissions-checklist">
               <label class="perm-check-item">
                 <input type="checkbox" class="new-perm-cb" value="terminal" checked>
-                <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+                <span>Terminal de Supervisor (Lotes & QR)</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="new-perm-cb" value="andon" checked>
-                <span>📺 Tablero Andon (Piso)</span>
+                <span>Tablero Andon (Línea de Piso)</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="new-perm-cb" value="inventory">
-                <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+                <span>Catálogos, Hormas & Almacenes WIP</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="new-perm-cb" value="operators">
-                <span>👷 Padrón de Operadores de Planta</span>
+                <span>Padrón de Operadores de Planta</span>
               </label>
               <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="engineer">
-                <span>📊 Consola de Ingeniería & Rendimiento</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="executive">
-                <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+                <input type="checkbox" class="new-perm-cb" value="analytics">
+                <span>Analítica, OEE & KPIs de Planta</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="new-perm-cb" value="config">
-                <span>⚙️ Configuración de Planta & Usuarios</span>
+                <span>Configuración de Planta & ERP</span>
               </label>
             </div>
           </div>
@@ -2129,31 +2358,27 @@
             <div class="permissions-checklist">
               <label class="perm-check-item">
                 <input type="checkbox" class="edit-perm-cb" value="terminal">
-                <span>🏷️ Terminal de Supervisor (Lotes & QR)</span>
+                <span>Terminal de Supervisor (Lotes & QR)</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="edit-perm-cb" value="andon">
-                <span>📺 Tablero Andon (Piso)</span>
+                <span>Tablero Andon (Línea de Piso)</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="edit-perm-cb" value="inventory">
-                <span>📦 Almacenes & Hormas (Inventario WIP)</span>
+                <span>Catálogos, Hormas & Almacenes WIP</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="edit-perm-cb" value="operators">
-                <span>👷 Padrón de Operadores de Planta</span>
+                <span>Padrón de Operadores de Planta</span>
               </label>
               <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="engineer">
-                <span>📊 Consola de Ingeniería & Rendimiento</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="executive">
-                <span>💼 Dirección & COMPAC (Finanzas, Vales)</span>
+                <input type="checkbox" class="edit-perm-cb" value="analytics">
+                <span>Analítica, OEE & KPIs de Planta</span>
               </label>
               <label class="perm-check-item">
                 <input type="checkbox" class="edit-perm-cb" value="config">
-                <span>⚙️ Configuración de Planta & Usuarios</span>
+                <span>Configuración de Planta & ERP</span>
               </label>
             </div>
           </div>
@@ -2169,53 +2394,436 @@
   <!-- ======================================================================
        MODAL: REGISTRAR NUEVA HORMA / MOLDE (INGENIERÍA)
        ====================================================================== -->
+  <!-- ======================================================================
+       MODAL: REGISTRAR / EDITAR HORMA O MOLDE (CON CARGA DE FOTO)
+       ====================================================================== -->
   <div class="modal-backdrop" id="modalRegisterMold">
-    <div class="modal-box card-glass">
+    <div class="modal-box card-glass" style="max-width: 640px;">
       <div class="modal-header">
         <div>
-          <h3>🎩 Registrar Nueva Horma / Molde de Sombrero</h3>
-          <p class="modal-header-sub">Catálogo de moldes físicos para prensas de hormado y hornos</p>
+          <h3 id="modalRegisterMoldTitle">Registrar Horma / Molde de Sombrero</h3>
+          <p class="modal-header-sub">Catálogo de moldes maquinados en fundición de aluminio para prensas térmicas</p>
         </div>
         <button class="modal-close" id="btnCloseRegisterMoldModal">&times;</button>
       </div>
       <form id="formRegisterMold">
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="field-label">Nombre del Modelo / Horma:</label>
-            <input type="text" id="newMoldName" class="form-input" placeholder="Ej. Laredo F10 o Rodeo Master" required>
+        <input type="hidden" id="moldEditMode" value="create">
+        <input type="hidden" id="origMoldCode" value="">
+        <input type="hidden" id="newMoldPhotoData" value="">
+        <div class="modal-body" style="padding:20px;">
+          <div style="display:grid; grid-template-columns: 1fr 140px; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Nombre del Modelo / Horma:</label>
+              <input type="text" id="newMoldName" class="form-input" placeholder="Ej. #54 JOHNSON LONA o DENVER MASTER" required>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Código Grabado:</label>
+              <input type="text" id="newMoldCode" class="form-input" placeholder="HRM-JHN-54" required style="font-family:var(--font-mono); font-weight:700;">
+            </div>
           </div>
-          <div class="form-group">
-            <label class="field-label">Código de Identificación (Grabado):</label>
-            <input type="text" id="newMoldCode" class="form-input" placeholder="Ej. HRM-LRD-450" required>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Tipo / Familia de Horma:</label>
+              <select id="newMoldType" class="custom-select">
+                <option value="Denver">Denver</option>
+                <option value="Bullrider">Bullrider</option>
+                <option value="Viejonón">Viejonón</option>
+                <option value="Chaparral">Chaparral</option>
+                <option value="Sonora">Sonora</option>
+                <option value="Laredo">Laredo</option>
+                <option value="Frontier">Frontier</option>
+                <option value="Johnson">Johnson</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Talla (US / MX):</label>
+              <input type="text" id="newMoldSize" class="form-input" placeholder="55 (6 7/8)" value="55 (6 7/8)">
+            </div>
           </div>
-          <div class="form-group">
-            <label class="field-label">Ancho de Falda:</label>
-            <select id="newMoldBrim" class="custom-select">
-              <option value='4.00"'>4" (Falda Corta Tradicional)</option>
-              <option value='4.25"' selected>4 1/4" (Falda Estándar Tombstone)</option>
-              <option value='4.50"'>4 1/2" (Falda Ancha Texana)</option>
-            </select>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Aleación de Fabricación:</label>
+              <input type="text" id="newMoldAlloy" class="form-input" value="Aluminio Maquinado 6061-T6">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Prensa Asignada:</label>
+              <select id="newMoldLocation" class="custom-select">
+                <option value="Prensa Hidráulica Michelagnoli P-01">Prensa Hidráulica Michelagnoli P-01</option>
+                <option value="Prensa Hidráulica Michelagnoli P-02">Prensa Hidráulica Michelagnoli P-02</option>
+                <option value="Prensa Vapor Matriz #3">Prensa Vapor Matriz #3</option>
+                <option value="Estante de Hormas A-1">Estante de Hormas A-1 (Disponible)</option>
+                <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="field-label">Tipo de Copa:</label>
-            <input type="text" id="newMoldCrown" class="form-input" placeholder="Ej. Roper, Gota de Agua, Viejón" required>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Temperatura de Operación:</label>
+              <input type="text" id="newMoldTemp" class="form-input" value="115°C - 125°C">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Estatus Inicial:</label>
+              <select id="newMoldStatus" class="custom-select">
+                <option value="Disponible">Disponible</option>
+                <option value="En Uso">En Uso</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+              </select>
+            </div>
           </div>
+
+          <!-- Zona de Carga de Fotografía de la Horma -->
           <div class="form-group">
-            <label class="field-label">Prensa / Ubicación Asignada:</label>
-            <select id="newMoldLocation" class="custom-select">
-              <option value="Prensa Vapor Matriz #1">Prensa Vapor Matriz #1</option>
-              <option value="Prensa Vapor Matriz #2">Prensa Vapor Matriz #2</option>
-              <option value="Prensa Vapor Matriz #3">Prensa Vapor Matriz #3</option>
-              <option value="Estante de Hormas A-1">Estante de Hormas A-1 (Disponible)</option>
-              <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
-            </select>
+            <label class="field-label">Fotografía de la Horma / Molde de Aluminio:</label>
+            <div class="photo-upload-container">
+              <div class="photo-dropzone" id="moldPhotoDropzone">
+                <input type="file" id="moldPhotoFileInput" accept="image/*" style="display:none;">
+                <div class="photo-dropzone-content" id="moldPhotoDropzonePrompt">
+                  <svg class="photo-dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span class="photo-dropzone-title">Haz clic o arrastra la foto del molde aquí</span>
+                  <span class="photo-dropzone-sub">Formatos JPG, PNG, WEBP soportados (almacenamiento local directo)</span>
+                </div>
+                <div class="photo-preview-wrap" id="moldPhotoPreviewWrap" style="display:none;">
+                  <img src="" id="moldPhotoPreviewImg" class="photo-preview-img" alt="Vista previa de horma">
+                  <div class="photo-preview-actions">
+                    <button type="button" class="btn-remove-photo" id="btnRemoveMoldPhoto">Quitar Foto</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
           <button type="button" class="btn-secondary" onclick="document.getElementById('modalRegisterMold').classList.remove('active')">Cancelar</button>
           <button type="submit" class="btn-primary">Guardar Horma</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: FICHA TÉCNICA OFICIAL DE HORMA / MOLDE
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalMoldTechnicalSheet" style="display:none;">
+    <div class="modal-box card-glass tech-sheet-modal-wrapper">
+      <div class="modal-header">
+        <div>
+          <h3 id="moldSheetTitle">Ficha Técnica de Molde · #54 JOHNSON LONA</h3>
+          <p class="modal-header-sub">Especificaciones mecánicas, térmicas y ciclos de prensado industrial</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseMoldSheetModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div class="tech-sheet-layout">
+          <!-- Columna Foto de Horma -->
+          <div class="tech-sheet-hero-photo">
+            <div class="tech-sheet-img-wrap" id="moldSheetImgWrap">
+              <img src="" id="moldSheetImg" class="tech-sheet-img" alt="Foto Molde">
+            </div>
+            <div class="tech-sheet-photo-meta">
+              <div style="font-weight:800; font-size:14px; color:var(--text-primary);" id="moldSheetPhotoCode">HRM-JHN-54</div>
+              <div style="font-size:12px; color:var(--text-muted);" id="moldSheetPhotoName">Johnson Lona Maquinada</div>
+              <div style="margin-top:8px;" id="moldSheetStatusContainer">
+                <span class="table-status-pill status-active"><span class="status-dot"></span> Operativo</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Especificaciones Técnicas -->
+          <div class="tech-sheet-specs-panel">
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Especificaciones Mecánicas & Aleación
+              </div>
+              <div class="tech-spec-grid">
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Material / Aleación:</span>
+                  <span class="tech-spec-val" id="moldSheetAlloy">Aluminio Maquinado 6061-T6</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Talla Homologada:</span>
+                  <span class="tech-spec-val" id="moldSheetSize">54 (6 3/4)</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Profundidad de Copa:</span>
+                  <span class="tech-spec-val" id="moldSheetCrown">4 1/4" Gota Regular</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Curvatura de Falda:</span>
+                  <span class="tech-spec-val" id="moldSheetBrim">4 1/4" Doblado Abajo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Parámetros de Prensado Térmico
+              </div>
+              <div class="tech-spec-grid">
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Prensa Compatible:</span>
+                  <span class="tech-spec-val" id="moldSheetMachine">Prensa Michelagnoli P-01</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Rango Térmico:</span>
+                  <span class="tech-spec-val" id="moldSheetTemp">115°C - 125°C</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Presión de Vapor:</span>
+                  <span class="tech-spec-val" id="moldSheetPressure">70 PSI Continuos</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Tiempo de Golpe:</span>
+                  <span class="tech-spec-val">42s Ciclo Estándar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Control de Fatiga Térmica & Ciclos
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px;">
+                <span>Ciclos Acumulados: <strong id="moldSheetCyclesText">6,420 / 10,000</strong></span>
+                <span id="moldSheetCyclesPercent">64.2%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill fill-brand" id="moldSheetCyclesBar" style="width: 64.2%;"></div>
+              </div>
+              <small style="color:var(--text-muted); font-size:11px; display:block; margin-top:6px;">
+                Rectificación y pulido preventivo programado cada 10,000 prensadas.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn-primary" id="btnOkMoldSheetModal">Cerrar Ficha Técnica</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: REGISTRAR / EDITAR MODELO DE SOMBRERO (CON CARGA DE FOTO)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalRegisterHat" style="display:none;">
+    <div class="modal-box card-glass" style="max-width: 720px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalRegisterHatTitle">Registrar Modelo de Sombrero</h3>
+          <p class="modal-header-sub">Catálogo maestro de sombreros, materiales, tallas, toquillas y foto de muestra</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseRegisterHatModal">&times;</button>
+      </div>
+      <form id="formRegisterHat">
+        <input type="hidden" id="hatEditMode" value="create">
+        <input type="hidden" id="origHatId" value="">
+        <input type="hidden" id="newHatPhotoData" value="">
+        <div class="modal-body" style="padding:20px;">
+          <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Código (SOM-XX):</label>
+              <input type="text" id="newHatCode" class="form-input" placeholder="SOM-06" required style="font-family:var(--font-mono); font-weight:700;">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Nombre del Modelo:</label>
+              <input type="text" id="newHatName" class="form-input" placeholder="Ej. 1000X Master Telar Denver" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Familia / Tipo de Material:</label>
+              <select id="newHatFamily" class="custom-select">
+                <option value="Telar Shantung">Telar Shantung 1000X Master</option>
+                <option value="Paja Bangora">Paja Bangora Tradicional</option>
+                <option value="Fieltro Lana">Fieltro de Lana Fina 4X</option>
+                <option value="Palma Fina">Palma Fina de Guayacán</option>
+                <option value="Fieltro Liebre">Fieltro Pelo de Liebre 10X</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Precio Catálogo ($ MXN):</label>
+              <input type="number" id="newHatPrice" class="form-input" value="1310" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Tipo de Copa:</label>
+              <input type="text" id="newHatCrown" class="form-input" placeholder="4 1/4&quot; Gota (Tear Drop)" value="4 1/4&quot; Gota (Tear Drop)">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Medida de Falda:</label>
+              <input type="text" id="newHatBrim" class="form-input" placeholder="4&quot; y 4 1/4&quot; Doblado Abajo" value="4&quot; y 4 1/4&quot; Doblado Abajo">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Toquilla Exterior & Herraje:</label>
+              <input type="text" id="newHatBand" class="form-input" placeholder="Piel badana con hebilla plateada" value="Piel Badana con Hebilla Plateada">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Horma Maquinada Asignada:</label>
+              <select id="newHatMold" class="custom-select">
+                <option value="HRM-JHN-54">#54 JOHNSON LONA</option>
+                <option value="HRM-SNR-57">#57 SONORA</option>
+                <option value="HRM-CHP-53">#53 CHAPARRAL LONA</option>
+                <option value="HRM-CHP-56">#56 CHAPARRAL</option>
+                <option value="HRM-VJN-55">#55 VIEJONON</option>
+                <option value="HRM-DNV-54">#54 DENVER MASTER</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tallas Disponibles -->
+          <div class="form-group">
+            <label class="field-label">Tallas de Producción Habilitadas:</label>
+            <div style="display:flex; gap:12px; flex-wrap:wrap; padding:8px 12px; background:#F8FAFC; border-radius:8px; border:1px solid var(--border-subtle);">
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="55" checked> Talla 55</label>
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="56" checked> Talla 56</label>
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="57" checked> Talla 57</label>
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="58" checked> Talla 58</label>
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="59" checked> Talla 59</label>
+              <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="60" checked> Talla 60</label>
+            </div>
+          </div>
+
+          <!-- Zona de Carga de Fotografía del Sombrero -->
+          <div class="form-group">
+            <label class="field-label">Fotografía Oficial del Sombrero Terminado:</label>
+            <div class="photo-upload-container">
+              <div class="photo-dropzone" id="hatPhotoDropzone">
+                <input type="file" id="hatPhotoFileInput" accept="image/*" style="display:none;">
+                <div class="photo-dropzone-content" id="hatPhotoDropzonePrompt">
+                  <svg class="photo-dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span class="photo-dropzone-title">Haz clic o arrastra la foto del sombrero aquí</span>
+                  <span class="photo-dropzone-sub">Foto de alta calidad con fondo blanco o taller (guardado local offline)</span>
+                </div>
+                <div class="photo-preview-wrap" id="hatPhotoPreviewWrap" style="display:none;">
+                  <img src="" id="hatPhotoPreviewImg" class="photo-preview-img" alt="Vista previa de sombrero">
+                  <div class="photo-preview-actions">
+                    <button type="button" class="btn-remove-photo" id="btnRemoveHatPhoto">Quitar Foto</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-secondary" id="btnCancelRegisterHatModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Sombrero</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: FICHA TÉCNICA OFICIAL DE SOMBRERO (INTERACTIVA)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalHatTechnicalSheet" style="display:none;">
+    <div class="modal-box card-glass tech-sheet-modal-wrapper">
+      <div class="modal-header">
+        <div>
+          <h3 id="hatTechnicalSheetTitle">Ficha Técnica · 1000X Master Telar Denver</h3>
+          <p class="modal-header-sub">Documento oficial de ingeniería de producto, tolerancias y muestra de planta</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseHatSheetModal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div class="tech-sheet-layout">
+          <!-- Columna Foto de Sombrero -->
+          <div class="tech-sheet-hero-photo">
+            <div class="tech-sheet-img-wrap" id="hatSheetImgWrap">
+              <img src="" id="hatSheetImg" class="tech-sheet-img" alt="Foto Sombrero">
+            </div>
+            <div class="tech-sheet-photo-meta">
+              <div style="font-weight:800; font-size:15px; color:var(--text-primary);" id="hatSheetPhotoName">1000X Master Telar Denver</div>
+              <div style="font-size:12px; color:var(--text-muted);" id="hatSheetPhotoMaterial">Telar de Paja Shantung Extra Fina</div>
+              <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span class="table-badge-code" id="hatSheetPhotoCode">SOM-01</span>
+                <strong style="color:var(--color-green); font-size:14px;" id="hatSheetPhotoPrice">$1,450 MXN</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Especificaciones de Manufactura -->
+          <div class="tech-sheet-specs-panel">
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Dimensiones & Conformado Físico
+              </div>
+              <div class="tech-spec-grid">
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Copa / Corona:</span>
+                  <span class="tech-spec-val" id="hatSheetCrown">4 1/4" Gota (Tear Drop)</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Falda / Ala:</span>
+                  <span class="tech-spec-val" id="hatSheetBrim">4" y 4 1/4" Doblado Abajo</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Toquilla Exterior:</span>
+                  <span class="tech-spec-val" id="hatSheetBand">Piel Badana Chocolate c/Hebilla</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Acabado / Laca:</span>
+                  <span class="tech-spec-val" id="hatSheetFinish">Nitrocelulósica Satinada</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/></svg>
+                Horma Maquinada & Prensado
+              </div>
+              <div class="tech-spec-grid">
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Horma Recomendada:</span>
+                  <span class="tech-spec-val" id="hatSheetMold">#54 DENVER MASTER</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Prensa Requerida:</span>
+                  <span class="tech-spec-val">Michelagnoli P-01 / P-02 (Vapor 70 PSI)</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Takt Time Estándar:</span>
+                  <span class="tech-spec-val">42s / estación</span>
+                </div>
+                <div class="tech-spec-item">
+                  <span class="tech-spec-lbl">Tolerancia Falda:</span>
+                  <span class="tech-spec-val">± 1.0 mm simetría perimetral</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tech-spec-section">
+              <div class="tech-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Variaciones de Talla Registradas
+              </div>
+              <div class="hat-variations-cell" id="hatSheetSizesContainer" style="margin-top:6px;">
+                <!-- Chips inyectados dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn-secondary" id="btnPrintHatTechnicalSheet" style="display:flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimir Ficha Técnica
+        </button>
+        <button type="button" class="btn-primary" id="btnOkHatSheetModal">Cerrar Ficha Técnica</button>
+      </div>
     </div>
   </div>
 
@@ -2932,11 +3540,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.17.0"></script>
-  <script src="js/andon.js?v=2.17.0"></script>
-  <script src="js/terminal.js?v=2.17.0"></script>
-  <script src="js/engineer.js?v=2.17.0"></script>
-  <script src="js/executive.js?v=2.17.0"></script>
-  <script src="js/config.js?v=2.17.0"></script>
+  <script src="js/app.js?v=2.18.0"></script>
+  <script src="js/andon.js?v=2.18.0"></script>
+  <script src="js/terminal.js?v=2.18.0"></script>
+  <script src="js/engineer.js?v=2.18.0"></script>
+  <script src="js/executive.js?v=2.18.0"></script>
+  <script src="js/config.js?v=2.18.0"></script>
 </body>
 </html>
