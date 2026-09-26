@@ -546,6 +546,42 @@ window.initTerminalView = function() {
     if (lotMetaOperator) lotMetaOperator.textContent = lot.operatorSticker || lot.operator || 'Jorge (Prensas)';
     if (lotMetaPieces) lotMetaPieces.textContent = `${lot.pieces || 15} piezas`;
 
+    // Poblar Selector Universal de Operador por Estación (D-01 a D-14)
+    const depositOperatorSelect = document.getElementById('depositOperatorSelect');
+    if (depositOperatorSelect) {
+      const currentStationCode = lot.currentStationCode || 'D-05';
+      const st = (UanifyState.stations || []).find(s => s.code === currentStationCode);
+      const deptOps = (UanifyState.operators || []).filter(op => op.deptCode === currentStationCode);
+
+      let optionsHtml = '';
+      if (deptOps.length > 0) {
+        optionsHtml = deptOps.map(op => `
+          <option value="${op.name} (${op.payrollNumber})">${op.name} (${op.payrollNumber})</option>
+        `).join('');
+        if (st && st.operator) {
+          optionsHtml += `<option value="${st.operator}">${st.operator} (Titular de Área)</option>`;
+        }
+      } else {
+        const titular = st ? st.operator : 'Operador de Turno';
+        optionsHtml = `
+          <option value="${titular}">${titular} (Titular de Área)</option>
+          <option value="Cuadrilla de Turno">Cuadrilla General de Turno</option>
+        `;
+      }
+      depositOperatorSelect.innerHTML = optionsHtml;
+
+      // Preseleccionar si el lote ya tenía operador registrado
+      if (lot.operatorSticker || lot.operator) {
+        const currentOp = lot.operatorSticker || lot.operator;
+        for (let i = 0; i < depositOperatorSelect.options.length; i++) {
+          if (depositOperatorSelect.options[i].value.includes(currentOp) || currentOp.includes(depositOperatorSelect.options[i].value)) {
+            depositOperatorSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+
     if (btnDepositToNextBuffer) {
       btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode || 'D-05'} ${lot.targetStationName || 'Prensas de Hormado'}`;
     }
@@ -600,6 +636,33 @@ window.initTerminalView = function() {
         return;
       }
 
+      // Obtener Operador Seleccionado (Rastreabilidad Universal Obligatoria)
+      const depositOperatorSelect = document.getElementById('depositOperatorSelect');
+      const chosenOperator = depositOperatorSelect ? depositOperatorSelect.value : (activeScannedLot.operator || 'Operador de Turno');
+
+      // Asignar al lote
+      activeScannedLot.operator = chosenOperator;
+      activeScannedLot.operatorSticker = chosenOperator.split(' (')[0];
+
+      if (!activeScannedLot.history) activeScannedLot.history = [];
+      activeScannedLot.history.push({
+        timestamp: new Date().toISOString(),
+        stationCode: currentStationCode,
+        stationName: activeScannedLot.currentStationName,
+        operator: chosenOperator,
+        pieces: activeScannedLot.pieces || 15
+      });
+
+      // Incrementar piezas al destajo del operador en el Padrón si coincide
+      if (UanifyState.operators) {
+        const matchedOp = UanifyState.operators.find(op => 
+          chosenOperator.includes(op.payrollNumber) || chosenOperator.includes(op.name)
+        );
+        if (matchedOp) {
+          matchedOp.piecesToday = (matchedOp.piecesToday || 0) + (activeScannedLot.pieces || 15);
+        }
+      }
+
       // Proceder con el avance automático al siguiente almacén
       const res = UanifyState.advanceLot(activeScannedLot.lotId);
       if (res) {
@@ -619,6 +682,7 @@ window.initTerminalView = function() {
           originDeptName: activeScannedLot.currentStationName,
           targetDeptCode: activeScannedLot.targetStationCode,
           targetDeptName: activeScannedLot.targetStationName,
+          operator: chosenOperator,
           waitingMinutes: 1,
           notes: activeScannedLot.hasScrap ? `1 Sombrero con merma (${activeScannedLot.scrapReason})` : 'Lote íntegro listo para recolección'
         };
@@ -637,7 +701,7 @@ window.initTerminalView = function() {
         renderPlantDepartmentsGrid();
 
         window.UanifyUI.toast(
-          `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}". Movimiento registrado por ${user.name}.`,
+          `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}". Operador asignado: ${chosenOperator}. Movimiento firmado por ${user.name}.`,
           'success',
           ' Depósito en Almacén Concluido'
         );

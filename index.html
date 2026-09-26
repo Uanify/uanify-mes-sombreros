@@ -553,8 +553,21 @@
                 </div>
               </div>
 
+              <!-- RASTREABILIDAD OBLIGATORIA DE OPERADOR POR ESTACIÓN (D-01 A D-14) -->
+              <div style="margin-top:14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:10px 14px; border-radius:8px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:180px;">
+                  <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); display:block;">Operador en Turno de esta Estación:</span>
+                  <span style="font-size:12px; color:var(--text-secondary);">Rastreabilidad requerida en el lote</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <select id="depositOperatorSelect" style="padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px; border:1px solid var(--border-dark); background:#F8FAFC; color:var(--text-primary); cursor:pointer; min-width:200px;">
+                    <option value="OP-DEFAULT">Cargando operadores...</option>
+                  </select>
+                </div>
+              </div>
+
               <!-- ACCIÓN PRINCIPAL DE DEPÓSITO (BOTÓN GIGANTE TABLET) -->
-              <div style="margin-top:18px;">
+              <div>
                 <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
                   Depositar Lote en Almacén de D-06 Recorte y Refaldeado
                 </button>
