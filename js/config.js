@@ -2116,16 +2116,16 @@ window.initConfigView = function() {
     btnTestCompac.addEventListener('click', () => {
       btnTestCompac.disabled = true;
       const origHtml = btnTestCompac.innerHTML;
-      btnTestCompac.innerHTML = '<span class="status-dot animate-pulse"></span> Verificando ODBC...';
+      btnTestCompac.innerHTML = '<span class="status-dot animate-pulse"></span> Verificando disponibilidad...';
       setTimeout(() => {
         btnTestCompac.disabled = false;
         btnTestCompac.innerHTML = origHtml;
         window.UanifyUI.toast(
-          'Enlace ODBC CONTPAQi Comercial v14.2.1 verificado. Ping a base local DSN_CONTPAQI_TOMBSTONE: 14ms (Enlace LAN activo sin latencia).',
-          'success',
-          'Conexión ERP Activa'
+          'Módulo en espera de homologación técnica. Los parámetros de red, servidor ODBC y credenciales se configurarán con Edmundo González y el equipo de sistemas.',
+          'info',
+          'En Espera de Homologación'
         );
-      }, 700);
+      }, 600);
     });
   }
 

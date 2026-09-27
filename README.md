@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.27.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.28.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.27.0)
+## Arquitectura Funcional Tombstone Hats (v2.28.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
@@ -30,7 +30,7 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 | **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados** con variaciones (tallas, faldas, toquillas) y visor de ficha técnica; **Catálogo de Hormas y Moldes Maquinados** con ciclo de vida, specs térmicas y ficha técnica; carga de fotos con Drag & Drop; 5 almacenes físicos, tafiletes y Kárdex general. |
 | **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos estandarizados. |
 | **5.  Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, KPIs de supervisores, balanceo de líneas & cuellos de botella, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
-| **6.  Configuración & Integración COMPAC** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Monitor Aislado de Integración CONTPAQi ERP (COMPAC)** con prueba de conexión ODBC, mapeo de bodegas y vales B2B. |
+| **6.  Configuración & Catálogos** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Módulo de Integración CONTPAQi ERP en Espera de Homologación**. |
 
 ---
 
@@ -55,6 +55,13 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.28.0] - 2026-09-27
+- **Limpieza Integral de Integración CONTPAQi / ERP y Estado Previo a Homologación Técnica:**
+  - **Eliminación Total de Datos Simulados / Mock:** Se retiraron parámetros ficticios de IP (`192.168.1.50:9005`), bases de datos mock (`ct_tombstone_comercial`), mapeos prefijados de almacenes, órdenes de compra mayorista simuladas (`#OC-2026-9420`) y registros de auditoría inventados.
+  - **Estado Limpio Profesional (Empty State Industrial):** El módulo `subtab-config-compac` se configuró en modo neutro en espera de especificación técnica, con estado visual `Sin Configuración Activa` y tarjeta central informativa.
+  - **Matriz de Prerrequisitos para Revisión Técnica con Edmundo:** Checklist estructurado para la sesión técnica con Dirección (Edmundo González) y Soporte de Sistemas: 1) Protocolo de Conectividad (ODBC vs REST Gateway), 2) Base de Datos y Credenciales de Empresa, 3) Homologación 1 a 1 de Almacenes MES vs Bodegas Fiscales, 4) Reglas de Salidas B2B y Vales de Camioneta.
+  - **Sincronización de Parámetros de Turno:** La tarjeta de enlace COMPAC en `subtab-config-params` se dejó limpia y libre de valores predefinidos, mostrando estado pendiente de asignación.
 
 ### [2.27.0] - 2026-09-27
 - **Estandarización de Selectores de Tiempo y Consumo de Especificaciones Vía Tooltips (`Regla 0.37`):**

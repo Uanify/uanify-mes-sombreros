@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.27.0</span>
+        <span class="system-version-pill login-version-pill">v2.28.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.27.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.28.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1853,7 +1853,7 @@
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                   </span>
                 </label>
-                <input type="text" class="form-input" value="192.168.1.120:8080/compac-api">
+                <input type="text" class="form-input" value="" placeholder="Por definir con Dirección y Sistemas">
               </div>
               <div class="form-group">
                 <label class="field-label">
@@ -1863,6 +1863,7 @@
                   </span>
                 </label>
                 <select class="custom-select">
+                  <option selected>Por definir en reunión</option>
                   <option>Cada 5 minutos</option>
                   <option>Cada 15 minutos</option>
                   <option>Tiempo real (Webhooks)</option>
@@ -1875,7 +1876,7 @@
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                   </span>
                 </label>
-                <input type="text" class="form-input" value="Ingeniera Externa (Membresía Anual)" readonly style="background:#F1F5F9;">
+                <input type="text" class="form-input" value="Por definir con Dirección" readonly style="background:#F1F5F9;">
               </div>
             </div>
           </div>
@@ -2212,7 +2213,7 @@
         <!-- Pestaña: Integración COMPAC / CONTPAQi ERP -->
         <div class="sub-tab-content" id="subtab-config-compac" style="display:none !important;">
           <div class="compac-dashboard-wrapper">
-            <!-- Hero Card de Conexión -->
+            <!-- Hero Card de Conexión en Estado Limpio -->
             <div class="compac-hero-card card-glass">
               <div class="compac-info-group">
                 <span class="badge-subtle" style="color:var(--color-brand); background:var(--color-brand-light); border:1px solid var(--color-brand-border); width:fit-content;">
@@ -2222,104 +2223,117 @@
                   Conector ERP CONTPAQi · Tombstone Hats S.A. de C.V.
                 </h3>
                 <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
-                  Sincronización bidireccional de traspasos de producción a almacenes fiscales y órdenes de entrega B2B
+                  Sincronización de inventarios, traspasos a almacenes fiscales y órdenes de entrega B2B
                 </p>
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <div class="compac-status-pill">
-                  <span class="compac-status-dot"></span>
-                  Conexión ODBC Activa
-                </div>
+                <span class="table-status-pill status-warning">
+                  <span class="status-dot"></span> Sin Configuración Activa
+                </span>
                 <button type="button" class="btn-secondary" id="btnTestCompacConn" style="min-height:42px; padding:0 16px; font-weight:700; font-size:12.5px;">
-                  Probar Enlace ODBC
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  Verificar Disponibilidad
                 </button>
               </div>
             </div>
 
-            <!-- Cards Grid: Parámetros y Mapeo de Almacenes -->
-            <div class="compac-cards-grid">
-              <!-- Parámetros Técnicos -->
-              <div class="compac-card card-glass">
-                <div class="compac-card-header">
-                  <span class="compac-card-title">Parámetros del Servidor ODBC</span>
-                  <span class="badge-subtle">Red Local</span>
+            <!-- Empty State / Estado sin configuración activa -->
+            <div class="card-glass" style="padding:36px 24px; text-align:center; border-radius:12px; margin-bottom:20px;">
+              <div style="width:58px; height:58px; margin:0 auto 16px auto; border-radius:14px; background:rgba(139, 94, 60, 0.08); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                  <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                  <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+              </div>
+              <h3 style="font-size:17px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+                Módulo Pendiente de Parametrización Técnica
+              </h3>
+              <p style="font-size:13px; color:var(--text-secondary); max-width:640px; margin:0 auto 24px auto; line-height:1.5;">
+                Este módulo se encuentra en estado limpio, sin configuración vinculada. La arquitectura de comunicación con CONTPAQi Comercial (servidor ODBC / Gateway local, base de datos de empresa, homologación de almacenes y reglas de emisión de vales) se definirá y activará tras la sesión de revisión técnica con Edmundo González y el equipo de sistemas.
+              </p>
+
+              <!-- Cuadrícula de Puntos de Definición Técnica (Checklist para Revisión con Edmundo) -->
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px; text-align:left; max-width:960px; margin:0 auto;">
+                <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">1. Conectividad Local</span>
+                    <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
+                  </div>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Protocolo de Enlace</h4>
+                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
+                    Definición del método de conexión: ODBC nativo en red LAN, API REST Gateway local o servicio en segundo plano.
+                  </p>
                 </div>
-                <div class="form-group" style="margin-bottom:8px;">
-                  <label class="field-label" style="font-size:11px;">Host / IP del Servidor:</label>
-                  <input type="text" class="form-input" id="cfgCompacHost" value="192.168.1.50:9005" style="font-family:var(--font-mono); font-size:12px;">
+
+                <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">2. Base de Datos</span>
+                    <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
+                  </div>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Empresa &amp; Credenciales</h4>
+                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
+                    Nombre de la base de datos en CONTPAQi Comercial y configuración de privilegios de lectura/escritura de movimientos.
+                  </p>
                 </div>
-                <div class="form-group" style="margin-bottom:8px;">
-                  <label class="field-label" style="font-size:11px;">Base de Datos de Empresa:</label>
-                  <input type="text" class="form-input" id="cfgCompacDb" value="ct_tombstone_comercial" style="font-family:var(--font-mono); font-size:12px;">
+
+                <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">3. Homologación</span>
+                    <span class="badge-subtle" style="font-size:10.5px;">0 Vinculados</span>
+                  </div>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Mapeo de Almacenes</h4>
+                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
+                    Correspondencia 1:1 entre los almacenes de piso del MES (MP, Rampa, PT, Segundas) y las bodegas fiscales del ERP.
+                  </p>
                 </div>
-                <div class="form-group" style="margin-bottom:8px;">
-                  <label class="field-label" style="font-size:11px;">Empresa Vinculada:</label>
-                  <input type="text" class="form-input" value="TOMBSTONE HATS S.A. DE C.V." readonly style="background:#F1F5F9; font-size:12px; font-weight:700;">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                  <label class="field-label" style="font-size:11px;">Frecuencia de Polling / Sincronización:</label>
-                  <select id="cfgCompacSyncFreq" class="custom-select" style="font-size:12px;">
-                    <option value="5" selected>Cada 5 minutos (Automático)</option>
-                    <option value="15">Cada 15 minutos</option>
-                    <option value="manual">Manual bajo demanda</option>
-                  </select>
+
+                <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">4. Salidas B2B</span>
+                    <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
+                  </div>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Vales de Camioneta</h4>
+                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
+                    Flujo de emisión y timbrado/remisión de pedidos mayoristas al momento de embarcar la producción a clientes.
+                  </p>
                 </div>
               </div>
+            </div>
 
-              <!-- Mapeo de Almacenes MES vs COMPAC -->
-              <div class="compac-card card-glass">
-                <div class="compac-card-header">
-                  <span class="compac-card-title">Mapeo de Almacenes Homologados</span>
-                  <span class="badge-subtle">4 Almacenes</span>
-                </div>
-                <table class="compac-table">
+            <!-- Bitácora de Sincronización en Estado Vacío -->
+            <div class="card-glass" style="padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin:0;">
+                  Bitácora de Sincronizaciones con ERP
+                </h4>
+                <span class="badge-subtle" style="font-size:11px;">0 Eventos Registrados</span>
+              </div>
+              <div class="downtime-table-wrapper">
+                <table class="data-table">
                   <thead>
-                    <tr><th>Almacén MES</th><th>Código COMPAC</th><th>Nombre en ERP</th></tr>
+                    <tr>
+                      <th style="width:130px;">Timestamp</th>
+                      <th style="width:140px;">Tipo Operación</th>
+                      <th>Documento / Lote</th>
+                      <th style="width:110px; text-align:center;">Unidades</th>
+                      <th style="width:120px; text-align:center;">Estatus</th>
+                    </tr>
                   </thead>
                   <tbody>
-                    <tr><td>ALM-01 Materia Prima</td><td><span class="table-badge-code">ALM-1</span></td><td>Bodega MP Paja & Fieltro</td></tr>
-                    <tr><td>ALM-02 Rampa WIP</td><td><span class="table-badge-code">ALM-2</span></td><td>Producción en Proceso WIP</td></tr>
-                    <tr><td>ALM-04 Terminado</td><td><span class="table-badge-code">ALM-3</span></td><td>Bodega Embarques Mayoreo</td></tr>
-                    <tr><td>ALM-05 Segundas</td><td><span class="table-badge-code">ALM-4</span></td><td>Saldos Remate Viernes</td></tr>
+                    <tr>
+                      <td colspan="5" style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:#94A3B8;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                          <span style="font-size:13px; font-weight:600; color:var(--text-secondary);">Sin eventos de sincronización registrados</span>
+                          <span style="font-size:11.5px; color:var(--text-muted);">El registro de auditoría se activará una vez establecida la vinculación con CONTPAQi.</span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <!-- Pedidos Mayoristas y Emisión de Vales -->
-            <div class="card-glass" style="padding:22px; border-left: 4px solid var(--color-brand);">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                <div>
-                  <span class="badge-subtle" style="color:var(--color-brand); font-weight:800;">ORDEN DE ENTREGA B2B COMPAC</span>
-                  <h3 style="font-family:'Outfit'; font-size:17px; margin-top:6px; color:var(--text-primary);">
-                    Orden de Compra Mayorista #OC-2026-9420 (10,500 Sombreros)
-                  </h3>
-                  <p style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">
-                    Cliente: Distribuidora Western de Monterrey · 7,500 Denver + 2,000 Viejonón + 1,000 Laredo · 3,680 entregados / 6,820 pendientes
-                  </p>
-                </div>
-                <button type="button" class="btn-primary" id="btnEmitDeliverySlip" style="padding:10px 18px; font-size:13px; font-weight:700;">
-                  Emitir Vale de Entrega para Camioneta
-                </button>
-              </div>
-            </div>
-
-            <!-- Bitácora de Sincronización Reciente -->
-            <div class="card-glass" style="padding:20px;">
-              <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
-                Bitácora de Sincronizaciones Recientes con COMPAC
-              </h4>
-              <table class="compac-table">
-                <thead>
-                  <tr><th>Timestamp</th><th>Tipo Operación</th><th>Documento / Lote</th><th>Unidades</th><th>Estatus</th></tr>
-                </thead>
-                <tbody id="compacSyncLogBody">
-                  <tr><td>Hoy 12:45</td><td>Traspaso PT</td><td>Lote #49,633 (Viejonón)</td><td>60 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
-                  <tr><td>Hoy 11:20</td><td>Entrada MP</td><td>Remisión #REM-4412</td><td>4 rollos</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
-                  <tr><td>Hoy 10:40</td><td>Merma Segundas</td><td>Folio #SAL-0145</td><td>2 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
-                  <tr><td>Hoy 09:30</td><td>Salida B2B</td><td>Vale #VAL-0982</td><td>60 pzas</td><td><span class="table-status-pill status-active"><span class="status-dot"></span> Sincronizado</span></td></tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -3800,11 +3814,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.27.0"></script>
-  <script src="js/andon.js?v=2.27.0"></script>
-  <script src="js/terminal.js?v=2.27.0"></script>
-  <script src="js/engineer.js?v=2.27.0"></script>
-  <script src="js/executive.js?v=2.27.0"></script>
-  <script src="js/config.js?v=2.27.0"></script>
+  <script src="js/app.js?v=2.28.0"></script>
+  <script src="js/andon.js?v=2.28.0"></script>
+  <script src="js/terminal.js?v=2.28.0"></script>
+  <script src="js/engineer.js?v=2.28.0"></script>
+  <script src="js/executive.js?v=2.28.0"></script>
+  <script src="js/config.js?v=2.28.0"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.27.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
+> **Versión Actual:** `v2.28.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -370,7 +370,12 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Línea de Tiempo Interactiva (Value Stream Mapping Industrial):** Visualización tipo cronograma / diagrama de flujo de todas las estaciones y filtros de calidad según el tipo de sombrero, con distinción cromática de estaciones completadas (OK), estación activa con badge pulsante (**[AQUÍ ESTÁ EL LOTE]**), operador responsable, piezas en proceso y paradas siguientes.
   - **Desplazamiento Dinámico del Lote:** Capacidad operativa para avanzar (`>>`) o retroceder (`<<`) el lote entre estaciones con sincronización en `UanifyState` y `localStorage`, o reubicarlo directamente haciendo clic sobre cualquier nodo de la línea de tiempo.
   - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
-  - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta puntos de inspección intermedios y finales (`C-01`, `C-02`, `C-03`, `C-04`...) con captura de tolerancias/criterios de calidad, inspector a cargo y tiempo de ciclo, integrándose automáticamente tanto al catálogo maestro como a las secuencias de rutas.
+- **`v2.28.0` (2026-09-27):**
+  - **Limpieza Integral de Integración CONTPAQi / ERP y Estado Previo a Homologación Técnica:**
+    - **Eliminación Total de Datos Simulados / Mock:** Se retiraron parámetros ficticios de IP (`192.168.1.50:9005`), bases de datos mock (`ct_tombstone_comercial`), mapeos prefijados de almacenes, órdenes de compra mayorista simuladas (`#OC-2026-9420`) y registros de auditoría inventados.
+    - **Estado Limpio Profesional (Empty State Industrial):** El módulo `subtab-config-compac` se configuró en modo neutro en espera de especificación técnica, con estado visual `Sin Configuración Activa` y tarjeta central informativa.
+    - **Matriz de Prerrequisitos para Revisión Técnica con Edmundo:** Checklist estructurado para la sesión técnica con Dirección (Edmundo González) y Soporte de Sistemas: 1) Protocolo de Conectividad (ODBC vs REST Gateway), 2) Base de Datos y Credenciales de Empresa, 3) Homologación 1 a 1 de Almacenes MES vs Bodegas Fiscales, 4) Reglas de Salidas B2B y Vales de Camioneta.
+    - **Sincronización de Parámetros de Turno:** La tarjeta de enlace COMPAC en `subtab-config-params` se dejó limpia y libre de valores predefinidos, mostrando estado pendiente de asignación.
 - **`v2.27.0` (2026-09-27):**
   - **Estandarización de Selectores de Tiempo y Consumo de Especificaciones Vía Tooltips (`Regla 0.37`):**
     - **Selectores Intuitivos de Receso / Comida:** Sustitución del input de texto manual por dos selectores nativos de hora (`Inicio Receso` y `Fin Receso`) con cálculo automático de duración en tiempo real (45 min) y retrocompatibilidad total con el formato de sistema (`"12:00 a 12:45 hrs"`).
