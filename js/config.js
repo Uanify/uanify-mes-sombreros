@@ -761,7 +761,7 @@ window.initConfigView = function() {
     if (shift) shift.value = op.shift || 'Turno Único';
     if (title) title.textContent = `Editar Operador · ${op.name}`;
     if (sub) sub.textContent = `Modificando estación, máquina y estatus de ${op.empId}`;
-    if (submitBtn) submitBtn.textContent = ' Actualizar Operador';
+    if (submitBtn) submitBtn.textContent = 'Actualizar Operador';
 
     modalOperator.classList.add('active');
   };
@@ -816,7 +816,7 @@ window.initConfigView = function() {
           window.UanifyUI.toast(
             `Operador "${name}" (${empId}) actualizado en ${resolvedCode} · ${deptName}.`,
             'success',
-            'OK Operador Actualizado'
+            'Operador Actualizado'
           );
           return;
         }
@@ -852,7 +852,7 @@ window.initConfigView = function() {
       window.UanifyUI.toast(
         `Operador ${name} (${empId}) incorporado a ${deptName} (${newOp.machine}).`,
         'success',
-        ' Operador Registrado'
+        'Operador Registrado'
       );
     });
   }

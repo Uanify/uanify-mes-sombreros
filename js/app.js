@@ -3245,7 +3245,7 @@ function enrichStationWithDefaults(st, idx) {
 
         return `
           <tr>
-            <td class="col-code"><span class="table-badge-code">${op.empId}</span></td>
+            <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${op.empId}</span></td>
             <td class="col-name">
               <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${op.name}</div>
             </td>
@@ -3253,7 +3253,7 @@ function enrichStationWithDefaults(st, idx) {
             <td><span style="font-size:12.5px; font-weight:500; color:var(--text-primary);">${op.machine}</span></td>
             <td style="text-align:center;"><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
             <td style="text-align:center;">
-              <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-brand); font-size:12.5px; padding:3px 10px; background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25);">${pzas} pzas</span>
+              <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-brand); font-size:12.5px; padding:3px 10px; background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25); display:inline-block; margin:0 auto;">${pzas} pzas</span>
             </td>
             <td class="col-status" style="text-align:center;">
               <span class="table-status-pill ${statusClass}" style="margin:0 auto;">
@@ -3262,10 +3262,10 @@ function enrichStationWithDefaults(st, idx) {
             </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center;">
-                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar operador">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar Operador">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
-                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Eliminar operador">
+                <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteOperator('${op.empId}')" title="Dar de Baja Operador">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
