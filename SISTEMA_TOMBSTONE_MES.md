@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.25.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
+> **Versión Actual:** `v2.26.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -359,7 +359,7 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.25.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.26.0`.
 
 ---
 
@@ -372,6 +372,12 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
   - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta puntos de inspección intermedios y finales (`C-01`, `C-02`, `C-03`, `C-04`...) con captura de tolerancias/criterios de calidad, inspector a cargo y tiempo de ciclo, integrándose automáticamente tanto al catálogo maestro como a las secuencias de rutas.
   - **Ampliación de Permisos para Ingeniería:** Concesión de acceso al módulo de Configuración de Planta al rol Ingeniero (`Ing. Carlos Ortiz`) para modelar y auditar directamente rutas y criterios de calidad.
+- **`v2.26.0` (2026-09-26):**
+  - **Reingeniería de Rutas & Secuencias Departamentales por Modelo:** Supresión total de botones de flechas (`▲`, `▼`), concentrando el reordenamiento de pasos de manufactura al Drag & Drop con manija de agarre (`⠿`).
+  - **Estado Inicial Deseleccionado y Prompt Guiado:** La interfaz inicia con selección neutra (`-- Selecciona un Modelo de Sombrero --`), desplegando una tarjeta guía informativa que exige elegir un modelo específico antes de visualizar o editar la secuencia.
+  - **Modo Borrador y Botón de Restablecimiento sin Guardar:** Las modificaciones en la secuencia (reordenar, agregar estaciones o remover paradas) se gestionan en un búfer borrador aislado sin mutar el estado global hasta confirmar con `Guardar Secuencia de Ruta`. Se habilitó el botón `Restablecer Secuencia` para descartar cambios en memoria y recuperar el flujo original.
+  - **Instrucciones No Invasivas Vía Tooltip:** Reemplazo del banner explicativo voluminoso por un botón discreto de ayuda con tooltip nativo, optimizando el espacio vertical de la pantalla.
+  - **Optimización de Selectores:** Mejor presentación visual del menú de modelos (Nombre, SKU, Categoría) y del selector de estaciones agrupado mediante `optgroup` (`Departamentos de Manufactura` vs `Filtros de Calidad C-XX`).
 - **`v2.25.0` (2026-09-26):**
   - **Estandarización de Tablas de Padrón de Operadores (Configuración y Directorio):** Alineación estricta de encabezados con anchos explícitos, métricas de piezas procesadas hoy en badge mono destacado centrado, estatus centrado y correspondencia 1:1 de columnas.
   - **Botones de Fila de Icono Cuadrados y Paleta Suave:** Integración homogénea de botones de 32x32px para editar (`#F1F5F9`/`#E2E8F0`) y eliminar (`#FEF2F2`/`#FEE2E2`) con iconos SVG nítidos y tooltips descriptivos.

@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.25.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.26.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.25.0)
+## Arquitectura Funcional Tombstone Hats (v2.26.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
@@ -135,6 +135,13 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 - **Catálogo de Hormas:** Registro de moldes de sombreros de San Francisco del Rincón con asignación a prensas de vapor.
 - **KPIs Exclusivos:** Rendimiento de departamentos y supervisores restringido a Ingeniería y Dirección.
 - **Alertas Estandarizadas In-App:** Supresión total de alertas nativas del navegador (`alert`, `confirm`); estandarización con notificaciones toast y modales in-app `UanifyUI`.
+
+### [2.26.0] - 2026-09-26
+- **Reingeniería de Rutas & Secuencias Departamentales:** Supresión total de flechas direccionales (`▲`, `▼`), estandarizando el reordenamiento de pasos al Drag & Drop con manija de agarre (`⠿`).
+- **Estado Inicial Deseleccionado y Prompt Amigable:** La pantalla ahora inicia sin ningún sombrero seleccionado, presentando un estado vacío claro que invita al usuario a elegir un modelo específico antes de desplegar el constructor.
+- **Modo Borrador y Restablecimiento sin Guardar:** Las ediciones (reordenamiento, adición o supresión de pasos) operan en un búfer local aislado y no impactan la producción hasta confirmar con `Guardar Secuencia de Ruta`. Se integró el botón `Restablecer Secuencia` para descartar cambios pendientes y regresar al estado original.
+- **Instrucciones No Invasivas Vía Tooltip:** Remoción del banner permanente voluminoso, sustituyéndolo por un botón discreto de ayuda con tooltip informativo para maximizar el área útil de trabajo.
+- **Experiencia de Selectores Mejorada:** Menú de modelos con metadata clara (Nombre, SKU, Categoría) y menú de estaciones agrupado por optgroups industriales (`Departamentos de Manufactura` vs `Filtros de Calidad C-XX`).
 
 ### [2.25.0] - 2026-09-26
 - **Estandarización de Tablas de Padrón de Operadores (Configuración y Directorio):** Alineación estricta de encabezados con anchos explícitos, métricas de piezas procesadas hoy en badge mono destacado centrado, estatus centrado y correspondencia 1:1 de columnas.

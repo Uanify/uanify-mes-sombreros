@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.25.0</span>
+        <span class="system-version-pill login-version-pill">v2.26.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.25.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.26.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2056,67 +2056,93 @@
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h3>Rutas de Fabricación y Secuencias Departamentales por Modelo</h3>
-                <p class="section-desc" style="margin-bottom:0;">Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad.</p>
-              </div>
-              <div style="display:flex; gap:8px;">
-                <button class="btn-primary" id="btnSaveRouteSequence" style="min-height:48px; padding:0 22px; font-weight:700;">Guardar Secuencia de Ruta</button>
-              </div>
-            </div>
-
-            <!-- Banner Informativo de Asignación Exclusiva -->
-            <div style="background:var(--color-brand-light); border:1px solid var(--color-brand-border); border-radius:10px; padding:14px 18px; margin-top:16px; margin-bottom:16px; display:flex; gap:14px; align-items:center;">
-              <span style="font-size:24px;"></span>
-              <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">
-                <strong style="color:var(--color-brand); font-size:13px;">Asignación Exclusiva de Secuencia por Modelo:</strong> En esta sección configuras el flujo específico del modelo seleccionado arrastrando los pasos con <strong style="color:var(--text-primary);">⠿ Drag & Drop</strong> o usando los botones <strong>▲ ▼</strong>. <strong style="color:var(--text-primary);">Aquí únicamente se añaden o retiran pasos de la asignación a este modelo</strong>; los Departamentos y Filtros de Calidad maestros se crean, editan o eliminan en sus pestañas dedicadas.
-              </div>
-            </div>
-
-            <div class="sequence-builder-card" style="margin-top:12px;">
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px; align-items:flex-end;">
-                <div class="form-group">
-                  <label class="field-label" style="font-size:13px; font-weight:700;">Modelo Específico de Sombrero:</label>
-                  <select id="cfgRouteModelSelect" class="custom-select" style="font-weight:700; font-size:13.5px; min-height:48px;">
-                    <!-- Llenado dinámicamente por JS por modelo -->
-                  </select>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <h3 style="margin-bottom:0;">Rutas de Fabricación y Secuencias por Modelo</h3>
+                  <button type="button" class="btn-info-tooltip" id="btnRouteInfoTooltip" title="Asignación Exclusiva por Modelo: En esta sección configuras el flujo específico del sombrero seleccionado arrastrando los pasos con el grip (⠿). Aquí únicamente se añaden o retiran pasos de la asignación a este modelo; los catálogos maestros de Departamentos y Filtros de Calidad no se modifican." style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px; display:inline-flex; align-items:center;" aria-label="Información de uso">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  </button>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-medium); border-radius:8px; padding:10px 14px; min-height:48px;">
-                  <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Categoría Constructiva:</span>
-                    <strong style="color:var(--color-brand); font-size:12.5px;" id="cfgRouteCategoryBadge">Sombrero 2 Piezas (Copa y Falda)</strong>
-                  </div>
-                  <span class="badge-subtle" id="cfgRouteStepsCountBadge" style="font-weight:700; font-size:12px;">14 Pasos</span>
-                </div>
+                <p class="section-desc" style="margin-bottom:0; margin-top:4px;">Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad.</p>
               </div>
-
-              <p id="cfgRouteDesc" style="font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; background:var(--color-brand-light); border-left:3px solid var(--color-brand); padding:10px 14px; border-radius:6px;">
-                Ruta completa con fraccionamiento en rampa de 60 a 15 piezas y 3 filtros de calidad.
-              </p>
-
-              <!-- Agregar Parada a la Secuencia -->
-              <div style="display:flex; gap:12px; align-items:center; background:#F1F5F9; border:1px solid var(--border-medium); border-radius:10px; padding:14px 16px; margin-bottom:18px; flex-wrap:wrap;">
-                <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                  <span>+ </span> Asignar Estación o Parada de Calidad a este Modelo:
-                </span>
-                <select id="addStepStationSelect" class="custom-select" style="flex:1; min-width:240px; font-size:13px; min-height:48px;">
-                  <!-- Llenado dinámico con optgroups por JS -->
-                </select>
-                <button type="button" class="btn-primary" id="btnAddStepToRoute" style="min-height:48px; padding:0 18px; font-size:13px; font-weight:700;">
-                  + Asignar al Final de la Secuencia
+              <div style="display:flex; gap:10px; align-items:center;">
+                <button type="button" class="btn-secondary" id="btnResetRouteSequence" style="min-height:48px; padding:0 18px; font-weight:700; display:none;" title="Descartar cambios no guardados y regresar al estado original">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                  Restablecer Secuencia
+                </button>
+                <button class="btn-primary" id="btnSaveRouteSequence" style="min-height:48px; padding:0 22px; font-weight:700; display:none;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  Guardar Secuencia de Ruta
                 </button>
               </div>
+            </div>
 
-              <!-- Lista Ordenada de Pasos con Drag & Drop -->
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
-                  Secuencia de Pasos en Línea de Tiempo (Arrastra con ⠿ o usa ▲ ▼):
-                </h4>
-                <small style="color:var(--color-brand); font-weight:700; font-size:11.5px; background:var(--color-brand-light); padding:4px 8px; border-radius:4px;">
-                  ⠿ Drag & Drop Habilitado
-                </small>
+            <div class="sequence-builder-card" style="margin-top:14px;">
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="field-label" style="font-size:13.5px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-brand);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                  Seleccionar Modelo Específico de Sombrero para Consultar / Editar su Ruta:
+                </label>
+                <select id="cfgRouteModelSelect" class="custom-select" style="font-weight:700; font-size:14px; min-height:48px; width:100%;">
+                  <!-- Llenado dinámicamente por JS por modelo -->
+                </select>
               </div>
-              <div id="routeSequenceList" class="sequence-builder-list">
-                <!-- Pasos inyectados por config.js con drag and drop -->
+
+              <!-- Prompt de Estado Vacío (Sin Sombrero Seleccionado) -->
+              <div id="routeEmptyPrompt" style="padding:48px 24px; text-align:center; background:#F8FAFC; border:1.5px dashed var(--border-medium); border-radius:12px; margin-top:8px;">
+                <div style="width:52px; height:52px; margin:0 auto 14px auto; border-radius:12px; background:rgba(139, 94, 60, 0.08); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><polyline points="10 8 13 11 16 8"></polyline><line x1="13" y1="11" x2="13" y2="16"></line></svg>
+                </div>
+                <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Ningún Modelo de Sombrero Seleccionado</h4>
+                <p style="font-size:13px; color:var(--text-secondary); max-width:520px; margin:0 auto;">
+                  Selecciona un modelo de sombrero en el menú superior para cargar su secuencia de manufactura, consultar los tiempos de ciclo y personalizar sus paradas de calidad mediante Drag &amp; Drop.
+                </p>
+              </div>
+
+              <!-- Contenedor de Detalle de Ruta (Visible solo con sombrero seleccionado) -->
+              <div id="routeDetailContainer" style="display:none; margin-top:16px;">
+                <!-- Contexto Explícito del Sombrero Seleccionado -->
+                <div class="route-model-context-header" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(139, 94, 60, 0.06) 0%, rgba(139, 94, 60, 0.02) 100%); border:1px solid rgba(139, 94, 60, 0.2); border-radius:10px; padding:14px 18px; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
+                  <div>
+                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-brand); display:block;">Ruta de Manufactura Activa</span>
+                    <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:2px 0 2px 0;" id="cfgRouteModelTitle">—</h3>
+                    <span style="font-size:12px; color:var(--text-secondary);" id="cfgRouteModelSku">—</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span class="badge-subtle" id="cfgRouteCategoryBadge" style="font-weight:700;">—</span>
+                    <span class="badge-subtle" id="cfgRouteStepsCountBadge" style="font-weight:700; color:var(--color-brand); background:rgba(139, 94, 60, 0.1);">0 Pasos</span>
+                  </div>
+                </div>
+
+                <p id="cfgRouteDesc" style="font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; background:var(--color-brand-light); border-left:3px solid var(--color-brand); padding:10px 14px; border-radius:6px;">
+                  —
+                </p>
+
+                <!-- Barra de Asignar Estación o Parada de Calidad Mejorada -->
+                <div style="display:flex; gap:12px; align-items:center; background:#F8FAFC; border:1px solid var(--border-medium); border-radius:10px; padding:14px 16px; margin-bottom:18px; flex-wrap:wrap;">
+                  <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    Asignar Estación o Parada de Calidad a este Modelo:
+                  </span>
+                  <select id="addStepStationSelect" class="custom-select" style="flex:1; min-width:260px; font-size:13px; min-height:48px;">
+                    <!-- Llenado dinámico con optgroups por JS -->
+                  </select>
+                  <button type="button" class="btn-primary" id="btnAddStepToRoute" style="min-height:48px; padding:0 20px; font-size:13px; font-weight:700;">
+                    + Asignar al Final de la Secuencia
+                  </button>
+                </div>
+
+                <!-- Lista Ordenada de Pasos con Drag & Drop Únicamente -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                  <h4 style="font-size:13.5px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
+                    Secuencia de Pasos en Línea de Tiempo (Arrastra con el grip ⠿ para reordenar):
+                  </h4>
+                  <small style="color:var(--color-brand); font-weight:700; font-size:11.5px; background:var(--color-brand-light); padding:4px 8px; border-radius:4px;">
+                    ⠿ Drag &amp; Drop Habilitado
+                  </small>
+                </div>
+                <div id="routeSequenceList" class="sequence-builder-list">
+                  <!-- Pasos inyectados por config.js con drag and drop -->
+                </div>
               </div>
             </div>
           </div>
@@ -3713,11 +3739,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.25.0"></script>
-  <script src="js/andon.js?v=2.25.0"></script>
-  <script src="js/terminal.js?v=2.25.0"></script>
-  <script src="js/engineer.js?v=2.25.0"></script>
-  <script src="js/executive.js?v=2.25.0"></script>
-  <script src="js/config.js?v=2.25.0"></script>
+  <script src="js/app.js?v=2.26.0"></script>
+  <script src="js/andon.js?v=2.26.0"></script>
+  <script src="js/terminal.js?v=2.26.0"></script>
+  <script src="js/engineer.js?v=2.26.0"></script>
+  <script src="js/executive.js?v=2.26.0"></script>
+  <script src="js/config.js?v=2.26.0"></script>
 </body>
 </html>

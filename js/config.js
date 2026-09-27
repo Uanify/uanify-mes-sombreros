@@ -1751,26 +1751,34 @@ window.initConfigView = function() {
   const cfgRouteCategoryBadge = document.getElementById('cfgRouteCategoryBadge');
   const cfgRouteStepsCountBadge = document.getElementById('cfgRouteStepsCountBadge');
   const cfgRouteDesc = document.getElementById('cfgRouteDesc');
+  const cfgRouteModelTitle = document.getElementById('cfgRouteModelTitle');
+  const cfgRouteModelSku = document.getElementById('cfgRouteModelSku');
+  const routeEmptyPrompt = document.getElementById('routeEmptyPrompt');
+  const routeDetailContainer = document.getElementById('routeDetailContainer');
   const addStepStationSelect = document.getElementById('addStepStationSelect');
   const btnAddStepToRoute = document.getElementById('btnAddStepToRoute');
   const btnSaveRouteSequence = document.getElementById('btnSaveRouteSequence');
+  const btnResetRouteSequence = document.getElementById('btnResetRouteSequence');
   const routeSequenceList = document.getElementById('routeSequenceList');
 
-  let activeRouteId = 'route-model-viejonon';
+  // Estado del Constructor de Rutas: Inicialmente VACÍO (sin sombrero seleccionado)
+  let activeRouteId = '';
+  let workingRouteDraft = null;
+  let originalRouteSnapshot = null;
+  let hasUnsavedRouteChanges = false;
+  let draggedStepIndex = null;
 
   function populateRouteModels() {
     if (!cfgRouteModelSelect || !UanifyState.productionRoutes) return;
-    
-    // Si la ruta activa inicial no existe, tomar la primera
-    if (!UanifyState.productionRoutes.some(r => r.id === activeRouteId)) {
-      activeRouteId = UanifyState.productionRoutes[0].id;
-    }
 
-    cfgRouteModelSelect.innerHTML = UanifyState.productionRoutes.map(r => `
-      <option value="${r.id}" ${r.id === activeRouteId ? 'selected' : ''}>
-         ${r.name} · [SKU: ${r.sku || 'TB-STD'}] (${r.category})
-      </option>
-    `).join('');
+    let html = `<option value="" ${!activeRouteId ? 'selected' : ''}>-- Selecciona un Modelo de Sombrero para Consultar o Editar su Ruta --</option>`;
+
+    UanifyState.productionRoutes.forEach(r => {
+      const isSelected = r.id === activeRouteId ? 'selected' : '';
+      html += `<option value="${r.id}" ${isSelected}>${r.name} · [SKU: ${r.sku || 'TB-STD'}] (${r.category})</option>`;
+    });
+
+    cfgRouteModelSelect.innerHTML = html;
   }
 
   function populateAddStepStations() {
@@ -1783,51 +1791,99 @@ window.initConfigView = function() {
 
     let html = `<option value="">-- Selecciona Departamento o Filtro de Calidad Maestro --</option>`;
 
-    html += `<optgroup label=" Departamentos de Manufactura (D-XX)">`;
+    html += `<optgroup label="── Departamentos de Manufactura (D-01 a D-14) ──">`;
     mfgStations.forEach(st => {
-      html += `<option value="${st.code}"> ${st.code} · ${st.name} [Takt: ${st.cycleTime || '30s'}]</option>`;
+      html += `<option value="${st.code}">${st.code} · ${st.name} [Takt: ${st.cycleTime || '30s'}]</option>`;
     });
     html += `</optgroup>`;
 
-    html += `<optgroup label=" Puntos de Inspección de Calidad (C-XX)">`;
+    html += `<optgroup label="── Filtros de Control de Calidad (C-01 a C-04) ──">`;
     qualityStations.forEach(q => {
-      html += `<option value="${q.code}"> ${q.code} · ${q.name} [Ciclo: ${q.cycleTime || '18s'}]</option>`;
+      html += `<option value="${q.code}">${q.code} · ${q.name} [Ciclo: ${q.cycleTime || '18s'}]</option>`;
     });
     html += `</optgroup>`;
 
     addStepStationSelect.innerHTML = html;
   }
 
-  let draggedStepIndex = null;
-
   function renderRouteSequence() {
     if (!routeSequenceList || !UanifyState.productionRoutes) return;
-    const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId) || UanifyState.productionRoutes[0];
-    if (!route) return;
 
+    // Caso 1: Ningún modelo seleccionado inicialmente
+    if (!activeRouteId) {
+      if (routeEmptyPrompt) routeEmptyPrompt.style.display = 'block';
+      if (routeDetailContainer) routeDetailContainer.style.display = 'none';
+      if (btnSaveRouteSequence) btnSaveRouteSequence.style.display = 'none';
+      if (btnResetRouteSequence) btnResetRouteSequence.style.display = 'none';
+      return;
+    }
+
+    const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
+    if (!route) {
+      activeRouteId = '';
+      if (routeEmptyPrompt) routeEmptyPrompt.style.display = 'block';
+      if (routeDetailContainer) routeDetailContainer.style.display = 'none';
+      if (btnSaveRouteSequence) btnSaveRouteSequence.style.display = 'none';
+      if (btnResetRouteSequence) btnResetRouteSequence.style.display = 'none';
+      return;
+    }
+
+    // Inicializar workingRouteDraft y snapshot si no existen para este modelo
+    if (!workingRouteDraft) {
+      originalRouteSnapshot = JSON.parse(JSON.stringify(route.steps || []));
+      workingRouteDraft = JSON.parse(JSON.stringify(route.steps || []));
+      hasUnsavedRouteChanges = false;
+    }
+
+    // Mostrar contenedor de detalle y ocultar prompt vacío
+    if (routeEmptyPrompt) routeEmptyPrompt.style.display = 'none';
+    if (routeDetailContainer) routeDetailContainer.style.display = 'block';
+
+    // Actualizar encabezados y metadata del sombrero
+    if (cfgRouteModelTitle) cfgRouteModelTitle.textContent = route.name;
+    if (cfgRouteModelSku) cfgRouteModelSku.textContent = `SKU: ${route.sku || 'TB-STD'} · Código de Ruta: ${route.id}`;
     if (cfgRouteCategoryBadge) cfgRouteCategoryBadge.textContent = route.category;
-    if (cfgRouteStepsCountBadge) cfgRouteStepsCountBadge.textContent = `${route.steps.length} Pasos`;
-    if (cfgRouteDesc) cfgRouteDesc.textContent = route.desc;
+    if (cfgRouteStepsCountBadge) {
+      if (hasUnsavedRouteChanges) {
+        cfgRouteStepsCountBadge.innerHTML = `${workingRouteDraft.length} Pasos <span style="display:inline-block; width:7px; height:7px; background:#D97706; border-radius:50%; margin-left:4px;" title="Cambios pendientes sin guardar"></span>`;
+      } else {
+        cfgRouteStepsCountBadge.textContent = `${workingRouteDraft.length} Pasos`;
+      }
+    }
+    if (cfgRouteDesc) cfgRouteDesc.textContent = route.desc || 'Ruta estándar de manufactura.';
 
     // Permisos: Ingeniero y Admin
     const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const canEdit = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
-    if (!canEdit) {
-      if (btnSaveRouteSequence) btnSaveRouteSequence.disabled = true;
-      if (btnAddStepToRoute) btnAddStepToRoute.disabled = true;
-    } else {
-      if (btnSaveRouteSequence) btnSaveRouteSequence.disabled = false;
-      if (btnAddStepToRoute) btnAddStepToRoute.disabled = false;
+    // Botones de acción en encabezado
+    if (btnSaveRouteSequence) {
+      btnSaveRouteSequence.style.display = 'inline-flex';
+      btnSaveRouteSequence.disabled = !canEdit;
+      if (hasUnsavedRouteChanges) {
+        btnSaveRouteSequence.style.boxShadow = '0 0 0 3px rgba(139, 94, 60, 0.25)';
+      } else {
+        btnSaveRouteSequence.style.boxShadow = 'none';
+      }
     }
 
-    routeSequenceList.innerHTML = route.steps.map((st, idx) => {
+    if (btnResetRouteSequence) {
+      btnResetRouteSequence.style.display = 'inline-flex';
+      btnResetRouteSequence.disabled = !canEdit || !hasUnsavedRouteChanges;
+      btnResetRouteSequence.style.opacity = hasUnsavedRouteChanges ? '1' : '0.55';
+      btnResetRouteSequence.style.cursor = hasUnsavedRouteChanges ? 'pointer' : 'not-allowed';
+    }
+
+    if (btnAddStepToRoute) {
+      btnAddStepToRoute.disabled = !canEdit;
+    }
+
+    // Renderizado de pasos (DRAG & DROP SOLAMENTE - CERO FLECHAS)
+    routeSequenceList.innerHTML = workingRouteDraft.map((st, idx) => {
       const isQuality = st.type === 'calidad' || st.isQualityStop || (st.code && st.code.startsWith('C-'));
-      const isFirst = idx === 0;
-      const isLast = idx === route.steps.length - 1;
       const typeTag = isQuality 
-        ? `<span class="badge-quality"> Filtro de Calidad</span>`
-        : `<span class="badge-subtle" style="font-size:10.5px;"> Manufactura</span>`;
+        ? `<span class="badge-quality">Filtro de Calidad</span>`
+        : `<span class="badge-subtle" style="font-size:10.5px;">Manufactura</span>`;
 
       return `
         <div class="sequence-builder-item ${isQuality ? 'is-quality-step' : ''}" 
@@ -1835,7 +1891,7 @@ window.initConfigView = function() {
              data-index="${idx}"
              data-code="${st.code}">
           <div class="sequence-item-info">
-            ${canEdit ? `<span class="drag-handle-grip" title="Arrastrar con el ratón o dedo para reordenar la secuencia">⠿</span>` : ''}
+            ${canEdit ? `<span class="drag-handle-grip" title="Arrastra para reordenar la secuencia">⠿</span>` : ''}
             <span class="sequence-order-badge">Paso #${idx + 1}</span>
             <span style="font-weight:700; color:var(--text-primary); font-size:14px;">${st.name}</span>
             ${typeTag}
@@ -1843,9 +1899,9 @@ window.initConfigView = function() {
           </div>
           ${canEdit ? `
           <div class="sequence-controls">
-            <button type="button" class="btn-seq-move" data-action="up" data-index="${idx}" ${isFirst ? 'disabled' : ''} title="Subir este paso">▲</button>
-            <button type="button" class="btn-seq-move" data-action="down" data-index="${idx}" ${isLast ? 'disabled' : ''} title="Bajar este paso">▼</button>
-            <button type="button" class="btn-seq-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo">×</button>
+            <button type="button" class="btn-table-action btn-action-delete" data-action="delete" data-index="${idx}" title="Quitar este paso de la asignación a este modelo" style="width:32px; height:32px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </button>
           </div>
           ` : `<span style="font-size:11px; color:var(--text-muted);">Solo lectura</span>`}
         </div>
@@ -1902,57 +1958,44 @@ window.initConfigView = function() {
             return;
           }
 
-          // Reordenar pasos en la secuencia
-          const [movedStep] = route.steps.splice(draggedStepIndex, 1);
-          route.steps.splice(targetIdx, 0, movedStep);
+          // Reordenar pasos en la secuencia borrador
+          const [movedStep] = workingRouteDraft.splice(draggedStepIndex, 1);
+          workingRouteDraft.splice(targetIdx, 0, movedStep);
 
           // Normalizar números de orden
-          route.steps.forEach((st, i) => {
+          workingRouteDraft.forEach((st, i) => {
             st.order = i + 1;
           });
 
+          hasUnsavedRouteChanges = true;
           renderRouteSequence();
 
           window.UanifyUI.toast(
-            `Paso "${movedStep.code} ${movedStep.name}" movido a la posición #${targetIdx + 1}. Recuerda presionar "Guardar Secuencia de Ruta".`,
+            `Paso "${movedStep.code} ${movedStep.name}" movido a la posición #${targetIdx + 1}. Confirma tus cambios presionando "Guardar Secuencia de Ruta".`,
             'info',
-            '⠿ Secuencia Reordenada'
+            'Secuencia Reordenada (Borrador)'
           );
         });
       });
     }
 
-    // ── BOTONES COMPLEMENTARIOS (▲, ▼, ) ──
-    routeSequenceList.querySelectorAll('[data-action]').forEach(btn => {
+    // ── BOTÓN DE ELIMINAR PASO DE LA SECUENCIA ──
+    routeSequenceList.querySelectorAll('[data-action="delete"]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const action = btn.getAttribute('data-action');
         const idx = parseInt(btn.getAttribute('data-index'), 10);
-        if (action === 'up' && idx > 0) {
-          const temp = route.steps[idx];
-          route.steps[idx] = route.steps[idx - 1];
-          route.steps[idx - 1] = temp;
-          route.steps.forEach((s, i) => s.order = i + 1);
-          renderRouteSequence();
-        } else if (action === 'down' && idx < route.steps.length - 1) {
-          const temp = route.steps[idx];
-          route.steps[idx] = route.steps[idx + 1];
-          route.steps[idx + 1] = temp;
-          route.steps.forEach((s, i) => s.order = i + 1);
-          renderRouteSequence();
-        } else if (action === 'delete') {
-          if (route.steps.length <= 2) {
-            window.UanifyUI.toast('Una ruta de modelo debe tener al menos 2 pasos.', 'warning');
-            return;
-          }
-          const removed = route.steps.splice(idx, 1)[0];
-          route.steps.forEach((s, i) => s.order = i + 1);
-          renderRouteSequence();
-          window.UanifyUI.toast(
-            `Paso "${removed.code} ${removed.name}" quitado de la secuencia de "${route.name}". Los catálogos maestros no se modifican.`,
-            'info',
-            ' Paso Quitado de la Secuencia'
-          );
+        if (workingRouteDraft.length <= 2) {
+          window.UanifyUI.toast('Una ruta de modelo debe tener al menos 2 pasos.', 'warning');
+          return;
         }
+        const removed = workingRouteDraft.splice(idx, 1)[0];
+        workingRouteDraft.forEach((s, i) => s.order = i + 1);
+        hasUnsavedRouteChanges = true;
+        renderRouteSequence();
+        window.UanifyUI.toast(
+          `Paso "${removed.code} ${removed.name}" quitado de la secuencia borrador. Recuerda presionar "Guardar Secuencia de Ruta".`,
+          'info',
+          'Paso Quitado de la Secuencia'
+        );
       });
     });
   }
@@ -1960,12 +2003,20 @@ window.initConfigView = function() {
   if (cfgRouteModelSelect) {
     cfgRouteModelSelect.addEventListener('change', (e) => {
       activeRouteId = e.target.value;
+      workingRouteDraft = null;
+      originalRouteSnapshot = null;
+      hasUnsavedRouteChanges = false;
       renderRouteSequence();
     });
   }
 
   if (btnAddStepToRoute) {
     btnAddStepToRoute.addEventListener('click', () => {
+      if (!activeRouteId || !workingRouteDraft) {
+        window.UanifyUI.toast('Primero selecciona un modelo de sombrero en el menú superior.', 'warning');
+        return;
+      }
+
       const code = addStepStationSelect ? addStepStationSelect.value : null;
       if (!code) {
         window.UanifyUI.toast('Selecciona una estación o filtro de calidad maestro para asignar a la ruta.', 'warning');
@@ -1974,7 +2025,7 @@ window.initConfigView = function() {
 
       // Buscar primero en qualityAreas y luego en stations
       const qualityArea = (UanifyState.qualityAreas || []).find(q => q.code === code);
-      const st = UanifyState.stations.find(s => s.code === code);
+      const st = (UanifyState.stations || []).find(s => s.code === code);
       if (!st && !qualityArea) return;
 
       const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
@@ -1985,34 +2036,69 @@ window.initConfigView = function() {
       const cycle = qualityArea ? qualityArea.cycleTime : (st.cycleTime || '30s');
 
       const newStep = {
-        order: route.steps.length + 1,
+        order: workingRouteDraft.length + 1,
         code: code,
         name: stepName,
         type: isQuality ? 'calidad' : (code === 'D-11' ? 'logistica' : 'manufactura'),
-        icon: isQuality ? '' : '',
+        icon: '',
         isQualityStop: isQuality,
         cycleTime: cycle
       };
 
-      route.steps.push(newStep);
+      workingRouteDraft.push(newStep);
+      hasUnsavedRouteChanges = true;
       renderRouteSequence();
+
+      if (addStepStationSelect) addStepStationSelect.value = '';
+
       window.UanifyUI.toast(
-        `Paso "${code} ${stepName}" asignado al final de la ruta de "${route.name}". Recuerda presionar "Guardar Secuencia de Ruta".`,
+        `Paso "${code} ${stepName}" asignado al final de la ruta borrador de "${route.name}". Confirma tus cambios presionando "Guardar Secuencia de Ruta".`,
         'success',
-        '+ Paso Asignado'
+        '+ Paso Asignado (Borrador)'
+      );
+    });
+  }
+
+  if (btnResetRouteSequence) {
+    btnResetRouteSequence.addEventListener('click', () => {
+      if (!activeRouteId || !workingRouteDraft) return;
+
+      if (!hasUnsavedRouteChanges) {
+        window.UanifyUI.toast('No hay cambios pendientes de guardar en esta secuencia.', 'info');
+        return;
+      }
+
+      workingRouteDraft = JSON.parse(JSON.stringify(originalRouteSnapshot));
+      hasUnsavedRouteChanges = false;
+      renderRouteSequence();
+
+      window.UanifyUI.toast(
+        'Se restableció la secuencia de la ruta al estado original guardado.',
+        'info',
+        'Secuencia Restablecida'
       );
     });
   }
 
   if (btnSaveRouteSequence) {
     btnSaveRouteSequence.addEventListener('click', () => {
+      if (!activeRouteId || !workingRouteDraft) {
+        window.UanifyUI.toast('Primero selecciona un modelo de sombrero.', 'warning');
+        return;
+      }
+
       const route = UanifyState.productionRoutes.find(r => r.id === activeRouteId);
       if (!route) return;
 
       // Normalizar número de órdenes
-      route.steps.forEach((st, idx) => {
+      workingRouteDraft.forEach((st, idx) => {
         st.order = idx + 1;
       });
+
+      // Guardar en el estado real
+      route.steps = JSON.parse(JSON.stringify(workingRouteDraft));
+      originalRouteSnapshot = JSON.parse(JSON.stringify(route.steps));
+      hasUnsavedRouteChanges = false;
 
       try {
         localStorage.setItem('uanify_production_routes', JSON.stringify(UanifyState.productionRoutes));
@@ -2024,10 +2110,12 @@ window.initConfigView = function() {
         EventBus.emit('production-routes-updated', route);
       }
 
+      renderRouteSequence();
+
       window.UanifyUI.toast(
         `Secuencia de ruta para "${route.name}" guardada exitosamente (${route.steps.length} pasos). Los lotes de este modelo seguirán este nuevo flujo de manufactura y calidad.`,
         'success',
-        ' Ruta Guardada'
+        'Ruta Guardada'
       );
     });
   }
