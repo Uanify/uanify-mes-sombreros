@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.29.0</span>
+        <span class="system-version-pill login-version-pill">v2.30.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.29.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.30.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -974,7 +974,7 @@
                   Modelos de producción, especificaciones de falda, copa, tallas, toquillas y fichas técnicas oficiales
                 </p>
               </div>
-              <button class="btn-primary" id="btnOpenRegisterHatModal" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 20px; font-weight:700;">
+              <button class="btn-primary" id="btnOpenRegisterHatModal" style="display:flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; font-weight:700;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Registrar Nuevo Sombrero
               </button>
@@ -1016,14 +1016,14 @@
               <table class="data-table" id="tblInventoryHats">
                 <thead>
                   <tr>
-                    <th class="col-code">Código</th>
-                    <th class="col-name" style="min-width: 220px;">Modelo de Sombrero</th>
-                    <th>Copa & Falda</th>
-                    <th>Tallas Disponibles</th>
-                    <th>Horma Compatible</th>
-                    <th>Valor Catálogo</th>
-                    <th class="col-status">Estatus</th>
-                    <th class="col-actions" style="min-width: 220px;">Acciones</th>
+                    <th class="col-code" style="width: 110px;">Código</th>
+                    <th class="col-name" style="width: 230px;">Modelo de Sombrero</th>
+                    <th style="width: 150px;">Copa & Falda</th>
+                    <th style="width: 150px; text-align: center;">Tallas Disponibles</th>
+                    <th style="width: 140px; text-align: center;">Horma Compatible</th>
+                    <th style="width: 130px; text-align: center;">Valor Catálogo</th>
+                    <th class="col-status" style="width: 110px; text-align: center;">Estatus</th>
+                    <th class="col-actions" style="width: 110px; text-align: center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="tblInventoryHatsBody">
@@ -1112,7 +1112,7 @@
                   Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas de San Francisco del Rincón.
                 </p>
               </div>
-              <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="display:flex; align-items:center; gap:8px; min-height:44px; padding:0 20px; font-weight:700;">
+              <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="display:flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; font-weight:700;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Registrar Nueva Horma
               </button>
@@ -1156,15 +1156,15 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-code">Código</th>
-                    <th class="col-name" style="min-width: 200px;">Horma & Modelo</th>
-                    <th>Tipo</th>
-                    <th>Talla</th>
-                    <th>Aleación</th>
-                    <th>Prensa Asignada</th>
-                    <th>Ciclos Prensado</th>
-                    <th class="col-status">Estatus</th>
-                    <th class="col-actions" style="min-width: 220px;">Acciones</th>
+                    <th class="col-code" style="width: 100px;">Código</th>
+                    <th class="col-name" style="width: 200px;">Horma & Modelo</th>
+                    <th style="width: 110px;">Tipo</th>
+                    <th style="width: 90px; text-align: center;">Talla</th>
+                    <th style="width: 140px;">Aleación</th>
+                    <th style="width: 140px;">Prensa Asignada</th>
+                    <th style="width: 160px; text-align: center;">Ciclos Prensado</th>
+                    <th class="col-status" style="width: 110px; text-align: center;">Estatus</th>
+                    <th class="col-actions" style="width: 110px; text-align: center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryMoldsTableBody">
@@ -2617,18 +2617,33 @@
         <div class="modal-body" style="padding:20px;">
           <div style="display:grid; grid-template-columns: 1fr 140px; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Nombre del Modelo / Horma:</label>
+              <label class="field-label">
+                <span>Nombre del Modelo / Horma:</span>
+                <span class="info-tooltip-icon" title="Nombre oficial de la horma maquinada en aluminio para prensas">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newMoldName" class="form-input" placeholder="Ej. #54 JOHNSON LONA o DENVER MASTER" required>
             </div>
             <div class="form-group">
-              <label class="field-label">Código Grabado:</label>
+              <label class="field-label">
+                <span>Código Grabado:</span>
+                <span class="info-tooltip-icon" title="Código troquelado o grabado en el cuerpo metálico del molde">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newMoldCode" class="form-input" placeholder="HRM-JHN-54" required style="font-family:var(--font-mono); font-weight:700;">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Tipo / Familia de Horma:</label>
+              <label class="field-label">
+                <span>Tipo / Familia:</span>
+                <span class="info-tooltip-icon" title="Familia morfológica del sombrero compatible (Denver, Bullrider, Viejonón, etc.)">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <select id="newMoldType" class="custom-select">
                 <option value="Denver">Denver</option>
                 <option value="Bullrider">Bullrider</option>
@@ -2641,18 +2656,33 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="field-label">Talla (US / MX):</label>
+              <label class="field-label">
+                <span>Talla (US / MX):</span>
+                <span class="info-tooltip-icon" title="Talla estandarizada del molde maquinado">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newMoldSize" class="form-input" placeholder="55 (6 7/8)" value="55 (6 7/8)">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Aleación de Fabricación:</label>
+              <label class="field-label">
+                <span>Aleación de Fabricación:</span>
+                <span class="info-tooltip-icon" title="Composición metálica de fundición para conductividad térmica y resistencia">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newMoldAlloy" class="form-input" value="Aluminio Maquinado 6061-T6">
             </div>
             <div class="form-group">
-              <label class="field-label">Prensa Asignada:</label>
+              <label class="field-label">
+                <span>Prensa Asignada:</span>
+                <span class="info-tooltip-icon" title="Estación o máquina de vapor donde se monta operativamente el molde">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <select id="newMoldLocation" class="custom-select">
                 <option value="Prensa Hidráulica Michelagnoli P-01">Prensa Hidráulica Michelagnoli P-01</option>
                 <option value="Prensa Hidráulica Michelagnoli P-02">Prensa Hidráulica Michelagnoli P-02</option>
@@ -2665,11 +2695,21 @@
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Temperatura de Operación:</label>
+              <label class="field-label">
+                <span>Temperatura de Operación:</span>
+                <span class="info-tooltip-icon" title="Rango de calor óptimo para el curado del apresto sin dañar el telar">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newMoldTemp" class="form-input" value="115°C - 125°C">
             </div>
             <div class="form-group">
-              <label class="field-label">Estatus Inicial:</label>
+              <label class="field-label">
+                <span>Estatus Inicial:</span>
+                <span class="info-tooltip-icon" title="Estado operativo en nave central o estantería de almacén">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <select id="newMoldStatus" class="custom-select">
                 <option value="Disponible">Disponible</option>
                 <option value="En Uso">En Uso</option>
@@ -2680,7 +2720,12 @@
 
           <!-- Zona de Carga de Fotografía de la Horma -->
           <div class="form-group">
-            <label class="field-label">Fotografía de la Horma / Molde de Aluminio:</label>
+            <label class="field-label">
+              <span>Fotografía de la Horma / Molde:</span>
+              <span class="info-tooltip-icon" title="Foto de identificación visual del molde de aluminio para el operador de prensas">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              </span>
+            </label>
             <div class="photo-upload-container">
               <div class="photo-dropzone" id="moldPhotoDropzone">
                 <input type="file" id="moldPhotoFileInput" accept="image/*" style="display:none;">
@@ -2831,18 +2876,33 @@
         <div class="modal-body" style="padding:20px;">
           <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Código (SOM-XX):</label>
+              <label class="field-label">
+                <span>Código (SOM-XX):</span>
+                <span class="info-tooltip-icon" title="Identificador único del modelo en el catálogo Tombstone">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newHatCode" class="form-input" placeholder="SOM-06" required style="font-family:var(--font-mono); font-weight:700;">
             </div>
             <div class="form-group">
-              <label class="field-label">Nombre del Modelo:</label>
+              <label class="field-label">
+                <span>Nombre del Modelo:</span>
+                <span class="info-tooltip-icon" title="Nombre comercial oficial para órdenes B2B y tarjetas viajeras">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newHatName" class="form-input" placeholder="Ej. 1000X Master Telar Denver" required>
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Familia / Tipo de Material:</label>
+              <label class="field-label">
+                <span>Familia / Material:</span>
+                <span class="info-tooltip-icon" title="Material base de fabricación (Telar Shantung 1000X, Paja, Fieltro, Palma)">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <select id="newHatFamily" class="custom-select">
                 <option value="Telar Shantung">Telar Shantung 1000X Master</option>
                 <option value="Paja Bangora">Paja Bangora Tradicional</option>
@@ -2852,29 +2912,54 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="field-label">Precio Catálogo ($ MXN):</label>
+              <label class="field-label">
+                <span>Precio Catálogo ($ MXN):</span>
+                <span class="info-tooltip-icon" title="Precio catálogo de venta para valorización financiera de producción diaria">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="number" id="newHatPrice" class="form-input" value="1310" required>
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Tipo de Copa:</label>
+              <label class="field-label">
+                <span>Tipo de Copa:</span>
+                <span class="info-tooltip-icon" title="Geometría y profundidad de corona especificada para prensas de vapor">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newHatCrown" class="form-input" placeholder="4 1/4&quot; Gota (Tear Drop)" value="4 1/4&quot; Gota (Tear Drop)">
             </div>
             <div class="form-group">
-              <label class="field-label">Medida de Falda:</label>
+              <label class="field-label">
+                <span>Medida de Falda:</span>
+                <span class="info-tooltip-icon" title="Ancho de ala y perfil de curvatura para troquelado y planchado">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newHatBrim" class="form-input" placeholder="4&quot; y 4 1/4&quot; Doblado Abajo" value="4&quot; y 4 1/4&quot; Doblado Abajo">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Toquilla Exterior & Herraje:</label>
+              <label class="field-label">
+                <span>Toquilla & Herraje:</span>
+                <span class="info-tooltip-icon" title="Adorno exterior, herraje metálico o hebilla plateada en adorno">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <input type="text" id="newHatBand" class="form-input" placeholder="Piel badana con hebilla plateada" value="Piel Badana con Hebilla Plateada">
             </div>
             <div class="form-group">
-              <label class="field-label">Horma Maquinada Asignada:</label>
+              <label class="field-label">
+                <span>Horma Asignada:</span>
+                <span class="info-tooltip-icon" title="Molde de aluminio maquinado CNC compatible en nave de prensas">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </span>
+              </label>
               <select id="newHatMold" class="custom-select">
                 <option value="HRM-JHN-54">#54 JOHNSON LONA</option>
                 <option value="HRM-SNR-57">#57 SONORA</option>
@@ -2888,7 +2973,12 @@
 
           <!-- Tallas Disponibles -->
           <div class="form-group">
-            <label class="field-label">Tallas de Producción Habilitadas:</label>
+            <label class="field-label">
+              <span>Tallas Habilitadas:</span>
+              <span class="info-tooltip-icon" title="Tallas activas para generación de lotes y selección de tafilete">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              </span>
+            </label>
             <div style="display:flex; gap:12px; flex-wrap:wrap; padding:8px 12px; background:#F8FAFC; border-radius:8px; border:1px solid var(--border-subtle);">
               <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="55" checked> Talla 55</label>
               <label style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:12.5px;"><input type="checkbox" class="hat-size-cb" value="56" checked> Talla 56</label>
@@ -2901,7 +2991,12 @@
 
           <!-- Zona de Carga de Fotografía del Sombrero -->
           <div class="form-group">
-            <label class="field-label">Fotografía Oficial del Sombrero Terminado:</label>
+            <label class="field-label">
+              <span>Fotografía Oficial del Modelo:</span>
+              <span class="info-tooltip-icon" title="Foto en alta definición del sombrero terminado para auditorías de calidad y adorno">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              </span>
+            </label>
             <div class="photo-upload-container">
               <div class="photo-dropzone" id="hatPhotoDropzone">
                 <input type="file" id="hatPhotoFileInput" accept="image/*" style="display:none;">
@@ -3822,11 +3917,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.29.0"></script>
-  <script src="js/andon.js?v=2.29.0"></script>
-  <script src="js/terminal.js?v=2.29.0"></script>
-  <script src="js/engineer.js?v=2.29.0"></script>
-  <script src="js/executive.js?v=2.29.0"></script>
-  <script src="js/config.js?v=2.29.0"></script>
+  <script src="js/app.js?v=2.30.0"></script>
+  <script src="js/andon.js?v=2.30.0"></script>
+  <script src="js/terminal.js?v=2.30.0"></script>
+  <script src="js/engineer.js?v=2.30.0"></script>
+  <script src="js/executive.js?v=2.30.0"></script>
+  <script src="js/config.js?v=2.30.0"></script>
 </body>
 </html>

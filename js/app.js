@@ -2357,38 +2357,38 @@ function enrichStationWithDefaults(st, idx) {
                     <img src="${h.photo}" class="table-thumb-img" alt="${h.name}">
                   </div>
                   <div>
-                    <div class="table-cell-primary" style="cursor:pointer;" onclick="window.openHatTechnicalSheet('${h.id}')">${h.name}</div>
-                    <span class="table-cell-subtext">${h.material} · ${h.category}</span>
+                    <div class="table-cell-primary" style="font-size:13.5px; font-weight:700; cursor:pointer;" onclick="window.openHatTechnicalSheet('${h.id}')">${h.name}</div>
+                    <span class="table-cell-subtext" style="font-size:11.5px; color:var(--text-secondary);">${h.material} · ${h.category}</span>
                   </div>
                 </div>
               </td>
               <td>
-                <div style="font-size:12px;"><strong>Copa:</strong> ${h.crown || 'Regular'}</div>
-                <div style="font-size:11.5px; color:var(--text-secondary);"><strong>Falda:</strong> ${h.brim || '4 1/4"'}</div>
+                <div style="font-size:12px; font-weight:600; color:var(--text-primary);"><strong>Copa:</strong> ${h.crown || 'Regular'}</div>
+                <div style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;"><strong>Falda:</strong> ${h.brim || '4 1/4"'}</div>
               </td>
-              <td>
-                <div class="hat-variations-cell">${sizeChips}</div>
+              <td style="text-align:center;">
+                <div class="hat-variations-cell" style="justify-content:center; gap:4px; display:flex; flex-wrap:wrap;">${sizeChips}</div>
               </td>
-              <td>
-                <span class="badge-subtle" style="font-family:'JetBrains Mono'; font-weight:700;">${h.moldName || h.moldCode || 'Horma Std'}</span>
+              <td style="text-align:center;">
+                <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700;">${h.moldName || h.moldCode || 'Horma Std'}</span>
               </td>
-              <td>
-                <strong style="color:var(--color-green); font-family:'JetBrains Mono'; font-size:13px;">$${Number(h.price || 1310).toLocaleString()} MXN</strong>
+              <td style="text-align:center;">
+                <strong style="color:var(--color-green); font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;">$${Number(h.price || 1310).toLocaleString()} MXN</strong>
               </td>
-              <td class="col-status">
-                <span class="table-status-pill ${isActive ? 'status-active' : 'status-warning'}">
+              <td class="col-status" style="text-align:center;">
+                <span class="table-status-pill ${isActive ? 'status-active' : 'status-warning'}" style="margin:0 auto;">
                   <span class="status-dot"></span>${h.status}
                 </span>
               </td>
-              <td class="col-actions">
-                <div class="action-btns-cell" style="justify-content:center;">
-                  <button type="button" class="btn-table-action btn-action-view" onclick="window.openHatTechnicalSheet('${h.id}')" title="Ver ficha técnica oficial con foto">
+              <td class="col-actions" style="text-align:center;">
+                <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.openHatTechnicalSheet('${h.id}')" title="Ver Ficha Técnica Oficial">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </button>
-                  <button type="button" class="btn-table-action btn-action-edit" onclick="window.editHat('${h.id}')" title="Editar especificaciones de modelo">
+                  <button type="button" class="btn-table-action btn-action-edit" onclick="window.editHat('${h.id}')" title="Editar Modelo de Sombrero">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
-                  <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteHat('${h.id}')" title="Descontinuar modelo del catálogo">
+                  <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteHat('${h.id}')" title="Dar de Baja / Descontinuar Modelo">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
@@ -2486,10 +2486,10 @@ function enrichStationWithDefaults(st, idx) {
                 </div>
               </td>
               <td><span class="badge-subtle">${m.tipo || 'Horma Texana'}</span></td>
-              <td><strong>${m.size}</strong></td>
+              <td style="text-align:center;"><strong>${m.size}</strong></td>
               <td style="font-size:12px;">${m.alloy || m.material || 'Aluminio Maquinado'}</td>
               <td><span style="font-size:12px; font-family:'JetBrains Mono'; font-weight:700;">${m.machine || 'Prensa Vapor'}</span></td>
-              <td>
+              <td style="text-align:center;">
                 <div style="min-width:110px;">
                   <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; font-family:'JetBrains Mono';">
                     <span>${(m.cycleCount || 0).toLocaleString()} / ${(m.maxCycles || 10000).toLocaleString()}</span>
@@ -2500,13 +2500,13 @@ function enrichStationWithDefaults(st, idx) {
                   </div>
                 </div>
               </td>
-              <td class="col-status">
-                <span class="table-status-pill ${isAvailable ? 'status-active' : 'status-warning'}">
+              <td class="col-status" style="text-align:center;">
+                <span class="table-status-pill ${isAvailable ? 'status-active' : 'status-warning'}" style="margin:0 auto;">
                   <span class="status-dot"></span>${m.status}
                 </span>
               </td>
-              <td class="col-actions">
-                <div class="action-btns-cell" style="justify-content:center;">
+              <td class="col-actions" style="text-align:center;">
+                <div class="action-btns-cell" style="justify-content:center; gap:6px;">
                   <button type="button" class="btn-table-action btn-action-view" onclick="window.openMoldTechnicalSheet('${m.code}')" title="Ver ficha técnica y ciclos de prensado">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </button>
