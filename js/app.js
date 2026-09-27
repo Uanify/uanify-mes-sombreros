@@ -3708,20 +3708,97 @@ function enrichStationWithDefaults(st, idx) {
 
   // ── INICIALIZADOR DE PUNTOS DE INFORMACIÓN TÁCTILES / TOOLTIPS (REGLA 0.36) ──
   function initInfoTips() {
+    // Posiciona el popup flotante encima del botón usando position:fixed
+    function positionPopup(tip) {
+      const btn = tip.querySelector('.info-tip-btn');
+      const popup = tip.querySelector('.info-tip-popup');
+      if (!btn || !popup) return;
+
+      const rect = btn.getBoundingClientRect();
+      // Temporalmente mostrar para medir
+      popup.style.opacity = '0';
+      popup.style.visibility = 'visible';
+      popup.style.display = 'block';
+      const popW = popup.offsetWidth;
+      const popH = popup.offsetHeight;
+      popup.style.opacity = '';
+      popup.style.visibility = '';
+      popup.style.display = '';
+
+      const vpW = window.innerWidth;
+      const GAP = 8;
+
+      // Centrar horizontalmente sobre el botón
+      let left = rect.left + rect.width / 2 - popW / 2;
+      // Clamp dentro del viewport
+      if (left < 8) left = 8;
+      if (left + popW > vpW - 8) left = vpW - 8 - popW;
+
+      // Arriba del botón
+      let top = rect.top - popH - GAP;
+      // Si no cabe arriba, colocar abajo
+      if (top < 8) {
+        top = rect.bottom + GAP;
+        // Mover la flecha arriba del popup si se invierte
+        popup.style.setProperty('--tip-flip', '1');
+      } else {
+        popup.style.removeProperty('--tip-flip');
+      }
+
+      // Posición de la flecha relativa al popup
+      const arrowLeft = rect.left + rect.width / 2 - left;
+      const arrowPct = Math.max(12, Math.min(arrowLeft, popW - 12));
+
+      popup.style.setProperty('--tip-top', top + 'px');
+      popup.style.setProperty('--tip-left', left + 'px');
+      popup.style.setProperty('--tip-arrow', arrowPct + 'px');
+    }
+
+    // Hover: posicionar al entrar
+    document.addEventListener('mouseenter', (e) => {
+      const tip = e.target.closest('.info-tip');
+      if (tip) positionPopup(tip);
+    }, true);
+
+    // Click/tap: toggle active + posicionar
     document.addEventListener('click', (e) => {
       const tip = e.target.closest('.info-tip');
       if (tip) {
-        // Soporte táctil / tap para tablets
         const wasActive = tip.classList.contains('active');
-        document.querySelectorAll('.info-tip.active').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.info-tip.active').forEach(t => {
+          t.classList.remove('active');
+          const p = t.querySelector('.info-tip-popup');
+          if (p) {
+            p.style.setProperty('--tip-top', '-9999px');
+            p.style.setProperty('--tip-left', '-9999px');
+          }
+        });
         if (!wasActive) {
           tip.classList.add('active');
+          positionPopup(tip);
         }
         e.stopPropagation();
       } else {
-        document.querySelectorAll('.info-tip.active').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.info-tip.active').forEach(t => {
+          t.classList.remove('active');
+          const p = t.querySelector('.info-tip-popup');
+          if (p) {
+            p.style.setProperty('--tip-top', '-9999px');
+            p.style.setProperty('--tip-left', '-9999px');
+          }
+        });
       }
     });
+
+    // Reposicionar al hacer scroll
+    let scrollRaf;
+    window.addEventListener('scroll', () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        document.querySelectorAll('.info-tip.active').forEach(t => positionPopup(t));
+        scrollRaf = null;
+      });
+    }, true);
   }
 
   initLoginScreen();
