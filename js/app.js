@@ -3244,14 +3244,16 @@ function enrichStationWithDefaults(st, idx) {
           <tr>
             <td class="col-code"><span class="table-badge-code">${op.empId}</span></td>
             <td class="col-name">
-              <div class="table-cell-primary">${op.name}</div>
+              <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${op.name}</div>
             </td>
-            <td><span class="badge-subtle">${op.deptCode} · ${op.deptName}</span></td>
-            <td style="font-size:12px;"> ${op.machine}</td>
-            <td><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
-            <td><strong style="color:var(--color-brand); font-size:13px;">${pzas} pzas</strong></td>
-            <td class="col-status">
-              <span class="table-status-pill ${statusClass}">
+            <td><span class="badge-subtle" style="font-weight:600;">${op.deptCode} · ${op.deptName}</span></td>
+            <td><span style="font-size:12.5px; font-weight:500; color:var(--text-primary);">${op.machine}</span></td>
+            <td style="text-align:center;"><span style="font-size:11.5px; color:var(--text-secondary);">${op.shift || 'Turno Único'}</span></td>
+            <td style="text-align:center;">
+              <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-brand); font-size:12.5px; padding:3px 10px; background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25);">${pzas} pzas</span>
+            </td>
+            <td class="col-status" style="text-align:center;">
+              <span class="table-status-pill ${statusClass}" style="margin:0 auto;">
                 <span class="status-dot"></span>${op.status}
               </span>
             </td>
