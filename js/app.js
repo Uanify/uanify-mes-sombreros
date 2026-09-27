@@ -3706,8 +3706,27 @@ function enrichStationWithDefaults(st, idx) {
   window.UanifySuperAdmin = UanifySuperAdmin;
   UanifySuperAdmin.init();
 
+  // ── INICIALIZADOR DE PUNTOS DE INFORMACIÓN TÁCTILES / TOOLTIPS (REGLA 0.36) ──
+  function initInfoTips() {
+    document.addEventListener('click', (e) => {
+      const tip = e.target.closest('.info-tip');
+      if (tip) {
+        // Soporte táctil / tap para tablets
+        const wasActive = tip.classList.contains('active');
+        document.querySelectorAll('.info-tip.active').forEach(t => t.classList.remove('active'));
+        if (!wasActive) {
+          tip.classList.add('active');
+        }
+        e.stopPropagation();
+      } else {
+        document.querySelectorAll('.info-tip.active').forEach(t => t.classList.remove('active'));
+      }
+    });
+  }
+
   initLoginScreen();
   initSubTabs();
+  initInfoTips();
   updateUserInterface();
   initPhotoUploads();
   initCatalogModals();

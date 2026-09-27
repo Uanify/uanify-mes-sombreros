@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.36.0">
-  <link rel="stylesheet" href="css/components.css?v=2.36.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.37.0">
+  <link rel="stylesheet" href="css/components.css?v=2.37.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.36.0</span>
+        <span class="system-version-pill login-version-pill">v2.37.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -661,8 +661,16 @@
                 <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
                   Depositar Lote en Almacén de Recorte y Alambrado
                 </button>
-                <div style="font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:6px;">
-                  Requiere asignación departamental del supervisor activo. Solo puedes mover lotes de tus departamentos.
+                <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:6px;">
+                  <span style="font-size:11.5px; color:var(--text-muted);">Requiere autorización del supervisor</span>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Condiciones de depósito" style="width:15px; height:15px;">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup">
+                      Requiere asignación departamental del supervisor activo. Solo puedes mover lotes correspondientes a tus departamentos autorizados.
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Acciones Rápidas Complementarias -->
@@ -687,9 +695,16 @@
         <div class="sub-tab-content" id="subtab-terminal-workflow">
           <div class="card-glass" style="padding:24px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
-              <div>
-                <h3 style="font-size:16px; font-weight:700;">Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
-                <p class="section-desc">El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.</p>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <h3 style="font-size:16px; font-weight:700; margin:0;">Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información del proceso en máquina">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.
+                  </div>
+                </div>
               </div>
               <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: Prensas de Hormado a Brillo y Pulido</span>
             </div>
@@ -766,12 +781,21 @@
               </div>
             </div>
 
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-              <div style="font-size:12.5px; color:var(--text-secondary);">
-                Al confirmar, las piezas salen del almacén de origen y se ingresan al almacén de entrada del departamento receptor para distribuirse a sus operadores.
+            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:700; font-size:13px; color:var(--text-primary);">Custodia de Material:</span>
+                <span style="font-size:12.5px; color:var(--text-secondary);">Salida de almacén origen y alta en almacén receptor</span>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Condiciones de traspaso">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup">
+                    Al confirmar, las piezas salen del almacén de origen y se ingresan al almacén de entrada del departamento receptor para distribuirse a sus operadores.
+                  </div>
+                </div>
               </div>
               <button class="btn-primary" id="btnExecuteTransfer" style="padding:12px 24px;">
-                 Confirmar Recolección y Traspaso de Sombreros
+                Confirmar Recolección y Traspaso de Sombreros
               </button>
             </div>
           </div>
@@ -780,21 +804,26 @@
         <!-- Pestaña 2: Mapa General de Planta & Almacenes Intermedios Departamentales -->
         <div class="sub-tab-content" id="subtab-terminal-tracker">
           <div class="card-glass" style="padding:22px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px;">
-              <div>
-                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
-                   Mapa General de Departamentos & Almacenes Intermedios
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:18px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0;">
+                  Mapa General de Departamentos & Almacenes Intermedios
                 </h3>
-                <p class="section-desc" style="margin-bottom:0;">
-                  Supervisión general de planta: inspecciona el inventario en proceso (WIP) y sombreros almacenados en cada departamento. Haz clic en "Ver Almacén Intermedio" de cualquier departamento para revisar sus lotes y filtrar por modelo o estado.
-                </p>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Ayuda del mapa general">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Supervisión general de planta: inspecciona el inventario en proceso (WIP) y sombreros almacenados en cada departamento. Haz clic en "Ver Almacén Intermedio" de cualquier departamento para revisar sus lotes y filtrar por modelo o estado.
+                  </div>
+                </div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="btn-secondary btn-touch-lg active" id="btnFilterPlantAllDepts">
-                   Todos los Depts (14)
+                  Todos los Depts (14)
                 </button>
                 <button type="button" class="btn-secondary btn-touch-lg" id="btnFilterPlantMyDepts">
-                  ⭐ Mis Depts Asignados
+                  Mis Depts Asignados
                 </button>
               </div>
             </div>
@@ -808,13 +837,18 @@
           <!-- Sección Secundaria: Auditoría Individual de Lote & Línea de Tiempo de Ruta -->
           <div class="card-glass" style="padding:22px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
-              <div>
-                <h4 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                   Auditoría Individual de Lote & Línea de Tiempo de Ruta
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h4 style="font-size:15px; font-weight:800; color:var(--text-primary); margin:0;">
+                  Auditoría Individual de Lote & Línea de Tiempo de Ruta
                 </h4>
-                <p class="section-desc" style="margin-bottom:0; font-size:12px;">
-                  Inspección de ruta secuencial. Recuerda: el traspaso físico de custodia se efectúa escaneando el código QR de la tarjeta.
-                </p>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Ayuda de auditoría de lote">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Inspección de ruta secuencial. Recuerda: el traspaso físico de custodia se efectúa escaneando el código QR de la tarjeta viajera.
+                  </div>
+                </div>
               </div>
               <span class="badge-subtle" id="trackerRouteNameBadge" style="font-weight:700; color:var(--color-brand); border:1.5px solid var(--color-brand-border);">
                 Ruta: 1000X Master Telar (14 Estaciones)
@@ -1210,13 +1244,18 @@
         <div class="sub-tab-content" id="subtab-inventory-subassemblies">
           <div class="card-glass" style="padding:22px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-              <div>
-                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin:0;">
                   Inventario de Subensambles & Tafiletes de Piel por Talla
                 </h3>
-                <p class="section-desc" style="margin-bottom:0;">
-                  Control de stock de tafiletes preparados en mesa de adorno para ensamble final en Ribete de Ala.
-                </p>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de tafiletes">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Control de existencias de tafiletes preparados en mesa de adorno para ensamble final en Ribete de Ala.
+                  </div>
+                </div>
               </div>
             </div>
             <div class="tafilete-grid" id="inventoryTafileteGrid">
@@ -1229,13 +1268,18 @@
         <div class="sub-tab-content" id="subtab-inventory-kardex">
           <div class="card-glass" style="padding:22px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-              <div>
-                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin:0;">
                   Kárdex & Bitácora de Movimientos de Almacenes Intermedios
                 </h3>
-                <p class="section-desc" style="margin-bottom:0;">
-                  Trazabilidad de transferencias internas de WIP, ingresos de materias primas, fraccionamiento en rampa y bajas por merma.
-                </p>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de kárdex">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Trazabilidad de transferencias internas de WIP, ingresos de materias primas, fraccionamiento en rampa y bajas por merma.
+                  </div>
+                </div>
               </div>
               <span class="badge-subtle" style="font-weight:700;">Auditado por Logística MES</span>
             </div>
@@ -1616,12 +1660,19 @@
         <div class="sub-tab-content" id="subtab-analytics-kpis" style="display:none !important;">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head">
-              <div>
-                <h3 style="font-size:15px; font-weight:800;">KPIs de Rendimiento por Departamento & Supervisores</h3>
-                <span class="badge-subtle" style="color:var(--color-brand); font-weight:700;">ACCESO EXCLUSIVO: INGENIERÍA Y DIRECCIÓN</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; margin:0;">KPIs de Rendimiento por Departamento & Supervisores</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de KPIs de supervisores">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.
+                  </div>
+                </div>
               </div>
+              <span class="badge-subtle" style="color:var(--color-brand); font-weight:700;">ACCESO EXCLUSIVO: INGENIERÍA Y DIRECCIÓN</span>
             </div>
-            <p class="section-desc">Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.</p>
             
             <div class="uanify-filter-toolbar" style="margin-top:14px; margin-bottom:14px;">
               <div class="filter-toolbar-inputs">
@@ -1691,9 +1742,16 @@
         <div class="sub-tab-content" id="subtab-analytics-balancing" style="display:none !important;">
           <div class="card-glass bottleneck-card" style="padding:22px;">
             <div class="card-head">
-              <div>
-                <h3 style="font-size:15px; font-weight:800;">Detección de Cuellos de Botella & Acumulación de WIP en Espera</h3>
-                <p class="section-desc" style="margin-bottom:0;">Monitoreo de inventario intermedio retenido entre almacenes intermedios para balanceo táctico de operadores.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; margin:0;">Detección de Cuellos de Botella & Acumulación de WIP en Espera</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de cuellos de botella">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Monitoreo de inventario intermedio retenido entre almacenes intermedios para balanceo táctico de operadores.
+                  </div>
+                </div>
               </div>
               <span class="badge-alert" id="bottleneckAlert">Acumulación en Prensas de Hormado</span>
             </div>
@@ -1707,9 +1765,16 @@
         <div class="sub-tab-content" id="subtab-analytics-stops" style="display:none !important;">
           <div class="card-glass downtime-card" style="padding:20px;">
             <div class="card-head">
-              <div>
-                <h3 style="font-size:15px; font-weight:800;">Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Cálculo de minutos perdidos en planta y análisis SMED</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; margin:0;">Bitácora de Paros de Máquina y Cambios de Horma (Hoy)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de paros SMED">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Cálculo de minutos perdidos en planta y análisis SMED de tiempos de ajuste de hornos y prensas.
+                  </div>
+                </div>
               </div>
             </div>
             <div class="uanify-filter-toolbar" style="margin-top:14px; margin-bottom:14px;">
@@ -1758,9 +1823,16 @@
         <div class="sub-tab-content" id="subtab-analytics-materials" style="display:none !important;">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:10px;">
-              <div>
-                <h3 style="font-size:15px; font-weight:800;">Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Actualización de insumos en recetas de producto al cambiar de proveedor o formulación.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:15px; font-weight:800; margin:0;">Matriz de Materiales (Cambio Masivo por Proveedor)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de matriz BOM">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Actualización de insumos en recetas de producto al cambiar de proveedor o formulación técnica.
+                  </div>
+                </div>
               </div>
               <button class="btn-primary" id="btnMassChange" style="padding:8px 14px; font-size:12px;">
                 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
@@ -2046,9 +2118,16 @@
         <div class="sub-tab-content" id="subtab-config-users">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h3>Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
-                <p class="section-desc" style="margin-bottom:0;">El Administrador puede crear administradores, ingenieros y supervisores. Ingeniería puede crear supervisores.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Gestión de Usuarios y Permisos por Módulo (RBAC)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de permisos">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    El Administrador puede crear administradores, ingenieros y supervisores. Ingeniería puede crear supervisores.
+                  </div>
+                </div>
               </div>
               <button class="btn-primary" id="btnOpenCreateUserModal" style="min-height:48px; padding:0 20px; font-weight:700;">
                 + Crear Nuevo Usuario
@@ -2102,9 +2181,16 @@
         <div class="sub-tab-content" id="subtab-config-operators">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h3>Padrón de Operadores de Planta (Mano de Obra)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Registro de operadores que trabajan máquinas en cada departamento. No son usuarios con acceso al sistema; son gestionados por Supervisores, Ingenieros y Administradores.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Padrón de Operadores de Planta (Mano de Obra)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de operadores">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Registro de operadores que trabajan máquinas en cada departamento. No son usuarios con acceso al sistema; son gestionados por Supervisores, Ingenieros y Administradores.
+                  </div>
+                </div>
               </div>
               <button class="btn-primary" id="btnOpenCreateOperatorModal" style="min-height:48px; padding:0 20px; font-weight:700;">
                 + Registrar Operador
@@ -2172,9 +2258,16 @@
         <div class="sub-tab-content active" id="subtab-config-depts">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h3>Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de departamentos">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.
+                  </div>
+                </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
@@ -2195,11 +2288,11 @@
                 <div class="filter-select-group">
                   <select id="deptProcessFilter" class="custom-select" style="min-width:180px;">
                     <option value="all">Todos los Procesos</option>
-                    <option value="manufactura"> Proceso Productivo</option>
-                    <option value="prensas"> Prensas & Vapor</option>
-                    <option value="rampa"> Rampa Fraccionamiento</option>
-                    <option value="calidad"> Control de Calidad</option>
-                    <option value="logistica"> Almacén / Logística</option>
+                    <option value="manufactura">Proceso Productivo</option>
+                    <option value="prensas">Prensas & Vapor</option>
+                    <option value="rampa">Rampa Fraccionamiento</option>
+                    <option value="calidad">Control de Calidad</option>
+                    <option value="logistica">Almacén / Logística</option>
                   </select>
                   <select id="deptStatusFilter" class="custom-select" style="min-width:130px;">
                     <option value="all">Todos los Estatus</option>
@@ -2236,9 +2329,16 @@
         <div class="sub-tab-content" id="subtab-config-quality">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h3>Catálogo Maestro de Puntos de Inspección & Filtros de Calidad (C-XX)</h3>
-                <p class="section-desc" style="margin-bottom:0;">Configuración técnica de áreas de inspección, tolerancias, tiempos de ciclo e inspectores responsables. Estos filtros se insertan como paradas obligatorias en las secuencias de rutas de fabricación.</p>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Catálogo Maestro de Puntos de Inspección & Filtros de Calidad (C-XX)</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de filtros de calidad">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <div class="info-tip-popup align-left">
+                    Configuración técnica de áreas de inspección, tolerancias, tiempos de ciclo e inspectores responsables. Estos filtros se insertan como paradas obligatorias en las secuencias de rutas de fabricación.
+                  </div>
+                </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-primary" id="btnOpenCreateQualityModal" onclick="window.openCreateQualityModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
@@ -2299,11 +2399,15 @@
               <div>
                 <div style="display:flex; align-items:center; gap:8px;">
                   <h3 style="margin-bottom:0;">Rutas de Fabricación y Secuencias por Modelo</h3>
-                  <button type="button" class="btn-info-tooltip" id="btnRouteInfoTooltip" title="Asignación Exclusiva por Modelo: En esta sección configuras el flujo específico del sombrero seleccionado arrastrando los pasos con el grip (⠿). Aquí únicamente se añaden o retiran pasos de la asignación a este modelo; los catálogos maestros de Departamentos y Filtros de Calidad no se modifican." style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px; display:inline-flex; align-items:center;" aria-label="Información de uso">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                  </button>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información de rutas por modelo">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup align-left">
+                      Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad. Arrastra los pasos con el grip (⠿).
+                    </div>
+                  </div>
                 </div>
-                <p class="section-desc" style="margin-bottom:0; margin-top:4px;">Define y ordena la secuencia de pasos por los que transita cada modelo específico de sombrero, intercalando departamentos de manufactura y paradas de control de calidad.</p>
               </div>
               <div style="display:flex; gap:10px; align-items:center;">
                 <button type="button" class="btn-secondary" id="btnResetRouteSequence" style="min-height:48px; padding:0 18px; font-weight:700; display:none;" title="Descartar cambios no guardados y regresar al estado original">
@@ -3990,74 +4094,122 @@
   <!-- ======================================================================
        MODAL: CONSOLA MAESTRA SUPERADMIN UANIFY (EXCLUSIVO INTERNO DEVTOOLS)
        ====================================================================== -->
+  <!-- ======================================================================
+       MODAL: CONSOLA MAESTRA SUPERADMIN UANIFY (EXCLUSIVO INTERNO DEVTOOLS)
+       ====================================================================== -->
   <div class="modal-backdrop" id="modalUanifySuperAdmin" style="display:none; z-index:99999;">
-    <div class="modal-box card-glass uanify-superadmin-box" style="max-width:640px; border:2px solid #8B5E3C; background:#0F172A; color:#F8FAFC; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
-      <div class="modal-header" style="border-bottom:1px solid #334155; padding-bottom:14px;">
+    <div class="modal-box card-glass uanify-superadmin-box" style="max-width:640px; border:2px solid #8B5E3C; background:#0F172A; color:#F8FAFC; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); overflow:hidden;">
+      <div class="modal-header" style="background:#1E293B !important; border-bottom:1px solid #334155 !important; padding:16px 20px;">
         <div style="display:flex; align-items:center; gap:10px;">
           <div style="width:12px; height:12px; border-radius:50%; background:#10B981; box-shadow:0 0 10px #10B981;"></div>
-          <h3 style="color:#F8FAFC; margin:0; font-family:'JetBrains Mono', monospace; font-size:15px; letter-spacing:0.5px;">UANIFY ENGINEERING CONSOLE</h3>
+          <h3 style="color:#F8FAFC !important; margin:0; font-family:'JetBrains Mono', monospace; font-size:15px; letter-spacing:0.5px;">UANIFY ENGINEERING CONSOLE</h3>
           <span style="background:rgba(139,94,60,0.35); color:#F59E0B; border:1px solid rgba(245,158,11,0.5); font-size:10px; font-weight:800; padding:2px 8px; border-radius:4px; font-family:'JetBrains Mono', monospace;">MASTER DEVTOOLS</span>
         </div>
         <button type="button" class="modal-close" id="btnCloseSuperAdminModal" style="color:#94A3B8; font-size:24px;" aria-label="Cerrar">&times;</button>
       </div>
 
-      <div class="modal-body" style="padding:20px; font-size:13px; color:#CBD5E1;">
-        <!-- Banner Informativo -->
-        <div style="background:#1E293B; border-left:4px solid #8B5E3C; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
-          <div style="font-weight:700; color:#FFFFFF; margin-bottom:4px; font-family:'JetBrains Mono', monospace;">Entorno Exclusivo Uanify (Oculto para Tombstone)</div>
-          <div style="font-size:12px; color:#94A3B8; line-height:1.5;">
-            Esta consola permite alternar entre el <strong>Dataset Mock de Demostración</strong> y una <strong>Sesión Limpia en Cero</strong> para realizar corridas de prueba en piso. También permite descargar y cargar snapshots JSON sin servidores de pago.
+      <div class="modal-body" style="padding:20px; font-size:13px; color:#CBD5E1; background:#0F172A;">
+        <!-- Banner Informativo con Punto de Información -->
+        <div style="background:#1E293B; border-left:4px solid #8B5E3C; padding:12px 16px; border-radius:6px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-weight:700; color:#FFFFFF; font-family:'JetBrains Mono', monospace; font-size:13px;">
+            Entorno de Pruebas & Simulación de Planta (DevTools)
+          </div>
+          <div class="info-tip">
+            <button type="button" class="info-tip-btn" aria-label="Información del entorno" title="Ver detalles del entorno">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </button>
+            <div class="info-tip-popup align-right">
+              Esta consola permite alternar entre el <strong>Dataset Mock de Demostración</strong> y una <strong>Sesión Limpia en Cero</strong> para realizar corridas de prueba en piso. También permite descargar y cargar snapshots JSON sin servidores de pago.
+            </div>
           </div>
         </div>
 
-        <!-- Indicador de Modo Actual -->
-        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:16px; margin-bottom:18px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:#94A3B8; font-weight:700;">Modo de Datos Activo:</span>
+        <!-- Indicador de Modo Actual con Punto de Información -->
+        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:14px 16px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:#94A3B8; font-weight:700;">Modo de Datos Activo:</span>
+              <div class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Detalle de datos">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <div class="info-tip-popup" id="superAdminModeDesc">
+                  El sistema contiene lotes demostrativos de la orden 49,633, métricas históricas de Andon y piezas acumuladas en almacenes intermedios.
+                </div>
+              </div>
+            </div>
             <span id="superAdminCurrentModeBadge" style="font-family:'JetBrains Mono', monospace; font-weight:800; font-size:11.5px; padding:4px 10px; border-radius:6px; background:#10B981; color:#064E3B;">
               MODO MOCK DEMOSTRACIÓN (ACTIVO)
             </span>
           </div>
-          <div id="superAdminModeDesc" style="font-size:12px; color:#94A3B8; line-height:1.45;">
-            El sistema contiene lotes demostrativos de la orden 49,633, métricas históricas de Andon y piezas acumuladas en almacenes intermedios.
+        </div>
+
+        <!-- Acciones de Dataset Limpias con Puntos de Información -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:11px; text-transform:uppercase; color:#94A3B8; font-weight:700; font-family:'JetBrains Mono', monospace;">Sesión de Prueba:</span>
+              <div class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información de sesión limpia">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <div class="info-tip-popup align-left">
+                  Vacía lotes, almacenes y métricas para probar corrida desde 0 piezas en piso sin interferencias.
+                </div>
+              </div>
+            </div>
+            <button type="button" id="btnSuperAdminSetClean" class="btn-touch-lg" style="background:#DC2626; color:#FFFFFF; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; text-align:center; font-size:13px; font-family:'JetBrains Mono', monospace; min-height:46px;">
+              Limpiar a Cero (Sesión Limpia)
+            </button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:11px; text-transform:uppercase; color:#94A3B8; font-weight:700; font-family:'JetBrains Mono', monospace;">Demostración:</span>
+              <div class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información de datos mock">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <div class="info-tip-popup align-right">
+                  Recarga el dataset completo de demostración de Tombstone Hats con lotes, paros y métricas.
+                </div>
+              </div>
+            </div>
+            <button type="button" id="btnSuperAdminSetMock" class="btn-touch-lg" style="background:#8B5E3C; color:#FFFFFF; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; text-align:center; font-size:13px; font-family:'JetBrains Mono', monospace; min-height:46px;">
+              Restaurar Datos Mock Fábrica
+            </button>
           </div>
         </div>
 
-        <!-- Acciones de Dataset -->
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
-          <button type="button" id="btnSuperAdminSetClean" class="btn-touch-lg" style="background:#DC2626; color:#FFFFFF; border:none; border-radius:8px; padding:14px; font-weight:700; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:4px; transition:transform 0.15s ease;">
-            <span style="font-size:13px; font-family:'JetBrains Mono', monospace;">Limpiar a Cero (Sesión Limpia)</span>
-            <span style="font-size:11px; opacity:0.85; font-weight:normal; line-height:1.35;">Vacía lotes, almacenes y métricas para probar corrida desde 0</span>
-          </button>
-
-          <button type="button" id="btnSuperAdminSetMock" class="btn-touch-lg" style="background:#8B5E3C; color:#FFFFFF; border:none; border-radius:8px; padding:14px; font-weight:700; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:4px; transition:transform 0.15s ease;">
-            <span style="font-size:13px; font-family:'JetBrains Mono', monospace;">Restaurar Datos Mock Fábrica</span>
-            <span style="font-size:11px; opacity:0.85; font-weight:normal; line-height:1.35;">Recarga el dataset completo de demostración de Tombstone</span>
-          </button>
-        </div>
-
-        <!-- Snapshots JSON ($0 USD Gratis) -->
-        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:16px;">
-          <div style="font-weight:700; color:#FFFFFF; margin-bottom:8px; font-size:12px; font-family:'JetBrains Mono', monospace;">
-            RESPALDO & PORTABILIDAD DE PRUEBAS ($0 USD)
+        <!-- Snapshots JSON Limpio con Punto de Información -->
+        <div style="background:#1E293B; border:1px solid #334155; border-radius:10px; padding:14px 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="font-weight:700; color:#FFFFFF; font-size:12px; font-family:'JetBrains Mono', monospace;">
+              RESPALDO & PORTABILIDAD DE CORRIDAS (JSON)
+            </div>
+            <div class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Info de respaldo">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <div class="info-tip-popup align-right">
+                Guarda en tu laptop el estado exacto de una corrida limpia o de prueba para volver a montarla en cualquier momento sin internet ni dependencias externas.
+              </div>
+            </div>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button type="button" id="btnSuperAdminExportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:42px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
+            <button type="button" id="btnSuperAdminExportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:40px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
               Descargar Snapshot JSON
             </button>
-            <button type="button" id="btnSuperAdminImportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:42px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
+            <button type="button" id="btnSuperAdminImportSnapshot" class="btn-secondary" style="background:#334155; color:#F8FAFC; border:1px solid #475569; flex:1; min-height:40px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
               Cargar Snapshot JSON
             </button>
             <input type="file" id="superAdminFileInput" accept=".json" style="display:none;">
           </div>
-          <div style="font-size:11px; color:#64748B; margin-top:8px; line-height:1.4;">
-            Guarda en tu laptop el estado exacto de una corrida limpia o de prueba para volver a montarla en cualquier momento sin internet ni servidores de cobro.
-          </div>
         </div>
       </div>
 
-      <div class="modal-footer" style="border-top:1px solid #334155; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:11px; color:#64748B; font-family:'JetBrains Mono', monospace;">Atajos: Ctrl+Shift+U · PIN: 0000 · 5 taps en logo</span>
+      <div class="modal-footer" style="background:#1E293B !important; border-top:1px solid #334155 !important; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px; color:#94A3B8; font-family:'JetBrains Mono', monospace;">Atajos: Ctrl+Shift+U · PIN: 0000 · 5 taps en logo</span>
         <button type="button" class="btn-secondary" id="btnCloseSuperAdminFooter" style="background:#334155; color:#FFFFFF; border:none; padding:8px 18px; font-weight:700; border-radius:6px; cursor:pointer;">
           Cerrar Consola
         </button>
@@ -4088,11 +4240,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.36.0"></script>
-  <script src="js/andon.js?v=2.36.0"></script>
-  <script src="js/terminal.js?v=2.36.0"></script>
-  <script src="js/engineer.js?v=2.36.0"></script>
-  <script src="js/executive.js?v=2.36.0"></script>
-  <script src="js/config.js?v=2.36.0"></script>
+  <script src="js/app.js?v=2.37.0"></script>
+  <script src="js/andon.js?v=2.37.0"></script>
+  <script src="js/terminal.js?v=2.37.0"></script>
+  <script src="js/engineer.js?v=2.37.0"></script>
+  <script src="js/executive.js?v=2.37.0"></script>
+  <script src="js/config.js?v=2.37.0"></script>
 </body>
 </html>

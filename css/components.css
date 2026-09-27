@@ -4804,3 +4804,159 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   display: block;
 }
 
+/* ==========================================================================
+   SISTEMA UNIVERSAL DE PUNTOS DE INFORMACIÓN & TOOLTIPS (REGLA UX 0.36)
+   Higiene visual: sustituye textos descriptivos extensos por micro-puntos (i)
+   ========================================================================== */
+.info-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.info-tip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: var(--color-brand);
+  background: rgba(139, 94, 60, 0.1);
+  border: 1px solid rgba(139, 94, 60, 0.25);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.info-tip-btn:hover,
+.info-tip-btn:focus,
+.info-tip.active .info-tip-btn {
+  background: var(--color-brand);
+  color: #FFFFFF;
+  border-color: var(--color-brand);
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(139, 94, 60, 0.35);
+  outline: none;
+}
+
+.info-tip-btn svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+/* En modales oscuros (como la Consola DevTools) */
+.uanify-superadmin-box .info-tip-btn {
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.uanify-superadmin-box .info-tip-btn:hover,
+.uanify-superadmin-box .info-tip-btn:focus,
+.uanify-superadmin-box .info-tip.active .info-tip-btn {
+  background: #0284C7;
+  color: #FFFFFF;
+  border-color: #38BDF8;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Burbuja / Popup flotante */
+.info-tip-popup {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0F172A;
+  color: #F8FAFC;
+  padding: 9px 13px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  width: max-content;
+  max-width: 290px;
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  z-index: 100000;
+  text-align: left;
+  white-space: normal;
+}
+
+.info-tip-popup::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #0F172A;
+}
+
+/* Modificadores de alineación */
+.info-tip-popup.align-left {
+  left: 0;
+  transform: translateX(0) translateY(4px);
+}
+.info-tip-popup.align-left::after {
+  left: 12px;
+  transform: none;
+}
+.info-tip-popup.align-right {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(4px);
+}
+.info-tip-popup.align-right::after {
+  left: auto;
+  right: 12px;
+  transform: none;
+}
+
+/* Activación en hover y clase active */
+.info-tip:hover .info-tip-popup,
+.info-tip:focus-within .info-tip-popup,
+.info-tip.active .info-tip-popup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.info-tip:hover .info-tip-popup.align-left,
+.info-tip:focus-within .info-tip-popup.align-left,
+.info-tip.active .info-tip-popup.align-left {
+  transform: translateX(0) translateY(0);
+}
+.info-tip:hover .info-tip-popup.align-right,
+.info-tip:focus-within .info-tip-popup.align-right,
+.info-tip.active .info-tip-popup.align-right {
+  transform: translateX(0) translateY(0);
+}
+
+/* Corrección de contraste para la Consola DevTools SuperAdmin */
+.uanify-superadmin-box .modal-header {
+  background: #1E293B !important;
+  border-bottom: 1px solid #334155 !important;
+  color: #F8FAFC !important;
+}
+
+.uanify-superadmin-box .modal-header h3 {
+  color: #F8FAFC !important;
+}
+
+.uanify-superadmin-box .modal-footer {
+  background: #1E293B !important;
+  border-top: 1px solid #334155 !important;
+}
+

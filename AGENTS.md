@@ -605,3 +605,15 @@ Los usuarios de la plataforma (ingenieros de planta, supervisores y administrado
 4. **Prohibición de Configuración de Datos en Tiempo Real:**
    - Si un parámetro operativo del sistema debe reflejar la realidad física de la planta (como el Modo Dinámico de Arranque de Turno US-17 activado por el primer escaneo QR), no debe exponerse como configurable mediante radios o interruptores artificiales. Debe operar de manera continua y autónoma, exhibiendo su estado en tiempo real.
 
+---
+
+## REGLA 0.38: Higiene Visual Universal y Puntos de Información / Tooltips Interactivos en Todo el Sistema (MANDATORIA)
+
+**En todos los módulos, modales, consolas, encabezados, tarjetas de proceso y paneles de la plataforma MES, queda prohibido incluir párrafos o subtítulos descriptivos extensos que saturen visualmente la interfaz y resten pulcritud.**
+
+### Directrices Mandatorias de Higiene Visual:
+1. **Puntos de Información Discretos (`.info-tip`):** Todo texto explicativo, descriptivo, nota metodológica o instrucción de uso debe residir exclusivamente dentro de un punto de información interactivo `.info-tip` con icono circular SVG `(i)`. Al pasar el cursor (hover) o al tocarlo en tablets (tap), despliega un tooltip flotante `.info-tip-popup` con fondo oscuro de alto contraste (`#0F172A`), texto nítido (`#F8FAFC`) y flecha direccional.
+2. **Botones Limpios de Acción Directa:** Queda prohibido incrustar párrafos de ayuda dentro de los botones de acción (`btn-primary`, `btn-secondary`, etc.). El botón debe contener únicamente el verbo de acción conciso; cualquier detalle o advertencia secundaria debe acompañarse con un punto `.info-tip` en el encabezado del grupo o tarjeta.
+3. **Consistencia en Modales Oscuros:** Los modales de consola técnica y DevTools (como `#modalUanifySuperAdmin`) deben conservar contraste estricto en todas sus secciones (`background: #1E293B` en header y footer), evitando que reglas genéricas de CSS inyecten fondos blancos con tipografía blanca.
+4. **Interacción Tablet-First:** Los componentes `.info-tip` deben soportar interacción táctil mediante la función `initInfoTips()`, permitiendo abrir y cerrar popups con toques naturales sin desbordar el viewport ni interferir con la operación.
+
