@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.33.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
+> **Versión Actual:** `v2.34.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -359,12 +359,17 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.33.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.34.0`.
 
 ---
 
 ## 8. Historial de Versiones (SemVer)
 
+- **`v2.34.0` (2026-09-27):**
+  - **Homologación Integral Universal de Tablas y Buscadores Restantes (`Reglas 0.33, 0.35, 0.37`):**
+    - **Buscadores de Configuración con SVG Aislado:** Blindaje definitivo de los 4 buscadores de configuración (`#userSearchInput`, `#cfgOperatorSearchInput`, `#deptSearchInput`, `#qualitySearchInput`) envolviendo el vector SVG en `<span class="search-icon">` con padding izquierdo seguro de 38px, erradicando cualquier empalme visual o artefacto "BUS".
+    - **Estandarización 1:1 de Tablas de Configuración:** Anchos fijos milimétricos y alineación centrada estricta para IDs, roles, estatus y botones en Usuarios RBAC; número de nómina, turno, piezas procesadas hoy y estatus en Padrón de Operadores Config; códigos de departamento, secuencia, estatus en Departamentos; y códigos C-XX, tolerancias, tiempo de ciclo y botones de acción en Filtros de Calidad.
+    - **Estabilidad Dimensional en Analítica & Rendimiento:** Asignación de anchos rígidos y centrado en KPIs de Supervisores (`#supervisorKpisTable`), Bitácora de Paros SMED (`#downtimeTable`) y Matriz de Materiales BOM (`#materialMatrixTable`), garantizando que la interfaz permanezca 100% estable y sin fluctuaciones visuales durante la simulación acelerada de turnos.
 - **`v2.33.0` (2026-09-27):**
   - **Estandarización Rigurosa del Padrón de Operadores y Directorio de Mano de Obra (`Reglas 0.33, 0.35, 0.37`):**
     - **Erradicación de Botones Rectangulares de Texto Plano:** Sustitución definitiva de botones `[Editar]` y `[Baja]` por botones ergonómicos touch tablet-first de 32x32px (`.btn-table-action.btn-action-edit` y `.btn-table-action.btn-action-delete`) con paleta suave pastel (`#F1F5F9`/`#E2E8F0` para editar y `#FEF2F2`/`#FEE2E2` para baja) con iconos SVG claros y tooltips nativos `title="Editar Operador"` y `title="Dar de Baja Operador"`.

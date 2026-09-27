@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.33.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.34.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.33.0)
+## Arquitectura Funcional Tombstone Hats (v2.34.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
@@ -190,6 +190,12 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 - **Catálogo de Hormas:** Registro de moldes de sombreros de San Francisco del Rincón con asignación a prensas de vapor.
 - **KPIs Exclusivos:** Rendimiento de departamentos y supervisores restringido a Ingeniería y Dirección.
 - **Alertas Estandarizadas In-App:** Supresión total de alertas nativas del navegador (`alert`, `confirm`); estandarización con notificaciones toast y modales in-app `UanifyUI`.
+
+### [2.34.0] - 2026-09-27
+- **Homologación Integral Universal de Tablas y Buscadores del Sistema (Reglas 0.33, 0.35, 0.37):**
+  - **Buscadores de Configuración con SVG Aislado:** Blindaje definitivo de los inputs de búsqueda en Usuarios RBAC, Padrón de Operadores Config, Departamentos y Filtros de Calidad C-XX envolviendo el vector SVG en `<span class="search-icon">` con padding izquierdo seguro de 38px, erradicando cualquier empalme de texto.
+  - **Estandarización 1:1 de Tablas de Configuración:** Anchos explícitos milimétricos y centrado estricto en celdas de códigos, roles, nóminas, piezas procesadas hoy, tiempos de ciclo y botones de acción en Usuarios RBAC, Padrón de Operadores, Departamentos y Calidad C-XX.
+  - **Estabilidad de Tablas de Analítica & Rendimiento:** Anchos fijos y centrado en KPIs de Supervisores, Bitácora SMED / Paros y Matriz BOM para evitar fluctuaciones dimensionales y movimientos bruscos de columnas durante la simulación acelerada de turnos.
 
 ### [2.26.0] - 2026-09-26
 - **Reingeniería de Rutas & Secuencias Departamentales:** Supresión total de flechas direccionales (`▲`, `▼`), estandarizando el reordenamiento de pasos al Drag & Drop con manija de agarre (`⠿`).

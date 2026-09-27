@@ -481,10 +481,10 @@ function renderMaterialMatrix() {
 
   container.innerHTML = materials.map(m => `
     <tr>
-      <td><strong>${m.name}</strong></td>
-      <td><span style="color:var(--text-muted); font-size:11px;">${m.cat}</span></td>
-      <td style="text-align:center;">${m.usedIn}</td>
-      <td><span class="table-badge-code">${m.consumed}</span></td>
+      <td><strong style="font-size:12.5px; color:var(--text-primary);">${m.name}</strong></td>
+      <td style="text-align:center;"><span class="badge-subtle" style="font-size:11px; display:inline-block; margin:0 auto;">${m.cat}</span></td>
+      <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:12.5px;">${m.usedIn} fichas</strong></td>
+      <td style="text-align:center;"><span class="table-badge-code" style="margin:0 auto; font-size:11.5px;">${m.consumed}</span></td>
       <td style="color:var(--text-secondary); font-size:11.5px;">${m.notes}</td>
     </tr>
   `).join('');
@@ -497,11 +497,11 @@ function renderDowntimes() {
 
   container.innerHTML = UanifyState.downtimes.map(d => `
     <tr>
-      <td><span style="font-family:'JetBrains Mono'; font-weight:700;">${d.time}</span></td>
+      <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${d.time}</span></td>
       <td><strong>${d.station}</strong></td>
       <td>${d.cause}</td>
-      <td><span style="color:var(--color-red); font-weight:600;">${d.duration}</span></td>
-      <td><span class="badge-subtle">${d.impact}</span></td>
+      <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; color:var(--color-red); border-color:rgba(239, 68, 68, 0.25); font-weight:700; display:inline-block; margin:0 auto;">${d.duration}</span></td>
+      <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-amber, #D97706); border-color:rgba(217, 119, 6, 0.25); display:inline-block; margin:0 auto;">${d.impact}</span></td>
     </tr>
   `).join('');
 }
