@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.28.0</span>
+        <span class="system-version-pill login-version-pill">v2.29.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.28.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.29.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1367,14 +1367,22 @@
             <h1 class="view-title">Analítica & Rendimiento de Planta</h1>
             <p class="view-subtitle">Consola unificada de KPIs, OEE matemático, valorización de producción, balanceo de líneas y auditoría de paros</p>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="table-badge-code" id="simHourBadge" style="font-size:12px; padding:7px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="simHourText">Hora Simulada: 07:00 a 13:00 (Jornada 72%)</span>
+            </span>
             <button class="btn-primary" id="btnSimulateShift" style="display:flex; align-items:center; gap:8px;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Simular +1 Hora de Producción
+              Simular +1 Hora
+            </button>
+            <button class="btn-primary" id="btnSimulateFullShift" style="display:flex; align-items:center; gap:8px; background:#1E3A8A; border-color:#1E40AF;" title="Simular avance acelerado hasta completar el turno">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+              Simular Turno Completo
             </button>
             <button class="btn-secondary" id="btnResetSimulation" style="display:flex; align-items:center; gap:8px;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              Reiniciar Datos Turno Único
+              Reiniciar Simulación
             </button>
           </div>
         </div>
@@ -1416,8 +1424,8 @@
                 <span>DISPONIBILIDAD (A)</span>
                 <span class="oee-badge" id="oeeAvailBadge">94.2%</span>
               </div>
-              <div class="progress-track"><div class="progress-fill fill-brand" style="width: 94.2%;"></div></div>
-              <p class="oee-detail">Tiempo productivo real vs. programado (Cambio de hormas SMED: 14 min)</p>
+              <div class="progress-track"><div class="progress-fill fill-brand" id="oeeAvailBar" style="width: 94.2%;"></div></div>
+              <p class="oee-detail" id="oeeAvailDetail">Tiempo productivo real vs. programado (Paros acumulados: 34 min)</p>
             </div>
 
             <div class="oee-card card-glass">
@@ -1425,8 +1433,8 @@
                 <span>RENDIMIENTO / EFICIENCIA (P)</span>
                 <span class="oee-badge" id="oeePerfBadge">91.8%</span>
               </div>
-              <div class="progress-track"><div class="progress-fill fill-green" style="width: 91.8%;"></div></div>
-              <p class="oee-detail">Velocidad real de ciclo vs. tiempo estándar de ingeniería (Takt: 42s)</p>
+              <div class="progress-track"><div class="progress-fill fill-green" id="oeePerfBar" style="width: 91.8%;"></div></div>
+              <p class="oee-detail" id="oeePerfDetail">Velocidad real de ciclo vs. tiempo estándar de ingeniería (Takt: 42s)</p>
             </div>
 
             <div class="oee-card card-glass">
@@ -1434,8 +1442,8 @@
                 <span>CALIDAD (Q)</span>
                 <span class="oee-badge" id="oeeQualBadge">97.8%</span>
               </div>
-              <div class="progress-track"><div class="progress-fill fill-amber" style="width: 97.8%;"></div></div>
-              <p class="oee-detail">Primeras calidades sin retrabajo (14 mermas de 626 piezas procesadas)</p>
+              <div class="progress-track"><div class="progress-fill fill-amber" id="oeeQualBar" style="width: 97.8%;"></div></div>
+              <p class="oee-detail" id="oeeQualDetail">Primeras calidades sin retrabajo (14 mermas de 626 piezas procesadas)</p>
             </div>
 
             <div class="oee-card card-glass oee-master">
@@ -1443,7 +1451,7 @@
                 <span class="master-title">OEE GLOBAL TOMBSTONE</span>
                 <span class="oee-score" id="oeeGlobalScore">84.5%</span>
               </div>
-              <p class="oee-verdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
+              <p class="oee-verdict" id="oeeGlobalVerdict">Nivel de Clase Mundial PyME (>80%). +12.3% vs. registros anteriores en papel.</p>
             </div>
           </div>
         </div>
@@ -1455,25 +1463,25 @@
             <div class="exec-card card-glass">
               <span class="exec-label">VALOR DE PRODUCCIÓN DEL DÍA</span>
               <div class="exec-metric color-green" id="execRevenueValue">$801,720 MXN</div>
-              <span class="exec-trend">↑ 612 texanas terminadas @ $1,310 prom. (Catálogo Tombstone)</span>
+              <span class="exec-trend" id="execRevenueTrend">↑ 612 texanas terminadas @ $1,310 prom. (Catálogo Tombstone)</span>
             </div>
 
             <div class="exec-card card-glass">
               <span class="exec-label">CUMPLIMIENTO DE PEDIDOS B2B</span>
               <div class="exec-metric color-brand" id="execFulfillment">94.8%</div>
-              <span class="exec-trend">14 pedidos mayoristas en ruta a tiempo</span>
+              <span class="exec-trend" id="execFulfillmentTrend">14 pedidos mayoristas en ruta a tiempo</span>
             </div>
 
             <div class="exec-card card-glass">
               <span class="exec-label">SEGUNDAS / SALDOS (VENTA VIERNES)</span>
               <div class="exec-metric color-amber" id="execSecondGradeValue">$17,030 MXN</div>
-              <span class="exec-trend">26 piezas regulares para remate (50% desc.)</span>
+              <span class="exec-trend" id="execSecondGradeTrend">26 piezas regulares para remate (50% desc.)</span>
             </div>
 
             <div class="exec-card card-glass">
               <span class="exec-label">COSTO DE MERMA / DESPERDICIO</span>
               <div class="exec-metric color-red" id="execScrapCost">$18,340 MXN</div>
-              <span class="exec-trend">14 piezas con daño total (2.2% merma)</span>
+              <span class="exec-trend" id="execScrapTrend">14 piezas con daño total (2.2% merma)</span>
             </div>
           </div>
 
@@ -3814,11 +3822,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.28.0"></script>
-  <script src="js/andon.js?v=2.28.0"></script>
-  <script src="js/terminal.js?v=2.28.0"></script>
-  <script src="js/engineer.js?v=2.28.0"></script>
-  <script src="js/executive.js?v=2.28.0"></script>
-  <script src="js/config.js?v=2.28.0"></script>
+  <script src="js/app.js?v=2.29.0"></script>
+  <script src="js/andon.js?v=2.29.0"></script>
+  <script src="js/terminal.js?v=2.29.0"></script>
+  <script src="js/engineer.js?v=2.29.0"></script>
+  <script src="js/executive.js?v=2.29.0"></script>
+  <script src="js/config.js?v=2.29.0"></script>
 </body>
 </html>

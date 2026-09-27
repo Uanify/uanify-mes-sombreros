@@ -35,6 +35,29 @@ function updateExecutiveMetrics() {
     const rate = Math.min(100, Math.round((UanifyState.producedTotal / UanifyState.metaShiftTotal) * 1000) / 10);
     fulEl.textContent = `${rate}%`;
   }
+
+  const revTrendEl = document.getElementById('execRevenueTrend');
+  if (revTrendEl) {
+    revTrendEl.textContent = `${UanifyState.producedTotal} texanas terminadas @ $${UanifyState.unitPriceMxn.toLocaleString('es-MX')} prom. (Catálogo Tombstone)`;
+  }
+
+  const fulTrendEl = document.getElementById('execFulfillmentTrend');
+  if (fulTrendEl) {
+    const ordersReady = Math.min(14, Math.max(1, Math.floor(UanifyState.producedTotal / 45)));
+    fulTrendEl.textContent = `${ordersReady} de 14 pedidos mayoristas completados`;
+  }
+
+  const secTrendEl = document.getElementById('execSecondGradeTrend');
+  if (secTrendEl) {
+    secTrendEl.textContent = `${UanifyState.secondGradeTotal} piezas regulares para remate (50% desc.)`;
+  }
+
+  const scrapTrendEl = document.getElementById('execScrapTrend');
+  if (scrapTrendEl) {
+    const totalProcessed = UanifyState.producedTotal + UanifyState.scrapTotal;
+    const scrapPct = totalProcessed > 0 ? ((UanifyState.scrapTotal / totalProcessed) * 100).toFixed(1) : '0.0';
+    scrapTrendEl.textContent = `${UanifyState.scrapTotal} piezas con daño total (${scrapPct}% merma)`;
+  }
 }
 
 window.emitirValeEntrega = function() {
