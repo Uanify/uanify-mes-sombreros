@@ -2619,26 +2619,26 @@ function enrichStationWithDefaults(st, idx) {
         `;
       } else {
         kardexBody.innerHTML = filtered.map(m => {
-          let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
-          if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">Entrada MP</span>';
-          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">Embarque</span>';
-          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">Saldos</span>';
-          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">Rampa</span>';
+          let typeBadge = '<span class="badge-subtle" style="display:inline-block; margin:0 auto;">Traspaso WIP</span>';
+          if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border); display:inline-block; margin:0 auto;">Entrada MP</span>';
+          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border); display:inline-block; margin:0 auto;">Embarque</span>';
+          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border); display:inline-block; margin:0 auto;">Saldos</span>';
+          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF); display:inline-block; margin:0 auto;">Rampa</span>';
 
           return `
             <tr>
-              <td class="col-code"><span class="table-badge-code">${m.time}</span></td>
-              <td class="col-name">${typeBadge}</td>
-              <td><span style="font-weight:600; font-size:12.5px;">${m.origin}</span></td>
-              <td><strong style="font-weight:700; font-size:12.5px; color:var(--color-brand);">→ ${m.dest}</strong></td>
-              <td><strong style="font-size:12.5px;">${m.item}</strong></td>
-              <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:13px;">${m.qty}</strong></td>
+              <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${m.time}</span></td>
+              <td class="col-name" style="text-align:center;">${typeBadge}</td>
+              <td><span style="font-weight:600; font-size:12.5px; color:var(--text-primary);">${m.origin}</span></td>
+              <td><strong style="font-weight:700; font-size:12.5px; color:var(--color-brand); display:inline-flex; align-items:center; gap:4px;">&rarr; ${m.dest}</strong></td>
+              <td><strong style="font-size:12.5px; color:var(--text-primary);">${m.item}</strong></td>
+              <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700; color:var(--text-primary);">${m.qty}</strong></td>
               <td><span style="font-size:12px; color:var(--text-secondary);">${m.user}</span></td>
               <td class="col-status" style="text-align:center;"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px; margin:0 auto;">${m.doc}</span></td>
               <td class="col-actions" style="text-align:center;">
                 <div class="action-btns-cell" style="justify-content:center;">
-                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver Vale Oficial de Traspaso">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver Vale Oficial de Traspaso / Detalle de Movimiento">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                   </button>
                 </div>
               </td>
@@ -2675,15 +2675,18 @@ function enrichStationWithDefaults(st, idx) {
     window.UanifyUI.toast(
       `Almacén ${wh.name} (${wh.code}) en ${wh.location}. Existencias: ${wh.stock}. Custodia: ${wh.items}. Ocupación: ${wh.capPercent}%.`,
       'info',
-      ' Detalle de Almacén'
+      'Detalle de Almacén'
     );
   };
 
   window.viewKardexDoc = function(docFolio, item) {
-    window.UanifyUI.toast(
-      `Vale oficial ${docFolio} registrado en Kárdex. Movimiento verificado por Logística MES para ${item || 'lote'}.`,
-      'info',
-      ' Vale de Movimiento'
+    const mov = (UanifyState.inventoryMovements || []).find(m => m.doc === docFolio) || {
+      doc: docFolio, item: item || 'Lote de Producción', time: '12:00', type: 'Traspaso WIP', origin: 'Almacén Central', dest: 'Línea de Ensamble', qty: '60 pzas', user: 'Logística MES'
+    };
+    window.UanifyUI.alert(
+      `Vale Oficial de Traspaso · ${mov.doc}`,
+      `Detalle de custodia y movimiento en Kárdex:\n\n• Documento / Folio: ${mov.doc}\n• Tipo de Movimiento: ${mov.type}\n• Lote / Material: ${mov.item}\n• Cantidad Transferida: ${mov.qty}\n• Almacén Origen: ${mov.origin}\n• Almacén Destino: ${mov.dest}\n• Hora de Registro: ${mov.time} hrs\n• Responsable: ${mov.user}\n• Estatus de Auditoría: Aprobado y sincronizado por Logística MES.`,
+      'Cerrar Vale'
     );
   };
 
