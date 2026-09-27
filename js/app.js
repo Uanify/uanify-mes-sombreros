@@ -2242,28 +2242,28 @@ function enrichStationWithDefaults(st, idx) {
             <tr>
               <td class="col-code"><span class="table-badge-code">${wh.code}</span></td>
               <td class="col-name">
-                <div class="table-cell-primary">${wh.name}</div>
-                <span class="table-cell-subtext"> ${wh.location}</span>
+                <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${wh.name}</div>
+                <span class="table-cell-subtext" style="font-size:11.5px; color:var(--text-secondary);">${wh.location}</span>
               </td>
-              <td><span class="badge-subtle">${wh.type}</span></td>
-              <td><strong style="font-size:13.5px; font-family:'JetBrains Mono';">${wh.stock}</strong></td>
-              <td style="font-size:12px; max-width:280px; color:var(--text-secondary);">${wh.items}</td>
-              <td>
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span style="font-size:11.5px; font-weight:700;">${wh.capPercent}%</span>
-                  <div class="progress-track" style="width:60px; height:5px;">
+              <td style="text-align:center;"><span class="badge-subtle" style="font-weight:600;">${wh.type}</span></td>
+              <td style="text-align:center;"><strong style="font-size:13px; font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--text-primary);">${wh.stock}</strong></td>
+              <td style="font-size:12px; color:var(--text-secondary); line-height:1.4;">${wh.items}</td>
+              <td style="text-align:center;">
+                <div style="display:inline-flex; align-items:center; gap:8px; justify-content:center;">
+                  <span style="font-size:12px; font-family:'JetBrains Mono', monospace; font-weight:700;">${wh.capPercent}%</span>
+                  <div class="progress-track" style="width:55px; height:6px;">
                     <div class="progress-fill fill-brand" style="width:${wh.capPercent}%;"></div>
                   </div>
                 </div>
               </td>
-              <td class="col-status">
-                <span class="table-status-pill ${statusPillClass}">
+              <td class="col-status" style="text-align:center;">
+                <span class="table-status-pill ${statusPillClass}" style="margin:0 auto;">
                   <span class="status-dot"></span>${wh.status}
                 </span>
               </td>
-              <td class="col-actions">
+              <td class="col-actions" style="text-align:center;">
                 <div class="action-btns-cell" style="justify-content:center;">
-                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewWarehouseDetails('${wh.code}')" title="Ver lotes e inventario">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewWarehouseDetails('${wh.code}')" title="Ver Lotes e Inventario en Custodia">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   </button>
                 </div>
@@ -2621,23 +2621,23 @@ function enrichStationWithDefaults(st, idx) {
         kardexBody.innerHTML = filtered.map(m => {
           let typeBadge = '<span class="badge-subtle">Traspaso WIP</span>';
           if (m.type.includes('Entrada')) typeBadge = '<span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); border:1px solid var(--color-green-border);">Entrada MP</span>';
-          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);"> Embarque</span>';
-          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);"> Saldos</span>';
-          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);"> Rampa</span>';
+          else if (m.type.includes('Salida')) typeBadge = '<span class="badge-status" style="background:var(--color-blue-bg); color:var(--color-blue); border:1px solid var(--color-blue-border);">Embarque</span>';
+          else if (m.type.includes('Merma') || m.type.includes('Segundas')) typeBadge = '<span class="badge-status" style="background:var(--color-amber-bg); color:var(--color-amber); border:1px solid var(--color-amber-border);">Saldos</span>';
+          else if (m.type.includes('Fraccionamiento')) typeBadge = '<span class="badge-status" style="background:var(--color-purple-bg, #FAF5FF); color:var(--color-purple, #7E22CE); border:1px solid var(--color-purple-border, #E9D5FF);">Rampa</span>';
 
           return `
             <tr>
               <td class="col-code"><span class="table-badge-code">${m.time}</span></td>
               <td class="col-name">${typeBadge}</td>
-              <td><span style="font-weight:600; font-size:12px;">${m.origin}</span></td>
-              <td><strong style="font-weight:700; font-size:12px; color:var(--color-brand);">→ ${m.dest}</strong></td>
-              <td><strong>${m.item}</strong></td>
-              <td><strong style="font-family:'JetBrains Mono'; font-size:13px;">${m.qty}</strong></td>
-              <td><span style="font-size:11.5px; color:var(--text-secondary);"> ${m.user}</span></td>
-              <td class="col-status"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px;">${m.doc}</span></td>
+              <td><span style="font-weight:600; font-size:12.5px;">${m.origin}</span></td>
+              <td><strong style="font-weight:700; font-size:12.5px; color:var(--color-brand);">→ ${m.dest}</strong></td>
+              <td><strong style="font-size:12.5px;">${m.item}</strong></td>
+              <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:13px;">${m.qty}</strong></td>
+              <td><span style="font-size:12px; color:var(--text-secondary);">${m.user}</span></td>
+              <td class="col-status" style="text-align:center;"><span class="table-badge-code" style="color:var(--text-primary); font-size:11px; margin:0 auto;">${m.doc}</span></td>
               <td class="col-actions" style="text-align:center;">
                 <div class="action-btns-cell" style="justify-content:center;">
-                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver vale de traspaso">
+                  <button type="button" class="btn-table-action btn-action-view" onclick="window.viewKardexDoc('${m.doc}', '${m.item}')" title="Ver Vale Oficial de Traspaso">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   </button>
                 </div>

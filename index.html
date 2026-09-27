@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.30.0</span>
+        <span class="system-version-pill login-version-pill">v2.31.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.30.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.31.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1054,7 +1054,9 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </span>
                   <input type="text" id="whSearchInput" class="form-input" placeholder="Buscar almacén por código, nombre, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
@@ -1070,7 +1072,7 @@
                     <option value="all">Todos los Estatus</option>
                     <option value="Normal">Normal</option>
                     <option value="Precaución">Precaución</option>
-                    <option value="Crítico"> Crítico</option>
+                    <option value="Crítico">Crítico</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="whFilteredCountBadge">5 almacenes</span>
@@ -1082,14 +1084,14 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-code">Código</th>
-                    <th class="col-name">Nombre del Almacén</th>
-                    <th>Tipo / Ubicación</th>
-                    <th>Stock Actual</th>
-                    <th>Materiales y Lotes en Custodia</th>
-                    <th>Capacidad</th>
-                    <th class="col-status">Estatus</th>
-                    <th class="col-actions">Acciones</th>
+                    <th class="col-code" style="width: 100px;">Código</th>
+                    <th class="col-name" style="width: 250px;">Nombre del Almacén</th>
+                    <th style="width: 150px; text-align: center;">Tipo / Ubicación</th>
+                    <th style="width: 130px; text-align: center;">Stock Actual</th>
+                    <th style="min-width: 220px;">Materiales y Lotes en Custodia</th>
+                    <th style="width: 130px; text-align: center;">Capacidad</th>
+                    <th class="col-status" style="width: 140px; text-align: center;">Estatus</th>
+                    <th class="col-actions" style="width: 90px; text-align: center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="warehousesTableBody">
@@ -1213,17 +1215,19 @@
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
-                  <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </span>
                   <input type="text" id="kardexSearchInput" class="form-input" placeholder="Buscar por lote, material, custodio, folio..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="kardexTypeFilter" class="custom-select">
                     <option value="all">Todos los Movimientos</option>
                     <option value="Entrada">Entrada MP</option>
-                    <option value="Traspaso"> Traspaso WIP</option>
-                    <option value="Fraccionamiento"> Fraccionamiento Rampa</option>
-                    <option value="Salida"> Embarque / Salida</option>
-                    <option value="Merma"> Saldos / Segundas</option>
+                    <option value="Traspaso">Traspaso WIP</option>
+                    <option value="Fraccionamiento">Fraccionamiento Rampa</option>
+                    <option value="Salida">Embarque / Salida</option>
+                    <option value="Merma">Saldos / Segundas</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="kardexFilteredCountBadge">Movimientos recientes</span>
@@ -1235,15 +1239,15 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="col-code">Hora</th>
-                    <th class="col-name">Tipo de Movimiento</th>
-                    <th>Almacén Origen</th>
-                    <th>Almacén Destino</th>
-                    <th>Lote / Material</th>
-                    <th>Cantidad</th>
-                    <th>Responsable</th>
-                    <th class="col-status">Folio / Doc</th>
-                    <th class="col-actions">Acciones</th>
+                    <th class="col-code" style="width: 85px;">Hora</th>
+                    <th class="col-name" style="width: 170px;">Tipo de Movimiento</th>
+                    <th style="width: 170px;">Almacén Origen</th>
+                    <th style="width: 170px;">Almacén Destino</th>
+                    <th style="width: 150px;">Lote / Material</th>
+                    <th style="width: 100px; text-align: center;">Cantidad</th>
+                    <th style="width: 130px;">Responsable</th>
+                    <th class="col-status" style="width: 130px; text-align: center;">Folio / Doc</th>
+                    <th class="col-actions" style="width: 80px; text-align: center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryKardexTableBody">
@@ -3917,11 +3921,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.30.0"></script>
-  <script src="js/andon.js?v=2.30.0"></script>
-  <script src="js/terminal.js?v=2.30.0"></script>
-  <script src="js/engineer.js?v=2.30.0"></script>
-  <script src="js/executive.js?v=2.30.0"></script>
-  <script src="js/config.js?v=2.30.0"></script>
+  <script src="js/app.js?v=2.31.0"></script>
+  <script src="js/andon.js?v=2.31.0"></script>
+  <script src="js/terminal.js?v=2.31.0"></script>
+  <script src="js/engineer.js?v=2.31.0"></script>
+  <script src="js/executive.js?v=2.31.0"></script>
+  <script src="js/config.js?v=2.31.0"></script>
 </body>
 </html>

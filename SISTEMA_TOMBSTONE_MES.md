@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.30.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
+> **Versión Actual:** `v2.31.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -359,17 +359,18 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.26.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.31.0`.
 
 ---
 
 ## 8. Historial de Versiones (SemVer)
 
-- **`v2.9.0` (2026-09-24):**
-  - **Mapa de Proceso y Rastreador Visual de Lotes en Planta:** Incorporación de la sub-pestaña ` Mapa de Proceso & Rastreador de Lote` en la Terminal para que supervisores, ingenieros y dirección consulten con un clic la ubicación física en tiempo real de cualquier lote de producción (`49,633`, `49,386`, `49,842`).
-  - **Línea de Tiempo Interactiva (Value Stream Mapping Industrial):** Visualización tipo cronograma / diagrama de flujo de todas las estaciones y filtros de calidad según el tipo de sombrero, con distinción cromática de estaciones completadas (OK), estación activa con badge pulsante (**[AQUÍ ESTÁ EL LOTE]**), operador responsable, piezas en proceso y paradas siguientes.
-  - **Desplazamiento Dinámico del Lote:** Capacidad operativa para avanzar (`>>`) o retroceder (`<<`) el lote entre estaciones con sincronización en `UanifyState` y `localStorage`, o reubicarlo directamente haciendo clic sobre cualquier nodo de la línea de tiempo.
-  - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
+- **`v2.31.0` (2026-09-27):**
+  - **Estandarización Universal de Tablas de Almacenes Físicos y Kárdex (`Reglas 0.33, 0.35, 0.37`):**
+    - **Erradicación de Botones Rectangulares de Texto Plano:** Sustitución definitiva de botones toscos de texto plano (`[Ver Lotes]`) por botones ergonómicos touch tablet-first de 32x32px (`.btn-table-action.btn-action-view`) con fondo pastel suave verde `#F0FDF4`, borde `#DCFCE7`, icono SVG de documento/ojo centrado y tooltip nativo explicativo `title="Ver Lotes e Inventario en Custodia"` sin texto visible.
+    - **Buscadores Limpios sin Empalme de Texto:** Reemplazo de cualquier remanente de texto plano en buscadores por vector SVG de lupa alineado a 12px y padding de 38px en `#whSearchInput` y `#kardexSearchInput`.
+    - **Alineación Estricta 1:1 de Columnas:** Anchos fijos milimétricos en cabeceras `<th>` y centrado de Tipo, Stock Actual (monospace bold), Capacidad (porcentaje + progress bar) y Estatus (`.table-status-pill`) en `#warehousesTable` y `#inventoryKardexTable`.
+    - **Estandarización de Kárdex de Traspasos:** Centrado de Cantidad en tipografía monoespaciada bold, centrado de Folio y botón ergonómico de 32x32px con tooltip explicativo `title="Ver Vale Oficial de Traspaso"`.
 - **`v2.30.0` (2026-09-27):**
   - **Estandarización Universal de Tablas de Catálogo de Sombreros y Hormas / Moldes (`Reglas 0.33, 0.35, 0.37`):**
     - **Alineación Estricta de Columnas 1:1 en Catálogos Maestros:** Anchos explícitos milimétricos y alineación centrada para Tallas, Estatus, Horma Compatible, Valor Catálogo y Acciones en `#tblInventoryHats` y `#tblInventoryMolds`.
