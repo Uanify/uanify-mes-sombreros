@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.23.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
+> **Versión Actual:** `v2.24.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -359,7 +359,7 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.9.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.24.0`.
 
 ---
 
@@ -372,6 +372,11 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Gestor de Rutas de Fabricación y Secuencias por Modelo:** Módulo administrativo en Configuración (`Rutas & Secuencias por Modelo`) accesible para **Ingeniero** y **Admin**, que permite ordenar e intercalar departamentos de manufactura y paradas de calidad (botones `▲ Subir`, `▼ Bajar`, `+ Agregar Parada` y `Quitar`) según el sombrero de cada lote (1000X Master Telar, Campana Preformada, Laqueados Especiales).
   - **Registro Dinámico de Áreas de Control de Calidad (`C-XX`):** Modal para dar de alta puntos de inspección intermedios y finales (`C-01`, `C-02`, `C-03`, `C-04`...) con captura de tolerancias/criterios de calidad, inspector a cargo y tiempo de ciclo, integrándose automáticamente tanto al catálogo maestro como a las secuencias de rutas.
   - **Ampliación de Permisos para Ingeniería:** Concesión de acceso al módulo de Configuración de Planta al rol Ingeniero (`Ing. Carlos Ortiz`) para modelar y auditar directamente rutas y criterios de calidad.
+- **`v2.24.0` (2026-09-26):**
+  - **Estandarización de Tabla Usuarios (RBAC) y Sintetización de Permisos:** Eliminación de la saturación visual generada por píldoras múltiples de permisos modulares; agrupación inteligente en insignias consolidadas (`Acceso Total (Todos los Módulos)` para Admin, `Acceso Avanzado (6 Módulos)` para Ingeniero y píldoras compactas para supervisores).
+  - **Simetría Milimétrica en Botones de Fila con Protección de Superusuario:** Estandarización de botones cuadrados compactos (32x32px) con iconos SVG claros para editar y eliminar en todas las filas. Para el usuario principal (`admin-1`), se implementó un botón con candado SVG suave desactivado que preserva la alineación estricta de dos acciones sin textos asimétricos.
+  - **Buscador de Usuarios Limpio:** Input de búsqueda con vector SVG de lupa alineado a 12px y padding de 38px, eliminando empalmes de texto sobre el placeholder.
+  - **Sincronización de Versión del Sistema:** Actualización universal de versión a `v2.24.0` en login, sidebar, package.json y documentación técnica.
 - **`v2.23.0` (2026-09-26):**
   - **Desglose Estricto de Columnas en Calidad (7 Columnas 1:1):** Separación de `Inspector Responsable` y `Tiempo de Ciclo` en columnas independientes con alineación perfecta, evitando que el estatus y los botones de acción se desplacen hacia columnas previas.
   - **Sintetización de Criterios y Tolerancias:** Remoción de párrafos redundantes en celdas de inspección para lograr una vista compacta de 52px de altura uniforme.

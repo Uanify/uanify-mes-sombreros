@@ -221,20 +221,30 @@ window.initConfigView = function() {
         if (u.role === 'admin') roleBadgeClass = 'role-badge-admin';
         else if (u.role === 'ingeniero') roleBadgeClass = 'role-badge-ingeniero';
 
-        const permPills = u.permissions.map(p => {
-          const mod = AvailableModules.find(m => m.id === p);
-          return `<span class="perm-pill">${mod ? mod.name : p}</span>`;
-        }).join(' ');
+        // Sintetizar permisos modulares para evitar sobrecarga visual
+        let permInfo = '';
+        if (u.role === 'admin' || (u.permissions && u.permissions.length >= (AvailableModules || []).length)) {
+          permInfo = `<span class="badge-subtle" style="background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0; font-weight:700; font-size:11px; padding:3px 8px;">Acceso Total (Todos los Módulos)</span>`;
+        } else if (u.role === 'ingeniero' || (u.permissions && u.permissions.length >= 5)) {
+          permInfo = `
+            <span class="badge-subtle" style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; font-weight:700; font-size:11px; padding:3px 8px;">Acceso Avanzado (${u.permissions.length} Módulos)</span>
+            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Andon, Terminal, Catálogos, KPIs, Config</span>
+          `;
+        } else {
+          const permPills = (u.permissions || []).map(p => {
+            const mod = AvailableModules.find(m => m.id === p);
+            return `<span class="perm-pill" style="font-size:10.5px; padding:2px 7px;">${mod ? mod.name : p}</span>`;
+          }).join(' ');
+          permInfo = `<div style="display:flex; flex-wrap:wrap; gap:3px; max-width:280px;">${permPills}</div>`;
+        }
 
         // Contar operadores en los departamentos asignados
         let deptsInfo = '';
         if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
           const totalOps = (UanifyState.operators || []).length;
           deptsInfo = `
-            <div style="font-size:11px; font-weight:700; color:var(--color-brand); display:flex; align-items:center; gap:4px; margin-top:3px;">
-              <span> Acceso Global (14 Áreas)</span>
-            </div>
-            <span class="table-cell-subtext">Supervisión total · ${totalOps} operadores</span>
+            <span class="badge-subtle" style="font-weight:700; font-size:11px; padding:2px 8px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">Global (14 Áreas)</span>
+            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Supervisión total · ${totalOps} operadores</span>
           `;
         } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
           const pills = u.assignedDepartments.map(d => {
@@ -244,9 +254,9 @@ window.initConfigView = function() {
           }).join(' ');
           const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
           deptsInfo = `
-            <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; max-width:240px;">${pills}</div>
-            <span class="table-cell-subtext">
-              <strong>${u.assignedDepartments.length} depts</strong> asignados · <strong>${assignedOps} ops</strong>
+            <div style="display:flex; flex-wrap:wrap; gap:3px; max-width:230px;">${pills}</div>
+            <span class="table-cell-subtext" style="display:block; margin-top:2px;">
+              <strong>${u.assignedDepartments.length} depts</strong> · ${assignedOps} ops
             </span>
           `;
         } else {
@@ -257,22 +267,20 @@ window.initConfigView = function() {
           <tr>
             <td class="col-code"><span class="table-badge-code">${u.id}</span></td>
             <td class="col-name">
-              <div class="table-cell-primary">${u.name}</div>
-              <span class="table-cell-subtext"> ${u.email}</span>
+              <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${u.name}</div>
+              <span class="table-cell-subtext">${u.email}</span>
             </td>
-            <td>
-              <span class="role-badge ${roleBadgeClass}">${u.badge || u.roleName}</span>
+            <td style="text-align:center;">
+              <span class="role-badge ${roleBadgeClass}" style="margin:0 auto;">${u.badge || u.roleName}</span>
             </td>
             <td>
               ${deptsInfo}
             </td>
             <td>
-              <div style="display:flex; flex-wrap:wrap; gap:4px; max-width:320px;">
-                ${permPills}
-              </div>
+              ${permInfo}
             </td>
-            <td class="col-status">
-              <span class="table-status-pill status-active">
+            <td class="col-status" style="text-align:center;">
+              <span class="table-status-pill status-active" style="margin:0 auto;">
                 <span class="status-dot"></span>Activo
               </span>
             </td>
@@ -285,7 +293,11 @@ window.initConfigView = function() {
                   <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
-                ` : '<span style="font-size:10.5px; color:var(--text-muted); font-weight:700;">(Principal)</span>'}
+                ` : `
+                  <button type="button" class="btn-table-action btn-action-delete" disabled style="opacity:0.35; cursor:not-allowed !important; background:#F8FAFC; border-color:#E2E8F0; color:#94A3B8;" title="Usuario Principal (Protegido contra eliminación)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  </button>
+                `}
               </div>
             </td>
           </tr>
