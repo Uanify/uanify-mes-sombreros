@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.34.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
+> **Versión Actual:** `v2.35.0` | **Fecha de Actualización:** 27 de Septiembre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -359,12 +359,19 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 - **Mecanismo de Despliegue:**
   - Repositorio: `https://github.com/Uanify/uanify-mes-sombreros.git`
   - Servidor de Producción: **GitHub Pages** (`https://uanify.github.io/uanify-mes-sombreros/`)
-  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.34.0`.
+  - **Cache Busting Automático:** Para evitar que la CDN de GitHub Pages entregue hojas de estilo o scripts cacheados, todos los links y scripts en `index.html` incluyen el parámetro de versión `?v=2.35.0`.
 
 ---
 
 ## 8. Historial de Versiones (SemVer)
 
+- **`v2.35.0` (2026-09-27):**
+  - **Erradicación de Limitación de Ancho Fijo y Fluidez Responsiva Universal (Tablets y Monitores Ultra-Anchos):**
+    - **Eliminación de `max-width: 1600px`:** Supresión del tope artificial en `.app-content` que generaba asimetría visual y grandes vacíos en blanco a la derecha en monitores de alta resolución (2133px, 2560px, 4K) o con zoom bajo (< 100%).
+    - **Layout Fluido 100% y Box-Sizing Integral:** `.app-content` ahora utiliza `width: calc(100% - var(--sidebar-width)); max-width: 100%; box-sizing: border-box;` en modo expandido y con barra lateral colapsada (`sidebar-collapsed`), extendiendo el contenido armónicamente de borde a borde.
+    - **Reingeniería de Grids Fluidos:** `.stations-grid` adopta `repeat(auto-fill, minmax(285px, 1fr))` para desplegar de 5 a 7 columnas en pantallas anchas y `minmax(260px, 1fr)` en tabletas (2 a 3 columnas estables en iPads horizontal y vertical).
+    - **Blindaje Táctil en Tablets (`@media (max-width: 1024px)`):** Botones de fila protegidos a 32x32px (`.btn-table-action`), scroll horizontal suave en tablas y banners flexibles.
+    - **Sincronización Total de Cache Busting:** Actualización de parámetros de versión a `?v=2.35.0` en hojas de estilo CSS y scripts JS.
 - **`v2.34.0` (2026-09-27):**
   - **Homologación Integral Universal de Tablas y Buscadores Restantes (`Reglas 0.33, 0.35, 0.37`):**
     - **Buscadores de Configuración con SVG Aislado:** Blindaje definitivo de los 4 buscadores de configuración (`#userSearchInput`, `#cfgOperatorSearchInput`, `#deptSearchInput`, `#qualitySearchInput`) envolviendo el vector SVG en `<span class="search-icon">` con padding izquierdo seguro de 38px, erradicando cualquier empalme visual o artefacto "BUS".

@@ -46,12 +46,12 @@
   color: var(--color-amber);
 }
 
-/* 2. STATIONS GRID (ANDON DIGITAL) */
 .stations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+  width: 100%;
 }
 
 .station-card {
