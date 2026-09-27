@@ -253,6 +253,37 @@ window.initEngineerView = function() {
     });
   }
 
+  // Filtros Globales de Analítica: Período y Modelo
+  const analyticsPeriodFilter = document.getElementById('analyticsPeriodFilter');
+  const analyticsModelFilter = document.getElementById('analyticsModelFilter');
+  if (analyticsPeriodFilter) {
+    analyticsPeriodFilter.addEventListener('change', () => {
+      const pVal = analyticsPeriodFilter.value;
+      const mVal = analyticsModelFilter ? analyticsModelFilter.value : 'all';
+      updateOeeScores();
+      if (typeof window.updateExecutiveMetrics === 'function') window.updateExecutiveMetrics();
+      window.UanifyUI.toast(
+        `Consola de Analítica actualizada: Vista de ${analyticsPeriodFilter.options[analyticsPeriodFilter.selectedIndex].text}${mVal !== 'all' ? ' · Modelo: ' + mVal : ''}. Métricas sincronizadas.`,
+        'success',
+        'Filtro de Analítica Aplicado'
+      );
+    });
+  }
+
+  if (analyticsModelFilter) {
+    analyticsModelFilter.addEventListener('change', () => {
+      const mVal = analyticsModelFilter.value;
+      const pText = analyticsPeriodFilter ? analyticsPeriodFilter.options[analyticsPeriodFilter.selectedIndex].text : 'Hoy';
+      updateOeeScores();
+      if (typeof window.updateExecutiveMetrics === 'function') window.updateExecutiveMetrics();
+      window.UanifyUI.toast(
+        `Segmentación por modelo aplicada: ${mVal === 'all' ? 'Todos los Modelos' : mVal} (${pText}).`,
+        'info',
+        'Modelo Filtrado'
+      );
+    });
+  }
+
   checkKpisAccess();
 };
 
@@ -427,83 +458,255 @@ function renderPipeline() {
 }
 
 // ── TABLA DINÁMICA DE KPIS DE SUPERVISORES ──────────────────────────────────
+// ── TABLA DINÁMICA DE KPIS DE SUPERVISORES (CON FILTROS MULTI-CRITERIO) ────
+let supervisorKpiFiltersBound = false;
 function renderSupervisorKpis() {
   const tbody = document.getElementById('supervisorKpisTableBody');
   if (!tbody) return;
 
+  const searchInput = document.getElementById('supervisorSearchInput');
+  const gradeFilter = document.getElementById('supervisorGradeFilter');
+  const countBadge = document.getElementById('supervisorFilteredCountBadge');
+  const btnReset = document.getElementById('btnResetSupervisorFilters');
+
   const sc = SHIFT_HOURLY_SCENARIOS[currentScenarioIndex] || SHIFT_HOURLY_SCENARIOS[0];
 
-  tbody.innerHTML = `
-    <tr>
-      <td><strong>Juan Manuel Pérez</strong></td>
-      <td><span class="badge-subtle">Prensas de Hormado a Brillo y Pulido</span></td>
-      <td><span style="font-family:var(--font-mono); font-weight:700;">${sc.sup1Takt}s</span></td>
-      <td><strong style="color:var(--color-green);">${sc.sup1Fulfill}%</strong></td>
-      <td>${sc.sup1Scrap}%</td>
-      <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">${sc.sup1Grade}</span></td>
-    </tr>
-    <tr>
-      <td><strong>Roberto Méndez</strong></td>
-      <td><span class="badge-subtle">Corte de Telar a Engomado y Secado</span></td>
-      <td><span style="font-family:var(--font-mono); font-weight:700;">${sc.sup2Takt}s</span></td>
-      <td><strong style="color:var(--color-brand);">${sc.sup2Fulfill}%</strong></td>
-      <td>${sc.sup2Scrap}%</td>
-      <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">${sc.sup2Grade}</span></td>
-    </tr>
-    <tr>
-      <td><strong>Auxiliar de Rampa</strong></td>
-      <td><span class="badge-subtle">Prensas de Hormado (Rampa)</span></td>
-      <td><span style="font-family:var(--font-mono); font-weight:700;">${sc.auxTakt}s</span></td>
-      <td><strong style="color:var(--color-green);">${sc.auxFulfill}%</strong></td>
-      <td>${sc.auxScrap}%</td>
-      <td><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green);">${sc.auxGrade}</span></td>
-    </tr>
-  `;
+  const supervisors = [
+    { name: 'Juan Manuel Pérez', depts: 'Prensas de Hormado a Brillo y Pulido', takt: `${sc.sup1Takt}s`, fulfill: `${sc.sup1Fulfill}%`, scrap: `${sc.sup1Scrap}%`, grade: sc.sup1Grade, gradeCode: 'A+' },
+    { name: 'Roberto Méndez', depts: 'Corte de Telar a Engomado y Secado', takt: `${sc.sup2Takt}s`, fulfill: `${sc.sup2Fulfill}%`, scrap: `${sc.sup2Scrap}%`, grade: sc.sup2Grade, gradeCode: 'A' },
+    { name: 'Auxiliar de Rampa', depts: 'Prensas de Hormado (Rampa)', takt: `${sc.auxTakt}s`, fulfill: `${sc.auxFulfill}%`, scrap: `${sc.auxScrap}%`, grade: sc.auxGrade, gradeCode: 'A+' }
+  ];
+
+  const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const grade = gradeFilter ? gradeFilter.value : 'all';
+
+  const filtered = supervisors.filter(s => {
+    const matchSearch = !q || s.name.toLowerCase().includes(q) || s.depts.toLowerCase().includes(q);
+    const matchGrade = (grade === 'all' || s.gradeCode === grade || s.grade.includes(grade));
+    return matchSearch && matchGrade;
+  });
+
+  if (countBadge) {
+    countBadge.textContent = `Mostrando ${filtered.length} de ${supervisors.length} supervisores`;
+  }
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr class="table-empty-row">
+        <td colspan="6">
+          <div class="table-empty-content">
+            <span class="table-empty-icon"></span>
+            <span class="table-empty-title">Sin supervisores coincidentes</span>
+            <span class="table-empty-subtitle">Intenta con otra calificación o término de búsqueda</span>
+            <button type="button" class="btn-reset-filters" onclick="window.resetSupervisorFilters()">Limpiar Filtros</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  } else {
+    tbody.innerHTML = filtered.map(s => `
+      <tr>
+        <td><strong>${s.name}</strong></td>
+        <td><span class="badge-subtle">${s.depts}</span></td>
+        <td style="text-align:center;"><span style="font-family:var(--font-mono); font-weight:700;">${s.takt}</span></td>
+        <td style="text-align:center;"><strong style="color:var(--color-green);">${s.fulfill}</strong></td>
+        <td style="text-align:center;">${s.scrap}</td>
+        <td style="text-align:center;"><span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); display:inline-block; margin:0 auto;">${s.grade}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  if (!supervisorKpiFiltersBound) {
+    supervisorKpiFiltersBound = true;
+    if (searchInput) searchInput.addEventListener('input', renderSupervisorKpis);
+    if (gradeFilter) gradeFilter.addEventListener('change', renderSupervisorKpis);
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (gradeFilter) gradeFilter.value = 'all';
+        renderSupervisorKpis();
+      });
+    }
+    window.resetSupervisorFilters = function() {
+      if (searchInput) searchInput.value = '';
+      if (gradeFilter) gradeFilter.value = 'all';
+      renderSupervisorKpis();
+    };
+  }
 }
 
-// ── MATRIZ DE MATERIALES (BOM) CON CONSUMO ACUMULADO ────────────────────────
+// ── MATRIZ DE MATERIALES (BOM) CON CONSUMO Y FILTRADO MULTI-CRITERIO ───────
+let bomFiltersBound = false;
 function renderMaterialMatrix() {
   const container = document.getElementById('materialMatrixBody');
   if (!container) return;
 
+  const searchInput = document.getElementById('bomSearchInput');
+  const catFilter = document.getElementById('bomCategoryFilter');
+  const countBadge = document.getElementById('bomFilteredCountBadge');
+  const btnReset = document.getElementById('btnResetBomFilters');
+
   const pzas = UanifyState.producedTotal;
   const materials = [
-    { name: 'Pintura Taiwan 1125',    cat: 'Acabados',     usedIn: 47, consumed: (pzas * 0.08).toFixed(1) + ' L', notes: 'Posible cambio de proveedor' },
-    { name: 'Resina / Dope Sellador', cat: 'Englopado',    usedIn: 60, consumed: (pzas * 0.12).toFixed(1) + ' L', notes: 'Común a todos los modelos de telar' },
-    { name: 'Sellador Brochas',       cat: 'Refuerzos',    usedIn: 60, consumed: (pzas * 15).toLocaleString() + ' ml', notes: 'Aplicado en área de patio exterior' },
-    { name: 'Telar Fino Rollo',       cat: 'Materia Prima',usedIn: 38, consumed: (pzas * 1.2).toFixed(1) + ' m', notes: 'Producto campeón 70% del volumen' },
-    { name: 'Alambre Ala (Memoria)',  cat: 'Insumos',      usedIn: 52, consumed: (pzas * 0.95).toFixed(1) + ' m', notes: 'Calibre 19 para memoria de falda' },
-    { name: 'Tafilete / Badana 57cm', cat: 'Subensamble',  usedIn: 34, consumed: Math.round(pzas * 0.35) + ' pzas', notes: 'Talla más vendida en México' },
-    { name: 'Tafilete / Badana 58cm', cat: 'Subensamble',  usedIn: 28, consumed: Math.round(pzas * 0.25) + ' pzas', notes: 'Talla regular mayorista' },
-    { name: 'Toquilla Cuero Natural', cat: 'Adorno',       usedIn: 60, consumed: (pzas * 0.85).toFixed(1) + ' m', notes: 'Subensamble paralelo en mesa de adorno' },
-    { name: 'Barniz / Brillo Poliuretano', cat: 'Acabados',usedIn: 44, consumed: (pzas * 22).toLocaleString() + ' ml', notes: 'Post-inspección Calidad 2' }
+    { name: 'Pintura Taiwan 1125',        cat: 'Acabados',     usedIn: 47, consumed: (pzas * 0.08).toFixed(1) + ' L', notes: 'Posible cambio de proveedor' },
+    { name: 'Resina / Dope Sellador',     cat: 'Englopado',    usedIn: 60, consumed: (pzas * 0.12).toFixed(1) + ' L', notes: 'Común a todos los modelos de telar' },
+    { name: 'Sellador Brochas',           cat: 'Refuerzos',    usedIn: 60, consumed: (pzas * 15).toLocaleString() + ' ml', notes: 'Aplicado en área de patio exterior' },
+    { name: 'Telar Fino Rollo',           cat: 'Materia Prima',usedIn: 38, consumed: (pzas * 1.2).toFixed(1) + ' m', notes: 'Producto campeón 70% del volumen' },
+    { name: 'Alambre Ala (Memoria)',      cat: 'Insumos',      usedIn: 52, consumed: (pzas * 0.95).toFixed(1) + ' m', notes: 'Calibre 19 para memoria de falda' },
+    { name: 'Tafilete / Badana 57cm',     cat: 'Subensamble',  usedIn: 34, consumed: Math.round(pzas * 0.35) + ' pzas', notes: 'Talla más vendida en México' },
+    { name: 'Tafilete / Badana 58cm',     cat: 'Subensamble',  usedIn: 28, consumed: Math.round(pzas * 0.25) + ' pzas', notes: 'Talla regular mayorista' },
+    { name: 'Toquilla Cuero Natural',     cat: 'Adorno',       usedIn: 60, consumed: (pzas * 0.85).toFixed(1) + ' m', notes: 'Subensamble paralelo en mesa de adorno' },
+    { name: 'Barniz / Brillo Poliuretano',cat: 'Acabados',     usedIn: 44, consumed: (pzas * 22).toLocaleString() + ' ml', notes: 'Post-inspección Calidad 2' }
   ];
 
-  container.innerHTML = materials.map(m => `
-    <tr>
-      <td><strong style="font-size:12.5px; color:var(--text-primary);">${m.name}</strong></td>
-      <td style="text-align:center;"><span class="badge-subtle" style="font-size:11px; display:inline-block; margin:0 auto;">${m.cat}</span></td>
-      <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:12.5px;">${m.usedIn} fichas</strong></td>
-      <td style="text-align:center;"><span class="table-badge-code" style="margin:0 auto; font-size:11.5px;">${m.consumed}</span></td>
-      <td style="color:var(--text-secondary); font-size:11.5px;">${m.notes}</td>
-    </tr>
-  `).join('');
+  const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const cat = catFilter ? catFilter.value : 'all';
+
+  const filtered = materials.filter(m => {
+    const matchSearch = !q || m.name.toLowerCase().includes(q) || m.notes.toLowerCase().includes(q);
+    const matchCat = (cat === 'all' || m.cat.toLowerCase().includes(cat.toLowerCase()));
+    return matchSearch && matchCat;
+  });
+
+  if (countBadge) {
+    countBadge.textContent = `Mostrando ${filtered.length} de ${materials.length} insumos`;
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <tr class="table-empty-row">
+        <td colspan="5">
+          <div class="table-empty-content">
+            <span class="table-empty-icon"></span>
+            <span class="table-empty-title">Sin materiales coincidentes</span>
+            <span class="table-empty-subtitle">Intenta buscar por otro término o limpia los filtros</span>
+            <button type="button" class="btn-reset-filters" onclick="window.resetBomFilters()">Limpiar Filtros</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  } else {
+    container.innerHTML = filtered.map(m => `
+      <tr>
+        <td><strong style="font-size:12.5px; color:var(--text-primary);">${m.name}</strong></td>
+        <td style="text-align:center;"><span class="badge-subtle" style="font-size:11px; display:inline-block; margin:0 auto;">${m.cat}</span></td>
+        <td style="text-align:center;"><strong style="font-family:'JetBrains Mono', monospace; font-size:12.5px;">${m.usedIn} fichas</strong></td>
+        <td style="text-align:center;"><span class="table-badge-code" style="margin:0 auto; font-size:11.5px;">${m.consumed}</span></td>
+        <td style="color:var(--text-secondary); font-size:11.5px;">${m.notes}</td>
+      </tr>
+    `).join('');
+  }
+
+  if (!bomFiltersBound) {
+    bomFiltersBound = true;
+    if (searchInput) searchInput.addEventListener('input', renderMaterialMatrix);
+    if (catFilter) catFilter.addEventListener('change', renderMaterialMatrix);
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (catFilter) catFilter.value = 'all';
+        renderMaterialMatrix();
+      });
+    }
+    window.resetBomFilters = function() {
+      if (searchInput) searchInput.value = '';
+      if (catFilter) catFilter.value = 'all';
+      renderMaterialMatrix();
+    };
+  }
 }
 
-// ── BITÁCORA DE PAROS ────────────────────────────────────────────────────────
+// ── BITÁCORA DE PAROS SMED CON FILTRADO MULTI-CRITERIO ───────────────────────
+let downtimeFiltersBound = false;
 function renderDowntimes() {
   const container = document.getElementById('downtimeTbody');
   if (!container || !UanifyState.downtimes) return;
 
-  container.innerHTML = UanifyState.downtimes.map(d => `
-    <tr>
-      <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${d.time}</span></td>
-      <td><strong>${d.station}</strong></td>
-      <td>${d.cause}</td>
-      <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; color:var(--color-red); border-color:rgba(239, 68, 68, 0.25); font-weight:700; display:inline-block; margin:0 auto;">${d.duration}</span></td>
-      <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-amber, #D97706); border-color:rgba(217, 119, 6, 0.25); display:inline-block; margin:0 auto;">${d.impact}</span></td>
-    </tr>
-  `).join('');
+  const searchInput = document.getElementById('downtimeSearchInput');
+  const stationFilter = document.getElementById('downtimeStationFilter');
+  const impactFilter = document.getElementById('downtimeImpactFilter');
+  const countBadge = document.getElementById('downtimeFilteredCountBadge');
+  const btnReset = document.getElementById('btnResetDowntimeFilters');
+
+  // Poblar estaciones si está vacío
+  if (stationFilter && stationFilter.options.length <= 1 && UanifyState.stations) {
+    UanifyState.stations.forEach(st => {
+      const opt = document.createElement('option');
+      opt.value = st.name;
+      opt.textContent = `${st.code || ''} ${st.name}`.trim();
+      stationFilter.appendChild(opt);
+    });
+  }
+
+  const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const station = stationFilter ? stationFilter.value : 'all';
+  const impact = impactFilter ? impactFilter.value : 'all';
+
+  const filtered = UanifyState.downtimes.filter(d => {
+    const matchSearch = !q ||
+      d.station.toLowerCase().includes(q) ||
+      d.cause.toLowerCase().includes(q) ||
+      d.time.includes(q);
+
+    const matchStation = (station === 'all' || d.station.toLowerCase().includes(station.toLowerCase()) || station.toLowerCase().includes(d.station.toLowerCase()));
+
+    let matchImpact = true;
+    const durMins = parseInt(d.duration, 10) || 0;
+    if (impact === 'Crítico') matchImpact = (durMins > 10);
+    else if (impact === 'Menor') matchImpact = (durMins <= 10);
+
+    return matchSearch && matchStation && matchImpact;
+  });
+
+  if (countBadge) {
+    countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.downtimes.length} paros`;
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <tr class="table-empty-row">
+        <td colspan="5">
+          <div class="table-empty-content">
+            <span class="table-empty-icon"></span>
+            <span class="table-empty-title">Sin paros de máquina coincidentes</span>
+            <span class="table-empty-subtitle">Intenta buscar por otro término o limpia los filtros</span>
+            <button type="button" class="btn-reset-filters" onclick="window.resetDowntimeFilters()">Limpiar Filtros</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  } else {
+    container.innerHTML = filtered.map(d => `
+      <tr>
+        <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${d.time}</span></td>
+        <td><strong>${d.station}</strong></td>
+        <td>${d.cause}</td>
+        <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; color:var(--color-red); border-color:rgba(239, 68, 68, 0.25); font-weight:700; display:inline-block; margin:0 auto;">${d.duration}</span></td>
+        <td style="text-align:center;"><span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-amber, #D97706); border-color:rgba(217, 119, 6, 0.25); display:inline-block; margin:0 auto;">${d.impact}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  if (!downtimeFiltersBound) {
+    downtimeFiltersBound = true;
+    if (searchInput) searchInput.addEventListener('input', renderDowntimes);
+    if (stationFilter) stationFilter.addEventListener('change', renderDowntimes);
+    if (impactFilter) impactFilter.addEventListener('change', renderDowntimes);
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (stationFilter) stationFilter.value = 'all';
+        if (impactFilter) impactFilter.value = 'all';
+        renderDowntimes();
+      });
+    }
+    window.resetDowntimeFilters = function() {
+      if (searchInput) searchInput.value = '';
+      if (stationFilter) stationFilter.value = 'all';
+      if (impactFilter) impactFilter.value = 'all';
+      renderDowntimes();
+    };
+  }
 }
 
 // ── OEE GLOBAL MATEMÁTICO ────────────────────────────────────────────────────

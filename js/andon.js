@@ -35,10 +35,18 @@ window.initAndonView = function() {
     updateShiftDynamicBadge();
     renderHourlyProgress();
   });
-  EventBus.on('shift-mode-changed', () => {
-    updateShiftDynamicBadge();
-    renderHourlyProgress();
-  });
+  const hourlyDateSelect = document.getElementById('andonHourlyDateFilter');
+  if (hourlyDateSelect && !hourlyDateSelect.dataset.bound) {
+    hourlyDateSelect.dataset.bound = 'true';
+    hourlyDateSelect.addEventListener('change', () => {
+      renderHourlyProgress(hourlyDateSelect.value);
+      window.UanifyUI.toast(
+        `Curva de avance hora por hora actualizada: ${hourlyDateSelect.options[hourlyDateSelect.selectedIndex].text}.`,
+        'info',
+        'Filtro de Fecha Andon'
+      );
+    });
+  }
 };
 
 function renderStations() {
@@ -96,21 +104,56 @@ function renderStations() {
   }).join('');
 }
 
-function renderHourlyProgress() {
+let currentHourlyDateKey = 'today';
+function renderHourlyProgress(dateKey) {
   const container = document.getElementById('hourlyBars');
   if (!container) return;
+
+  if (dateKey) currentHourlyDateKey = dateKey;
+  const key = currentHourlyDateKey;
 
   const actualStart = UanifyState.shiftSchedule?.actualStartTime;
   const isDynamic = UanifyState.shiftSchedule?.mode !== 'fixed';
 
-  container.innerHTML = UanifyState.hourlyData.map((h, idx) => {
-    const isCurrent = idx === 6;
+  let data = UanifyState.hourlyData;
+  if (key === 'yesterday') {
+    // Curva cerrada de ayer (26/09/2026): 850 piezas totales cumplidas
+    data = [
+      { hour: '07:00', target: 110, produced: 114 },
+      { hour: '08:00', target: 115, produced: 118 },
+      { hour: '09:00', target: 115, produced: 122 },
+      { hour: '10:00', target: 115, produced: 108 },
+      { hour: '11:00', target: 115, produced: 116 },
+      { hour: '12:00', target: 0,   produced: 0   }, // Comida 12:00 a 12:45
+      { hour: '13:00', target: 95,  produced: 98  },
+      { hour: '14:00', target: 115, produced: 120 },
+      { hour: '15:00', target: 70,  produced: 54  }
+    ];
+  } else if (key === 'prevDay') {
+    // Curva cerrada del 25/09/2026: 862 piezas totales
+    data = [
+      { hour: '07:00', target: 110, produced: 112 },
+      { hour: '08:00', target: 115, produced: 120 },
+      { hour: '09:00', target: 115, produced: 125 },
+      { hour: '10:00', target: 115, produced: 114 },
+      { hour: '11:00', target: 115, produced: 118 },
+      { hour: '12:00', target: 0,   produced: 0   }, // Comida
+      { hour: '13:00', target: 95,  produced: 101 },
+      { hour: '14:00', target: 115, produced: 116 },
+      { hour: '15:00', target: 70,  produced: 56  }
+    ];
+  }
+
+  container.innerHTML = data.map((h, idx) => {
+    const isCurrent = (key === 'today' && idx === 6);
     const overTarget = h.produced > h.target;
     const isFirstHour = idx === 0;
 
     let subNote = '';
-    if (isFirstHour && actualStart && isDynamic) {
+    if (isFirstHour && actualStart && isDynamic && key === 'today') {
       subNote = `<span style="font-size:9.5px; color:#0284C7; font-weight:700; display:block; margin-top:2px;">Inicio: ${actualStart}</span>`;
+    } else if (key !== 'today' && isFirstHour) {
+      subNote = `<span style="font-size:9.5px; color:#16A34A; font-weight:700; display:block; margin-top:2px;">Turno Cerrado</span>`;
     }
 
     return `
@@ -143,27 +186,102 @@ function updateShiftDynamicBadge() {
   }
 }
 
+let andonStopFiltersBound = false;
 function renderDowntimes() {
   const container = document.getElementById('downtimeListAndon') || document.getElementById('downtimeList');
   if (!container) return;
 
-  if (!UanifyState.downtimes.length) {
-    container.innerHTML = `<p style="font-size:11px; color:#64748B; text-align:center; padding:12px;">Sin paros registrados en este Turno Único.</p>`;
-    return;
+  const searchInput = document.getElementById('andonStopSearch');
+  const deptFilter = document.getElementById('andonStopDeptFilter');
+  const severityFilter = document.getElementById('andonStopSeverityFilter');
+  const countBadge = document.getElementById('andonStopFilteredCountBadge');
+  const btnReset = document.getElementById('btnResetAndonStopFilters');
+
+  if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
+    UanifyState.stations.forEach(st => {
+      const opt = document.createElement('option');
+      opt.value = st.name;
+      opt.textContent = `${st.code || ''} ${st.name}`.trim();
+      deptFilter.appendChild(opt);
+    });
   }
 
-  container.innerHTML = UanifyState.downtimes.map(d => `
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.05);">
-      <div>
-        <strong style="color:#F59E0B; font-size:12px;"> ${d.time} — ${d.station}</strong>
-        <div style="font-size:11px; color:#94A3B8; margin-top:2px;">${d.cause}</div>
+  const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const dept = deptFilter ? deptFilter.value : 'all';
+  const sev = severityFilter ? severityFilter.value : 'all';
+
+  const filtered = (UanifyState.downtimes || []).filter(d => {
+    const matchSearch = !q ||
+      d.station.toLowerCase().includes(q) ||
+      d.cause.toLowerCase().includes(q) ||
+      d.time.includes(q);
+
+    const matchDept = (dept === 'all' || d.station.toLowerCase().includes(dept.toLowerCase()) || dept.toLowerCase().includes(d.station.toLowerCase()));
+
+    let matchSev = true;
+    const durMins = parseInt(d.duration, 10) || 0;
+    if (sev === 'critical') matchSev = (durMins > 10);
+    else if (sev === 'minor') matchSev = (durMins <= 10);
+
+    return matchSearch && matchDept && matchSev;
+  });
+
+  if (countBadge) {
+    countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.downtimes.length} paros`;
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:24px 12px; color:var(--text-muted);">
+        <p style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text-secondary);">Sin paros ni incidencias coincidentes</p>
+        <span style="font-size:11.5px;">Intenta cambiar los filtros de estación o severidad</span>
       </div>
-      <div style="text-align:right; min-width:80px;">
-        <div style="font-size:11px; color:#F59E0B;">${d.duration}</div>
-        <div style="font-size:11px; color:#EF4444;">${d.impact}</div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  } else {
+    container.innerHTML = filtered.map(d => {
+      const durMins = parseInt(d.duration, 10) || 0;
+      const isCritical = durMins > 10;
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); gap:12px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-family:var(--font-mono); font-size:11px; font-weight:700;">${d.time}</span>
+              <strong style="color:${isCritical ? '#EF4444' : '#F59E0B'}; font-size:13px;">${d.station}</strong>
+              <span class="badge-status" style="background:${isCritical ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)'}; color:${isCritical ? '#EF4444' : '#D97706'}; font-size:10px; padding:2px 6px;">
+                ${isCritical ? 'Crítico' : 'Menor'}
+              </span>
+            </div>
+            <div style="font-size:12px; color:#94A3B8; margin-top:4px;">${d.cause}</div>
+          </div>
+          <div style="text-align:right; min-width:85px;">
+            <div style="font-size:12px; font-weight:700; font-family:var(--font-mono); color:${isCritical ? '#EF4444' : '#F59E0B'};">${d.duration}</div>
+            <div style="font-size:11px; color:#EF4444; font-family:var(--font-mono); font-weight:600;">${d.impact}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  if (!andonStopFiltersBound) {
+    andonStopFiltersBound = true;
+    if (searchInput) searchInput.addEventListener('input', renderDowntimes);
+    if (deptFilter) deptFilter.addEventListener('change', renderDowntimes);
+    if (severityFilter) severityFilter.addEventListener('change', renderDowntimes);
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        if (severityFilter) severityFilter.value = 'all';
+        renderDowntimes();
+      });
+    }
+    window.resetAndonStopFilters = function() {
+      if (searchInput) searchInput.value = '';
+      if (deptFilter) deptFilter.value = 'all';
+      if (severityFilter) severityFilter.value = 'all';
+      renderDowntimes();
+    };
+  }
 }
 
 function updateAndonTotals() {

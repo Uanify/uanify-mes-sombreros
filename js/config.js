@@ -334,6 +334,8 @@ window.initConfigView = function() {
     const searchInput = document.getElementById('cfgOperatorSearchInput');
     const deptFilter = document.getElementById('cfgOperatorDeptFilter');
     const statusFilter = document.getElementById('cfgOperatorStatusFilter');
+    const shiftFilter = document.getElementById('cfgOperatorShiftFilter');
+    const perfFilter = document.getElementById('cfgOperatorPerformanceFilter');
     const countBadge = document.getElementById('cfgOperatorCountBadge');
     const btnReset = document.getElementById('btnResetCfgOperatorFilters');
 
@@ -350,6 +352,8 @@ window.initConfigView = function() {
     const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const dept = deptFilter ? deptFilter.value : 'all';
     const st = statusFilter ? statusFilter.value : 'all';
+    const shift = shiftFilter ? shiftFilter.value : 'all';
+    const perf = perfFilter ? perfFilter.value : 'all';
 
     const filtered = UanifyState.operators.filter(op => {
       const matchSearch = !q ||
@@ -359,7 +363,15 @@ window.initConfigView = function() {
 
       const matchDept = dept === 'all' || op.deptCode === dept;
       const matchStatus = st === 'all' || op.status === st;
-      return matchSearch && matchDept && matchStatus;
+      const matchShift = shift === 'all' || (op.shift && op.shift.includes(shift));
+
+      let matchPerf = true;
+      const pzas = op.pzasToday || 85;
+      if (perf === 'high') matchPerf = (pzas >= 80);
+      else if (perf === 'mid') matchPerf = (pzas >= 70 && pzas < 80);
+      else if (perf === 'low') matchPerf = (pzas < 70);
+
+      return matchSearch && matchDept && matchStatus && matchShift && matchPerf;
     });
 
     if (countBadge) {
@@ -381,7 +393,7 @@ window.initConfigView = function() {
       `;
     } else {
       operatorsTableBody.innerHTML = filtered.map(op => {
-        const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+        const pzas = op.pzasToday || 85;
         let statusClass = 'status-active';
         if (op.status === 'Incapacidad') statusClass = 'status-danger';
         else if (op.status === 'Capacitación') statusClass = 'status-warning';
@@ -423,11 +435,15 @@ window.initConfigView = function() {
       if (searchInput) searchInput.addEventListener('input', renderOperatorsTable);
       if (deptFilter) deptFilter.addEventListener('change', renderOperatorsTable);
       if (statusFilter) statusFilter.addEventListener('change', renderOperatorsTable);
+      if (shiftFilter) shiftFilter.addEventListener('change', renderOperatorsTable);
+      if (perfFilter) perfFilter.addEventListener('change', renderOperatorsTable);
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInput) searchInput.value = '';
           if (deptFilter) deptFilter.value = 'all';
           if (statusFilter) statusFilter.value = 'all';
+          if (shiftFilter) shiftFilter.value = 'all';
+          if (perfFilter) perfFilter.value = 'all';
           renderOperatorsTable();
         });
       }
@@ -435,6 +451,8 @@ window.initConfigView = function() {
         if (searchInput) searchInput.value = '';
         if (deptFilter) deptFilter.value = 'all';
         if (statusFilter) statusFilter.value = 'all';
+        if (shiftFilter) shiftFilter.value = 'all';
+        if (perfFilter) perfFilter.value = 'all';
         renderOperatorsTable();
       };
     }

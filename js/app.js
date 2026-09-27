@@ -395,13 +395,25 @@ const UanifyState = {
 
   // ─── KÁRDEX & MOVIMIENTOS HISTÓRICOS DE ALMACÉN ───────────────────────────
   inventoryMovements: [
-    { time: '12:45', type: 'Traspaso WIP', origin: 'ALM-INT-02 Alambrado', dest: 'ALM-INT-03 Camas Dope', item: 'Lote #1094 (Denver 1000X)', qty: '60 pzas', user: 'Rocío Morales', doc: 'TR-8841' },
-    { time: '12:15', type: 'Entrada MP', origin: 'Proveedor Celaya', dest: 'ALM-01 Materia Prima', item: 'Rollo Telar 1000X Blanco (150m)', qty: '4 rollos', user: 'Esteban Lozano', doc: 'REM-4412' },
-    { time: '11:50', type: 'Fraccionamiento Rampa', origin: 'ALM-02 Rampa WIP', dest: 'ALM-03 Pulmón Prensas', item: 'Sublote #1093-B (Viejonón 500X)', qty: '15 pzas', user: 'Auxiliar Rampa', doc: 'SUB-1093B' },
-    { time: '11:20', type: 'Salida a Embarque', origin: 'ALM-INT-C3 Mezzanine', dest: 'ALM-04 Producto Terminado', item: 'Lote #1091 (Laredo Black 200X)', qty: '60 pzas', user: 'Inspectora Calidad', doc: 'VAL-0982' },
-    { time: '10:40', type: 'Merma a Segundas', origin: 'ALM-INT-C2 Calidad 2', dest: 'ALM-05 Saldos de Viernes', item: 'Sombreros Denver (Tono disparejo)', qty: '2 pzas', user: 'Marcos Villegas', doc: 'SAL-0145' },
-    { time: '09:30', type: 'Traspaso Subensamble', origin: 'ALM-INT-10 Adorno', dest: 'Mesa Ensamble Adorno 1', item: 'Tafiletes Piel Talla 57', qty: '60 pzas', user: 'María Elena Gómez', doc: 'TAF-5701' },
-    { time: '08:15', type: 'Entrada MP', origin: 'Curtiduría León', dest: 'ALM-01 Materia Prima', item: 'Badanas Piel Cabra Especial', qty: '300 pzas', user: 'Almacenista Central', doc: 'REM-4409' }
+    // Movimientos de Hoy · Turno en Curso (2026-09-27)
+    { date: '2026-09-27', time: '12:45', shift: 'Turno Único', type: 'Traspaso WIP', originWh: 'ALM-02', origin: 'ALM-02 Rampa WIP', destWh: 'ALM-03', dest: 'ALM-03 Pulmón Prensas', item: 'Lote #1094 (Denver 1000X)', qty: '60 pzas', user: 'Rocío Morales', doc: 'TR-8841' },
+    { date: '2026-09-27', time: '12:15', shift: 'Turno Único', type: 'Entrada MP', originWh: 'EXT', origin: 'Proveedor Celaya', destWh: 'ALM-01', dest: 'ALM-01 Bodega MP', item: 'Rollo Telar 1000X Blanco (150m)', qty: '4 rollos', user: 'Esteban Lozano', doc: 'REM-4412' },
+    { date: '2026-09-27', time: '11:50', shift: 'Turno Único', type: 'Fraccionamiento Rampa', originWh: 'ALM-02', origin: 'ALM-02 Rampa WIP', destWh: 'ALM-03', dest: 'ALM-03 Pulmón Prensas', item: 'Sublote #1093-B (Viejonón 500X)', qty: '15 pzas', user: 'Auxiliar Rampa', doc: 'SUB-1093B' },
+    { date: '2026-09-27', time: '11:20', shift: 'Turno Único', type: 'Salida a Embarque', originWh: 'ALM-03', origin: 'ALM-INT-C3 Mezzanine', destWh: 'ALM-04', dest: 'ALM-04 Producto Terminado', item: 'Lote #1091 (Laredo Black 200X)', qty: '60 pzas', user: 'Inspectora Calidad', doc: 'VAL-0982' },
+    { date: '2026-09-27', time: '10:40', shift: 'Turno Único', type: 'Merma a Segundas', originWh: 'ALM-02', origin: 'ALM-INT-C2 Calidad 2', destWh: 'ALM-05', dest: 'ALM-05 Saldos de Viernes', item: 'Sombreros Denver (Tono disparejo)', qty: '2 pzas', user: 'Marcos Villegas', doc: 'SAL-0145' },
+    { date: '2026-09-27', time: '09:30', shift: 'Turno Único', type: 'Traspaso Subensamble', originWh: 'ALM-01', origin: 'ALM-INT-10 Adorno', destWh: 'ALM-02', dest: 'Mesa Ensamble Adorno 1', item: 'Tafiletes Piel Talla 57', qty: '60 pzas', user: 'María Elena Gómez', doc: 'TAF-5701' },
+    { date: '2026-09-27', time: '08:15', shift: 'Turno Único', type: 'Entrada MP', originWh: 'EXT', origin: 'Curtiduría León', destWh: 'ALM-01', dest: 'ALM-01 Bodega MP', item: 'Badanas Piel Cabra Especial', qty: '300 pzas', user: 'Almacenista Central', doc: 'REM-4409' },
+    
+    // Movimientos de Ayer (2026-09-26)
+    { date: '2026-09-26', time: '15:10', shift: 'Turno Único', type: 'Salida a Embarque', originWh: 'ALM-04', origin: 'ALM-04 Producto Terminado', destWh: 'EXT', dest: 'Transportes Castores (Monterrey)', item: 'Lote #1089 (Master Telar 1000X)', qty: '120 pzas', user: 'Logística Central', doc: 'FAC-7811' },
+    { date: '2026-09-26', time: '14:20', shift: 'Turno Único', type: 'Traspaso WIP', originWh: 'ALM-02', origin: 'ALM-02 Rampa WIP', destWh: 'ALM-03', dest: 'ALM-03 Rampa Prensas', item: 'Lote #1090 (Ranchero 200X)', qty: '60 pzas', user: 'Roberto Méndez', doc: 'TR-8835' },
+    { date: '2026-09-26', time: '11:45', shift: 'Turno Único', type: 'Entrada MP', originWh: 'EXT', origin: 'Proveedor Guadalajara', destWh: 'ALM-01', dest: 'ALM-01 Bodega MP', item: 'Herrajes Hebilla Níquel 3/8', qty: '500 pzas', user: 'Esteban Lozano', doc: 'REM-4398' },
+    { date: '2026-09-26', time: '09:15', shift: 'Turno Único', type: 'Merma a Segundas', originWh: 'ALM-02', origin: 'ALM-INT-C1 Calidad 1', destWh: 'ALM-05', dest: 'ALM-05 Saldos de Viernes', item: 'Campana Falla de Tejido', qty: '3 pzas', user: 'Inspectora Calidad', doc: 'SAL-0141' },
+
+    // Movimientos Anteriores de la Semana (2026-09-25 y 2026-09-24)
+    { date: '2026-09-25', time: '14:50', shift: 'Turno Único', type: 'Salida a Embarque', originWh: 'ALM-04', origin: 'ALM-04 Producto Terminado', destWh: 'EXT', dest: 'Cliente Guadalajara Mayoreo', item: 'Lote #1085 (Viejonón 500X)', qty: '180 pzas', user: 'Logística Central', doc: 'FAC-7799' },
+    { date: '2026-09-25', time: '10:30', shift: 'Turno Único', type: 'Fraccionamiento Rampa', originWh: 'ALM-02', origin: 'ALM-02 Rampa WIP', destWh: 'ALM-03', dest: 'ALM-03 Rampa Prensas', item: 'Sublote #1086-A (Denver 1000X)', qty: '15 pzas', user: 'Auxiliar Rampa', doc: 'SUB-1086A' },
+    { date: '2026-09-24', time: '13:10', shift: 'Turno Único', type: 'Entrada MP', originWh: 'EXT', origin: 'Importaciones León', destWh: 'ALM-01', dest: 'ALM-01 Bodega MP', item: 'Resina Dope Acrílica (Tambor 200L)', qty: '2 tambores', user: 'Esteban Lozano', doc: 'REM-4380' }
   ],
   
   // Métricas Generales Tombstone Hats
@@ -2576,28 +2588,51 @@ function enrichStationWithDefaults(st, idx) {
       `).join('');
     }
 
-    // Kárdex de movimientos de almacén (con Filtros y Acciones - Regla 0.35)
+    // Kárdex de movimientos de almacén (con Filtros Multi-Criterio de Fecha, Turno y Almacén - Regla 0.35)
     const kardexBody = document.getElementById('inventoryKardexTableBody');
     let kardexFiltersBound = false;
     function renderInventoryKardexTable() {
       if (!kardexBody || !UanifyState.inventoryMovements) return;
       const searchInput = document.getElementById('kardexSearchInput');
+      const periodFilter = document.getElementById('kardexPeriodFilter');
       const typeFilter = document.getElementById('kardexTypeFilter');
+      const whFilter = document.getElementById('kardexWarehouseFilter');
       const countBadge = document.getElementById('kardexFilteredCountBadge');
       const btnReset = document.getElementById('btnResetKardexFilters');
 
       const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const period = periodFilter ? periodFilter.value : 'today';
       const type = typeFilter ? typeFilter.value : 'all';
+      const wh = whFilter ? whFilter.value : 'all';
 
       const filtered = UanifyState.inventoryMovements.filter(m => {
+        // 1. Filtrado por período / fecha
+        let matchPeriod = true;
+        if (period === 'today') {
+          matchPeriod = (m.date === '2026-09-27');
+        } else if (period === 'yesterday') {
+          matchPeriod = (m.date === '2026-09-26');
+        } else if (period === 'week') {
+          matchPeriod = (m.date >= '2026-09-21' && m.date <= '2026-09-27');
+        }
+
+        // 2. Filtrado por tipo de movimiento
+        const matchType = (type === 'all' || m.type.includes(type));
+
+        // 3. Filtrado por almacén origen o destino
+        const matchWh = (wh === 'all' || (m.originWh === wh || m.destWh === wh || m.origin.includes(wh) || m.dest.includes(wh)));
+
+        // 4. Búsqueda de texto libre
         const matchSearch = !q ||
           m.item.toLowerCase().includes(q) ||
           m.origin.toLowerCase().includes(q) ||
           m.dest.toLowerCase().includes(q) ||
           m.user.toLowerCase().includes(q) ||
-          m.doc.toLowerCase().includes(q);
-        const matchType = type === 'all' || m.type.includes(type);
-        return matchSearch && matchType;
+          m.doc.toLowerCase().includes(q) ||
+          (m.shift && m.shift.toLowerCase().includes(q)) ||
+          (m.date && m.date.includes(q));
+
+        return matchPeriod && matchType && matchWh && matchSearch;
       });
 
       if (countBadge) {
@@ -2607,11 +2642,11 @@ function enrichStationWithDefaults(st, idx) {
       if (filtered.length === 0) {
         kardexBody.innerHTML = `
           <tr class="table-empty-row">
-            <td colspan="8">
+            <td colspan="10">
               <div class="table-empty-content">
                 <span class="table-empty-icon"></span>
                 <span class="table-empty-title">No se encontraron movimientos registrados</span>
-                <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+                <span class="table-empty-subtitle">Intenta cambiar el período de fecha, tipo de movimiento o limpia los filtros</span>
                 <button type="button" class="btn-reset-filters" onclick="window.resetKardexFilters()">Limpiar Filtros</button>
               </div>
             </td>
@@ -2627,8 +2662,11 @@ function enrichStationWithDefaults(st, idx) {
 
           return `
             <tr>
-              <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${m.time}</span></td>
+              <td class="col-code" style="text-align:center;">
+                <span class="table-badge-code" style="margin:0 auto; font-size:11px;">${m.date || '2026-09-27'} ${m.time}</span>
+              </td>
               <td class="col-name" style="text-align:center;">${typeBadge}</td>
+              <td style="text-align:center;"><span class="badge-subtle" style="font-size:10.5px;">${m.shift || 'Turno Único'}</span></td>
               <td><span style="font-weight:600; font-size:12.5px; color:var(--text-primary);">${m.origin}</span></td>
               <td><strong style="font-weight:700; font-size:12.5px; color:var(--color-brand); display:inline-flex; align-items:center; gap:4px;">&rarr; ${m.dest}</strong></td>
               <td><strong style="font-size:12.5px; color:var(--text-primary);">${m.item}</strong></td>
@@ -2650,17 +2688,23 @@ function enrichStationWithDefaults(st, idx) {
       if (!kardexFiltersBound) {
         kardexFiltersBound = true;
         if (searchInput) searchInput.addEventListener('input', renderInventoryKardexTable);
+        if (periodFilter) periodFilter.addEventListener('change', renderInventoryKardexTable);
         if (typeFilter) typeFilter.addEventListener('change', renderInventoryKardexTable);
+        if (whFilter) whFilter.addEventListener('change', renderInventoryKardexTable);
         if (btnReset) {
           btnReset.addEventListener('click', () => {
             if (searchInput) searchInput.value = '';
+            if (periodFilter) periodFilter.value = 'today';
             if (typeFilter) typeFilter.value = 'all';
+            if (whFilter) whFilter.value = 'all';
             renderInventoryKardexTable();
           });
         }
         window.resetKardexFilters = function() {
           if (searchInput) searchInput.value = '';
+          if (periodFilter) periodFilter.value = 'today';
           if (typeFilter) typeFilter.value = 'all';
+          if (whFilter) whFilter.value = 'all';
           renderInventoryKardexTable();
         };
       }
@@ -3201,6 +3245,8 @@ function enrichStationWithDefaults(st, idx) {
     const searchInput = document.getElementById('operatorSearchInput');
     const deptFilter = document.getElementById('operatorDeptFilter');
     const statusFilter = document.getElementById('operatorStatusFilter');
+    const shiftFilter = document.getElementById('operatorShiftFilter');
+    const perfFilter = document.getElementById('operatorPerformanceFilter');
     const badgeCount = document.getElementById('operatorsFilteredCountBadge');
     const btnReset = document.getElementById('btnResetOperatorFilters');
     if (!tableBody || !UanifyState.operators) return;
@@ -3209,12 +3255,22 @@ function enrichStationWithDefaults(st, idx) {
       const q = (searchInput ? searchInput.value.toLowerCase().trim() : '');
       const dept = (deptFilter ? deptFilter.value : 'all');
       const st = (statusFilter ? statusFilter.value : 'all');
+      const shift = (shiftFilter ? shiftFilter.value : 'all');
+      const perf = (perfFilter ? perfFilter.value : 'all');
 
       const filtered = UanifyState.operators.filter(op => {
         const matchSearch = !q || op.name.toLowerCase().includes(q) || op.empId.toLowerCase().includes(q) || op.machine.toLowerCase().includes(q);
         const matchDept = dept === 'all' || op.deptCode === dept;
         const matchStatus = st === 'all' || op.status === st;
-        return matchSearch && matchDept && matchStatus;
+        const matchShift = shift === 'all' || (op.shift && op.shift.includes(shift));
+        
+        let matchPerf = true;
+        const pzas = op.pzasToday || 85;
+        if (perf === 'high') matchPerf = (pzas >= 80);
+        else if (perf === 'mid') matchPerf = (pzas >= 70 && pzas < 80);
+        else if (perf === 'low') matchPerf = (pzas < 70);
+
+        return matchSearch && matchDept && matchStatus && matchShift && matchPerf;
       });
 
       if (badgeCount) {
@@ -3238,7 +3294,7 @@ function enrichStationWithDefaults(st, idx) {
       }
 
       tableBody.innerHTML = filtered.map(op => {
-        const pzas = op.pzasToday || Math.floor(Math.random() * 30 + 70);
+        const pzas = op.pzasToday || 85;
         let statusClass = 'status-active';
         if (op.status === 'Incapacidad') statusClass = 'status-danger';
         else if (op.status === 'Capacitación') statusClass = 'status-warning';
@@ -3278,11 +3334,15 @@ function enrichStationWithDefaults(st, idx) {
     if (searchInput) searchInput.addEventListener('input', doRender);
     if (deptFilter) deptFilter.addEventListener('change', doRender);
     if (statusFilter) statusFilter.addEventListener('change', doRender);
+    if (shiftFilter) shiftFilter.addEventListener('change', doRender);
+    if (perfFilter) perfFilter.addEventListener('change', doRender);
     if (btnReset) {
       btnReset.addEventListener('click', () => {
         if (searchInput) searchInput.value = '';
         if (deptFilter) deptFilter.value = 'all';
         if (statusFilter) statusFilter.value = 'all';
+        if (shiftFilter) shiftFilter.value = 'all';
+        if (perfFilter) perfFilter.value = 'all';
         doRender();
       });
     }
@@ -3291,6 +3351,8 @@ function enrichStationWithDefaults(st, idx) {
       if (searchInput) searchInput.value = '';
       if (deptFilter) deptFilter.value = 'all';
       if (statusFilter) statusFilter.value = 'all';
+      if (shiftFilter) shiftFilter.value = 'all';
+      if (perfFilter) perfFilter.value = 'all';
       doRender();
     };
 

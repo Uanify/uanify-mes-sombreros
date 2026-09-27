@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.35.0">
-  <link rel="stylesheet" href="css/components.css?v=2.35.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.36.0">
+  <link rel="stylesheet" href="css/components.css?v=2.36.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.35.0</span>
+        <span class="system-version-pill login-version-pill">v2.36.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -267,9 +267,16 @@
                 <h3>Progreso Hora por Hora · Turno Único (07:00 - 15:30)</h3>
                 <span class="badge-subtle">Actualización continua Edge Local · Sin dependencia de internet</span>
               </div>
-              <div id="andonShiftStartBadge" style="padding:6px 14px; border-radius:6px; font-size:12px; background:#F8FAFC; color:var(--text-secondary); border:1px solid var(--border-subtle); display:flex; align-items:center; gap:8px;">
-                <span class="pulse-dot" style="background:#0284C7;"></span>
-                <span id="andonShiftStartText"><strong>Arranque Dinámico:</strong> Esperando 1er escaneo QR del día...</span>
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <select id="andonHourlyDateFilter" class="custom-select" style="min-width:190px; height:34px; font-size:12px; font-weight:700;">
+                  <option value="today" selected>Hoy · Turno Único (27/09/2026)</option>
+                  <option value="yesterday">Ayer · 26/09/2026 (Cerrado 850 pzas)</option>
+                  <option value="prevDay">25/09/2026 (Cerrado 862 pzas)</option>
+                </select>
+                <div id="andonShiftStartBadge" style="padding:6px 14px; border-radius:6px; font-size:12px; background:#F8FAFC; color:var(--text-secondary); border:1px solid var(--border-subtle); display:flex; align-items:center; gap:8px;">
+                  <span class="pulse-dot" style="background:#0284C7;"></span>
+                  <span id="andonShiftStartText"><strong>Arranque Dinámico:</strong> Esperando 1er escaneo QR del día...</span>
+                </div>
               </div>
             </div>
             <div class="hourly-bars" id="hourlyBars">
@@ -284,6 +291,28 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
               <h3 style="font-size:15px; font-weight:700;">Bitácora de Paros e Incidencias en Turno Único</h3>
               <span class="badge-subtle">Monitoreo continuo en nave central</span>
+            </div>
+            <div class="uanify-filter-toolbar" style="margin-bottom:14px;">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="andonStopSearch" class="form-input" placeholder="Buscar por estación, causa o nota de paro..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="andonStopDeptFilter" class="custom-select" style="min-width:180px;">
+                    <option value="all">Todas las Estaciones</option>
+                  </select>
+                  <select id="andonStopSeverityFilter" class="custom-select" style="min-width:160px;">
+                    <option value="all">Toda Severidad</option>
+                    <option value="critical">Paro Crítico (> 10 min)</option>
+                    <option value="minor">Paro Menor / Microparo</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="andonStopFilteredCountBadge">Eventos de paro</span>
+                <button type="button" class="btn-reset-filters" id="btnResetAndonStopFilters" title="Restablecer filtros">Limpiar</button>
+              </div>
             </div>
             <div id="downtimeListAndon">
               <!-- Llenado dinámico -->
@@ -1221,13 +1250,27 @@
                   <input type="text" id="kardexSearchInput" class="form-input" placeholder="Buscar por lote, material, custodio, folio..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
-                  <select id="kardexTypeFilter" class="custom-select">
+                  <select id="kardexPeriodFilter" class="custom-select" style="min-width:175px;">
+                    <option value="all">Todo el Período / Histórico</option>
+                    <option value="today" selected>Hoy · Turno en Curso</option>
+                    <option value="yesterday">Ayer (26/09/2026)</option>
+                    <option value="week">Esta Semana (Semana 39)</option>
+                  </select>
+                  <select id="kardexTypeFilter" class="custom-select" style="min-width:160px;">
                     <option value="all">Todos los Movimientos</option>
                     <option value="Entrada">Entrada MP</option>
                     <option value="Traspaso">Traspaso WIP</option>
                     <option value="Fraccionamiento">Fraccionamiento Rampa</option>
                     <option value="Salida">Embarque / Salida</option>
                     <option value="Merma">Saldos / Segundas</option>
+                  </select>
+                  <select id="kardexWarehouseFilter" class="custom-select" style="min-width:175px;">
+                    <option value="all">Todos los Almacenes</option>
+                    <option value="ALM-01">ALM-01 · Bodega MP</option>
+                    <option value="ALM-02">ALM-02 · WIP Producción</option>
+                    <option value="ALM-03">ALM-03 · Rampa Prensas</option>
+                    <option value="ALM-04">ALM-04 · Producto Terminado</option>
+                    <option value="ALM-05">ALM-05 · Saldos de Viernes</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="kardexFilteredCountBadge">Movimientos recientes</span>
@@ -1239,15 +1282,16 @@
               <table class="data-table" id="inventoryKardexTable">
                 <thead>
                   <tr>
-                    <th class="col-code" style="width: 85px; text-align: center;">Hora</th>
-                    <th class="col-name" style="width: 150px; text-align: center;">Tipo de Movimiento</th>
+                    <th class="col-code" style="width: 130px; text-align: center;">Fecha / Hora</th>
+                    <th class="col-name" style="width: 145px; text-align: center;">Tipo de Movimiento</th>
+                    <th style="width: 100px; text-align: center;">Turno</th>
                     <th style="width: 160px;">Almacén Origen</th>
                     <th style="width: 170px;">Almacén Destino</th>
                     <th style="min-width: 180px;">Lote / Material</th>
                     <th style="width: 100px; text-align: center;">Cantidad</th>
                     <th style="width: 130px;">Responsable</th>
-                    <th class="col-status" style="width: 120px; text-align: center;">Folio / Doc</th>
-                    <th class="col-actions" style="width: 90px; text-align: center;">Acciones</th>
+                    <th class="col-status" style="width: 110px; text-align: center;">Folio / Doc</th>
+                    <th class="col-actions" style="width: 85px; text-align: center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="inventoryKardexTableBody">
@@ -1324,6 +1368,17 @@
                 <option value="Incapacidad">Incapacidad</option>
                 <option value="Capacitación">En Capacitación</option>
               </select>
+              <select id="operatorShiftFilter" class="custom-select" style="min-width:150px;">
+                <option value="all">Todos los Turnos</option>
+                <option value="Turno Único">Turno Único (07:00-15:30)</option>
+                <option value="Turno Mantenimiento">Turno Mantenimiento</option>
+              </select>
+              <select id="operatorPerformanceFilter" class="custom-select" style="min-width:160px;">
+                <option value="all">Todo Rendimiento</option>
+                <option value="high">Meta Cumplida (>= 80 pzas)</option>
+                <option value="mid">Rendimiento Regular (70-79 pzas)</option>
+                <option value="low">Requiere Apoyo (< 70 pzas)</option>
+              </select>
             </div>
             <span class="filter-count-badge" id="operatorsFilteredCountBadge">Mostrando 7 de 7 operadores</span>
             <button type="button" class="btn-reset-filters" id="btnResetOperatorFilters" title="Restablecer filtros">Limpiar</button>
@@ -1374,6 +1429,21 @@
             <p class="view-subtitle">Consola unificada de KPIs, OEE matemático, valorización de producción, balanceo de líneas y auditoría de paros</p>
           </div>
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <select id="analyticsPeriodFilter" class="custom-select" style="min-width:165px; height:38px; font-weight:700; font-size:12.5px;">
+                <option value="today" selected>Hoy · Turno en Curso</option>
+                <option value="yesterday">Ayer · 26/09/2026</option>
+                <option value="week">Esta Semana (Semana 39)</option>
+                <option value="month">Este Mes (Septiembre 2026)</option>
+              </select>
+              <select id="analyticsModelFilter" class="custom-select" style="min-width:170px; height:38px; font-weight:700; font-size:12.5px;">
+                <option value="all" selected>Todos los Modelos</option>
+                <option value="1000X Master Telar">1000X Master Telar</option>
+                <option value="500X Premium Telar">500X Premium Telar</option>
+                <option value="200X Ranchero">200X Ranchero</option>
+                <option value="100X Clásico">100X Clásico</option>
+              </select>
+            </div>
             <span class="table-badge-code" id="simHourBadge" style="font-size:12px; padding:7px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.2);">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span id="simHourText">Hora Simulada: 07:00 a 13:00 (Jornada 72%)</span>
@@ -1553,6 +1623,27 @@
             </div>
             <p class="section-desc">Evaluación del ritmo productivo, cumplimiento de Takt Time estándar (42s) y control de mermas por área asignada.</p>
             
+            <div class="uanify-filter-toolbar" style="margin-top:14px; margin-bottom:14px;">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="supervisorSearchInput" class="form-input" placeholder="Buscar por supervisor o departamento asignado..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="supervisorGradeFilter" class="custom-select" style="min-width:180px;">
+                    <option value="all">Todas las Calificaciones</option>
+                    <option value="A+">Excelente (A+)</option>
+                    <option value="A">Sobresaliente (A)</option>
+                    <option value="B">Regular (B)</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="supervisorFilteredCountBadge">Supervisores en turno</span>
+                <button type="button" class="btn-reset-filters" id="btnResetSupervisorFilters" title="Restablecer filtros">Limpiar</button>
+              </div>
+            </div>
+
             <div class="downtime-table-wrapper" style="margin-top:14px;">
               <table class="data-table" id="supervisorKpisTable">
                 <thead>
@@ -1621,6 +1712,29 @@
                 <p class="section-desc" style="margin-bottom:0;">Cálculo de minutos perdidos en planta y análisis SMED</p>
               </div>
             </div>
+            <div class="uanify-filter-toolbar" style="margin-top:14px; margin-bottom:14px;">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="downtimeSearchInput" class="form-input" placeholder="Buscar por estación, causa, notas..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="downtimeStationFilter" class="custom-select" style="min-width:180px;">
+                    <option value="all">Todas las Estaciones</option>
+                  </select>
+                  <select id="downtimeImpactFilter" class="custom-select" style="min-width:160px;">
+                    <option value="all">Todos los Impactos</option>
+                    <option value="Crítico">Crítico (> 10 min)</option>
+                    <option value="Menor">Menor (<= 10 min)</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="downtimeFilteredCountBadge">Eventos de paro</span>
+                <button type="button" class="btn-reset-filters" id="btnResetDowntimeFilters" title="Restablecer filtros">Limpiar</button>
+              </div>
+            </div>
+
             <div class="downtime-table-wrapper" style="margin-top:14px;">
               <table class="data-table" id="downtimeTable">
                 <thead>
@@ -1652,6 +1766,32 @@
                 Cambio Masivo: Pintura Taiwan 1125 → Nuevo Proveedor
               </button>
             </div>
+
+            <div class="uanify-filter-toolbar" style="margin-top:14px; margin-bottom:14px;">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="bomSearchInput" class="form-input" placeholder="Buscar material o ficha técnica..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="bomCategoryFilter" class="custom-select" style="min-width:180px;">
+                    <option value="all">Todas las Categorías</option>
+                    <option value="Acabados">Acabados & Pintura</option>
+                    <option value="Englopado">Englopado & Resinas</option>
+                    <option value="Refuerzos">Refuerzos & Selladores</option>
+                    <option value="Materia Prima">Materia Prima Base</option>
+                    <option value="Insumos">Insumos & Alambres</option>
+                    <option value="Subensamble">Subensamble (Tafiletes)</option>
+                    <option value="Adorno">Adorno & Toquillas</option>
+                  </select>
+                </div>
+                <span class="filter-count-badge" id="bomFilteredCountBadge">Materiales BOM</span>
+                <button type="button" class="btn-reset-filters" id="btnResetBomFilters" title="Restablecer filtros">Limpiar</button>
+              </div>
+            </div>
+
             <div class="downtime-table-wrapper" style="margin-top:16px;">
               <table class="data-table" id="materialMatrixTable">
                 <thead>
@@ -1989,6 +2129,17 @@
                     <option value="Activo">Activos</option>
                     <option value="Incapacidad">Incapacidad</option>
                     <option value="Capacitación">En Capacitación</option>
+                  </select>
+                  <select id="cfgOperatorShiftFilter" class="custom-select" style="min-width:150px;">
+                    <option value="all">Todos los Turnos</option>
+                    <option value="Turno Único">Turno Único (07:00-15:30)</option>
+                    <option value="Turno Mantenimiento">Turno Mantenimiento</option>
+                  </select>
+                  <select id="cfgOperatorPerformanceFilter" class="custom-select" style="min-width:160px;">
+                    <option value="all">Todo Rendimiento</option>
+                    <option value="high">Meta Cumplida (>= 80 pzas)</option>
+                    <option value="mid">Rendimiento Regular (70-79 pzas)</option>
+                    <option value="low">Requiere Apoyo (< 70 pzas)</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="cfgOperatorCountBadge">7 operadores</span>
@@ -3937,11 +4088,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.35.0"></script>
-  <script src="js/andon.js?v=2.35.0"></script>
-  <script src="js/terminal.js?v=2.35.0"></script>
-  <script src="js/engineer.js?v=2.35.0"></script>
-  <script src="js/executive.js?v=2.35.0"></script>
-  <script src="js/config.js?v=2.35.0"></script>
+  <script src="js/app.js?v=2.36.0"></script>
+  <script src="js/andon.js?v=2.36.0"></script>
+  <script src="js/terminal.js?v=2.36.0"></script>
+  <script src="js/engineer.js?v=2.36.0"></script>
+  <script src="js/executive.js?v=2.36.0"></script>
+  <script src="js/config.js?v=2.36.0"></script>
 </body>
 </html>
