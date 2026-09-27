@@ -578,3 +578,30 @@ Queda estrictamente prohibido que el código o las decisiones operativas avancen
 - **Antes de dar por concluida cualquier tarea o iteración:** Verificar que las 5 fuentes documentales estén perfectamente alineadas entre sí y con el código en producción.
 - **Trazabilidad cruzada:** Todo requerimiento (`RF-XX`) debe mapearse a su Historia de Usuario (`US-XX`) y a sus Casos de Prueba (`TC-XX`).
 - **Cero emojis:** Mantener en toda la documentación la estética técnica e industrial sobria, sin emojis informales.
+
+---
+
+## REGLA 0.37: Prohibición de Textos Permanentes Explicativos en Formularios y Uso Obligatorio de Tooltips Interactivos (MANDATORIA)
+
+**En todos los módulos de configuración, catálogos maestros y formularios del sistema MES, queda terminantemente prohibido colocar textos explicativos permanentes debajo de los inputs (como etiquetas `<small>` o párrafos informativos largos).**
+
+### Fundamento de Diseño y Operación:
+Los usuarios de la plataforma (ingenieros de planta, supervisores y administradores) son personal calificado que conoce las reglas generales de operación. Los textos permanentes saturan visualmente las tarjetas, alargan innecesariamente los formularios y restan pulcritud profesional a la interfaz de manufactura.
+
+### Directrices Mandatorias para Nuevas Implementaciones:
+1. **Consumo de Información Bajo Demanda:** Toda especificación técnica, aclaración de cálculo, conversión o contexto operativo secundario (ej. *"Meta base semanal para los 14 departamentos de la planta (~850 pzas/día)"*, *"Ritmo de salida requerido..."*, etc.) debe ubicarse exclusivamente dentro de un icono de ayuda interactivo `.info-tooltip-icon` situado en la cabecera del campo (`.field-label`).
+2. **Estructura Estándar de Campo con Tooltip:**
+   ```html
+   <label class="field-label">
+     <span>Nombre del Parámetro:</span>
+     <span class="info-tooltip-icon" title="Texto explicativo claro y conciso para consulta bajo demanda">
+       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+     </span>
+   </label>
+   <input ... class="form-input">
+   ```
+3. **Estandarización de Selectores de Tiempo:**
+   - Para rangos horarios (como Receso / Comida), se deben emplear dos selectores nativos discretos de inicio y fin (`input[type="time"]`) con indicador de duración calculado dinámicamente, erradicando inputs de texto plano que requieran formateo manual por parte del usuario.
+4. **Prohibición de Configuración de Datos en Tiempo Real:**
+   - Si un parámetro operativo del sistema debe reflejar la realidad física de la planta (como el Modo Dinámico de Arranque de Turno US-17 activado por el primer escaneo QR), no debe exponerse como configurable mediante radios o interruptores artificiales. Debe operar de manera continua y autónoma, exhibiendo su estado en tiempo real.
+

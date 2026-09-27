@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.26.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.27.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.26.0)
+## Arquitectura Funcional Tombstone Hats (v2.27.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC) y estilo industrial tradicional moderno:
 
@@ -55,6 +55,14 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.27.0] - 2026-09-27
+- **Estandarización de Selectores de Tiempo y Consumo de Especificaciones Vía Tooltips (`Regla 0.37`):**
+  - **Selectores Intuitivos de Receso / Comida:** Sustitución del input de texto plano manual por dos selectores nativos de hora (`Inicio Receso` y `Fin Receso`) con cálculo automático de duración en tiempo real (45 min) y preservación de compatibilidad con formato de sistema (`"12:00 a 12:45 hrs"`).
+  - **Eliminación de "Resumen Informativo del Turno":** Se retiró el input redundante de resumen para aportar limpieza y concisión al formulario.
+  - **Consumo de Información de Inputs Vía Tooltips:** Supresión de textos explicativos permanentes bajo inputs de metas, takt time, lote madre y umbrales Andon; toda especificación se consulta bajo demanda mediante iconos interactivos `.info-tooltip-icon` en los labels.
+  - **Régimen Dinámico de Turno US-17 No Configurable:** Erradicación de radio buttons de modo; el sistema opera en modo dinámico permanente en tiempo real midiendo el arranque al primer QR de planta.
+  - **Eliminación del Selector de Modo Operativo de Rampa:** Retiro del control de fraccionamiento de 60 a 15 piezas, supeditando la decisión técnica al criterio del operador en su estación.
 
 ### [2.21.0] - 2026-09-26
 - **Rediseño Ergonómico de Sub-Pestañas y Corrección de Espaciado Superior (`RF-72`):**

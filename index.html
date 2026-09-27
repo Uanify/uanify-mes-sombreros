@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.26.0</span>
+        <span class="system-version-pill login-version-pill">v2.27.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -202,7 +202,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.26.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.27.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -1708,46 +1708,79 @@
               
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <div class="form-group">
-                  <label class="field-label">Hora de Entrada:</label>
+                  <label class="field-label">
+                    <span>Hora de Entrada:</span>
+                    <span class="info-tooltip-icon" title="Horario programado de apertura y arranque de operaciones">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </span>
+                  </label>
                   <input type="time" class="form-input" id="cfgShiftStart" value="07:00">
                 </div>
                 <div class="form-group">
-                  <label class="field-label">Hora de Salida:</label>
+                  <label class="field-label">
+                    <span>Hora de Salida:</span>
+                    <span class="info-tooltip-icon" title="Horario programado de conclusión de la jornada de producción">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </span>
+                  </label>
                   <input type="time" class="form-input" id="cfgShiftEnd" value="15:30">
                 </div>
               </div>
 
+              <!-- Selector Intuitivo de Receso / Comida Estandarizado -->
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <div class="form-group">
-                  <label class="field-label">Receso / Comida:</label>
-                  <input type="text" class="form-input" id="cfgShiftLunch" value="12:00 a 12:45 hrs" placeholder="12:00 a 12:45">
+                  <label class="field-label">
+                    <span>Inicio Receso / Comida:</span>
+                    <span class="info-tooltip-icon" title="Hora de inicio de la pausa para alimentos del personal">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </span>
+                  </label>
+                  <input type="time" class="form-input" id="cfgShiftLunchStart" value="12:00">
                 </div>
                 <div class="form-group">
-                  <label class="field-label">Días de Operación:</label>
-                  <input type="text" class="form-input" id="cfgShiftDays" value="Lunes a Viernes" placeholder="Lunes a Viernes">
+                  <label class="field-label">
+                    <span>Fin Receso / Comida:</span>
+                    <span class="info-tooltip-icon" title="Hora de reanudación de actividades en piso de producción">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </span>
+                  </label>
+                  <input type="time" class="form-input" id="cfgShiftLunchEnd" value="12:45">
                 </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:6px 12px; background:#F8FAFC; border-radius:8px; border:1px solid var(--border-subtle); font-size:12px;">
+                <span style="color:var(--text-muted); display:inline-flex; align-items:center; gap:6px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  Duración Receso:
+                </span>
+                <span id="cfgShiftLunchDuration" style="font-weight:700; color:var(--color-brand); font-family:var(--font-mono);">45 min</span>
               </div>
 
               <div class="form-group">
-                <label class="field-label">Resumen Informativo del Turno:</label>
-                <input type="text" class="form-input" id="cfgShiftSummary" value="Turno Único (07:00 - 15:30 · Lunes a Viernes)" readonly style="background:#F8FAFC; font-weight:700; color:var(--color-brand); font-family:var(--font-mono);">
-                <small style="color:var(--text-muted); font-size:11px;">Este horario informativo se sincroniza con el encabezado de planta y el pie de navegación.</small>
+                <label class="field-label">
+                  <span>Días de Operación:</span>
+                  <span class="info-tooltip-icon" title="Jornada habitual de trabajo programada para la planta">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
+                <input type="text" class="form-input" id="cfgShiftDays" value="Lunes a Viernes" placeholder="Lunes a Viernes">
               </div>
 
-              <!-- Selector de Modo de Inicio de Turno (US-17) -->
+              <!-- Régimen Dinámico de Arranque de Turno (US-17) - No configurable, datos reales -->
               <div class="form-group" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
-                <label class="field-label" style="font-weight:700;">Modo de Arranque de Turno (US-17):</label>
-                <div style="display:flex; gap:16px; margin-top:6px; flex-wrap:wrap;">
-                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px;">
-                    <input type="radio" name="cfgShiftModeRadio" id="cfgShiftModeDynamic" value="dynamic" checked>
-                    <span><strong>Dinámico</strong> (Disparo al 1er QR · Mide Ramp-up)</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label class="field-label" style="font-weight:700; margin-bottom:0;">
+                    <span>Modo de Arranque de Turno (US-17):</span>
+                    <span class="info-tooltip-icon" title="Régimen Dinámico permanente: el inicio de turno se sincroniza en tiempo real al registrar el primer escaneo QR en planta para medir con máxima fidelidad el ramp-up operativo">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </span>
                   </label>
-                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px;">
-                    <input type="radio" name="cfgShiftModeRadio" id="cfgShiftModeFixed" value="fixed">
-                    <span><strong>Rígido</strong> (Fijo a las 07:00:00 hrs)</span>
-                  </label>
+                  <span class="table-status-pill status-active" style="font-size:11px; padding:3px 9px;">
+                    <span class="status-dot"></span> Dinámico
+                  </span>
                 </div>
-                <div id="cfgShiftStartStatusBox" style="margin-top:10px; padding:10px 14px; border-radius:6px; background:#F8FAFC; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div id="cfgShiftStartStatusBox" style="margin-top:8px; padding:10px 14px; border-radius:8px; background:#F8FAFC; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                   <div>
                     <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); display:block;">Arranque Registrado Hoy:</span>
                     <span id="cfgShiftStartDetails" style="font-size:13px; font-weight:700; color:var(--text-primary);">Esperando primer escaneo QR...</span>
@@ -1759,19 +1792,31 @@
               </div>
 
               <div class="form-group">
-                <label class="field-label">Meta Semanal de Planta (Piezas):</label>
+                <label class="field-label">
+                  <span>Meta Semanal de Planta (Piezas):</span>
+                  <span class="info-tooltip-icon" title="Meta base semanal para los 14 departamentos de la planta (~850 pzas/día)">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="number" class="form-input" id="cfgShiftGoal" value="4250">
-                <small style="color:var(--text-muted); font-size:11px;">Meta base semanal para los 14 departamentos de la planta (~850 pzas/día)</small>
               </div>
               <div class="form-group">
-                <label class="field-label">Takt Time Estándar (Segundos por Pieza):</label>
+                <label class="field-label">
+                  <span>Takt Time Estándar (Segundos por Pieza):</span>
+                  <span class="info-tooltip-icon" title="Ritmo de salida requerido para cumplir la meta semanal">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="number" class="form-input" id="cfgTaktTime" value="42">
-                <small style="color:var(--text-muted); font-size:11px;">Ritmo de salida requerido para cumplir la meta semanal</small>
               </div>
               <div class="form-group">
-                <label class="field-label">Tamaño Estándar de Lote Madre:</label>
+                <label class="field-label">
+                  <span>Tamaño Estándar de Lote Madre:</span>
+                  <span class="info-tooltip-icon" title="Lote estándar fraccionable libremente por el operador según criterio y necesidad del puesto">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
-                <small style="color:var(--text-muted); font-size:11px;">Fraccionado en rampa a sublotes de 15 pzas para puestos de adorno</small>
               </div>
             </div>
 
@@ -1779,21 +1824,22 @@
             <div class="config-card card-glass">
               <h3>Umbrales de Alerta Andon (WIP)</h3>
               <div class="form-group">
-                <label class="field-label">Alerta de Acumulación en Almacén Intermedio:</label>
+                <label class="field-label">
+                  <span>Alerta de Acumulación en Almacén Intermedio:</span>
+                  <span class="info-tooltip-icon" title="Piezas en espera para marcar almacén intermedio en advertencia (amarillo)">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="number" class="form-input" value="70" id="cfgWipAlert">
-                <small style="color:var(--text-muted); font-size:11px;">Piezas en espera para marcar almacén en amarillo</small>
               </div>
               <div class="form-group">
-                <label class="field-label">Umbral de Paro Crítico (Rojo):</label>
+                <label class="field-label">
+                  <span>Umbral de Paro Crítico (Rojo):</span>
+                  <span class="info-tooltip-icon" title="Piezas en espera para disparar paro crítico y señal Andon en piso">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="number" class="form-input" value="95" id="cfgWipCritical">
-                <small style="color:var(--text-muted); font-size:11px;">Piezas en espera para marcar alerta crítica en Andon</small>
-              </div>
-              <div class="form-group">
-                <label class="field-label">Modo Operativo de Rampa:</label>
-                <select class="custom-select">
-                  <option>Permitir fraccionamiento de 60 a 15 piezas</option>
-                  <option>Lote directo sin fraccionar</option>
-                </select>
               </div>
             </div>
 
@@ -1801,11 +1847,21 @@
             <div class="config-card card-glass">
               <h3>Enlace con CONTPAQi (COMPAC)</h3>
               <div class="form-group">
-                <label class="field-label">Servidor / Gateway Local:</label>
+                <label class="field-label">
+                  <span>Servidor / Gateway Local:</span>
+                  <span class="info-tooltip-icon" title="Dirección IP y puerto del conector local de CONTPAQi">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="text" class="form-input" value="192.168.1.120:8080/compac-api">
               </div>
               <div class="form-group">
-                <label class="field-label">Intervalo de Sincronización:</label>
+                <label class="field-label">
+                  <span>Intervalo de Sincronización:</span>
+                  <span class="info-tooltip-icon" title="Frecuencia de sondeo y reconciliación de órdenes de producción">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <select class="custom-select">
                   <option>Cada 5 minutos</option>
                   <option>Cada 15 minutos</option>
@@ -1813,7 +1869,12 @@
                 </select>
               </div>
               <div class="form-group">
-                <label class="field-label">Contacto Soporte COMPAC:</label>
+                <label class="field-label">
+                  <span>Contacto Soporte COMPAC:</span>
+                  <span class="info-tooltip-icon" title="Referencia de soporte contratado para la interfaz ERP">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </span>
+                </label>
                 <input type="text" class="form-input" value="Ingeniera Externa (Membresía Anual)" readonly style="background:#F1F5F9;">
               </div>
             </div>
@@ -3739,11 +3800,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.26.0"></script>
-  <script src="js/andon.js?v=2.26.0"></script>
-  <script src="js/terminal.js?v=2.26.0"></script>
-  <script src="js/engineer.js?v=2.26.0"></script>
-  <script src="js/executive.js?v=2.26.0"></script>
-  <script src="js/config.js?v=2.26.0"></script>
+  <script src="js/app.js?v=2.27.0"></script>
+  <script src="js/andon.js?v=2.27.0"></script>
+  <script src="js/terminal.js?v=2.27.0"></script>
+  <script src="js/engineer.js?v=2.27.0"></script>
+  <script src="js/executive.js?v=2.27.0"></script>
+  <script src="js/config.js?v=2.27.0"></script>
 </body>
 </html>
