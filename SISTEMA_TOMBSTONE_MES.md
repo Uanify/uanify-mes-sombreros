@@ -22,7 +22,7 @@ El sistema **Tombstone Hats MES** (Manufacturing Execution System) es una plataf
 ### Objetivos Clave de Negocio
 
 1. **Eliminar el papel y los "vales de libreta":** Digitalizar el avance de piezas y nómina por destajo mediante escaneo de códigos QR en tarjetas viajeras.
-2. **Tablero Andon Digital en Nave Central:** Sustituir pizarrones manuales por una pantalla Smart TV de 50" con semáforos en tiempo real, Takt Time y estado hora por hora.
+2. **Tablero Andon Digital en Nave Central:** Sustituir pizarrones manuales por un tablero digital web interactivo con semáforos en tiempo real, Takt Time y estado hora por hora (disponible vía web/tablet; la adquisición y montaje de pantallas físicas Smart TV queda como alcance de hardware pendiente de definición con el cliente).
 3. **Control de Almacenes Intermedios (WIP):** Evitar acumulaciones y cuellos de botella mediante alertas automáticas al superar umbrales (ej. >70 piezas en rampa).
 4. **Visibilidad Directiva y Financiera:** Conversión instantánea de piezas terminadas a valor comercial ($801,720+ MXN en corrida @ $1,310 catálogo Tombstone) y cálculo de OEE en vivo.
 5. **Sincronización con COMPAC:** Compatibilidad con el sistema administrativo/contable para órdenes de compra y facturación.
@@ -81,7 +81,7 @@ graph TD
     M1_3 --> M1_3_3["Separación de segundas de viernes"]:::leaf
 
     %% Submodulos M2
-    M2 --> M2_1["2.1 Monitoreo en Vivo (Smart TV 50 pulg)"]:::submod
+    M2 --> M2_1["2.1 Monitoreo en Vivo (Tablero Digital Nave)"]:::submod
     M2 --> M2_2["2.2 Ritmo & Cadencia de Producción"]:::submod
     M2 --> M2_3["2.3 Control de Cuellos de Botella"]:::submod
     M2_1 --> M2_1_1["Semáforo de estado (Normal/Alerta/Paro)"]:::leaf
@@ -290,10 +290,10 @@ El sistema cuenta con un motor de permisos modulares persistente en memoria y co
 
 Siguiendo las decisiones tomadas en planta con base en los audios de levantamiento:
 
-1. **Pantalla Central Andon (Smart TV 50"):**
-   - Instalada en la viga central de la nave entre prensas y rampa.
-   - Proyecta continuamente el **Módulo 1: Tablero Andon Digital**.
-   - Visibilidad a 20 metros de distancia: semáforos verde/amarillo/rojo, piezas producidas vs meta semanal (4,250 pzas) y gráfico hora por hora.
+1. **Visualización Central Andon (Status: Pantallas Físicas Pendientes de Definición con el Cliente):**
+   - El software del **Tablero Andon Digital** está 100% desarrollado y operativo vía web en cualquier navegador, tableta o computadora de supervisión.
+   - **Alcance Actual:** Por el momento **NO se contempla ninguna pantalla física (Smart TV) instalada** en la nave central ni se asumirá hardware de pantallas por ahora. La adquisición, dimensiones y montaje de pantallas físicas (43"-50") queda como un punto a evaluar y cotizar directamente con el cliente en una etapa posterior.
+   - Los semáforos verde/amarillo/rojo, avance vs meta semanal (4,250 pzas) y progreso hora por hora se monitorean actualmente desde terminales web y tablets autorizadas.
 2. **Terminales Portátiles para Supervisores (Dispositivos Táctiles Industriales / Rugged):**
    - Funda industrial de uso rudo anticaídas con touch targets ergonómicos (>= 44px).
    - Utilizadas por supervisores en **Rampa (D-05)** y **Almacén Pulmón (D-10)**.

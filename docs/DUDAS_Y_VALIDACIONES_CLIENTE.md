@@ -152,6 +152,15 @@ Su objetivo es servir como guía de entrevista ejecutiva en las sesiones de vali
 * **Estatus:** Pendiente de confirmar con Edmundo y Carlos.
 * **Respuesta / Minuta del Cliente:** [Espacio para captura en reunión]
 
+### DUD-12: Despliegue de Pantallas Físicas Smart TV en Nave Central
+* **Pregunta para el Cliente:** ¿Desean contemplar en esta etapa la compra, cableado y montaje de pantallas físicas Smart TV (43"-50") en la nave central para proyectar el Tablero Andon, o prefieren arrancar la operación visualizándolo exclusivamente desde computadoras de oficina y tabletas de supervisión?
+* **Justificación / Origen:** El software del Tablero Andon Digital está 100% desarrollado y operativo vía web en cualquier dispositivo. Sin embargo, no se contempla ninguna pantalla física instalada por ahora para evitar costos de infraestructura anticipados hasta validar la adopción del sistema con el cliente.
+* **Impacto en el Software / Proyecto:**
+  * Fase Actual: El Tablero Andon opera como módulo web responsivo accesible por roles autorizados en PC/tablets sin requerir pantallas de TV.
+  * Fase Posterior (si el cliente lo autoriza): Se dimensiona el presupuesto de hardware para pantallas de 50", soportes a viga y puntos de red en nave.
+* **Estatus:** Alcance de pantallas físicas Smart TV pausado/descartado por ahora por acuerdo de desarrollo · A evaluar en fase posterior con el cliente.
+* **Respuesta / Minuta del Cliente:** [Espacio para captura en reunión]
+
 ---
 
 ## Matriz Resumen de Puntos Clave para la Reunión Ejecutiva
@@ -169,3 +178,4 @@ Su objetivo es servir como guía de entrevista ejecutiva en las sesiones de vali
 | **DUD-09** | Impresión Tarjetas | ¿Dónde y en qué impresora imprimen hoy las tarjetas viajeras? | Diseñar plantilla en hoja carta o rollo de etiqueta. |
 | **DUD-10** | Enlace COMPAC | ¿Contacto técnico para revisar licencia y base de datos SQL? | Definir si MVP arranca con CSV o enlace directo. |
 | **DUD-11** | Tablets y Wi-Fi | ¿Preferencia de tablets (iPad vs Android rudo) y cobertura Wi-Fi? | Activar modo offline y definir especificación de hardware. |
+| **DUD-12** | Pantallas Smart TV | ¿Se cotizan e instalan pantallas de 50" en nave o se opera vía web/tablet? | Mantener en espera de definición; no asumir hardware por ahora. |

@@ -77,7 +77,7 @@ graph TD
     M1_3 --> M1_3_3["Separación de segundas de viernes"]:::leaf
 
     %% Submodulos M2
-    M2 --> M2_1["2.1 Monitoreo en Vivo (Smart TV 50 pulg)"]:::submod
+    M2 --> M2_1["2.1 Monitoreo en Vivo (Tablero Digital Nave)"]:::submod
     M2 --> M2_2["2.2 Ritmo & Cadencia de Producción"]:::submod
     M2 --> M2_3["2.3 Control de Cuellos de Botella"]:::submod
     M2_1 --> M2_1_1["Semáforo de estado (Normal/Alerta/Paro)"]:::leaf
@@ -249,7 +249,7 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ### Bloque A: Tablero Andon & Monitoreo de Piso
 
-- **`RF-01` Semáforos de Estado Departamental en Tiempo Real (Alta Intensidad Visual):** El sistema debe desplegar en una vista tipo Smart TV industrial el estado operativo de todas las estaciones de planta con semáforos de **alta saturación y contraste visual** (Verde Esmeralda Sólido `#16A34A` con resplandor = Operando, Ámbar Industrial `#D97706` = Advertencia WIP / Cuello de Botella, Rojo Carmesí `#DC2626` con pulso dinámico = Paro de Línea) legibles a más de 15 metros de distancia en nave.
+- **`RF-01` Semáforos de Estado Departamental en Tiempo Real (Alta Intensidad Visual):** El sistema debe desplegar en un tablero digital industrial el estado operativo de todas las estaciones de planta con semáforos de **alta saturación y contraste visual** (Verde Esmeralda Sólido `#16A34A` con resplandor = Operando, Ámbar Industrial `#D97706` = Advertencia WIP / Cuello de Botella, Rojo Carmesí `#DC2626` con pulso dinámico = Paro de Línea) legibles a distancia en navegadores web y tabletas (despliegue en pantallas físicas de TV queda pendiente de definición con el cliente).
 - **`RF-02` Ritmo Takt Time y Cronómetro de Ciclo:** Debe exhibir el Takt Time de referencia de planta (42 segundos por pieza) calculando la cadencia teórica para cumplir la meta de producción sin desviaciones.
 - **`RF-03` Avance Hora por Hora de Producción:** Debe incluir una gráfica y tabla horaria (07:00 a 15:00 hrs) que compare la producción meta vs la producción real acumulada hora a hora.
 - **`RF-04` Bitácora de Paros e Incidencias en Nave [Bajo Revisión / Pendiente de Aprobación de Cliente · Ref: GAP-10]:** Registro cronológico de paros en piso con motivo, estación afectada, duración y piezas impactadas. _Justificación Técnica Lean:_ Permite cuantificar la Disponibilidad del equipo para el cálculo de OEE. _Punto Pendiente:_ Se consultará con el cliente si este registro agrega valor a su supervisión en planta o si genera fricción administrativa innecesaria en la fase inicial.
@@ -554,7 +554,7 @@ Esta sección desglosa las capacidades funcionales de cada uno de los **7 módul
 
 #### 2. Módulo Tablero Andon & Monitoreo en Nave (`andon`)
 
-- **Propósito:** Tablero de visualización tipo Smart TV industrial para toda la nave de producción.
+- **Propósito:** Tablero de visualización digital en tiempo real para toda la nave de producción (accesible vía web/tablet; la adquisición y montaje de pantallas físicas Smart TV de 50" queda como alcance de hardware pendiente de definición con el cliente).
 - **Capacidades Operativas Actuales:**
   - **Semáforos de Estado en Tiempo Real:** 14 estaciones con codificación de color normalizada (Verde = Operando, Amarillo = WIP elevado / Cuello de botella, Rojo = Paro de línea).
   - **Takt Time de Planta (42s):** Indicador de cadencia de producción por pieza.
