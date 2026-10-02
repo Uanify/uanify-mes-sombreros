@@ -55,17 +55,23 @@ function renderStations() {
 
   grid.innerHTML = UanifyState.stations.map(st => {
     const pct = Math.min(100, Math.round((st.produced / st.target) * 100));
-    const statusText  = st.status === 'running' ? 'OPERANDO' : st.status === 'warning' ? 'AJUSTE' : 'PARO';
+    const statusText  = st.status === 'running' 
+      ? 'OPERANDO' 
+      : st.status === 'warning' 
+        ? 'AJUSTE / SETUP (En Tolerancia)' 
+        : 'PARO DE LÍNEA';
     const statusClass = `status-${st.status}`;
     const isBottleneck = st.wipWaiting >= 30;
-    const isQuality    = st.id.startsWith('calidad');
-    const cardBorder   = isQuality ? 'border-color: rgba(250,204,21,0.35);' : '';
+    const isQuality    = st.id.startsWith('calidad') || (st.code && st.code.startsWith('C-')) || (st.type === 'calidad');
+    const qualityClass = isQuality ? 'station-quality-checkpoint' : '';
 
     return `
-      <div class="station-card ${statusClass}" data-station-id="${st.id}" style="${cardBorder}">
+      <div class="station-card ${statusClass} ${qualityClass}" data-station-id="${st.id}">
         <div class="station-header">
           <div>
-            <span class="station-num">${isQuality ? 'Punto de Calidad' : 'Estación de Piso'}</span>
+            <span class="station-num" style="${isQuality ? 'background:#FEF3C7; color:#92400E; border-color:#FCD34D; font-weight:800;' : ''}">
+              ${isQuality ? '🔍 Filtro de Calidad Obligatorio' : 'Estación de Manufactura'}
+            </span>
             <h4 class="station-name">${st.name}</h4>
             <small style="font-size:10px; color:#64748B; display:block; margin-top:2px;">${st.desc}</small>
           </div>
@@ -146,21 +152,41 @@ function renderHourlyProgress(dateKey) {
 
   container.innerHTML = data.map((h, idx) => {
     const isCurrent = (key === 'today' && idx === 6);
-    const overTarget = h.produced > h.target;
+    const isLunch = h.target === 0;
+    const overTarget = h.produced >= h.target && h.target > 0;
+    const pct = h.target > 0 ? Math.min(130, Math.round((h.produced / h.target) * 100)) : 0;
     const isFirstHour = idx === 0;
 
     let subNote = '';
     if (isFirstHour && actualStart && isDynamic && key === 'today') {
-      subNote = `<span style="font-size:9.5px; color:#0284C7; font-weight:700; display:block; margin-top:2px;">Inicio: ${actualStart}</span>`;
+      subNote = `<span style="font-size:9.5px; color:#0284C7; font-weight:700; display:block; margin-top:4px;">Inicio: ${actualStart}</span>`;
     } else if (key !== 'today' && isFirstHour) {
-      subNote = `<span style="font-size:9.5px; color:#16A34A; font-weight:700; display:block; margin-top:2px;">Turno Cerrado</span>`;
+      subNote = `<span style="font-size:9.5px; color:#16A34A; font-weight:700; display:block; margin-top:4px;">Turno Cerrado</span>`;
+    }
+
+    if (isLunch) {
+      return `
+        <div class="hour-col meal-hour" style="background:#F1F5F9; border-style:dashed;">
+          <span class="hour-time" style="color:var(--text-muted);">${h.hour}</span>
+          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin:8px 0;">COMIDA</div>
+          <span style="font-size:10px; color:var(--text-muted);">12:00 - 12:45</span>
+        </div>
+      `;
     }
 
     return `
       <div class="hour-col ${isCurrent ? 'current' : ''}">
-        <span class="hour-time">${h.hour}</span>
-        <div class="hour-pzas" style="color: ${overTarget ? 'var(--color-green)' : h.produced > 0 ? 'var(--color-brand)' : 'var(--text-muted)'}">${h.produced}</div>
-        <div class="hour-target">Meta: ${h.target}</div>
+        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+          <span class="hour-time">${h.hour}</span>
+          ${h.produced > 0 ? `<span class="badge-status" style="font-size:9.5px; padding:1px 5px; background:${overTarget ? '#DCFCE7; color:#15803D;' : '#FEF3C7; color:#B45309;'}">${pct}%</span>` : ''}
+        </div>
+        <div class="hour-pzas" style="color: ${overTarget ? 'var(--color-green)' : h.produced > 0 ? 'var(--color-brand)' : 'var(--text-muted)'}; margin:4px 0 2px;">
+          ${h.produced} <small style="font-size:11px; font-weight:600; color:var(--text-muted);">pzas</small>
+        </div>
+        <div class="hour-target" style="font-size:11px;">Meta: <strong>${h.target}</strong></div>
+        <div style="width:100%; height:5px; background:#E2E8F0; border-radius:99px; overflow:hidden; margin-top:6px;">
+          <div style="width:${Math.min(100, pct)}%; height:100%; background:${overTarget ? 'var(--color-green)' : pct > 0 ? 'var(--color-brand)' : 'transparent'}; border-radius:99px;"></div>
+        </div>
         ${subNote}
       </div>
     `;

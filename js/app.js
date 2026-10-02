@@ -1365,10 +1365,13 @@ const UanifyState = {
 
   // ─── PAROS REGISTRADOS ──────────────────────────────────────────────────────
   downtimes: [
-    { time: '07:45', station: 'Prensas Vapor (Copa) #2',      cause: 'Cambio de horma: Roper a Viejón (SMED)',             duration: '14 min', impact: '-22 pzas' },
-    { time: '09:20', station: 'Englopado / Dope (Camas)',      cause: 'Ajuste de fórmula de sellador en tina principal',    duration: '8 min',  impact: '-10 pzas' },
-    { time: '11:10', station: 'Prensas Vapor #1',             cause: 'Baja presión de vapor en caldera',                   duration: '12 min', impact: '-18 pzas' },
-    { time: '12:35', station: 'Adorno 1 (Tafilete/Toquilla)', cause: 'Sin tafiletes talla 58 en subensamble. Supervisoras tuvieron que coordinar de otra nave.', duration: '9 min', impact: '-12 pzas' }
+    { time: '07:45', station: 'Prensas Vapor (Copa) #2',      cause: 'Cambio de horma: Roper a Viejón (SMED de prensas)', duration: '14 min', impact: '-22 pzas' },
+    { time: '09:20', station: 'Englopado / Dope (Camas)',      cause: 'Ajuste de viscosidad y fórmula de sellador térmico', duration: '8 min',  impact: '-10 pzas' },
+    { time: '10:40', station: 'Recorte y Alambrado #1',        cause: 'Rotura de alambre galvanizado cal. 19 y ajuste de guía', duration: '11 min', impact: '-15 pzas' },
+    { time: '11:10', station: 'Prensas Vapor #1',             cause: 'Baja presión de vapor en línea principal de caldera', duration: '12 min', impact: '-18 pzas' },
+    { time: '12:35', station: 'Adorno (Tafilete y Toquilla)', cause: 'Desabasto temporal de tafiletes talla 58 en subensamble', duration: '9 min', impact: '-12 pzas' },
+    { time: '13:50', station: 'Pintura y Matizado',           cause: 'Cambio de filtro en cabina de aspersión y limpieza de boquilla', duration: '7 min', impact: '-8 pzas' },
+    { time: '14:25', station: 'Inspección C-02 (Planchado)',  cause: 'Revisión por alabeo en ala de lote 49,842 (ajuste de temperatura)', duration: '6 min', impact: '-6 pzas' }
   ],
 
   // ─── AVANCE HORA × HORA ────────────────────────────────────────────────────
@@ -1597,16 +1600,29 @@ function updateUserInterface() {
 
   // Actualizar el chip de usuario en la barra lateral
   const sidebarUserName   = document.getElementById('sidebarUserName');
-  const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
   const sidebarUserRoleBadge = document.getElementById('sidebarUserRoleBadge');
+  const sidebarUserDepts  = document.getElementById('sidebarUserDepts');
 
-  let avatarIcon = '';
-  if (user.role === 'admin')     avatarIcon = '';
-  if (user.role === 'ingeniero') avatarIcon = '';
+  if (sidebarUserName)      sidebarUserName.textContent     = user.name;
+  if (sidebarUserRoleBadge)  sidebarUserRoleBadge.textContent = user.badge;
 
-  if (sidebarUserAvatar)   sidebarUserAvatar.textContent   = avatarIcon;
-  if (sidebarUserName)     sidebarUserName.textContent     = user.name;
-  if (sidebarUserRoleBadge) sidebarUserRoleBadge.textContent = user.badge;
+  if (sidebarUserDepts) {
+    if (user.role === 'supervisor' && user.assignedDepartments && !user.assignedDepartments.includes('*')) {
+      const deptPills = user.assignedDepartments.map(code => {
+        const st = (UanifyState.stations || []).find(s => s.code === code);
+        const label = st ? `${code} ${st.name.split(' ')[0]}` : code;
+        return `<span class="badge-status" style="font-size:9.5px; padding:2px 6px; background:var(--color-brand-light); color:var(--color-brand); border:1px solid var(--color-brand-border);">${label}</span>`;
+      }).join('');
+      sidebarUserDepts.innerHTML = `
+        <div style="font-size:9px; font-weight:800; color:var(--text-muted); text-transform:uppercase; width:100%; margin-bottom:1px;">Depts Asignados:</div>
+        ${deptPills}
+      `;
+      sidebarUserDepts.style.display = 'flex';
+    } else {
+      sidebarUserDepts.innerHTML = '';
+      sidebarUserDepts.style.display = 'none';
+    }
+  }
 
   navBtns.forEach(btn => {
     const tab = btn.getAttribute('data-tab');
@@ -2571,33 +2587,62 @@ function enrichStationWithDefaults(st, idx) {
     renderInventoryMoldsTable();
     window.renderInventoryMoldsTable = renderInventoryMoldsTable;
 
-    // Inventario de subensambles (Tafiletes)
+    // Inventario de subensambles (Tafiletes de Piel por Talla)
     if (tafileteGrid) {
       const tafiletes = [
-        { size: '54', name: 'Talla 54 (6 3/4)', stock: 48, min: 25, status: 'Óptimo' },
-        { size: '55', name: 'Talla 55 (6 7/8)', stock: 92, min: 30, status: 'Óptimo' },
-        { size: '56', name: 'Talla 56 (7)', stock: 114, min: 40, status: 'Óptimo' },
-        { size: '57', name: 'Talla 57 (7 1/8)', stock: 86, min: 35, status: 'Óptimo' },
-        { size: '58', name: 'Talla 58 (7 1/4)', stock: 135, min: 45, status: 'Óptimo' },
-        { size: '59', name: 'Talla 59 (7 3/8)', stock: 64, min: 25, status: 'Óptimo' },
-        { size: '60', name: 'Talla 60 (7 1/2)', stock: 32, min: 20, status: 'Alerta Stock' }
+        { size: '54', usSize: '6 3/4', name: 'Tafilete Piel Genuina #54', stock: 48, min: 25, max: 80, batches: 3 },
+        { size: '55', usSize: '6 7/8', name: 'Tafilete Piel Genuina #55', stock: 92, min: 30, max: 120, batches: 6 },
+        { size: '56', usSize: '7',     name: 'Tafilete Piel Genuina #56', stock: 114, min: 40, max: 150, batches: 8 },
+        { size: '57', usSize: '7 1/8', name: 'Tafilete Piel Genuina #57', stock: 86, min: 35, max: 120, batches: 5 },
+        { size: '58', usSize: '7 1/4', name: 'Tafilete Piel Genuina #58', stock: 135, min: 45, max: 150, batches: 9 },
+        { size: '59', usSize: '7 3/8', name: 'Tafilete Piel Genuina #59', stock: 64, min: 25, max: 80, batches: 4 },
+        { size: '60', usSize: '7 1/2', name: 'Tafilete Piel Genuina #60', stock: 32, min: 20, max: 60, batches: 2 }
       ];
 
-      tafileteGrid.innerHTML = tafiletes.map(t => `
-        <div class="tafilete-card card-glass" style="padding:14px; border:1px solid var(--border-subtle); border-radius:10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong style="font-size:14px; color:var(--text-primary);">${t.name}</strong>
-            <span class="badge-status ${t.status === 'Óptimo' ? 'badge-status-green' : 'badge-status-amber'}">${t.status}</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+      tafileteGrid.innerHTML = tafiletes.map(t => {
+        const pct = Math.min(100, Math.round((t.stock / t.max) * 100));
+        const isLow = t.stock <= t.min * 1.2;
+        const statusBadge = isLow 
+          ? `<span class="badge-status" style="background:#FEF3C7; color:#B45309; border:1px solid #FCD34D;">Atención Stock</span>`
+          : `<span class="badge-status" style="background:#DCFCE7; color:#15803D; border:1px solid #86EFAC;">Disponible</span>`;
+
+        return `
+          <div class="tafilete-card card-glass" style="padding:16px; border:1px solid var(--border-subtle); border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; left:0; width:4px; height:100%; background:${isLow ? '#F59E0B' : '#16A34A'};"></div>
             <div>
-              <span style="font-size:11px; color:var(--text-muted); display:block;">Stock Listo para Adorno:</span>
-              <strong style="font-size:20px; font-family:var(--font-display); color:var(--color-brand);">${t.stock} pzas</strong>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <div>
+                  <span class="badge-subtle" style="font-weight:800; font-size:10px;">TALLA #${t.size} · ${t.usSize}</span>
+                  <div style="font-weight:700; font-size:13px; color:var(--text-primary); margin-top:2px;">${t.name}</div>
+                </div>
+                ${statusBadge}
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+                <div>
+                  <span style="font-size:11px; color:var(--text-muted); display:block;">Existencia en Mesa:</span>
+                  <strong style="font-size:24px; font-family:var(--font-display); color:var(--color-brand); line-height:1.1;">${t.stock}</strong>
+                  <span style="font-size:12px; color:var(--text-muted); margin-left:3px;">pzas</span>
+                </div>
+                <div style="text-align:right; font-size:11.5px; color:var(--text-secondary);">
+                  <div>Mínimo: <strong>${t.min}</strong></div>
+                  <div style="color:var(--text-muted); font-size:10.5px;">${t.batches} lotes activos</div>
+                </div>
+              </div>
             </div>
-            <span style="font-size:11px; color:var(--text-muted);">Mínimo: ${t.min}</span>
+
+            <div style="margin-top:8px;">
+              <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-muted); margin-bottom:3px;">
+                <span>Capacidad Buffer</span>
+                <span>${pct}%</span>
+              </div>
+              <div style="width:100%; height:6px; background:#E2E8F0; border-radius:99px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:${isLow ? '#F59E0B' : 'var(--color-brand)'}; border-radius:99px;"></div>
+              </div>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Kárdex de movimientos de almacén (con Filtros Multi-Criterio de Fecha, Turno y Almacén - Regla 0.35)

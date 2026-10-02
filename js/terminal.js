@@ -34,6 +34,8 @@ window.initTerminalView = function() {
   const btnSimSublot3      = document.getElementById('btnSimulateScanSublot3');
   const btnSimMotherLot    = document.getElementById('btnSimulateScanMotherLot');
   const btnSimScrapLot     = document.getElementById('btnSimulateScanScrapLot');
+  const btnSimQualityStop  = document.getElementById('btnSimulateScanQualityStop');
+  const btnSimUnauthorized = document.getElementById('btnSimulateScanUnauthorized');
 
   // Trigger de Tarjeta Viajera Oficial (Mica de Piso)
   const btnOpenTravelerModal = document.getElementById('btnOpenTravelerModal');
@@ -439,6 +441,24 @@ window.initTerminalView = function() {
       return;
     }
 
+    // Excepción y validación de permisos de Supervisor al escanear QR
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const isSuperUser = user.role === 'admin' || user.role === 'ingeniero' || 
+                        (user.assignedDepartments && user.assignedDepartments.includes('*'));
+    const lotStation = lot.currentStationCode || 'D-05';
+
+    if (!isSuperUser && (!user.assignedDepartments || !user.assignedDepartments.includes(lotStation))) {
+      const myDeptNames = (user.assignedDepartments || []).map(c => {
+        const st = (UanifyState.stations || []).find(s => s.code === c);
+        return st ? st.name : c;
+      }).join(', ');
+      window.UanifyUI.toast(
+        `⛔ Restricción Departamental: Este lote se encuentra en ${lot.currentStationCode} (${lot.currentStationName}), pero como Supervisor solo tienes asignados: ${myDeptNames}.`,
+        'danger',
+        'Acceso No Autorizado al Lote'
+      );
+    }
+
     candidateScannedLot = lot;
 
     // Llenar datos en el Modal de Verificación
@@ -509,6 +529,21 @@ window.initTerminalView = function() {
     btnSimScrapLot.addEventListener('click', () => {
       if (manualQrInput) manualQrInput.value = '49842';
       triggerScanEvaluation('TB|49842|0|MAGNUM|9 1/2|57|15075|MELANY|D-05|D-06|SCRAP:Quemado por prensa de vapor');
+    });
+  }
+
+  if (btnSimQualityStop) {
+    btnSimQualityStop.addEventListener('click', () => {
+      if (manualQrInput) manualQrInput.value = '49633-2';
+      triggerScanEvaluation('TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK');
+    });
+  }
+
+  if (btnSimUnauthorized) {
+    btnSimUnauthorized.addEventListener('click', () => {
+      if (manualQrInput) manualQrInput.value = '49700';
+      // Simula escaneo de lote en Corte de Telar (D-01), que no pertenece a supervisores de hormado
+      triggerScanEvaluation('TB|49700|0|DENVER|9 1/2|58|15080|RAUL|D-01|D-02|OK');
     });
   }
 
@@ -637,23 +672,18 @@ window.initTerminalView = function() {
     if (lotScrapBannerContainer) {
       if (lot.hasScrap) {
         lotScrapBannerContainer.innerHTML = `
-          <div class="lot-scrap-alert-banner">
-            <span style="font-size:18px;"></span>
+          <div class="lot-scrap-alert-banner" style="display:flex; align-items:flex-start; gap:10px; background:#FEF2F2; border:1.5px solid #FCA5A5; border-radius:10px; padding:12px 14px;">
+            <span style="font-size:20px; line-height:1;">⚠️</span>
             <div>
-              <strong>Contiene 1 sombrero marcado como merma (${lot.scrapReason || 'Defecto en proceso'}):</strong>
+              <strong style="color:#B91C1C; font-size:13px;">Lote con Merma Registrada (${lot.scrapReason || 'Defecto en proceso'}):</strong>
               <div style="font-size:11.5px; margin-top:2px; color:#7F1D1D;">
-                La pieza defectuosa continúa físicamente en la torre de 15 sombreros y acompaña al lote hasta el punto de segregación y auditoría física final.
+                La pieza con defecto viaja con la torre hasta el punto de segregación e inspección final.
               </div>
             </div>
           </div>
         `;
       } else {
-        lotScrapBannerContainer.innerHTML = `
-          <div class="lot-clean-banner">
-            <span style="font-size:16px;">OK</span>
-            <span><strong>Lote íntegro:</strong> 15 sombreros conformados sin mermas registradas.</span>
-          </div>
-        `;
+        lotScrapBannerContainer.innerHTML = '';
       }
     }
 
@@ -930,7 +960,7 @@ window.initTerminalView = function() {
 
       const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
       return `
-        <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}">
+        <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}" onclick="window.openDeptWarehouseModal('${st.code}')" style="cursor:pointer;" title="Toca para ver almacén intermedio de ${st.name}">
           <div class="dept-card-header">
             <div>
               <span class="dept-code-tag">${isQuality ? 'Punto de Calidad' : 'Estación Productiva'}</span>
@@ -951,14 +981,14 @@ window.initTerminalView = function() {
           </div>
 
           ${scrapWarningCount > 0 ? `
-            <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:12px; font-weight:700;">
-              Atención: ${scrapWarningCount} lote(s) con sombrero de merma en torre
+            <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
+              ⚠️ Atención: ${scrapWarningCount} lote(s) con sombrero de merma en torre
             </div>
           ` : ''}
 
-          <button type="button" class="btn-primary btn-touch-lg" style="width:100%;" onclick="window.openDeptWarehouseModal('${st.code}')">
-            Ver Almacén Intermedio
-          </button>
+          <div style="font-size:11.5px; font-weight:700; color:var(--color-brand); text-align:right; margin-top:4px;">
+            Consultar Almacén ↗
+          </div>
         </div>
       `;
     }).join('');

@@ -110,7 +110,7 @@
       <div class="sidebar-header">
         <div class="brand-container">
           <div class="brand-left">
-            <img src="assets/logo-uanify.svg" alt="Tombstone Hats MES" class="brand-logo">
+            <span class="generic-app-title">MES Manufactura</span>
           </div>
           <button id="btnToggleSidebar" class="sidebar-toggle-btn" title="Plegar / Expandir Barra Lateral" aria-label="Alternar barra lateral">
             <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -120,12 +120,16 @@
         </div>
       </div>
 
-      <!-- Perfil de Usuario Activo (chip compacto con nombre + rol + botón cerrar sesión) -->
+      <!-- Perfil de Usuario Activo (chip compacto con nombre + rol + departamentos asignados) -->
       <div class="sidebar-user-chip" id="sidebarUserChip">
-        <div class="suc-avatar" id="sidebarUserAvatar"></div>
         <div class="suc-info">
-          <span class="suc-name" id="sidebarUserName">Edmundo González</span>
-          <span class="suc-role" id="sidebarUserRoleBadge">Admin</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+            <span class="suc-name" id="sidebarUserName">Edmundo González</span>
+            <span class="suc-role" id="sidebarUserRoleBadge">Admin</span>
+          </div>
+          <div class="suc-depts-list" id="sidebarUserDepts" style="margin-top:3px; display:flex; flex-wrap:wrap; gap:4px;">
+            <!-- Departamentos asignados inyectados dinámicamente -->
+          </div>
         </div>
         <button class="suc-logout-btn" id="btnSidebarLogout" title="Cambiar usuario / Cerrar sesión" aria-label="Cerrar sesión">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -463,46 +467,51 @@
         <div class="sub-nav-tabs" data-module="terminal">
           <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">Lector QR & Recepción/Depósito</button>
           <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">Mapa de Planta & Almacenes Intermedios</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-buffer-ready">Monitor General de Almacenes</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-workflow">Operación en Máquina & Puestos</button>
-          <button class="sub-tab-btn" data-subtab="subtab-terminal-transfer">Recolección & Traspaso entre Depts</button>
         </div>
 
         <!-- Pestaña 1: Lector QR Heroico & Recepción/Depósito en Almacén Siguiente -->
         <div class="sub-tab-content active" id="subtab-terminal-scanner">
-          <!-- Botón de Alto Impacto para Visualizar la Tarjeta Viajera Oficial (Mica de Piso) sin saturar de Scroll -->
-          <div style="margin-bottom:16px;">
-            <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal">
+          
+          <!-- Franja de Indicadores de Turno del Supervisor (Arriba para no distraer del escaneo) -->
+          <div class="terminal-shift-kpi-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 16px; border-radius:10px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11.5px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Resumen del Turno:</span>
+              <span class="badge-subtle" id="supervisorDeptsBadge">Departamentos Asignados: Prensas de Hormado</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:12.5px;">
               <div>
-                <div class="btt-title">
-                  <span></span> Ver Tarjeta Viajera Oficial (Mica & Gafete de Piso)
-                </div>
-                <div class="btt-desc">
-                  Réplica exacta reglamentaria con sticker de operador, clase 1000X, horma, acabados y perforación para cordel
-                </div>
+                <span style="color:var(--text-muted);">Piezas Procesadas:</span>
+                <strong style="color:var(--color-brand); margin-left:4px;" id="terminalProduced">98 pzas</strong>
               </div>
-              <span class="btt-pill" id="bttActiveLotPill">Lote 49,633-3 · Sublote 3</span>
-            </button>
+              <div>
+                <span style="color:var(--text-muted);">Mermas / Scrap:</span>
+                <strong style="color:var(--color-red); margin-left:4px;" id="terminalScrap">4 pzas</strong>
+              </div>
+              <div>
+                <span style="color:var(--text-muted);">Segundas:</span>
+                <strong style="color:var(--color-amber); margin-left:4px;" id="terminalSecondGrade">26 pzas</strong>
+              </div>
+            </div>
           </div>
 
           <div class="terminal-layout" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:20px;">
             
-            <!-- Columna 1: Lector QR Heroico (Cámara Web / Pistola USB / Pantalla Completa) -->
+            <!-- Columna 1: Lector QR Heroico Tablet-First con Simulador de Casos -->
             <div class="card-glass" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                   <span class="model-badge-tag" style="font-size:12px; font-weight:800;">ESCÁNER QR DE PISO (HERO)</span>
-                  <span class="badge-subtle" id="cameraStatusBadge">Cámara inactiva</span>
+                  <span class="badge-subtle" id="cameraStatusBadge">Cámara Activa</span>
                 </div>
 
-                <!-- Visor de Cámara Web en Vivo -->
+                <!-- Visor de Cámara Web con Retícula Industrial -->
                 <div class="camera-scanner-wrapper" id="cameraScannerWrapper" style="position:relative; min-height:260px; background:#0B0F17; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
                   <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
                   
                   <div class="camera-placeholder-msg" id="cameraPlaceholderMsg" style="position:relative; z-index:2; text-align:center; padding:20px; color:#94A3B8;">
-                    <span style="font-size:46px; display:block; margin-bottom:8px;"></span>
+                    <span style="font-size:46px; display:block; margin-bottom:8px;">📷</span>
                     <strong style="color:#FFFFFF; font-size:16px; display:block; margin-bottom:4px;">Cámara de Dispositivo Lista</strong>
-                    <span style="font-size:12.5px;">Haz clic en "Activar Cámara Web" o usa la pistola de código de barras USB.</span>
+                    <span style="font-size:12.5px;">Apunta al código QR de la tarjeta viajera física.</span>
                   </div>
 
                   <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; z-index:3; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
@@ -523,67 +532,51 @@
                   </div>
                 </div>
 
-                <!-- Barra de Botones de Control de Cámara (Gigantes para Tablet) -->
-                <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-                  <button type="button" class="btn-primary btn-touch-hero" id="btnToggleCamera" style="flex:1.4;">
-                    ▶ Activar Cámara Web
-                  </button>
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnToggleFullscreen" style="flex:1;" title="Ampliar a pantalla completa para tablet">
-                    Pantalla Completa
-                  </button>
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnFlipCamera" style="display:none;">
-                    Girar Cámara
-                  </button>
-                </div>
-
-                <!-- Entrada por Pistola Barcode / Teclado Táctil -->
-                <div style="margin-top:16px;">
-                  <label class="field-label" style="font-size:12px; margin-bottom:6px;">Lector USB o Entrada de Código QR:</label>
-                  <div style="display:flex; gap:10px; align-items:stretch;">
-                    <input type="text" id="manualQrInput" class="form-input" placeholder="Apunta la pistola USB o escribe Folio (ej. 49633-3)..." value="49633-3" style="min-height:50px; font-size:15px; font-weight:700; font-family:'JetBrains Mono';">
-                    <button class="btn-primary btn-touch-hero" id="btnScanQr" style="flex-shrink:0;">
-                      Escanear Código QR
+                <!-- Botones de Disparo y Simulación de Escaneo QR con Casos de Prueba -->
+                <div style="margin-top:14px; background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
+                      Simulador de Disparo de Escaneo QR (Variaciones de Planta):
+                    </span>
+                    <span class="badge-subtle" style="font-size:10px;">Pruebas de Piso</span>
+                  </div>
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:8px;">
+                    <button type="button" class="btn-primary btn-touch-lg" id="btnSimulateScanSublot3" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px;">
+                      <div style="font-weight:800;">Lote Normal</div>
+                      <div style="font-size:10.5px; opacity:0.9;">Sublote #3 (Viejonón · #55)</div>
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanMotherLot" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px;">
+                      <div style="font-weight:800;">Lote Madre (Rampa)</div>
+                      <div style="font-size:10.5px; color:var(--text-muted);">Lote 49,386 (60 pzas)</div>
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanScrapLot" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#FCA5A5; color:#B91C1C; background:#FEF2F2;">
+                      <div style="font-weight:800;">⚠️ Con Merma</div>
+                      <div style="font-size:10.5px; color:#B91C1C;">Lote 49,842 (Quemado)</div>
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanQualityStop" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#FCD34D; color:#92400E; background:#FFFBEB;">
+                      <div style="font-weight:800;">🔍 Filtro Calidad</div>
+                      <div style="font-size:10.5px; color:#B45309;">Punto C-02 Inspección</div>
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanUnauthorized" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#CBD5E1; color:#475569;">
+                      <div style="font-weight:800;">🚫 Depto No Asignado</div>
+                      <div style="font-size:10.5px; color:var(--text-muted);">Prueba restricción</div>
                     </button>
                   </div>
                 </div>
 
-                <!-- Botones de Simulación Rápida de Tarjetas para Pruebas en Planta -->
-                <div style="margin-top:14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px;">
-                  <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">
-                    Simulación Rápida de Códigos QR para Pruebas:
-                  </div>
-                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" class="btn-secondary" id="btnSimulateScanSublot3" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
-                      Sublote #3 (49633-3 · Viejonón)
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnSimulateScanMotherLot" style="padding:6px 10px; font-size:11.5px; font-weight:700;">
-                      Lote Madre (49386 · Chaparral)
-                    </button>
-                    <button type="button" class="btn-secondary" id="btnSimulateScanScrapLot" style="padding:6px 10px; font-size:11.5px; font-weight:700; color:var(--color-amber);">
-                      Lote con Merma (49842 · Magnum)
-                    </button>
-                  </div>
-                </div>
+                <!-- Input oculto para compatibilidad con pistola USB si se conecta -->
+                <input type="hidden" id="manualQrInput" value="49633-3">
               </div>
 
-              <!-- Indicadores de Turno del Supervisor -->
-              <div class="station-live-indicators" style="margin-top:16px; margin-bottom:0;">
-                <div class="indicator-row">
-                  <span>Piezas Procesadas Hoy:</span>
-                  <strong style="color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
-                </div>
-                <div class="indicator-row">
-                  <span>Mermas / Scrap:</span>
-                  <strong style="color:var(--color-red);" id="terminalScrap">4 pzas</strong>
-                </div>
-                <div class="indicator-row">
-                  <span>Segundas (Venta Viernes):</span>
-                  <strong style="color:var(--color-amber);" id="terminalSecondGrade">26 pzas</strong>
-                </div>
+              <!-- Sección Aislada: Paro de Línea (Destacado y separado del flujo QR) -->
+              <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border-subtle);">
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="width:100%; border:1.5px solid #FCA5A5; background:#FEF2F2; color:#DC2626; font-weight:800; font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                  <span style="font-size:16px;">🛑</span> Reportar Paro de Línea o Incidencia en Estación
+                </button>
               </div>
             </div>
 
-            <!-- Columna 2: Ficha del Lote Escaneado & Acción de Depósito en Almacén Siguiente -->
+            <!-- Columna 2: Ficha del Lote Escaneado & Acciones Post-Lectura -->
             <div class="card-glass" style="padding:22px; display:flex; flex-direction:column; justify-content:space-between;">
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
@@ -596,7 +589,7 @@
                   <span style="font-size:12px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">O. Prod: #15071</span>
                 </div>
 
-                <!-- Flujo Secuencial Automático de Ruta (De dónde viene → Dónde está → A cuál sigue) -->
+                <!-- Flujo Secuencial Automático de Ruta -->
                 <div class="route-sequence-flow">
                   <div class="flow-step-chip chip-origin">
                     <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
@@ -614,7 +607,7 @@
                   </div>
                 </div>
 
-                <!-- Metadatos Extraídos del QR (Sin necesidad de captura manual) -->
+                <!-- Metadatos Extraídos del QR -->
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:14px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:10px;">
                   <div>
                     <span style="font-size:11px; color:var(--text-muted); display:block;">Modelo / Clase:</span>
@@ -634,13 +627,23 @@
                   </div>
                 </div>
 
-                <!-- Banner Informativo de Merma en el Lote -->
-                <div id="lotScrapBannerContainer">
-                  <div class="lot-clean-banner">
-                    <span style="font-size:16px;">OK</span>
-                    <span><strong>Lote íntegro:</strong> Sin sombreros marcados con defecto en este momento.</span>
-                  </div>
+                <!-- Botón para Visualizar la Tarjeta Viajera Oficial (Solo disponible tras escanear el QR) -->
+                <div style="margin-bottom:14px;">
+                  <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal" style="width:100%; border:1.5px solid var(--color-brand-border); background:var(--color-brand-light); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                    <div style="text-align:left;">
+                      <div class="btt-title" style="font-size:13px; font-weight:800; color:var(--color-brand);">
+                        📄 Ver Tarjeta Viajera Oficial (Mica de Piso)
+                      </div>
+                      <div class="btt-desc" style="font-size:11px; color:var(--text-secondary); margin-top:2px;">
+                        Gafete reglamentario con sticker de operador, clase 1000X y especificaciones
+                      </div>
+                    </div>
+                    <span class="btt-pill" id="bttActiveLotPill" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800; padding:4px 8px; border-radius:6px;">Lote 49,633-3</span>
+                  </button>
                 </div>
+
+                <!-- Contenedor de Alerta de Merma (Solo visible si el lote tiene merma registrada) -->
+                <div id="lotScrapBannerContainer" style="margin-bottom:12px;"></div>
               </div>
 
               <!-- RASTREABILIDAD OBLIGATORIA DE OPERADOR POR ESTACIÓN (D-01 A D-14) -->
@@ -650,7 +653,7 @@
                   <span style="font-size:12px; color:var(--text-secondary);">Rastreabilidad requerida en el lote</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                  <select id="depositOperatorSelect" style="padding:8px 12px; border-radius:6px; font-weight:700; font-size:13px; border:1px solid var(--border-dark); background:#F8FAFC; color:var(--text-primary); cursor:pointer; min-width:200px;">
+                  <select id="depositOperatorSelect" class="custom-select" style="min-width:200px; font-weight:700; font-size:13px;">
                     <option value="OP-DEFAULT">Cargando operadores...</option>
                   </select>
                 </div>
@@ -703,128 +706,15 @@
                   </div>
                 </div>
 
-                <!-- Acciones Rápidas Complementarias -->
-                <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="flex:1; border:1.5px solid var(--color-brand); font-weight:700;">
-                    Modo Rampa (Fraccionar Lote Madre)
-                  </button>
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="color:var(--color-red);">
-                    Paro de Línea
+                <!-- Acciones Rápidas Aisladas: Modo Rampa Flujo Especial -->
+                <div style="margin-top:14px; border-top:1px dashed var(--border-subtle); padding-top:12px;">
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="width:100%; border:1.5px solid var(--color-brand); color:var(--color-brand); font-weight:800;">
+                    ⚙️ Abrir Modo Rampa (Fraccionar Lote Madre 60 pzas → 4 Sublotes)
                   </button>
                 </div>
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <!-- Pestaña 2: Operación en Máquina & Almacén de Salida -->
-        <div class="sub-tab-content" id="subtab-terminal-workflow">
-          <div class="card-glass" style="padding:24px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <h3 style="font-size:16px; font-weight:700; margin:0;">Trabajo en Máquina & Entrega a Almacén Intermedio</h3>
-                <div class="info-tip">
-                  <button type="button" class="info-tip-btn" aria-label="Información del proceso en máquina">
-                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </button>
-                  <div class="info-tip-popup">
-                    El operador procesa las piezas del lote en su máquina y al finalizar las deposita en el almacén intermedio de salida de su departamento.
-                  </div>
-                </div>
-              </div>
-              <span class="badge-subtle" id="supervisorDeptsBadge">Mis Departamentos Asignados: Prensas de Hormado a Brillo y Pulido</span>
-            </div>
-
-            <div class="config-grid" style="margin-bottom:20px;">
-              <div class="form-group">
-                <label class="field-label">1. Departamento Asignado al Supervisor:</label>
-                <select id="workflowDeptSelect" class="custom-select">
-                  <!-- Llenado dinámico según usuario activo -->
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="field-label">2. Máquina / Puesto Específico:</label>
-                <select id="workflowMachineSelect" class="custom-select">
-                  <!-- Llenado según departamento seleccionado -->
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="field-label">3. Operador a Cargo de la Máquina:</label>
-                <select id="workflowOperatorSelect" class="custom-select">
-                  <!-- Llenado según operadores registrados -->
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="field-label">4. Sublote Activo en Proceso (15 pzas):</label>
-                <input type="text" id="workflowSublotInput" class="form-input" value="1094-01" readonly style="background:#F1F5F9; font-weight:700; font-family:'JetBrains Mono';">
-              </div>
-            </div>
-
-            <div style="background:var(--color-brand-light); border:1px solid var(--color-brand-border); border-radius:10px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-              <div>
-                <div style="font-weight:700; color:var(--color-brand); font-size:14px;">Estado del Lote en la Máquina:</div>
-                <div style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">15 piezas conformadas y listas para avanzar al almacén de salida.</div>
-              </div>
-              <button class="btn-primary" id="btnCompleteMachineRun" style="padding:12px 24px; font-size:13.5px;">
-                Finalizar Piezas y Depositar en Almacén Intermedio de Salida
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pestaña 3: Recolección y Traspaso entre Departamentos -->
-        <div class="sub-tab-content" id="subtab-terminal-transfer">
-          <div class="card-glass" style="padding:24px;">
-            <div style="margin-bottom:18px;">
-              <h3 style="font-size:16px; font-weight:700;">Recolección y Traspaso al Siguiente Departamento</h3>
-              <p class="section-desc">La persona encargada o recolectora del siguiente departamento acude al almacén de salida de la estación anterior, recoge los sombreros y se los lleva a su departamento para iniciar su fase.</p>
-            </div>
-
-            <div class="config-grid" style="margin-bottom:20px;">
-              <div class="form-group">
-                <label class="field-label">Almacén Intermedio de Origen (Sombreros Listos):</label>
-                <select id="transferOriginDept" class="custom-select">
-                  <!-- Departamentos origen -->
-                </select>
-                <small style="color:var(--color-brand); font-weight:600; font-size:11px;" id="transferPiecesWaiting">30 piezas esperando recolección</small>
-              </div>
-
-              <div class="form-group">
-                <label class="field-label">Departamento Destino Receptor:</label>
-                <select id="transferDestDept" class="custom-select">
-                  <!-- Departamentos destino -->
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label class="field-label">Persona Encargada de la Recolección / Traslado:</label>
-                <input type="text" id="transferCollectorName" class="form-input" value="Recolector de Recorte & Refaldeado" placeholder="Nombre de quien recoge">
-              </div>
-
-              <div class="form-group">
-                <label class="field-label">Cantidad de Piezas a Recoger:</label>
-                <input type="number" id="transferQtyInput" class="form-input" value="15" step="15" min="15">
-              </div>
-            </div>
-
-            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:700; font-size:13px; color:var(--text-primary);">Custodia de Material:</span>
-                <span style="font-size:12.5px; color:var(--text-secondary);">Salida de almacén origen y alta en almacén receptor</span>
-                <div class="info-tip">
-                  <button type="button" class="info-tip-btn" aria-label="Condiciones de traspaso">
-                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </button>
-                  <div class="info-tip-popup">
-                    Al confirmar, las piezas salen del almacén de origen y se ingresan al almacén de entrada del departamento receptor para distribuirse a sus operadores.
-                  </div>
-                </div>
-              </div>
-              <button class="btn-primary" id="btnExecuteTransfer" style="padding:12px 24px;">
-                Confirmar Recolección y Traspaso de Sombreros
-              </button>
-            </div>
           </div>
         </div>
 
@@ -841,7 +731,7 @@
                     <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </button>
                   <div class="info-tip-popup">
-                    Supervisión general de planta: inspecciona el inventario en proceso (WIP) y sombreros almacenados en cada departamento. Haz clic en "Ver Almacén Intermedio" de cualquier departamento para revisar sus lotes y filtrar por modelo o estado.
+                    Toca cualquier departamento para inspeccionar sus lotes en almacén y sombreros en espera.
                   </div>
                 </div>
               </div>
@@ -855,48 +745,47 @@
               </div>
             </div>
 
-            <!-- Grid de Tarjetas de Departamentos de Planta (Renderizado Dinámico) -->
+            <!-- Grid de Tarjetas de Departamentos de Planta (Tablet-first: tocar la tarjeta completa para abrir) -->
             <div class="dept-plant-map-grid" id="plantDepartmentsGrid">
               <!-- Renderizado dinámicamente por terminal.js -->
             </div>
           </div>
 
-          <!-- Sección Secundaria: Auditoría Individual de Lote & Línea de Tiempo de Ruta -->
+          <!-- Consulta y Reubicación de Lotes por Error -->
           <div class="card-glass" style="padding:22px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <h4 style="font-size:15px; font-weight:800; color:var(--text-primary); margin:0;">
-                  Auditoría Individual de Lote & Línea de Tiempo de Ruta
+                  Buscador & Reubicación de Lotes (Corrección por Error)
                 </h4>
                 <div class="info-tip">
-                  <button type="button" class="info-tip-btn" aria-label="Ayuda de auditoría de lote">
+                  <button type="button" class="info-tip-btn" aria-label="Ayuda de consulta de lote">
                     <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </button>
                   <div class="info-tip-popup">
-                    Inspección de ruta secuencial. Recuerda: el traspaso físico de custodia se efectúa escaneando el código QR de la tarjeta viajera.
+                    Si un lote fue marcado como transferido por error, puedes buscarlo aquí y reubicarlo en alguna de tus estaciones asignadas.
                   </div>
                 </div>
               </div>
               <span class="badge-subtle" id="trackerRouteNameBadge" style="font-weight:700; color:var(--color-brand); border:1.5px solid var(--color-brand-border);">
-                Ruta: 1000X Master Telar (14 Estaciones)
+                Ruta: 1000X Master Telar
               </span>
             </div>
 
-            <!-- Selector y Buscador de Lote (Estilos uniformes y flecha corregida) -->
             <div style="display:grid; grid-template-columns: 2fr 1fr; gap:14px; margin-bottom:18px; align-items:flex-end;">
               <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Seleccionar Lote / Tarjeta Viajera a Auditar:</label>
+                <label class="field-label">Seleccionar Lote a Consultar / Reubicar:</label>
                 <select id="trackerLotSelect" class="custom-select" style="min-height:48px; font-weight:700;">
                   <!-- Llenado dinámicamente por JS -->
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Buscar por Folio / Horma / O.Prod:</label>
+                <label class="field-label">Buscar Folio / O.Prod:</label>
                 <input type="text" id="trackerLotSearch" class="form-input" placeholder="Ej. 49633, Chaparral, 15071..." style="min-height:48px; font-weight:600;">
               </div>
             </div>
 
-            <!-- Ficha Resumen del Lote Seleccionado y Acciones de Supervisor -->
+            <!-- Ficha del Lote Seleccionado y Acciones de Reubicación -->
             <div style="background:var(--color-brand-light); border:1.5px solid var(--color-brand-border); border-radius:12px; padding:18px; margin-bottom:20px;">
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
@@ -908,14 +797,11 @@
                   </span>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnRewindLotStep" title="Regresar al paso anterior (ej. reproceso)">
-                    Retroceder
+                  <button type="button" class="btn-secondary btn-touch-lg" id="btnRewindLotStep" title="Regresar al paso anterior (ej. corregir error)">
+                    ⬅ Regresar Estación
                   </button>
                   <button type="button" class="btn-primary btn-touch-lg" id="btnAdvanceLotStep">
-                    Avanzar Lote a Siguiente Estación
-                  </button>
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnApproveQualityStep" style="background:#DCFCE7; color:#15803D; border-color:#86EFAC; display:none;">
-                    Liberar Filtro de Calidad
+                    Avanzar Estación ➡
                   </button>
                 </div>
               </div>
@@ -935,7 +821,7 @@
                   <strong style="color:var(--color-brand); font-size:13px;" id="trackerPiecesInfo">15 pzas (Sublote 3 de 4)</strong>
                 </div>
                 <div>
-                  <span style="color:var(--text-muted); display:block;">Operador Responsable:</span>
+                  <span style="color:var(--text-muted); display:block;">Operador:</span>
                   <strong style="color:var(--text-primary);" id="trackerOperatorName">Jorge (Prensas)</strong>
                 </div>
                 <div>
@@ -944,74 +830,15 @@
                 </div>
               </div>
 
-              <!-- Barra de Progreso de la Línea de Tiempo -->
+              <!-- Barra de Progreso -->
               <div style="margin-top:14px; background:#E2E8F0; border-radius:999px; height:8px; overflow:hidden;">
                 <div id="trackerProgressBar" style="background:linear-gradient(90deg, #8B5E3C, #16A34A); height:100%; width:43%; border-radius:999px; transition:width 0.4s ease;"></div>
               </div>
             </div>
 
-            <!-- Leyenda de Nodos del Mapa de Proceso -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
-              <h4 style="font-size:14px; font-weight:800; color:var(--text-primary); margin-bottom:0;">Línea de Tiempo de Departamentos & Paradas de Calidad:</h4>
-              <div style="display:flex; gap:12px; font-size:11.5px; align-items:center; flex-wrap:wrap;">
-                <span><span style="display:inline-block; width:10px; height:10px; border-radius:2px; background:#0369A1; margin-right:4px;"></span> Manufactura</span>
-                <span><span style="display:inline-block; width:10px; height:10px; border-radius:2px; background:#F59E0B; margin-right:4px;"></span> Control de Calidad</span>
-                <span><span style="display:inline-block; width:10px; height:10px; border-radius:2px; background:#7E22CE; margin-right:4px;"></span> Logística / Salida</span>
-                <span style="color:var(--text-muted);">· Haz clic en cualquier estación para reubicar el lote</span>
-              </div>
-            </div>
-
-            <!-- Contenedor Horizontal Desplazable del Mapa de Proceso -->
+            <!-- Línea de Tiempo de Estaciones -->
             <div id="processTimelineContainer" class="process-timeline-container">
               <!-- Nodos inyectados dinámicamente por terminal.js -->
-            </div>
-          </div>
-        </div>
-
-        <!-- ======================================================================
-             SUBPESTAÑA 3: MONITOR DE ALMACENES INTERMEDIOS & LOTES LISTOS
-             (Para saber si el departamento anterior ya tiene listos lotes para recoger)
-             ====================================================================== -->
-        <div class="sub-tab-content" id="subtab-terminal-buffer-ready">
-          <div class="card-glass" style="padding:24px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
-              <div>
-                <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
-                  Monitor de Almacenes Intermedios · Lotes Listos para Recolección
-                </h3>
-                <p class="section-desc" style="margin-bottom:0;">
-                  Consulta los almacenes de salida de los demás departamentos para saber cuándo terminaron sus lotes y recogerlos de inmediato para que tu departamento empiece su labor.
-                </p>
-              </div>
-              <div style="display:flex; gap:8px; align-items:center;">
-                <span class="badge-subtle" id="bufferReadyCountBadge">6 lotes en espera de recolección</span>
-                <button class="btn-secondary" id="btnRefreshBufferMonitor" style="padding:6px 12px; font-size:12px;">Actualizar</button>
-              </div>
-            </div>
-
-            <!-- Filtros de Almacén Intermedio -->
-            <div class="filter-bar">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <label class="field-label">Filtrar:</label>
-                <select id="bufferFilterScope" class="custom-select select-sm">
-                  <option value="all">Ver Todos los Almacenes de Salida</option>
-                  <option value="my-depts">Solo Lotes Listos para Mis Departamentos</option>
-                  <option value="D-01">Almacén Salida · Corte de Telar</option>
-                  <option value="D-02">Almacén Salida · Englopado y Camas</option>
-                  <option value="D-05">Almacén Salida · Prensas de Hormado</option>
-                  <option value="D-06">Almacén Salida · Recorte y Alambrado</option>
-                  <option value="D-09">Almacén Salida · Pintura y Matizado</option>
-                  <option value="D-12">Almacén Salida · Adorno (Tafilete y Toquilla)</option>
-                </select>
-              </div>
-              <span style="font-size:11.5px; color:var(--text-muted); margin-left:auto;">
-                Presiona "Recoger Lote" para trasladarlo físicamente a tu estación de trabajo y registrar la custodia en tiempo real.
-              </span>
-            </div>
-
-            <!-- Grid de Lotes Listos en Buffers de Salida -->
-            <div class="buffer-ready-grid" id="bufferReadyLotsGrid">
-              <!-- Renderizado dinámicamente por terminal.js -->
             </div>
           </div>
         </div>
@@ -1308,7 +1135,6 @@
                   </div>
                 </div>
               </div>
-              <span class="badge-subtle" style="font-weight:700;">Auditado por Logística MES</span>
             </div>
 
             <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
@@ -4003,11 +3829,6 @@
         <div style="margin-top:14px; padding:10px 14px; background:var(--color-brand-light); border-radius:8px; border:1px solid var(--color-brand-border); font-size:12px; color:var(--color-brand-dark);">
           <strong>Regla Operativa Tombstone:</strong> El traspaso de lotes entre departamentos se ejecuta exclusivamente escaneando el código QR de la tarjeta con el lector del supervisor.
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-secondary btn-touch-lg" id="btnDismissDeptWarehouseModal" style="width:100%;">
-          Cerrar Consulta de Almacén
-        </button>
       </div>
     </div>
   </div>
