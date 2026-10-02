@@ -35,40 +35,61 @@
 
 ---
 
-## 4. Preguntas Concretas para la Reunión
+## 4. Preguntas Concretas para la Reunión (Con Justificación y Detalle)
 
 ### A. Con la Ingeniera de CONTPAQi (Técnico / Costo)
-1. **¿Qué versión exacta tienen?** (Ej. Comercial Premium sobre SQL Server local).
-2. **¿Conectar requiere pagar licencias o módulos extra?**  
-   - Si la respuesta es SÍ → **Se descarta pagar.**
-3. **¿Nos autoriza un usuario de base de datos de Solo Lectura (`db_datareader`)?**  
-   - Cero riesgo, sin costo y sin modificar datos de CONTPAQi.
-4. **¿Manejan una sola empresa en la BD o varias razones sociales?**
 
-### B. Con Compras y Almacén (Operación de Entrada)
-1. **¿Con qué documento físico llega el camión?** (¿Copia de OC, Remisión del proveedor o Factura impresa?).
-2. **¿En qué momento dan entrada al sistema?**  
-   - ¿Al descargar el camión o esperan días a que llegue la factura formal?  
-   - *(Si esperan días, el MES debe recibir con la OC o remisión para no parar planta).*
-3. **¿Tienen códigos estandarizados de materias primas y capturan lote de proveedor?**
-4. **¿Cómo gestionan entregas parciales y rechazos de calidad en muelle?**
+1. **¿Qué producto y versión exacta tienen instalada?**
+   - *Por qué importa:* Si es *CONTPAQi Comercial Premium*, la base de datos corre nativa sobre Microsoft SQL Server en la red local. Eso nos permite hacer consultas directas de forma estándar, rápida y limpia.
+2. **¿Conectar o consultar requiere comprar licencias SDK, módulos adicionales o pagar póliza de desarrollo?**  
+   - *Criterio de decisión:* Si la respuesta es SÍ → **Se descarta pagar inmediatamente.** Uanify MES no depende de su API ni vamos a encarecer el proyecto por trabas de licenciamiento de CONTPAQi.
+3. **¿Nos autoriza un usuario de base de datos de Solo Lectura (`db_datareader`)?**  
+   - *Detalle técnico para ella:* No vamos a alterar tablas, no ejecutaremos `INSERT`, `UPDATE` ni `DELETE`. Solo requerimos permisos de consulta `SELECT` sobre tablas de documentos y movimientos de compras. Es la práctica estándar de la industria, toma 5 minutos configurarlo en SQL Server Management Studio y tiene **cero riesgo de corrupción de datos**.
+4. **¿Manejan una sola empresa en la BD o varias razones sociales?**
+   - *Por qué importa:* Saber si compran con una razón social y facturan con otra, para apuntar la consulta a la base de datos correcta.
+
+### B. Con Compras y Almacén (Operación Fina de Entrada)
+
+1. **¿Cuál es el documento físico o digital exacto con el que el chofer entrega en muelle?**
+   - *Por qué importa:* Necesitamos saber si el almacenista tiene en la mano la copia de la Orden de Compra interna, la Remisión de entrega del proveedor, o la Factura impresa con su archivo XML.
+2. **¿En qué momento exacto entra el material a CONTPAQi?**  
+   - *Dilema operativo:* ¿Capturan una *"Recepción de Compra"* al momento en que el camión descarga? ¿O el material se baja a piso y se espera 3 a 5 días hasta que el proveedor manda el XML formal para capturarlo en CONTPAQi?
+   - *Impacto:* Si esperan días a que llegue la factura, **conectar el MES a las facturas de CONTPAQi frenaría la fábrica**. En ese caso, el lote del MES debe nacer de la Orden de Compra previa o de la remisión física para que producción arranque de inmediato.
+3. **Catálogo de Materiales y Lotes de Proveedor:**
+   - ¿Las materias primas (rollos de toquilla, campanas de fieltro, conos de hilo, herrajes) ya tienen un código interno estandarizado en CONTPAQi o usan descripciones libres?
+   - ¿Registran en algún campo el número de lote del proveedor o pedimento aduanal para trazabilidad?
+4. **Entregas Parciales y Rechazos de Calidad:**
+   - Si pidieron 5,000 toquillas y llegaron 3,200: ¿CONTPAQi deja el saldo pendiente en automático en la misma orden o exige crear otra?
+   - Si al descargar se detecta materia prima defectuosa (fieltro manchado o paja rota): ¿se rechaza en el momento sin registrar entrada, o se registra todo y luego se tramita una nota de crédito/devolución?
 
 ---
 
-## 5. Las 3 Opciones de Conexión
+## 5. Las 3 Opciones de Conexión: Detalle Técnico y Decisión
 
 | Opción | Método | Costo | Dependencia | Viabilidad |
 | :--- | :--- | :---: | :---: | :--- |
-| **1. SQL Directo (Recomendada)** | Consultas `SELECT` en red local a tablas de compras (`admDocumentos`). | **$0** | Mínima (solo usuario de lectura). | **Alta.** Inmediata si la ingeniera da acceso. |
+| **1. SQL Directo (Recomendada)** | Consultas `SELECT` en red local a tablas de compras (`admDocumentos`, `admMovimientos`). | **$0** | Mínima (solo usuario de lectura). | **Alta.** Inmediata si la ingeniera da acceso. |
 | **2. SDK CONTPAQi** | Librerías oficiales de CONTPAQi. | **Variable / Alto** | Alta (licencias y soporte). | **Solo si ya está pagado.** Si cobran, descartar. |
 | **3. Lector XML CFDI (Autónoma)** | Almacén carga el XML de la factura del proveedor al MES. | **$0** | **Cero dependencia de CONTPAQi.** | **100% viable.** Plan infalible si CONTPAQi pone trabas o cobros. |
+
+### Cómo funciona cada alternativa en la práctica:
+
+* **Opción 1 — SQL Server Directo (Vía Rápida e Invisible):**  
+  Instalamos un conector local ligero en el servidor de la planta. Cuando Almacén recibe un camión, la tablet del MES consulta por red local las órdenes de compra autorizadas en CONTPAQi. El almacenista toca la orden en pantalla, valida las piezas y se generan los códigos QR de los lotes al instante. **Cero doble captura, cero costo de licencias.**
+* **Opción 2 — SDK Oficial de CONTPAQi:**  
+  Solo se toma en cuenta si la ingeniera demuestra que la membresía anual que ya pagan ya incluye las librerías activadas y no requiere cobrar honorarios extras de desarrollo. Si pide un solo peso adicional, **se descarta en la misma reunión**.
+* **Opción 3 — Recepción Autónoma por Archivo XML (El Respaldo Infalible):**  
+  Si la ingeniera de CONTPAQi pone pretextos técnicos, burocracia o pretende cobrar licencias caras: **no nos detenemos ni gastamos un peso**. El proveedor siempre envía el archivo `.XML` del CFDI por correo. Uanify MES cuenta con un lector nativo de XML: el almacenista arrastra el XML a la tablet, el sistema lee automáticamente el RFC, productos, cantidades y descripciones, y emite las etiquetas QR de lote en 2 segundos. **Cero pesos, cero ataduras y 100% de autonomía para la planta.**
 
 ---
 
 ## 6. Acuerdos al Salir de la Reunión
 
-- [ ] ¿Cobran por conectar CONTPAQi? (Si cobran → Nos vamos por Opción 3: XML directo).
-- [ ] Versión exacta de software y motor de BD (ej. SQL Server 2019 LAN).
-- [ ] Visto bueno para usuario SQL de solo lectura (`uanify_reader`).
-- [ ] Copia o captura de: 1 Orden de Compra real, 1 Entrada de Almacén y 1 archivo XML de proveedor.
-- [ ] Contacto de la ingeniera externa (teléfono y correo) para prueba técnica de 15 min.
+- [ ] **Decisión económica tomada:** ¿Cobran por conectar CONTPAQi? (Si cobran → Nos vamos por Opción 3: XML directo sin costo).
+- [ ] **Ficha técnica:** Versión exacta de software y motor de BD (ej. *Comercial Premium v10 / SQL Server 2019 LAN*).
+- [ ] **Autorización del usuario de lectura:** Visto bueno de la ingeniera para crear `uanify_reader` con rol `db_datareader`.
+- [ ] **Muestras de datos reales recopiladas:**
+  - 1 Orden de Compra real con partidas (PDF o captura).
+  - 1 Documento de Entrada / Recepción de Almacén.
+  - 1 Archivo XML de factura de proveedor representativo (fieltro, paja o toquilla).
+- [ ] **Contacto directo de la Ingeniera Externa:** Teléfono y correo para agendar la sesión técnica de prueba de 15 minutos.
