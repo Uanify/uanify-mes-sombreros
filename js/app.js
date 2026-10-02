@@ -3817,6 +3817,21 @@ function enrichStationWithDefaults(st, idx) {
       if (tip) positionPopup(tip);
     }, true);
 
+    // Al salir el puntero de un tooltip, desactivarlo para que no se quede pegado
+    document.addEventListener('mouseleave', (e) => {
+      const tip = e.target.closest ? e.target.closest('.info-tip') : null;
+      if (tip) {
+        tip.classList.remove('active');
+        const p = tip.querySelector('.info-tip-popup');
+        if (p) {
+          p.style.setProperty('--tip-top', '-9999px');
+          p.style.setProperty('--tip-left', '-9999px');
+        }
+        const btn = tip.querySelector('.info-tip-btn');
+        if (btn) btn.blur();
+      }
+    }, true);
+
     // Click/tap: toggle active + posicionar
     document.addEventListener('click', (e) => {
       const tip = e.target.closest('.info-tip');
@@ -3829,10 +3844,15 @@ function enrichStationWithDefaults(st, idx) {
             p.style.setProperty('--tip-top', '-9999px');
             p.style.setProperty('--tip-left', '-9999px');
           }
+          const b = t.querySelector('.info-tip-btn');
+          if (b) b.blur();
         });
         if (!wasActive) {
           tip.classList.add('active');
           positionPopup(tip);
+        } else {
+          const btn = tip.querySelector('.info-tip-btn');
+          if (btn) btn.blur();
         }
         e.stopPropagation();
       } else {
@@ -3843,6 +3863,8 @@ function enrichStationWithDefaults(st, idx) {
             p.style.setProperty('--tip-top', '-9999px');
             p.style.setProperty('--tip-left', '-9999px');
           }
+          const b = t.querySelector('.info-tip-btn');
+          if (b) b.blur();
         });
       }
     });

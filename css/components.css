@@ -4950,7 +4950,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 
 /* Activación */
 .info-tip:hover .info-tip-popup,
-.info-tip:focus-within .info-tip-popup,
 .info-tip.active .info-tip-popup {
   opacity: 1;
   visibility: visible;
