@@ -163,6 +163,321 @@ window.UanifyUI = {
     if (closeBtn) closeBtn.onclick = cleanup;
 
     modal.classList.add('active');
+  },
+
+  // ─── UANIFY SELECT DROPDOWN COMPONENT (Universal Dropdown UI) ───
+  activeSelectMenu: null,
+  activeSelectWrapper: null,
+
+  initSelect(selectEl) {
+    if (!selectEl || selectEl.dataset.uanifySelectInit) return;
+    selectEl.dataset.uanifySelectInit = 'true';
+
+    // Ocultar select nativo de forma accesible
+    selectEl.style.position = 'absolute';
+    selectEl.style.opacity = '0';
+    selectEl.style.pointerEvents = 'none';
+    selectEl.style.width = '1px';
+    selectEl.style.height = '1px';
+    selectEl.style.margin = '-1px';
+    selectEl.style.clip = 'rect(0,0,0,0)';
+    selectEl.setAttribute('tabindex', '-1');
+
+    // Contenedor visual wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'uanify-select-wrapper';
+    if (selectEl.id) wrapper.id = `wrapper_${selectEl.id}`;
+    if (selectEl.classList.contains('select-sm')) wrapper.classList.add('select-sm');
+
+    // Mantener anchos inline o clases especiales si aplican
+    const minW = selectEl.style.minWidth;
+    const w = selectEl.style.width;
+    if (minW) wrapper.style.minWidth = minW;
+    if (w) wrapper.style.width = w;
+    if (selectEl.style.flex) wrapper.style.flex = selectEl.style.flex;
+
+    // Trigger visual
+    const trigger = document.createElement('div');
+    trigger.className = 'uanify-select-trigger';
+    trigger.setAttribute('role', 'combobox');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('tabindex', '0');
+
+    // Alturas personalizadas inline si el select tenía una específica
+    if (selectEl.style.height) trigger.style.height = selectEl.style.height;
+    if (selectEl.style.minHeight) trigger.style.minHeight = selectEl.style.minHeight;
+    if (selectEl.style.fontSize) trigger.style.fontSize = selectEl.style.fontSize;
+    if (selectEl.style.fontWeight) trigger.style.fontWeight = selectEl.style.fontWeight;
+
+    const label = document.createElement('span');
+    label.className = 'uanify-select-label';
+
+    const arrow = document.createElement('div');
+    arrow.className = 'uanify-select-arrow';
+    arrow.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+    trigger.appendChild(label);
+    trigger.appendChild(arrow);
+    wrapper.appendChild(trigger);
+
+    // Menú flotante adjunto al body para evitar cualquier clipping de modal u overflow
+    const menu = document.createElement('div');
+    menu.className = 'uanify-select-menu';
+    document.body.appendChild(menu);
+
+    const updateLabel = () => {
+      const selectedOption = selectEl.options[selectEl.selectedIndex];
+      if (selectedOption) {
+        label.textContent = selectedOption.text;
+        if (!selectedOption.value && selectedOption.text.startsWith('--')) {
+          label.classList.add('placeholder');
+        } else {
+          label.classList.remove('placeholder');
+        }
+      } else {
+        label.textContent = '-- Seleccionar --';
+        label.classList.add('placeholder');
+      }
+    };
+
+    const buildMenu = () => {
+      menu.innerHTML = '';
+      const options = Array.from(selectEl.options);
+
+      // Si tiene más de 7 opciones, incluir un buscador rápido incorporado
+      let searchInput = null;
+      if (options.length > 7) {
+        const searchBox = document.createElement('div');
+        searchBox.className = 'uanify-select-search-box';
+        searchBox.innerHTML = `
+          <div class="uanify-select-search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <input type="text" class="uanify-select-search-input" placeholder="Buscar opción..." autocomplete="off">
+        `;
+        searchInput = searchBox.querySelector('.uanify-select-search-input');
+        menu.appendChild(searchBox);
+
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          let visibleCount = 0;
+          menu.querySelectorAll('.uanify-select-option').forEach(optEl => {
+            const match = optEl.textContent.toLowerCase().includes(query);
+            optEl.style.display = match ? 'flex' : 'none';
+            if (match) visibleCount++;
+          });
+          const emptyMsg = menu.querySelector('.uanify-select-empty');
+          if (emptyMsg) {
+            emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+          }
+        });
+
+        // Prevenir que el click en el buscador cierre el dropdown
+        searchBox.addEventListener('click', (e) => e.stopPropagation());
+      }
+
+      const list = document.createElement('ul');
+      list.className = 'uanify-select-options-list';
+
+      // Iterar sobre hijos del select para respetar grupos <optgroup> si existen
+      const children = Array.from(selectEl.children);
+      
+      const renderOption = (opt, idx) => {
+        const li = document.createElement('li');
+        li.className = 'uanify-select-option';
+        if (opt.selected) li.classList.add('selected');
+        li.dataset.value = opt.value;
+        li.dataset.index = idx;
+
+        const optText = document.createElement('span');
+        optText.style.overflow = 'hidden';
+        optText.style.textOverflow = 'ellipsis';
+        optText.style.whiteSpace = 'nowrap';
+        optText.textContent = opt.text;
+
+        const check = document.createElement('span');
+        check.className = 'uanify-select-check';
+        check.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+        li.appendChild(optText);
+        li.appendChild(check);
+
+        li.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectEl.selectedIndex = idx;
+          updateLabel();
+          closeMenu();
+          trigger.focus();
+          const evt = new Event('change', { bubbles: true });
+          selectEl.dispatchEvent(evt);
+        });
+
+        list.appendChild(li);
+      };
+
+      let optIdx = 0;
+      children.forEach(child => {
+        if (child.tagName === 'OPTGROUP') {
+          const groupHeader = document.createElement('li');
+          groupHeader.className = 'uanify-select-group-header';
+          groupHeader.textContent = child.label;
+          groupHeader.style.padding = '8px 12px 4px 12px';
+          groupHeader.style.fontSize = '11px';
+          groupHeader.style.fontWeight = '800';
+          groupHeader.style.textTransform = 'uppercase';
+          groupHeader.style.letterSpacing = '0.5px';
+          groupHeader.style.color = 'var(--text-muted, #64748B)';
+          groupHeader.style.pointerEvents = 'none';
+          list.appendChild(groupHeader);
+
+          Array.from(child.children).forEach(opt => {
+            renderOption(opt, optIdx);
+            optIdx++;
+          });
+        } else if (child.tagName === 'OPTION') {
+          renderOption(child, optIdx);
+          optIdx++;
+        }
+      });
+
+      const emptyEl = document.createElement('div');
+      emptyEl.className = 'uanify-select-empty';
+      emptyEl.textContent = 'No se encontraron coincidencias';
+      emptyEl.style.display = 'none';
+      list.appendChild(emptyEl);
+
+      menu.appendChild(list);
+    };
+
+    const positionMenu = () => {
+      const rect = trigger.getBoundingClientRect();
+      const menuWidth = Math.max(rect.width, 240);
+      menu.style.width = `${menuWidth}px`;
+
+      // Comprobar espacio inferior
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      let top;
+      if (spaceBelow < 280 && spaceAbove > spaceBelow) {
+        // Desplegar hacia arriba
+        top = Math.max(10, rect.top - 280);
+      } else {
+        // Desplegar hacia abajo
+        top = rect.bottom + 4;
+      }
+
+      // Asegurar que no se salga horizontalmente
+      let left = rect.left;
+      if (left + menuWidth > window.innerWidth - 10) {
+        left = window.innerWidth - menuWidth - 10;
+      }
+      if (left < 10) left = 10;
+
+      menu.style.top = `${top}px`;
+      menu.style.left = `${left}px`;
+    };
+
+    const openMenu = () => {
+      if (window.UanifyUI.activeSelectMenu && window.UanifyUI.activeSelectMenu !== menu) {
+        window.UanifyUI.closeAllSelects();
+      }
+      buildMenu();
+      menu.classList.add('active');
+      wrapper.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      positionMenu();
+      window.UanifyUI.activeSelectMenu = menu;
+      window.UanifyUI.activeSelectWrapper = wrapper;
+
+      const searchInput = menu.querySelector('.uanify-select-search-input');
+      if (searchInput) {
+        setTimeout(() => searchInput.focus(), 40);
+      }
+
+      // Scroll a opción seleccionada
+      const selectedLi = menu.querySelector('.uanify-select-option.selected');
+      if (selectedLi) {
+        selectedLi.scrollIntoView({ block: 'nearest' });
+      }
+    };
+
+    const closeMenu = () => {
+      menu.classList.remove('active');
+      wrapper.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (window.UanifyUI.activeSelectMenu === menu) {
+        window.UanifyUI.activeSelectMenu = null;
+        window.UanifyUI.activeSelectWrapper = null;
+      }
+    };
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (menu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        openMenu();
+      } else if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    // Escuchar cambios programáticos en el select nativo
+    selectEl.addEventListener('change', updateLabel);
+
+    // Observar mutaciones en los hijos <option> para refrescar etiqueta
+    const observer = new MutationObserver(() => {
+      updateLabel();
+    });
+    observer.observe(selectEl, { childList: true, subtree: true, characterData: true });
+
+    // Guardar referencia en el elemento para sincronización rápida
+    selectEl._uanifySelect = {
+      wrapper,
+      trigger,
+      menu,
+      updateLabel,
+      refresh: () => {
+        updateLabel();
+      }
+    };
+
+    // Insertar wrapper en el DOM justo antes del select nativo
+    selectEl.parentNode.insertBefore(wrapper, selectEl);
+    wrapper.appendChild(selectEl);
+
+    updateLabel();
+  },
+
+  closeAllSelects() {
+    if (window.UanifyUI.activeSelectMenu) {
+      window.UanifyUI.activeSelectMenu.classList.remove('active');
+      window.UanifyUI.activeSelectMenu = null;
+    }
+    if (window.UanifyUI.activeSelectWrapper) {
+      window.UanifyUI.activeSelectWrapper.classList.remove('open');
+      const tr = window.UanifyUI.activeSelectWrapper.querySelector('.uanify-select-trigger');
+      if (tr) tr.setAttribute('aria-expanded', 'false');
+      window.UanifyUI.activeSelectWrapper = null;
+    }
+  },
+
+  initAllSelects(root = document) {
+    const selects = root.querySelectorAll('select.custom-select, select');
+    selects.forEach(sel => {
+      // Ignorar selects internos temporales o ya inicializados
+      if (!sel.closest('.uanify-select-menu')) {
+        window.UanifyUI.initSelect(sel);
+      }
+    });
   }
 };
 
@@ -3875,10 +4190,30 @@ function enrichStationWithDefaults(st, idx) {
       if (scrollRaf) return;
       scrollRaf = requestAnimationFrame(() => {
         document.querySelectorAll('.info-tip.active').forEach(t => positionPopup(t));
+        if (window.UanifyUI && window.UanifyUI.closeAllSelects) {
+          window.UanifyUI.closeAllSelects();
+        }
         scrollRaf = null;
       });
     }, true);
   }
+
+  // Cerrar cualquier dropdown personalizado al hacer click fuera o presionar Escape
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.uanify-select-wrapper') && !e.target.closest('.uanify-select-menu')) {
+      if (window.UanifyUI && window.UanifyUI.closeAllSelects) {
+        window.UanifyUI.closeAllSelects();
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (window.UanifyUI && window.UanifyUI.closeAllSelects) {
+        window.UanifyUI.closeAllSelects();
+      }
+    }
+  });
 
   initLoginScreen();
   initSubTabs();
@@ -3895,4 +4230,9 @@ function enrichStationWithDefaults(st, idx) {
   if (window.initEngineerView)  window.initEngineerView();
   if (window.initExecutiveView) window.initExecutiveView();
   if (window.initConfigView)    window.initConfigView();
+
+  // Inicializar todos los dropdowns personalizados del sistema MES
+  if (window.UanifyUI && window.UanifyUI.initAllSelects) {
+    window.UanifyUI.initAllSelects();
+  }
 });

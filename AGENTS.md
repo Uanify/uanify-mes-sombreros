@@ -528,11 +528,13 @@ Excepciones permitidas con style="":
 
 **Para garantizar la escalabilidad, la consistencia visual y la mantenibilidad de todos los módulos actuales y futuros, todos los controles de entrada y botones deben regirse por los siguientes estándares arquitectónicos:**
 
-1. **Selectores y Dropdowns (`select`, `.custom-select`):**
-   - **Cero Estilo Nativo Anti-estético:** Todo elemento `<select>` debe anular el estilo por defecto del sistema operativo (`appearance: none; -webkit-appearance: none;`).
-   - **Flecha Chevron SVG Integrada:** Debe incorporar una flecha SVG vectorial estilizada como imagen de fondo (`background-image: url("data:image/svg+xml,...")`) alineada a la derecha a 12px.
-   - **Padding de Seguridad:** Padding horizontal estricto de `0 36px 0 13px !important;` para asegurar que el texto seleccionado jamás colisione ni se sobreponga a la flecha desplegable.
-   - **Borde y Focus:** Borde sutil `#CBD5E1`, fondo `#FFFFFF`, y al recibir foco (`:focus`) el borde y la flecha transicionan al color de marca cuero (`#8B5E3C`) con anillo de sombra suave de 3px (`box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.15)`).
+1. **Selectores y Dropdowns Personalizados (`select`, `.custom-select`, `UanifySelect`):**
+   - **Prohibición Total del Menú Desplegable Nativo del Sistema Operativo:** Todo control desplegable del sistema debe presentarse mediante el componente propio `UanifySelect` (`.uanify-select-wrapper`, `.uanify-select-trigger`, `.uanify-select-menu`). Queda estrictamente prohibido que al desplegar un selector se renderice el menú gris tosco nativo de Windows/macOS.
+   - **Trigger Estilizado con Flecha Chevron SVG:** Botón táctil con borde `#CBD5E1`, fondo blanco `#FFFFFF`, tipografía refinada de 13.5px (`font-weight: 600`) y chevron rotatorio reactivo que transiciona a `--color-brand` (`#8B5E3C`) y rota 180° al abrir.
+   - **Menú Flotante Propio con Sombra Suave y Bordes Redondeados:** Renderizado en el DOM global (`z-index: 100050`) para evitar cualquier corte por `overflow: hidden` en tarjetas o modales. Cuenta con bordes redondeados (`border-radius: 10px`), borde `#E2E8F0` y elevación suave (`box-shadow: 0 10px 25px -5px rgba(15,23,42,0.15)`).
+   - **Buscador Integrado Reactivo en Dropdowns Extensos:** En selectores con más de 7 opciones (ej. modelos de sombrero, departamentos, operadores), el menú incorpora un campo de búsqueda instantánea con vector de lupa para filtrado al vuelo.
+   - **Soporte Completo de Optgroups y Checklist Visual:** Opciones agrupadas con encabezados técnicos sobrios, estado hover visual (`#F1F5F9`) e indicador de check SVG para la opción seleccionada.
+   - **Sincronización Bidireccional Total:** La selección actualiza el `<select>` subyacente y dispara eventos `change` estándar, manteniendo compatibilidad transparente con cualquier lógica del sistema MES.
 
 2. **Buscadores e Inputs de Texto (`.filter-search-box`, `.form-input`, `input[type="text"]`):**
    - **Icono SVG Limpio:** El indicador de búsqueda debe ser exclusivamente un vector SVG de lupa posicionado absolutamente a la izquierda (`left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;`). Queda estrictamente prohibido inyectar palabras de texto ("BUSCAR") que se encimen sobre el placeholder o el texto digitado.

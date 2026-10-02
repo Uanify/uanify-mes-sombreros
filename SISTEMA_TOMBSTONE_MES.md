@@ -437,11 +437,10 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Consistencia Dual de Operadores:** Normalización idéntica tanto en el módulo de Configuración (`subtab-config-operators`) como en el Directorio General de Mano de Obra (`view-operators`).
   - **Sincronización Universal de Versión:** Actualización transversal del sistema a `v2.25.0` en login, sidebar, package.json y documentación viva.
 - **`v2.24.0` (2026-09-26):**
-  - **Estandarización de Tabla Usuarios (RBAC) y Sintetización de Permisos:** Eliminación de la saturación visual generada por píldoras múltiples de permisos modulares; agrupación inteligente en insignias consolidadas (`Acceso Total (Todos los Módulos)` para Admin, `Acceso Avanzado (6 Módulos)` para Ingeniero y píldoras compactas para supervisores).
-  - **Simetría Milimétrica en Botones de Fila con Protección de Superusuario:** Estandarización de botones cuadrados compactos (32x32px) con iconos SVG claros para editar y eliminar en todas las filas. Para el usuario principal (`admin-1`), se implementó un botón con candado SVG suave desactivado que preserva la alineación estricta de dos acciones sin textos asimétricos.
-  - **Buscador de Usuarios Limpio:** Input de búsqueda con vector SVG de lupa alineado a 12px y padding de 38px, eliminando empalmes de texto sobre el placeholder.
-  - **Sincronización de Versión del Sistema:** Actualización universal de versión a `v2.24.0` en login, sidebar, package.json y documentación técnica.
-- **`v2.23.0` (2026-09-26):**
+- **`v2.38.0` (2026-10-02):**
+  - **Componente Universal Custom Select Dropdown UI (`UanifySelect`):** Erradicación total de los menús desplegables nativos del sistema operativo en favor de un componente personalizado con trigger táctil estético, chevron rotatorio suave, menú flotante desacoplado en el DOM con elevación (`box-shadow`), soporte de `optgroup`, badges de selección y buscador reactivo integrado para selectores de más de 7 opciones (ej. modelos de sombrero, departamentos, operadores).
+  - **Blindaje en Regla 0.37 (`AGENTS.md`):** Formalización arquitectónica obligatoria para que todo selector actual y futuro adopte este patrón visual interactivo.
+- **`v2.24.0` (2026-09-26):**
   - **Desglose Estricto de Columnas en Calidad (7 Columnas 1:1):** Separación de `Inspector Responsable` y `Tiempo de Ciclo` en columnas independientes con alineación perfecta, evitando que el estatus y los botones de acción se desplacen hacia columnas previas.
   - **Sintetización de Criterios y Tolerancias:** Remoción de párrafos redundantes en celdas de inspección para lograr una vista compacta de 52px de altura uniforme.
   - **Estandarización de Modales de Calidad:** Inputs con foco de marca y unificación estricta del botón `Guardar Filtro de Calidad` a `--color-brand`.
