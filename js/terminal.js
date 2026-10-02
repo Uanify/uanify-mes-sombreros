@@ -26,10 +26,12 @@ window.initTerminalView = function() {
   const kioskQrScannerModal       = document.getElementById('kioskQrScannerModal');
   const btnCloseKioskScannerModal = document.getElementById('btnCloseKioskScannerModal');
   const btnKioskSimulateScan      = document.getElementById('btnKioskSimulateScan');
+  const kioskSimRandom            = document.getElementById('kioskSimRandom');
   const kioskSimSublot3           = document.getElementById('kioskSimSublot3');
   const kioskSimMotherLot         = document.getElementById('kioskSimMotherLot');
   const kioskSimScrapLot          = document.getElementById('kioskSimScrapLot');
   const kioskSimQualityStop       = document.getElementById('kioskSimQualityStop');
+  const kioskSimFinalLot          = document.getElementById('kioskSimFinalLot');
   const kioskSimUnauthorized      = document.getElementById('kioskSimUnauthorized');
 
   // Elementos de Escáner y Cámara
@@ -40,10 +42,12 @@ window.initTerminalView = function() {
   const cameraStatusBadge  = document.getElementById('cameraStatusBadge');
 
   // Botones de Simulación Rápida (Vista previa en empty state)
+  const btnSimRandom       = document.getElementById('btnSimulateScanRandom');
   const btnSimSublot3      = document.getElementById('btnSimulateScanSublot3');
   const btnSimMotherLot    = document.getElementById('btnSimulateScanMotherLot');
   const btnSimScrapLot     = document.getElementById('btnSimulateScanScrapLot');
   const btnSimQualityStop  = document.getElementById('btnSimulateScanQualityStop');
+  const btnSimFinalLot     = document.getElementById('btnSimulateScanFinalLot');
   const btnSimUnauthorized = document.getElementById('btnSimulateScanUnauthorized');
 
   // Trigger de Tarjeta Viajera Oficial (Mica de Piso)
@@ -216,10 +220,54 @@ window.initTerminalView = function() {
     btnCloseKioskScannerModal.addEventListener('click', closeKioskScanner);
   }
 
+  // Catálogo de Lotes de Planta para Simulación Aleatoria y Pruebas
+  const PLANT_SIM_LOTS = [
+    {
+      payload: 'TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK',
+      name: 'Sublote #3 (Viejonón #55 · D-05 a D-06)'
+    },
+    {
+      payload: 'TB|49386|0|CHAPARRAL|9.0 Cm|56|15068|SIN_OPERADOR|D-04|D-05|OK',
+      name: 'Lote Madre 60 pzas (Chaparral #56 · D-04 a D-05)'
+    },
+    {
+      payload: 'TB|49842|0|MAGNUM|9 1/2|57|15075|MELANY|D-05|D-06|SCRAP:Quemado por prensa de vapor',
+      name: 'Lote con Merma Registrada (Magnum #57 · Merma en Prensa)'
+    },
+    {
+      payload: 'TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK',
+      name: 'Parada en Filtro de Calidad (C-02 Inspección intermedia)'
+    },
+    {
+      payload: 'TB|49720|1|DENVER|9 1/2|58|15082|CARMEN|D-10|PT|OK',
+      name: 'Lote en Empaque Final (D-10 · Ingreso a Producto Terminado)'
+    },
+    {
+      payload: 'TB|49700|0|DENVER|9 1/2|58|15080|RAUL|D-01|D-02|OK',
+      name: 'Lote en Depto Ajeno (D-01 Corte · Validación RBAC)'
+    }
+  ];
+
+  function pickRandomSimLot() {
+    const idx = Math.floor(Math.random() * PLANT_SIM_LOTS.length);
+    return PLANT_SIM_LOTS[idx];
+  }
+
   if (btnKioskSimulateScan) {
     btnKioskSimulateScan.addEventListener('click', () => {
       closeKioskScanner();
-      triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
+      const sim = pickRandomSimLot();
+      window.UanifyUI.toast(`Simulando escaneo aleatorio: ${sim.name}`, 'info', 'QR Aleatorio Disparado');
+      triggerScanEvaluation(sim.payload);
+    });
+  }
+
+  if (kioskSimRandom) {
+    kioskSimRandom.addEventListener('click', () => {
+      closeKioskScanner();
+      const sim = pickRandomSimLot();
+      window.UanifyUI.toast(`Simulando escaneo aleatorio: ${sim.name}`, 'info', 'QR Aleatorio Disparado');
+      triggerScanEvaluation(sim.payload);
     });
   }
 
@@ -248,6 +296,13 @@ window.initTerminalView = function() {
     kioskSimQualityStop.addEventListener('click', () => {
       closeKioskScanner();
       triggerScanEvaluation('TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK');
+    });
+  }
+
+  if (kioskSimFinalLot) {
+    kioskSimFinalLot.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49720|1|DENVER|9 1/2|58|15082|CARMEN|D-10|PT|OK');
     });
   }
 
@@ -542,6 +597,14 @@ window.initTerminalView = function() {
   }
 
   // Botones de Simulación Rápida (En Empty State)
+  if (btnSimRandom) {
+    btnSimRandom.addEventListener('click', () => {
+      const sim = pickRandomSimLot();
+      window.UanifyUI.toast(`Disparando QR aleatorio: ${sim.name}`, 'info', 'Simulación de Planta');
+      triggerScanEvaluation(sim.payload);
+    });
+  }
+
   if (btnSimSublot3) {
     btnSimSublot3.addEventListener('click', () => {
       triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
@@ -563,6 +626,12 @@ window.initTerminalView = function() {
   if (btnSimQualityStop) {
     btnSimQualityStop.addEventListener('click', () => {
       triggerScanEvaluation('TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK');
+    });
+  }
+
+  if (btnSimFinalLot) {
+    btnSimFinalLot.addEventListener('click', () => {
+      triggerScanEvaluation('TB|49720|1|DENVER|9 1/2|58|15082|CARMEN|D-10|PT|OK');
     });
   }
 
@@ -741,6 +810,103 @@ window.initTerminalView = function() {
         qualityActionsContainer.style.display = 'none';
       }
       if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+    }
+
+    // ── PANEL CONTEXTUAL DINÁMICO DE OPCIONES SEGÚN EL TIPO Y ESTADO DEL LOTE ──
+    const dynamicLotOptionsContainer = document.getElementById('dynamicLotOptionsContainer');
+    const dynamicLotTypeBadge        = document.getElementById('dynamicLotTypeBadge');
+    const dynamicLotOptionsList      = document.getElementById('dynamicLotOptionsList');
+
+    if (dynamicLotOptionsContainer && dynamicLotOptionsList) {
+      dynamicLotOptionsContainer.style.display = 'block';
+
+      const isSublot = typeof lot.sublotNum === 'number' && lot.sublotNum > 0;
+      const isMotherLot = !isSublot || lot.sublotNum === 0 || (lot.pieces && lot.pieces >= 60);
+      const isQualityFilter = (lot.currentStationCode && lot.currentStationCode.startsWith('C-')) ||
+                              (lot.targetStationCode && lot.targetStationCode.startsWith('C-'));
+      const isFinalLot = lot.targetStationCode === 'PT' || lot.currentStationCode === 'D-10';
+
+      if (dynamicLotTypeBadge) {
+        if (lot.hasScrap) {
+          dynamicLotTypeBadge.textContent = 'Lote con Merma Activa';
+          dynamicLotTypeBadge.style.background = '#DC2626';
+        } else if (isQualityFilter) {
+          dynamicLotTypeBadge.textContent = 'Punto de Calidad / Inspección';
+          dynamicLotTypeBadge.style.background = '#D97706';
+        } else if (isFinalLot) {
+          dynamicLotTypeBadge.textContent = 'Empaque Final (Salida PT)';
+          dynamicLotTypeBadge.style.background = '#16A34A';
+        } else if (isMotherLot) {
+          dynamicLotTypeBadge.textContent = 'Lote Madre (60 piezas)';
+          dynamicLotTypeBadge.style.background = '#0284C7';
+        } else {
+          dynamicLotTypeBadge.textContent = `Sublote #${lot.sublotNum} (15 pzas)`;
+          dynamicLotTypeBadge.style.background = 'var(--color-brand)';
+        }
+      }
+
+      let optionsListHtml = '';
+
+      if (isMotherLot && !isFinalLot) {
+        optionsListHtml += `
+          <div style="background:#FFFFFF; border:1px solid #BAE6FD; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <strong style="color:#0369A1; font-size:13px;">⚙️ Modo Rampa (Fraccionamiento en 4 Sublotes)</strong>
+              <div style="font-size:11.5px; color:#0284C7;">Dividir lote madre de 60 piezas en 4 sublotes trazables de 15 pzas (con tarjetas viajeras independientes).</div>
+            </div>
+            <span class="badge-status" style="background:#E0F2FE; color:#0369A1; font-weight:800; font-size:11px;">Disponible abajo</span>
+          </div>
+        `;
+      }
+
+      if (lot.hasScrap) {
+        optionsListHtml += `
+          <div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <strong style="color:#B91C1C; font-size:13px;">⚠️ Contiene 1 Pieza No Conforme (${lot.scrapReason || 'Merma'})</strong>
+              <div style="font-size:11.5px; color:#7F1D1D;">La pieza defectuosa viaja señalada en la torre hasta la inspección final o estación de segregación.</div>
+            </div>
+            <span class="badge-status" style="background:#FEE2E2; color:#B91C1C; font-weight:800; font-size:11px;">Advertencia</span>
+          </div>
+        `;
+      }
+
+      if (isQualityFilter || isQualityRole) {
+        optionsListHtml += `
+          <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <strong style="color:#92400E; font-size:13px;">🛡️ Aprobación de Calidad / Decisión de Destino</strong>
+              <div style="font-size:11.5px; color:#B45309;">El inspector valida especificaciones. Si rechaza, puede enviar a reproceso departamental o merma definitiva.</div>
+            </div>
+            <span class="badge-status" style="background:#FEF3C7; color:#92400E; font-weight:800; font-size:11px;">Acción de Calidad</span>
+          </div>
+        `;
+      }
+
+      if (isFinalLot) {
+        optionsListHtml += `
+          <div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <strong style="color:#15803D; font-size:13px;">📦 Cierre de Producción e Ingreso a Almacén PT</strong>
+              <div style="font-size:11.5px; color:#166534;">Este lote ha completado la ruta productiva. El depósito sella la orden e ingresa al inventario de despacho.</div>
+            </div>
+            <span class="badge-status" style="background:#DCFCE7; color:#15803D; font-weight:800; font-size:11px;">Entrega Final</span>
+          </div>
+        `;
+      }
+
+      // Opción estándar presente en todo lote
+      optionsListHtml += `
+        <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div>
+            <strong style="color:var(--text-primary); font-size:13px;">➡️ Depósito a Buffer Siguiente (${lot.targetStationCode} ${lot.targetStationName})</strong>
+            <div style="font-size:11.5px; color:var(--text-secondary);">Transfiere físicamente las ${lot.pieces || 15} piezas al pulmón del siguiente departamento con firma de operador.</div>
+          </div>
+          <span class="badge-status" style="background:var(--color-brand-light); color:var(--color-brand); font-weight:800; font-size:11px;">Flujo Estándar</span>
+        </div>
+      `;
+
+      dynamicLotOptionsList.innerHTML = optionsListHtml;
     }
 
     // Botón Principal de Depósito
