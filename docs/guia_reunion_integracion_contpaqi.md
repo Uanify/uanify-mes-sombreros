@@ -35,42 +35,51 @@ En las sesiones previas de levantamiento con Carlos (Ingeniero de Procesos) y Ed
 
 ---
 
-## 3. Cuestionario Quirúrgico (Preguntas Clave para el Socio)
+## 3. Respuestas y Hechos Ya Confirmados (Lo que YA Sabemos por Audios y Levantamiento)
 
-Tu socio debe llevar estas preguntas anotadas. Están divididas por área para no revolver temas:
+Para que tu socio no gaste tiempo preguntando cosas obvias o ya resueltas en los audios y levantamiento con Carlos y Edmundo, aquí están los hechos y respuestas ya validados:
 
-### Bloque A: A la Ingeniera Externa / TI (Técnico y Licenciamiento)
-1. **¿Qué producto y versión exacta tienen instalada?**
-   - *¿Es CONTPAQi Comercial Premium, Comercial Pro, Factura Electrónica o el antiguo AdminPAQ?*
-   - *(Dato vital: Comercial Premium maneja base de datos MS SQL Server nativa).*
-2. **¿Dónde está montada la base de datos?**
-   - ¿Es un servidor físico o virtual en la red local (LAN) de la fábrica, o está en un servidor externo/remoto?
-3. **Validación de la advertencia de Carlos (Licencia y APIs):**
-   - ¿La licencia actual tiene activo el SDK de CONTPAQi?
-   - Si no tiene SDK o requiere costo extra: **¿Nos pueden dar acceso de solo lectura (SQL Server `db_datareader`) a la base de datos?**
-4. **¿Existen catálogos o empresas secundarias?**
-   - En CONTPAQi, ¿tienen una sola base de datos de empresa o tienen razones sociales distintas para compra y venta?
-
-### Bloque B: A Compras y Almacén (Operación y Datos)
-1. **¿Cuál es el documento "disparador" con el que Almacén recibe?**
-   - ¿El almacenista recibe con la Orden de Compra impresa?
-   - ¿Recibe con la Remisión o Factura física del proveedor?
-   - ¿O esperan a que Compras les avise por WhatsApp/correo qué va a llegar?
-2. **Entradas de inventario:**
-   - ¿En CONTPAQi generan un documento de *“Recepción de Compra”* cuando llega el camión y días después capturan la *“Compra/Factura”*?
-   - ¿O solo capturan directo la Factura cuando el proveedor manda el XML?
-   - *(Importante: Si esperan días para registrar la factura, el MES necesita leer desde la Orden de Compra para no frenar la descarga en planta).*
-3. **Codificación de Materias Primas:**
-   - ¿Tienen catálogo estandarizado de materiales en CONTPAQi? (ej. código para rollo de toquilla negro, fieltro Denver 9 1/2, tafilete talla 57).
-   - ¿Registran número de lote del proveedor o pedimento aduanal en CONTPAQi?
-4. **Discrepancias y Entregas Parciales:**
-   - Si pidieron 5,000 toquillas y llegaron 3,200: ¿CONTPAQi mantiene el saldo pendiente en la misma orden? ¿Cómo lo marcan hoy?
-5. **Rechazo en Calidad:**
-   - Si el fieltro llega manchado o la paja rota: ¿se rechaza antes de registrar en CONTPAQi o se registra y luego se hace devolución?
+| # | Tema / Pregunta | Estatus | Respuesta Confirmada en Planta |
+| :--- | :--- | :--- | :--- |
+| **R1** | **Infraestructura y Servidor** | **CONFIRMADO** | La planta **ya cuenta con servidor local físico, módem de fibra y repetidores Wi-Fi** distribuidos en naves. Por la conectividad local no hay problema (*Carlos en audio: "Tenemos el servidor, el módem y los repetidores. Por la conexión no habría problema"*). La base de datos corre en red local (LAN). |
+| **R2** | **Quién da el soporte de COMPAC** | **CONFIRMADO** | No hay personal de sistemas interno para COMPAC. Tienen contratada una **póliza / membresía anual con una ingeniera externa** que les da el servicio de contabilidad y facturación. |
+| **R3** | **Riesgo de bloqueo de APIs / SDK** | **CONFIRMADO** | La licencia que tienen contratada es estándar/básica. Carlos advirtió en audio: *"Hay unas licencias que a lo mejor te dan lo que necesites, pero si quieres hacer integraciones con otros softwares, pues te bloquea"*. Por lo tanto, **la ruta de integración no debe depender de que compren costosos módulos o licencias extra de API**, sino de lectura directa SQL / Vistas. |
+| **R4** | **Flujo actual de entrega y salida** | **CONFIRMADO** | Actualmente opera con **vales de salida en papel físico**. Esos vales se cotejan contra un **archivo Excel de órdenes de producción** donde se descuenta manualmente lo entregado, y ese vale físico pasa a contabilidad para que facturen en COMPAC. (El objetivo del MES es eliminar ese Excel y ese vale manual). |
+| **R5** | **Uso de dispositivos por operarios** | **CONFIRMADO** | Los operarios tienen **estrictamente prohibido el celular en piso**. El software no será usado por operarios; la recepción y los escaneos son operados exclusivamente por supervisores y almacenistas en terminales institucionales de uso rudo. |
+| **R6** | **Estructura de Pedidos y Lotes** | **CONFIRMADO** | Los pedidos de clientes se desglosan por modelo, talla y volumen (ej. 10,500 piezas = 7,500 Denver, 2,000 Viejonón, 1,000 Laredo). Los lotes madre en piso viajan de 60 piezas y se fraccionan en rampa a sublotes de 15 piezas. |
 
 ---
 
-## 4. Estrategia de Conexión: Las 3 Alternativas Técnicas
+## 4. Cuestionario Quirúrgico: Preguntas Abiertas por Resolver
+
+Con base en las respuestas que ya tenemos, estas son **estrictamente las preguntas que quedan por definir y validar en la reunión**:
+
+### Bloque A: Con la Ingeniera Externa / Soporte CONTPAQi (Validación Técnica)
+1. **Confirmar producto y versión exacta instalada:**
+   - *¿Es CONTPAQi Comercial Premium, Comercial Pro o Factura Electrónica? ¿Qué versión (v9, v10, v11)?*
+   - *(Sabemos que corre en el servidor local, pero requerimos confirmar el nombre de la instancia SQL Server).*
+2. **Validación del Usuario de Consulta (Solo Lectura):**
+   - Dado que no queremos alterar el sistema ni forzar compra de APIs: **¿Nos puede crear un usuario SQL con rol de solo lectura (`db_datareader`) o unas vistas específicas a las tablas de compras/recepciones?**
+   - *Argumento para tu socio:* "Ingeniera, no vamos a escribir nada en CONTPAQi, solo queremos hacer SELECT de las órdenes autorizadas para que el almacenista no recapture a mano".
+3. **Estructura de Empresas en BD:**
+   - ¿Tienen una sola empresa/base de datos dada de alta en SQL Server o manejan diferentes razones sociales para comprar y facturar?
+
+### Bloque B: Con Compras y Almacén (Operación Fina de Recepción)
+1. **¿Cuál es el documento físico/digital exacto con el que el chofer/proveedor entrega en muelle?**
+   - *(Sabemos que en salidas usan vale en papel y Excel; queremos confirmar en ENTRADAS si el almacenista recibe con la copia de la OC, con la Remisión o con la Factura impresa).*
+2. **Momento del registro en CONTPAQi:**
+   - ¿Registran en CONTPAQi un documento de *"Recepción de Compra"* al momento de descargar el camión? ¿O el material se descarga y se espera hasta que el proveedor envíe el XML/Factura formal días después?
+   - *(Crítico: Si esperan días al XML, el MES debe leer la Orden de Compra previa para no tener el material detenido en el patio sin lote).*
+3. **Catálogo de Materiales y Lotes de Proveedor:**
+   - ¿Las materias primas (rollos de toquilla, campanas de fieltro, conos de hilo, herrajes) ya tienen un código interno estandarizado en CONTPAQi?
+   - ¿Capturan en algún campo de CONTPAQi el lote del proveedor o pedimento aduanal?
+4. **Entregas Parciales y Rechazos de Calidad:**
+   - Si el proveedor entrega solo una parte del pedido: ¿CONTPAQi deja la orden con saldo pendiente en automático?
+   - Si al descargar se detecta material defectuoso: ¿se rechaza en el momento sin registrar entrada, o se registra todo y luego se tramita una devolución en CONTPAQi?
+
+---
+
+## 5. Estrategia de Conexión: Las 3 Alternativas Técnicas
 
 Presentar estas opciones en orden. Esto demuestra que tenemos control total y no nos quedaremos varados si CONTPAQi pone pretextos:
 
@@ -105,7 +114,7 @@ Presentar estas opciones en orden. Esto demuestra que tenemos control total y no
 
 ---
 
-## 5. Checklist de Salida (Entregables Obligatorios al Terminar la Reunión)
+## 6. Checklist de Salida (Entregables Obligatorios al Terminar la Reunión)
 
 Al levantarse de la mesa, tu socio debe tener palomeados estos puntos:
 
