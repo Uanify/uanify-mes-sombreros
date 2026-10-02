@@ -1,4 +1,4 @@
-# Guía de Decisión: CONTPAQi (Compaq) ↔ Uanify MES
+# Guía de Decisión: CONTPAQi ↔ Tombstone MES
 **Reunión con Compras, Almacén y Soporte CONTPAQi**  
 *Objetivo: Evaluar el uso real de CONTPAQi, definir si conviene pagar integración o si operamos gratis y de forma autónoma.*
 
@@ -42,7 +42,7 @@
 1. **¿Qué producto y versión exacta tienen instalada?**
    - *Por qué importa:* Si es *CONTPAQi Comercial Premium*, la base de datos corre nativa sobre Microsoft SQL Server en la red local. Eso nos permite hacer consultas directas de forma estándar, rápida y limpia.
 2. **¿Conectar o consultar requiere comprar licencias SDK, módulos adicionales o pagar póliza de desarrollo?**  
-   - *Criterio de decisión:* Si la respuesta es SÍ → **Se descarta pagar inmediatamente.** Uanify MES no depende de su API ni vamos a encarecer el proyecto por trabas de licenciamiento de CONTPAQi.
+   - *Criterio de decisión:* Si la respuesta es SÍ → **Se descarta pagar inmediatamente.** Tombstone MES no depende de su API ni vamos a encarecer el proyecto por trabas de licenciamiento de CONTPAQi.
 3. **¿Nos autoriza un usuario de base de datos de Solo Lectura (`db_datareader`)?**  
    - *Detalle técnico para ella:* No vamos a alterar tablas, no ejecutaremos `INSERT`, `UPDATE` ni `DELETE`. Solo requerimos permisos de consulta `SELECT` sobre tablas de documentos y movimientos de compras. Es la práctica estándar de la industria, toma 5 minutos configurarlo en SQL Server Management Studio y tiene **cero riesgo de corrupción de datos**.
 4. **¿Manejan una sola empresa en la BD o varias razones sociales?**
@@ -79,7 +79,7 @@
 * **Opción 2 — SDK Oficial de CONTPAQi:**  
   Solo se toma en cuenta si la ingeniera demuestra que la membresía anual que ya pagan ya incluye las librerías activadas y no requiere cobrar honorarios extras de desarrollo. Si pide un solo peso adicional, **se descarta en la misma reunión**.
 * **Opción 3 — Recepción Autónoma por Archivo XML (El Respaldo Infalible):**  
-  Si la ingeniera de CONTPAQi pone pretextos técnicos, burocracia o pretende cobrar licencias caras: **no nos detenemos ni gastamos un peso**. El proveedor siempre envía el archivo `.XML` del CFDI por correo. Uanify MES cuenta con un lector nativo de XML: el almacenista arrastra el XML a la tablet, el sistema lee automáticamente el RFC, productos, cantidades y descripciones, y emite las etiquetas QR de lote en 2 segundos. **Cero pesos, cero ataduras y 100% de autonomía para la planta.**
+  Si la ingeniera de CONTPAQi pone pretextos técnicos, burocracia o pretende cobrar licencias caras: **no nos detenemos ni gastamos un peso**. El proveedor siempre envía el archivo `.XML` del CFDI por correo. Tombstone MES cuenta con un lector nativo de XML: el almacenista arrastra el XML a la tablet, el sistema lee automáticamente el RFC, productos, cantidades y descripciones, y emite las etiquetas QR de lote en 2 segundos. **Cero pesos, cero ataduras y 100% de autonomía para la planta.**
 
 ---
 
@@ -87,7 +87,7 @@
 
 - [ ] **Decisión económica tomada:** ¿Cobran por conectar CONTPAQi? (Si cobran → Nos vamos por Opción 3: XML directo sin costo).
 - [ ] **Ficha técnica:** Versión exacta de software y motor de BD (ej. *Comercial Premium v10 / SQL Server 2019 LAN*).
-- [ ] **Autorización del usuario de lectura:** Visto bueno de la ingeniera para crear `uanify_reader` con rol `db_datareader`.
+- [ ] **Autorización del usuario de lectura:** Visto bueno de la ingeniera para crear `mes_reader` con rol `db_datareader`.
 - [ ] **Muestras de datos reales recopiladas:**
   - 1 Orden de Compra real con partidas (PDF o captura).
   - 1 Documento de Entrada / Recepción de Almacén.
