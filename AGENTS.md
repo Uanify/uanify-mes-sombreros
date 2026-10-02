@@ -619,3 +619,15 @@ Los usuarios de la plataforma (ingenieros de planta, supervisores y administrado
 3. **Consistencia en Modales Oscuros:** Los modales de consola técnica y DevTools (como `#modalUanifySuperAdmin`) deben conservar contraste estricto en todas sus secciones (`background: #1E293B` en header y footer), evitando que reglas genéricas de CSS inyecten fondos blancos con tipografía blanca.
 4. **Interacción Tablet-First:** Los componentes `.info-tip` deben soportar interacción táctil mediante la función `initInfoTips()`, permitiendo abrir y cerrar popups con toques naturales sin desbordar el viewport ni interferir con la operación.
 
+---
+
+## REGLA 0.39: Despliegue Automático Obligatorio en Cada Iteración (MANDATORIA)
+
+**Al concluir cualquier tarea, corrección, ajuste de diseño, nueva funcionalidad o sincronización documental, es estrictamente obligatorio realizar el despliegue inmediato (`git push origin main`), a menos que el usuario solicite explícitamente lo contrario.**
+
+### Protocolo de Cierre de Tarea:
+1. **Comprobación de Estado:** Verificar que no existan archivos modificados sin comitear (`git status`).
+2. **Commit Atómico y Descriptivo:** Registrar los cambios con mensaje semántico claro (`feat`, `fix`, `docs`, `style`).
+3. **Despliegue Inmediato (`git push`):** Ejecutar `git push origin main` de forma autónoma y verificar que el repositorio remoto quede actualizado con el árbol de trabajo limpio.
+4. **Cero Retención de Cambios:** Queda estrictamente prohibido dar por finalizada una respuesta dejando commits o cambios pendientes de subida en local.
+
