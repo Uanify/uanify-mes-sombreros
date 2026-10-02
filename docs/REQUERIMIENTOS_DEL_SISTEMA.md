@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.39.0` | **Versión:** `v2.39.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.40.0` | **Versión:** `v2.40.0`  
 > **Fecha de Emisión / Última Actualización:** 2 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -808,4 +808,5 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-74** | Cierre Centralizado Estricto de Modales en `×` Superior      | Modales / Interfaz           | `v2.37.2`           | OK En Producción |
 | **RF-75** | Componente Universal Dropdown UI (`UanifySelect`)            | Formularios / Interfaz       | `v2.38.0`           | OK En Producción |
 | **RF-76** | Escáner QR Aislado Fullscreen & Despliegue Progresivo        | Terminal de Supervisor       | `v2.39.0`           | OK En Producción |
+| **RF-77** | Auditoría UI/UX Integral, Selects Dinámicos & Grid Tafiletes | Interfaz / Todos los Módulos | `v2.40.0`           | OK En Producción |
 

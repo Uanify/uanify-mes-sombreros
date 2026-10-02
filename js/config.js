@@ -733,13 +733,26 @@ window.initConfigView = function() {
     select.innerHTML = UanifyState.stations.map(s => `
       <option value="${s.code}">${s.code} · ${s.name}</option>
     `).join('');
-    if (currentVal) select.value = currentVal;
+    if (currentVal && Array.from(select.options).some(o => o.value === currentVal)) {
+      select.value = currentVal;
+    } else if (select.options.length > 0) {
+      select.selectedIndex = 0;
+    }
+    if (select._uanifySelect) {
+      select._uanifySelect.updateLabel();
+    }
   }
 
   window.openCreateOperatorModal = function() {
     if (!modalOperator) return;
     populateOperatorDeptsSelect();
     if (formOperator) formOperator.reset();
+    populateOperatorDeptsSelect();
+
+    // Sincronizar todos los selects custom dentro del modal tras form.reset()
+    modalOperator.querySelectorAll('select').forEach(sel => {
+      if (sel._uanifySelect) sel._uanifySelect.updateLabel();
+    });
 
     const origId = document.getElementById('opOriginalEmpId');
     const title = document.getElementById('operatorModalTitle');
@@ -780,6 +793,10 @@ window.initConfigView = function() {
     if (title) title.textContent = `Editar Operador · ${op.name}`;
     if (sub) sub.textContent = `Modificando estación, máquina y estatus de ${op.empId}`;
     if (submitBtn) submitBtn.textContent = 'Actualizar Operador';
+
+    modalOperator.querySelectorAll('select').forEach(sel => {
+      if (sel._uanifySelect) sel._uanifySelect.updateLabel();
+    });
 
     modalOperator.classList.add('active');
   };

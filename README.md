@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.39.0)
+## Arquitectura Funcional Tombstone Hats (v2.40.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)** y **Componente Propio Universal de Dropdowns Desplegables (`UanifySelect`)**:
 

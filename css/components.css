@@ -1482,8 +1482,22 @@ input.is-valid {
   font-size: 13px;
   padding: 0 34px 0 13px !important;
   border-radius: 8px;
-  min-width: 150px;
+  min-width: 170px;
   cursor: pointer !important;
+}
+
+.filter-select-group .uanify-select-wrapper {
+  width: auto !important;
+  min-width: 180px !important;
+  max-width: 250px !important;
+  flex: 0 0 auto !important;
+}
+
+.filter-select-group .uanify-select-trigger {
+  min-height: 42px !important;
+  height: 42px !important;
+  font-size: 13px !important;
+  padding: 0 34px 0 12px !important;
 }
 
 .filter-count-badge {
@@ -2009,12 +2023,12 @@ input.is-valid {
   border: 1px solid var(--border-subtle);
   border-radius: 16px;
   width: 100%;
-  max-width: 540px;
+  max-width: 580px;
   box-shadow: 0 24px 48px -12px rgba(0,0,0,0.25), 0 8px 16px -4px rgba(0,0,0,0.08);
   animation: modalEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow: hidden;
   position: relative;
 }
@@ -2037,7 +2051,7 @@ input.is-valid {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 24px 16px;
+  padding: 16px 24px 14px;
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   position: sticky;
@@ -2063,10 +2077,10 @@ input.is-valid {
 }
 
 .modal-body {
-  padding: 20px 24px;
+  padding: 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -3670,23 +3684,29 @@ input.is-valid {
 }
 
 .suc-name {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .suc-role {
+  display: inline-flex;
+  align-items: center;
   font-size: 10px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--color-brand);
+  background: var(--color-brand-light);
+  border: 1px solid var(--color-brand-border);
+  padding: 1px 7px;
+  border-radius: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
 }
 
 .suc-logout-btn {
@@ -5183,6 +5203,28 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   color: #94A3B8;
   text-align: center;
   font-style: italic;
+}
+
+/* ==========================================================================
+   INVENTARIO DE SUBENSAMBLES & TAFILETES GRID (RF-77)
+   Grid responsivo de 3-4 columnas para evitar que las tarjetas se estiren al 100% de la pantalla
+   ========================================================================== */
+.tafilete-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.tafilete-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  min-height: 155px;
+}
+
+.tafilete-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  border-color: #CBD5E1;
 }
 
 /* ==========================================================================

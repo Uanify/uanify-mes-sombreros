@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.39.0` | **Fecha de Actualización:** 2 de Octubre de 2026  
+> **Versión Actual:** `v2.40.0` | **Fecha de Actualización:** 2 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -365,7 +365,17 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
 
 ## 8. Historial de Versiones (SemVer)
 
-- **`v2.35.0` (2026-09-27):**
+- **`v2.40.0` (2026-10-02):**
+  - **Auditoría UI/UX Integral & Estandarización de Componentes (RF-77):**
+    - **Sincronización de Custom Selects en Modales Dinámicos:** Corrección en `updateLabel` y `populateOperatorDeptsSelect` para seleccionar automáticamente la primera opción válida tras `form.reset()` y refrescar el texto visible en lugar de mostrar sólo la flecha chevron `∨`.
+    - **Eliminación de Truncamiento en Toolbars de Filtro:** Asignación explícita de `min-width: 180px`, `max-width: 250px` y `flex: 0 0 auto` a `.filter-select-group .uanify-select-wrapper` en Directorio de Operadores y Catálogo Maestro de Sombreros, permitiendo lectura íntegra de "Todos los Departamentos...", "Todos los Estatus", etc. sin puntos suspensivos prematuros.
+    - **Rediseño del Chip de Usuario en Barra Lateral:** Reestructuración de `.sidebar-user-chip .suc-info` para mostrar el nombre completo ("Edmundo González") con suficiente ancho y el rol como badge pill inferior (`.suc-role`), erradicando el truncamiento en la misma línea horizontal dentro del sidebar de 270px.
+    - **Grid Responsivo para Inventario de Subensambles (Tafiletes):** Implementación de `.tafilete-grid` con `grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))` y elevación suave al hover, sustituyendo la vista mono-columna estirada al 100% por tarjetas industriales balanceadas y legibles.
+    - **Ergonomía en Modal de Operador:** Ajuste de dimensiones de modal a `max-width: 580px`, `max-height: 92vh` y optimización de espaciado en `.modal-body` (gap: 12px, padding: 16px 24px) para erradicar la barra de desplazamiento vertical innecesaria en viewports estándar.
+- **`v2.39.0` (2026-10-02):**
+  - **Escáner QR Aislado en Pantalla Completa & Despliegue Progresivo (RF-76):**
+    - Despliegue en modo Kiosko industrial aislado (`.terminal-scanner-kiosk-view`) al ingresar al flujo de escaneo QR.
+    - Ocultamiento de controles irrelevantes y simulación de escaneo multipropósito configurable con lotes dinámicos.
   - **Erradicación de Limitación de Ancho Fijo y Fluidez Responsiva Universal (Tablets y Monitores Ultra-Anchos):**
     - **Eliminación de `max-width: 1600px`:** Supresión del tope artificial en `.app-content` que generaba asimetría visual y grandes vacíos en blanco a la derecha en monitores de alta resolución (2133px, 2560px, 4K) o con zoom bajo (< 100%).
     - **Layout Fluido 100% y Box-Sizing Integral:** `.app-content` ahora utiliza `width: calc(100% - var(--sidebar-width)); max-width: 100%; box-sizing: border-box;` en modo expandido y con barra lateral colapsada (`sidebar-collapsed`), extendiendo el contenido armónicamente de borde a borde.

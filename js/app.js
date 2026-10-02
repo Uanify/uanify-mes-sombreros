@@ -226,8 +226,12 @@ window.UanifyUI = {
     document.body.appendChild(menu);
 
     const updateLabel = () => {
-      const selectedOption = selectEl.options[selectEl.selectedIndex];
-      if (selectedOption) {
+      let selectedOption = selectEl.options[selectEl.selectedIndex];
+      if (!selectedOption && selectEl.options.length > 0) {
+        selectEl.selectedIndex = 0;
+        selectedOption = selectEl.options[0];
+      }
+      if (selectedOption && selectedOption.text && selectedOption.text.trim() !== '') {
         label.textContent = selectedOption.text;
         if (!selectedOption.value && selectedOption.text.startsWith('--')) {
           label.classList.add('placeholder');
@@ -235,7 +239,7 @@ window.UanifyUI = {
           label.classList.remove('placeholder');
         }
       } else {
-        label.textContent = '-- Seleccionar --';
+        label.textContent = selectEl.getAttribute('placeholder') || '-- Seleccionar --';
         label.classList.add('placeholder');
       }
     };
