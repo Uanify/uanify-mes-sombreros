@@ -3710,24 +3710,25 @@ input.is-valid {
 }
 
 .suc-logout-btn {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.35);
   border-radius: 8px;
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: #DC2626;
   flex-shrink: 0;
   cursor: pointer !important;
   transition: all 0.18s ease;
 }
 
 .suc-logout-btn:hover {
-  background: #FEE2E2;
-  border-color: #FCA5A5;
-  color: #DC2626;
+  background: #DC2626;
+  border-color: #B91C1C;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
 }
 
 /* Collapsed sidebar: chip icon-only */

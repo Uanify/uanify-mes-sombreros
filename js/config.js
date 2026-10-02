@@ -2169,6 +2169,54 @@ window.initConfigView = function() {
     });
   }
 
+  // Guardar configuración general (parámetros de turno, umbrales WIP, metas)
+  function handleSavePlantConfig() {
+    const shiftStart = document.getElementById('cfgShiftStart');
+    const shiftEnd = document.getElementById('cfgShiftEnd');
+    const shiftGoal = document.getElementById('cfgShiftGoal');
+    const wipAlert = document.getElementById('cfgWipAlert');
+    const wipCritical = document.getElementById('cfgWipCritical');
+
+    if (UanifyState && UanifyState.config) {
+      if (shiftStart) UanifyState.config.shiftStart = shiftStart.value;
+      if (shiftEnd) UanifyState.config.shiftEnd = shiftEnd.value;
+      if (shiftGoal) UanifyState.config.shiftGoal = parseInt(shiftGoal.value, 10) || 4250;
+      if (wipAlert) UanifyState.config.wipAlert = parseInt(wipAlert.value, 10) || 70;
+      if (wipCritical) UanifyState.config.wipCritical = parseInt(wipCritical.value, 10) || 95;
+    }
+
+    try {
+      localStorage.setItem('uanify_plant_config', JSON.stringify({
+        shiftStart: shiftStart ? shiftStart.value : '07:00',
+        shiftEnd: shiftEnd ? shiftEnd.value : '15:30',
+        shiftGoal: shiftGoal ? shiftGoal.value : 4250,
+        wipAlert: wipAlert ? wipAlert.value : 70,
+        wipCritical: wipCritical ? wipCritical.value : 95,
+        savedAt: new Date().toISOString()
+      }));
+    } catch (e) {
+      // Ignorar si localstorage falla
+    }
+
+    if (window.UanifyUI && window.UanifyUI.toast) {
+      window.UanifyUI.toast(
+        'Los parámetros de planta, horarios de turno y umbrales de alerta Andon han sido guardados satisfactoriamente.',
+        'success',
+        'Configuración Guardada'
+      );
+    }
+  }
+
+  const btnSaveConfig = document.getElementById('btnSaveConfig');
+  if (btnSaveConfig) {
+    btnSaveConfig.addEventListener('click', handleSavePlantConfig);
+  }
+
+  const btnSaveParamsSubtab = document.getElementById('btnSaveParamsSubtab');
+  if (btnSaveParamsSubtab) {
+    btnSaveParamsSubtab.addEventListener('click', handleSavePlantConfig);
+  }
+
   const btnEmitSlip = document.getElementById('btnEmitDeliverySlip');
   if (btnEmitSlip) {
     btnEmitSlip.addEventListener('click', () => {

@@ -2237,15 +2237,16 @@ function enrichStationWithDefaults(st, idx) {
   const appLayout = document.querySelector('.app-layout');
   const btnToggleSidebar = document.getElementById('btnToggleSidebar');
 
-  // Restaurar estado previo o colapsar automáticamente en tabletas si no hay preferencia
+  // Restaurar estado previo o colapsar automáticamente por default
   const savedSidebar = localStorage.getItem('uanify_sidebar_collapsed');
   if (savedSidebar !== null) {
-    if (savedSidebar === 'true') {
-      appLayout.classList.add('sidebar-collapsed');
-    } else {
+    if (savedSidebar === 'false') {
       appLayout.classList.remove('sidebar-collapsed');
+    } else {
+      appLayout.classList.add('sidebar-collapsed');
     }
-  } else if (window.innerWidth <= 1024) {
+  } else {
+    // Por defecto siempre cerrado / plegado al inicio
     appLayout.classList.add('sidebar-collapsed');
   }
 
