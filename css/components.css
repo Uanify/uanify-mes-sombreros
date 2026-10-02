@@ -4926,12 +4926,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 2px 12px rgba(2, 132, 199, 0.5), 0 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
-/* ─── Popup flotante (position: fixed via JS) ─── */
+/* ─── Popup flotante anclado al ícono ─── */
 .info-tip-popup {
-  position: fixed;
-  top: var(--tip-top, -9999px);
-  left: var(--tip-left, -9999px);
-  transform: translateY(4px);
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
   background: #0F172A;
   color: #F8FAFC;
   padding: 10px 14px;
@@ -4941,12 +4941,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   line-height: 1.5;
   width: max-content;
   max-width: 320px;
+  min-width: 180px;
   box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-  z-index: 2147483647;
+  z-index: 999999;
   text-align: left;
   white-space: normal;
 }
@@ -4962,7 +4963,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* Si el popup se posiciona abajo por falta de espacio superior */
-.info-tip-popup[style*="--tip-flip"]::after {
+.info-tip.flip-down .info-tip-popup {
+  bottom: auto;
+  top: calc(100% + 9px);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.info-tip.flip-down .info-tip-popup::after {
   top: auto;
   bottom: 100%;
   border-top-color: transparent;
@@ -4974,7 +4981,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .info-tip.active .info-tip-popup {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Corrección de contraste para la Consola DevTools SuperAdmin */

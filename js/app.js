@@ -4099,122 +4099,97 @@ function enrichStationWithDefaults(st, idx) {
 
   // ── INICIALIZADOR DE PUNTOS DE INFORMACIÓN TÁCTILES / TOOLTIPS (REGLA 0.36) ──
   function initInfoTips() {
-    // Posiciona el popup flotante encima del botón usando position:fixed
-    function positionPopup(tip) {
-      const btn = tip.querySelector('.info-tip-btn');
+    function adjustTooltipPosition(tip) {
       const popup = tip.querySelector('.info-tip-popup');
-      if (!btn || !popup) return;
+      const btn = tip.querySelector('.info-tip-btn');
+      if (!popup || !btn) return;
 
-      const rect = btn.getBoundingClientRect();
-      // Temporalmente mostrar para medir
-      popup.style.opacity = '0';
-      popup.style.visibility = 'visible';
-      popup.style.display = 'block';
-      const popW = popup.offsetWidth;
-      const popH = popup.offsetHeight;
-      popup.style.opacity = '';
-      popup.style.visibility = '';
-      popup.style.display = '';
+      // Restablecer estilos antes de medir
+      tip.classList.remove('flip-down');
+      popup.style.left = '50%';
+      popup.style.transform = '';
+      popup.style.removeProperty('--tip-arrow');
 
-      const vpW = window.innerWidth;
-      const GAP = 8;
+      const popRect = popup.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      const vpW = window.innerWidth || document.documentElement.clientWidth;
 
-      // Centrar horizontalmente sobre el botón
-      let left = rect.left + rect.width / 2 - popW / 2;
-      // Clamp dentro del viewport
-      if (left < 8) left = 8;
-      if (left + popW > vpW - 8) left = vpW - 8 - popW;
-
-      // Arriba del botón
-      let top = rect.top - popH - GAP;
-      // Si no cabe arriba, colocar abajo
-      if (top < 8) {
-        top = rect.bottom + GAP;
-        // Mover la flecha arriba del popup si se invierte
-        popup.style.setProperty('--tip-flip', '1');
-      } else {
-        popup.style.removeProperty('--tip-flip');
+      // 1. Verificar si cabe arriba; si choca contra el borde superior de la pantalla, voltear abajo
+      if (btnRect.top - popRect.height - 12 < 0) {
+        tip.classList.add('flip-down');
       }
 
-      // Posición de la flecha relativa al popup
-      const arrowLeft = rect.left + rect.width / 2 - left;
-      const arrowPct = Math.max(12, Math.min(arrowLeft, popW - 12));
+      // 2. Controlar desbordamiento horizontal respecto a la pantalla
+      const updatedPopRect = popup.getBoundingClientRect();
+      let shiftX = 0;
+      const margin = 10;
 
-      popup.style.setProperty('--tip-top', top + 'px');
-      popup.style.setProperty('--tip-left', left + 'px');
-      popup.style.setProperty('--tip-arrow', arrowPct + 'px');
+      if (updatedPopRect.left < margin) {
+        shiftX = margin - updatedPopRect.left;
+      } else if (updatedPopRect.right > vpW - margin) {
+        shiftX = (vpW - margin) - updatedPopRect.right;
+      }
+
+      if (shiftX !== 0) {
+        // Desplazar el popup horizontalmente para mantenerlo dentro de la pantalla
+        popup.style.transform = `translateX(calc(-50% + ${shiftX}px))`;
+        // Centrar la flecha exactamente sobre el botón
+        const arrowX = (btnRect.left + btnRect.width / 2) - (updatedPopRect.left + shiftX);
+        const clampedArrow = Math.max(12, Math.min(arrowX, updatedPopRect.width - 12));
+        popup.style.setProperty('--tip-arrow', `${clampedArrow}px`);
+      }
     }
 
-    // Hover: posicionar al entrar
+    // Hover: ajustar posición al entrar
     document.addEventListener('mouseenter', (e) => {
-      const tip = e.target.closest('.info-tip');
-      if (tip) positionPopup(tip);
+      const tip = e.target.closest ? e.target.closest('.info-tip') : null;
+      if (tip) adjustTooltipPosition(tip);
     }, true);
 
-    // Al salir el puntero de un tooltip, desactivarlo para que no se quede pegado
+    // Salir del tooltip: limpiar clase activa
     document.addEventListener('mouseleave', (e) => {
       const tip = e.target.closest ? e.target.closest('.info-tip') : null;
       if (tip) {
         tip.classList.remove('active');
-        const p = tip.querySelector('.info-tip-popup');
-        if (p) {
-          p.style.setProperty('--tip-top', '-9999px');
-          p.style.setProperty('--tip-left', '-9999px');
-        }
         const btn = tip.querySelector('.info-tip-btn');
         if (btn) btn.blur();
       }
     }, true);
 
-    // Click/tap: toggle active + posicionar
+    // Click/tap: toggle active + ajustar posición
     document.addEventListener('click', (e) => {
-      const tip = e.target.closest('.info-tip');
+      const tip = e.target.closest ? e.target.closest('.info-tip') : null;
       if (tip) {
         const wasActive = tip.classList.contains('active');
         document.querySelectorAll('.info-tip.active').forEach(t => {
           t.classList.remove('active');
-          const p = t.querySelector('.info-tip-popup');
-          if (p) {
-            p.style.setProperty('--tip-top', '-9999px');
-            p.style.setProperty('--tip-left', '-9999px');
-          }
           const b = t.querySelector('.info-tip-btn');
           if (b) b.blur();
         });
         if (!wasActive) {
           tip.classList.add('active');
-          positionPopup(tip);
-        } else {
-          const btn = tip.querySelector('.info-tip-btn');
-          if (btn) btn.blur();
+          adjustTooltipPosition(tip);
         }
         e.stopPropagation();
       } else {
         document.querySelectorAll('.info-tip.active').forEach(t => {
           t.classList.remove('active');
-          const p = t.querySelector('.info-tip-popup');
-          if (p) {
-            p.style.setProperty('--tip-top', '-9999px');
-            p.style.setProperty('--tip-left', '-9999px');
-          }
           const b = t.querySelector('.info-tip-btn');
           if (b) b.blur();
         });
       }
     });
 
-    // Reposicionar al hacer scroll
-    let scrollRaf;
+    // Reposicionar tooltip activo en scroll/resize
     window.addEventListener('scroll', () => {
-      if (scrollRaf) return;
-      scrollRaf = requestAnimationFrame(() => {
-        document.querySelectorAll('.info-tip.active').forEach(t => positionPopup(t));
-        if (window.UanifyUI && window.UanifyUI.closeAllSelects) {
-          window.UanifyUI.closeAllSelects();
-        }
-        scrollRaf = null;
-      });
-    }, true);
+      const activeTip = document.querySelector('.info-tip.active');
+      if (activeTip) adjustTooltipPosition(activeTip);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      const activeTip = document.querySelector('.info-tip.active');
+      if (activeTip) adjustTooltipPosition(activeTip);
+    }, { passive: true });
   }
 
   // Cerrar cualquier dropdown personalizado al hacer click fuera o presionar Escape
