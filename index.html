@@ -508,26 +508,26 @@
                 </span>
                 <span class="badge-subtle" style="font-size:11px; font-weight:700;">Pruebas de Flujo</span>
               </div>
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px;">
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanSublot3" style="text-align:left; padding:10px 14px; border-color:var(--color-brand-border); background:var(--color-brand-light);">
-                  <div style="font-weight:800; color:var(--color-brand);">Lote Normal</div>
-                  <div style="font-size:11px; color:var(--text-secondary);">Sublote #3 (Viejonón · #55)</div>
+              <div class="sim-scan-grid">
+                <button type="button" class="btn-sim-scan" id="btnSimulateScanSublot3" style="border-color:var(--color-brand-border); background:var(--color-brand-light);">
+                  <span class="sim-title" style="color:var(--color-brand);">Lote Normal</span>
+                  <span class="sim-desc" style="color:var(--text-secondary);">Sublote #3 (Viejonón · #55)</span>
                 </button>
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanMotherLot" style="text-align:left; padding:10px 14px;">
-                  <div style="font-weight:800; color:var(--text-primary);">Lote Madre</div>
-                  <div style="font-size:11px; color:var(--text-muted);">Lote 49,386 (60 pzas)</div>
+                <button type="button" class="btn-sim-scan" id="btnSimulateScanMotherLot" style="border-color:#CBD5E1; background:#F8FAFC;">
+                  <span class="sim-title" style="color:var(--text-primary);">Lote Madre</span>
+                  <span class="sim-desc" style="color:var(--text-muted);">Lote 49,386 (60 pzas)</span>
                 </button>
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanScrapLot" style="text-align:left; padding:10px 14px; border-color:#FCA5A5; background:#FEF2F2;">
-                  <div style="font-weight:800; color:#B91C1C;">Con Merma</div>
-                  <div style="font-size:11px; color:#DC2626;">Lote 49,842 (Quemado)</div>
+                <button type="button" class="btn-sim-scan" id="btnSimulateScanScrapLot" style="border-color:#FCA5A5; background:#FEF2F2;">
+                  <span class="sim-title" style="color:#B91C1C;">Con Merma</span>
+                  <span class="sim-desc" style="color:#DC2626;">Lote 49,842 (Quemado)</span>
                 </button>
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanQualityStop" style="text-align:left; padding:10px 14px; border-color:#FCD34D; background:#FFFBEB;">
-                  <div style="font-weight:800; color:#B45309;">Filtro Calidad</div>
-                  <div style="font-size:11px; color:#D97706;">Punto C-02 Inspección</div>
+                <button type="button" class="btn-sim-scan" id="btnSimulateScanQualityStop" style="border-color:#FCD34D; background:#FFFBEB;">
+                  <span class="sim-title" style="color:#B45309;">Filtro Calidad</span>
+                  <span class="sim-desc" style="color:#D97706;">Punto C-02 Inspección</span>
                 </button>
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanUnauthorized" style="text-align:left; padding:10px 14px; border-color:#CBD5E1;">
-                  <div style="font-weight:800; color:#475569;">Depto No Asignado</div>
-                  <div style="font-size:11px; color:var(--text-muted);">Prueba restricción</div>
+                <button type="button" class="btn-sim-scan" id="btnSimulateScanUnauthorized" style="border-color:#CBD5E1; background:#FFFFFF;">
+                  <span class="sim-title" style="color:#475569;">Depto No Asignado</span>
+                  <span class="sim-desc" style="color:var(--text-muted);">Prueba restricción</span>
                 </button>
               </div>
             </div>

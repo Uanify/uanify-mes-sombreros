@@ -5228,6 +5228,57 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* ==========================================================================
+   SIMULADOR DE DISPARO DE ESCANEO QR (Variaciones de Planta)
+   Botones tipo tarjeta interactiva con texto multi-línea alineado a la izquierda
+   ========================================================================== */
+.sim-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.btn-sim-scan {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  text-align: left !important;
+  padding: 12px 14px !important;
+  min-height: 64px !important;
+  height: auto !important;
+  border-radius: 10px !important;
+  border: 1.5px solid var(--border-medium);
+  background: #FFFFFF;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  box-sizing: border-box !important;
+}
+
+.btn-sim-scan:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+.btn-sim-scan:active {
+  transform: scale(0.98) !important;
+}
+
+.btn-sim-scan .sim-title {
+  font-size: 13px;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.btn-sim-scan .sim-desc {
+  font-size: 11px;
+  display: block;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
    KIOSKO / ESCÁNER QR DE PANTALLA COMPLETA AISLADO (Tablet/Piso MES)
    ========================================================================== */
 .terminal-scanner-kiosk-view {
