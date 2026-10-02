@@ -2058,6 +2058,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Sincronizar vista activa con la pestaña seleccionada inicialmente
+  const initialTab = UanifyState.activeTab || 'terminal';
+  const initialNavBtn = document.querySelector(`.nav-btn[data-tab="${initialTab}"]`);
+  const initialPanel = document.getElementById(`view-${initialTab}`);
+  if (initialNavBtn && initialPanel) {
+    navBtns.forEach(b => b.classList.remove('active'));
+    viewPanels.forEach(p => p.classList.remove('active'));
+    initialNavBtn.classList.add('active');
+    initialPanel.classList.add('active');
+  }
+
   // Selector de usuario activo — ya no existe el <select>, el logout abre el login screen
   // (la lógica de logout está en initLoginScreen())
 
