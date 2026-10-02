@@ -173,6 +173,11 @@ window.UanifyUI = {
     if (!selectEl || selectEl.dataset.uanifySelectInit) return;
     selectEl.dataset.uanifySelectInit = 'true';
 
+    // ── CAPTURAR dimensiones originales ANTES de ocultar el select nativo ──
+    const origMinWidth = selectEl.style.minWidth;
+    const origWidth = selectEl.style.width;
+    const origFlex = selectEl.style.flex;
+
     // Ocultar select nativo de forma accesible
     selectEl.style.position = 'absolute';
     selectEl.style.opacity = '0';
@@ -189,12 +194,10 @@ window.UanifyUI = {
     if (selectEl.id) wrapper.id = `wrapper_${selectEl.id}`;
     if (selectEl.classList.contains('select-sm')) wrapper.classList.add('select-sm');
 
-    // Mantener anchos inline o clases especiales si aplican
-    const minW = selectEl.style.minWidth;
-    const w = selectEl.style.width;
-    if (minW) wrapper.style.minWidth = minW;
-    if (w) wrapper.style.width = w;
-    if (selectEl.style.flex) wrapper.style.flex = selectEl.style.flex;
+    // Mantener anchos inline originales (leídos ANTES de ocultar el select)
+    if (origMinWidth) wrapper.style.minWidth = origMinWidth;
+    if (origWidth) wrapper.style.width = origWidth;
+    if (origFlex) wrapper.style.flex = origFlex;
 
     // Trigger visual
     const trigger = document.createElement('div');

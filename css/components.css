@@ -5004,6 +5004,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   box-sizing: border-box;
 }
 
+/* Forzar ancho completo en contextos donde el select debe ocupar el 100% del contenedor */
+#wrapper_cfgRouteModelSelect,
+.sequence-builder-card .uanify-select-wrapper {
+  width: 100% !important;
+  display: block !important;
+}
+
 .uanify-select-trigger {
   width: 100%;
   min-height: var(--form-height, 48px);

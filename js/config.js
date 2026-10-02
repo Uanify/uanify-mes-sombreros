@@ -1794,6 +1794,11 @@ window.initConfigView = function() {
     });
 
     cfgRouteModelSelect.innerHTML = html;
+
+    // Refrescar el label del wrapper custom UanifySelect tras la población dinámica
+    if (cfgRouteModelSelect._uanifySelect && cfgRouteModelSelect._uanifySelect.refresh) {
+      cfgRouteModelSelect._uanifySelect.refresh();
+    }
   }
 
   function populateAddStepStations() {

@@ -169,10 +169,25 @@ window.initTerminalView = function() {
     if (cameraReticle)     cameraReticle.style.display = 'none';
   }
 
+  // ── Mover el modal del kiosko al root de <body> para escapar stacking contexts ──
+  // El parent (.sub-tab-content) tiene animation: fadeIn que crea un containing block
+  // para position:fixed, impidiendo cobertura 100vw/100vh real.
+  if (kioskQrScannerModal && kioskQrScannerModal.parentElement !== document.body) {
+    document.body.appendChild(kioskQrScannerModal);
+  }
+
   function openKioskScanner() {
     if (kioskQrScannerModal) {
       kioskQrScannerModal.style.display = 'flex';
       startCamera();
+      // Intentar Fullscreen API para cobertura total en tablets industriales
+      try {
+        if (kioskQrScannerModal.requestFullscreen) {
+          kioskQrScannerModal.requestFullscreen().catch(() => {});
+        } else if (kioskQrScannerModal.webkitRequestFullscreen) {
+          kioskQrScannerModal.webkitRequestFullscreen();
+        }
+      } catch (e) { /* Fullscreen API no disponible, no bloquear */ }
     }
   }
 
@@ -180,6 +195,16 @@ window.initTerminalView = function() {
     if (kioskQrScannerModal) {
       kioskQrScannerModal.style.display = 'none';
       stopCamera();
+      // Salir de Fullscreen si estamos en modo completo
+      try {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        }
+      } catch (e) { /* Ignorar si no estamos en fullscreen */ }
     }
   }
 
