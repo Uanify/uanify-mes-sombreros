@@ -180,18 +180,40 @@ window.initTerminalView = function() {
     document.body.appendChild(kioskQrScannerModal);
   }
 
+  // ── Gestión del Modo de Inmersión en Pantalla Completa (US-KIOSK) ──
+  // La inmersión se mantiene activa desde el escaneo del código QR y durante toda
+  // la atención/procesamiento del lote en piso, hasta concluir el movimiento o descartarlo.
+  function requestAppFullscreen() {
+    try {
+      const rootEl = document.documentElement;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (rootEl.requestFullscreen) {
+          rootEl.requestFullscreen().catch(() => {});
+        } else if (rootEl.webkitRequestFullscreen) {
+          rootEl.webkitRequestFullscreen();
+        }
+      }
+    } catch (e) { /* Fullscreen API no disponible en navegador, degradar suavemente */ }
+  }
+
+  function exitAppFullscreen() {
+    try {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    } catch (e) { /* Ignorar error al salir */ }
+  }
+
   function openKioskScanner() {
     if (kioskQrScannerModal) {
       kioskQrScannerModal.style.display = 'flex';
       startCamera();
-      // Intentar Fullscreen API para cobertura total en tablets industriales
-      try {
-        if (kioskQrScannerModal.requestFullscreen) {
-          kioskQrScannerModal.requestFullscreen().catch(() => {});
-        } else if (kioskQrScannerModal.webkitRequestFullscreen) {
-          kioskQrScannerModal.webkitRequestFullscreen();
-        }
-      } catch (e) { /* Fullscreen API no disponible, no bloquear */ }
+      // Solicitar pantalla completa en la app
+      requestAppFullscreen();
     }
   }
 
@@ -199,17 +221,23 @@ window.initTerminalView = function() {
     if (kioskQrScannerModal) {
       kioskQrScannerModal.style.display = 'none';
       stopCamera();
-      // Salir de Fullscreen si estamos en modo completo
-      try {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) {
-            document.exitFullscreen().catch(() => {});
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          }
-        }
-      } catch (e) { /* Ignorar si no estamos en fullscreen */ }
+      // NOTA: NO salimos de pantalla completa aquí si el usuario va a revisar
+      // o procesar el lote escaneado, manteniéndose en modo inmersivo de planta.
     }
+  }
+
+  // Finaliza la sesión del lote actual y devuelve la vista limpia del escáner
+  function finishLotSession() {
+    activeScannedLot = null;
+    candidateScannedLot = null;
+    if (terminalScannedLotActionsContainer) {
+      terminalScannedLotActionsContainer.style.display = 'none';
+    }
+    if (terminalScannerEmptyState) {
+      terminalScannerEmptyState.style.display = 'block';
+    }
+    // Salir del modo pantalla completa al completar lo correspondiente con el lote
+    exitAppFullscreen();
   }
 
   if (btnLaunchFullscreenScanner) {
@@ -315,12 +343,7 @@ window.initTerminalView = function() {
 
   if (btnScanAnotherLot) {
     btnScanAnotherLot.addEventListener('click', () => {
-      if (terminalScannedLotActionsContainer) {
-        terminalScannedLotActionsContainer.style.display = 'none';
-      }
-      if (terminalScannerEmptyState) {
-        terminalScannerEmptyState.style.display = 'block';
-      }
+      finishLotSession();
       window.UanifyUI.toast('Terminal lista para escanear un nuevo código QR.', 'info', 'Nuevo Escaneo');
     });
   }
@@ -646,6 +669,7 @@ window.initTerminalView = function() {
   const closeVerifyModal = () => {
     if (modalVerifyScannedCard) modalVerifyScannedCard.style.display = 'none';
     candidateScannedLot = null;
+    exitAppFullscreen();
   };
 
   if (btnCloseVerifyCardModal) btnCloseVerifyCardModal.addEventListener('click', closeVerifyModal);

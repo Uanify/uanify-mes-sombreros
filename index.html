@@ -483,20 +483,27 @@
                 <rect x="3" y="14" width="7" height="7"></rect>
               </svg>
             </div>
-            <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
-              Escáner de Código QR de Tarjeta Viajera
-            </h2>
-            <p style="font-size:14px; color:var(--text-secondary); max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
-              Para iniciar el proceso de recepción, inspección o depósito, activa el escáner táctil de pantalla completa o dispara la simulación de lectura con diferentes variaciones de lote de planta.
-            </p>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
+              <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin:0;">
+                Escáner de Código QR de Tarjeta Viajera
+              </h2>
+              <div class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Instrucciones para inicio de proceso" style="width:20px; height:20px;">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <div class="info-tip-popup" style="max-width:320px; text-align:left;">
+                  Para iniciar el proceso de recepción, inspección o depósito, activa el escáner táctil o dispara la simulación de lectura con diferentes variaciones de lote de planta.
+                </div>
+              </div>
+            </div>
 
             <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:28px;">
-              <!-- Botón Principal: Abrir Pantalla Completa Aislada del Escáner -->
+              <!-- Botón Principal: Abrir Escáner QR de Tarjeta Viajera -->
               <button type="button" class="btn-primary btn-touch-hero" id="btnLaunchFullscreenScanner" style="min-width:280px; font-size:15px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 16px rgba(139, 94, 60, 0.25);">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                 </svg>
-                Abrir Escáner QR (Pantalla Completa)
+                Abrir Escáner QR
               </button>
             </div>
 
@@ -723,7 +730,7 @@
               <div style="display:flex; align-items:center; gap:12px;">
                 <span style="font-size:20px;">📷</span>
                 <div>
-                  <h3 style="margin:0; font-size:16px; font-weight:800; color:#FFFFFF;">Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</h3>
+                  <h3 style="margin:0; font-size:16px; font-weight:800; color:#FFFFFF;">Escáner QR de Tarjeta Viajera</h3>
                   <span style="font-size:11.5px; color:#94A3B8;">Apunta la cámara del dispositivo al código QR de la tarjeta</span>
                 </div>
               </div>
@@ -4222,11 +4229,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.43.0"></script>
-  <script src="js/andon.js?v=2.43.0"></script>
-  <script src="js/terminal.js?v=2.43.0"></script>
-  <script src="js/engineer.js?v=2.43.0"></script>
-  <script src="js/executive.js?v=2.43.0"></script>
-  <script src="js/config.js?v=2.43.0"></script>
+  <script src="js/app.js?v=2.44.0"></script>
+  <script src="js/andon.js?v=2.44.0"></script>
+  <script src="js/terminal.js?v=2.44.0"></script>
+  <script src="js/engineer.js?v=2.44.0"></script>
+  <script src="js/executive.js?v=2.44.0"></script>
+  <script src="js/config.js?v=2.44.0"></script>
 </body>
 </html>
