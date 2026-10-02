@@ -206,7 +206,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.35.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.39.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -467,207 +467,180 @@
         <div class="sub-nav-tabs" data-module="terminal">
           <button class="sub-tab-btn active" data-subtab="subtab-terminal-scanner">Lector QR & Recepción/Depósito</button>
           <button class="sub-tab-btn" data-subtab="subtab-terminal-tracker">Mapa de Planta & Almacenes Intermedios</button>
+          <button class="sub-tab-btn" data-subtab="subtab-terminal-metrics">Métricas & Recuentos de Turno</button>
         </div>
 
         <!-- Pestaña 1: Lector QR Heroico & Recepción/Depósito en Almacén Siguiente -->
         <div class="sub-tab-content active" id="subtab-terminal-scanner">
-          
-          <!-- Franja de Indicadores de Turno del Supervisor (Arriba para no distraer del escaneo) -->
-          <div class="terminal-shift-kpi-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 16px; border-radius:10px; margin-bottom:16px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:11.5px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Resumen del Turno:</span>
-              <span class="badge-subtle" id="supervisorDeptsBadge">Departamentos Asignados: Prensas de Hormado</span>
+
+          <!-- ESTADO 1: ESCÁNER INICIAL O EN ESPERA (Pantalla limpia previa a la lectura del lote) -->
+          <div id="terminalScannerEmptyState" class="card-glass" style="padding:40px 24px; text-align:center; max-width:800px; margin:0 auto 20px auto; border:2px dashed var(--border-medium); border-radius:16px;">
+            <div style="width:72px; height:72px; margin:0 auto 16px auto; border-radius:18px; background:rgba(139, 94, 60, 0.08); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
             </div>
-            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:12.5px;">
-              <div>
-                <span style="color:var(--text-muted);">Piezas Procesadas:</span>
-                <strong style="color:var(--color-brand); margin-left:4px;" id="terminalProduced">98 pzas</strong>
-              </div>
-              <div>
-                <span style="color:var(--text-muted);">Mermas / Scrap:</span>
-                <strong style="color:var(--color-red); margin-left:4px;" id="terminalScrap">4 pzas</strong>
-              </div>
-              <div>
-                <span style="color:var(--text-muted);">Segundas:</span>
-                <strong style="color:var(--color-amber); margin-left:4px;" id="terminalSecondGrade">26 pzas</strong>
-              </div>
+            <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+              Escáner de Código QR de Tarjeta Viajera
+            </h2>
+            <p style="font-size:14px; color:var(--text-secondary); max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
+              Para iniciar el proceso de recepción, inspección o depósito, activa el escáner táctil de pantalla completa o dispara la simulación de lectura con diferentes variaciones de lote de planta.
+            </p>
+
+            <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:28px;">
+              <!-- Botón Principal: Abrir Pantalla Completa Aislada del Escáner -->
+              <button type="button" class="btn-primary btn-touch-hero" id="btnLaunchFullscreenScanner" style="min-width:280px; font-size:15px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 16px rgba(139, 94, 60, 0.25);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+                Abrir Escáner QR (Pantalla Completa)
+              </button>
             </div>
-          </div>
 
-          <div class="terminal-layout" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:20px;">
-            
-            <!-- Columna 1: Lector QR Heroico Tablet-First con Simulador de Casos -->
-            <div class="card-glass" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
-              <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                  <span class="model-badge-tag" style="font-size:12px; font-weight:800;">ESCÁNER QR DE PISO (HERO)</span>
-                  <span class="badge-subtle" id="cameraStatusBadge">Cámara Activa</span>
-                </div>
-
-                <!-- Visor de Cámara Web con Retícula Industrial -->
-                <div class="camera-scanner-wrapper" id="cameraScannerWrapper" style="position:relative; min-height:260px; background:#0B0F17; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
-                  <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
-                  
-                  <div class="camera-placeholder-msg" id="cameraPlaceholderMsg" style="position:relative; z-index:2; text-align:center; padding:20px; color:#94A3B8;">
-                    <span style="font-size:46px; display:block; margin-bottom:8px;">📷</span>
-                    <strong style="color:#FFFFFF; font-size:16px; display:block; margin-bottom:4px;">Cámara de Dispositivo Lista</strong>
-                    <span style="font-size:12.5px;">Apunta al código QR de la tarjeta viajera física.</span>
-                  </div>
-
-                  <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; z-index:3; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
-                    <div class="camera-target-box" style="width:220px; height:220px; border:2.5px solid #22C55E; border-radius:16px; position:relative; box-shadow:0 0 0 9999px rgba(0,0,0,0.45);">
-                      <div class="camera-scan-laser" style="position:absolute; top:0; left:0; right:0; height:3px; background:#22C55E; box-shadow:0 0 12px #22C55E; animation:scanLaser 2s infinite ease-in-out;"></div>
-                    </div>
-                    <span style="color:#FFFFFF; font-size:11.5px; margin-top:12px; font-weight:800; background:rgba(0,0,0,0.75); padding:4px 12px; border-radius:20px; letter-spacing:0.3px;">
-                      APUNTA AL CÓDIGO QR DE LA TARJETA VIAJERA
-                    </span>
-                  </div>
-
-                  <!-- Botón Flotante para Salir de Pantalla Completa (Solo visible en fullscreen) -->
-                  <div class="fullscreen-scanner-topbar" id="fsTopBar" style="display:none;">
-                    <span class="fullscreen-scanner-title">Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</span>
-                    <button type="button" class="fullscreen-scanner-exit-btn" id="btnExitFullscreenScanner">
-                      Salir de Pantalla Completa
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Botones de Disparo y Simulación de Escaneo QR con Casos de Prueba -->
-                <div style="margin-top:14px; background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:12px 14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
-                      Simulador de Disparo de Escaneo QR (Variaciones de Planta):
-                    </span>
-                    <span class="badge-subtle" style="font-size:10px;">Pruebas de Piso</span>
-                  </div>
-                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:8px;">
-                    <button type="button" class="btn-primary btn-touch-lg" id="btnSimulateScanSublot3" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px;">
-                      <div style="font-weight:800;">Lote Normal</div>
-                      <div style="font-size:10.5px; opacity:0.9;">Sublote #3 (Viejonón · #55)</div>
-                    </button>
-                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanMotherLot" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px;">
-                      <div style="font-weight:800;">Lote Madre (Rampa)</div>
-                      <div style="font-size:10.5px; color:var(--text-muted);">Lote 49,386 (60 pzas)</div>
-                    </button>
-                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanScrapLot" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#FCA5A5; color:#B91C1C; background:#FEF2F2;">
-                      <div style="font-weight:800;">⚠️ Con Merma</div>
-                      <div style="font-size:10.5px; color:#B91C1C;">Lote 49,842 (Quemado)</div>
-                    </button>
-                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanQualityStop" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#FCD34D; color:#92400E; background:#FFFBEB;">
-                      <div style="font-weight:800;">🔍 Filtro Calidad</div>
-                      <div style="font-size:10.5px; color:#B45309;">Punto C-02 Inspección</div>
-                    </button>
-                    <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanUnauthorized" style="font-size:12px; font-weight:700; text-align:left; padding:8px 12px; border-color:#CBD5E1; color:#475569;">
-                      <div style="font-weight:800;">🚫 Depto No Asignado</div>
-                      <div style="font-size:10.5px; color:var(--text-muted);">Prueba restricción</div>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Input oculto para compatibilidad con pistola USB si se conecta -->
-                <input type="hidden" id="manualQrInput" value="49633-3">
+            <!-- SIMULADOR DE DISPARO DE ESCANEO QR CON VARIACIONES (Sin input de texto plano) -->
+            <div style="background:#FFFFFF; border:1.5px solid var(--border-subtle); border-radius:12px; padding:18px; text-align:left;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
+                  Simulador de Disparo de Escaneo QR (Variaciones de Planta):
+                </span>
+                <span class="badge-subtle" style="font-size:11px; font-weight:700;">Pruebas de Flujo</span>
               </div>
-
-              <!-- Sección Aislada: Paro de Línea (Destacado y separado del flujo QR) -->
-              <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border-subtle);">
-                <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="width:100%; border:1.5px solid #FCA5A5; background:#FEF2F2; color:#DC2626; font-weight:800; font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:8px;">
-                  <span style="font-size:16px;">🛑</span> Reportar Paro de Línea o Incidencia en Estación
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px;">
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanSublot3" style="text-align:left; padding:10px 14px; border-color:var(--color-brand-border); background:var(--color-brand-light);">
+                  <div style="font-weight:800; color:var(--color-brand);">Lote Normal</div>
+                  <div style="font-size:11px; color:var(--text-secondary);">Sublote #3 (Viejonón · #55)</div>
+                </button>
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanMotherLot" style="text-align:left; padding:10px 14px;">
+                  <div style="font-weight:800; color:var(--text-primary);">Lote Madre</div>
+                  <div style="font-size:11px; color:var(--text-muted);">Lote 49,386 (60 pzas)</div>
+                </button>
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanScrapLot" style="text-align:left; padding:10px 14px; border-color:#FCA5A5; background:#FEF2F2;">
+                  <div style="font-weight:800; color:#B91C1C;">Con Merma</div>
+                  <div style="font-size:11px; color:#DC2626;">Lote 49,842 (Quemado)</div>
+                </button>
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanQualityStop" style="text-align:left; padding:10px 14px; border-color:#FCD34D; background:#FFFBEB;">
+                  <div style="font-weight:800; color:#B45309;">Filtro Calidad</div>
+                  <div style="font-size:11px; color:#D97706;">Punto C-02 Inspección</div>
+                </button>
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnSimulateScanUnauthorized" style="text-align:left; padding:10px 14px; border-color:#CBD5E1;">
+                  <div style="font-weight:800; color:#475569;">Depto No Asignado</div>
+                  <div style="font-size:11px; color:var(--text-muted);">Prueba restricción</div>
                 </button>
               </div>
             </div>
 
-            <!-- Columna 2: Ficha del Lote Escaneado & Acciones Post-Lectura -->
-            <div class="card-glass" style="padding:22px; display:flex; flex-direction:column; justify-content:space-between;">
-              <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                  <div>
-                    <span class="badge-status" id="activeLotBadgeStatus" style="background:var(--color-brand); color:#FFFFFF; font-size:12px; font-weight:800; padding:5px 10px; border-radius:6px;">
-                      LOTE ACTIVO: 49,633-3
-                    </span>
-                    <span class="badge-subtle" id="activeSublotTypeBadge" style="margin-left:6px; font-weight:700;">Sublote #3 (15 pzas)</span>
-                  </div>
-                  <span style="font-size:12px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">O. Prod: #15071</span>
-                </div>
+            <!-- Botón de Paro de Línea Aislado -->
+            <div style="margin-top:20px; text-align:center;">
+              <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="border:1.5px solid #FCA5A5; background:#FEF2F2; color:#DC2626; font-weight:800; font-size:13px; display:inline-flex; align-items:center; gap:8px; padding:0 22px;">
+                <span style="font-size:16px;">🛑</span> Reportar Paro de Línea o Incidencia en Estación
+              </button>
+            </div>
+          </div>
 
-                <!-- Flujo Secuencial Automático de Ruta -->
-                <div class="route-sequence-flow">
-                  <div class="flow-step-chip chip-origin">
-                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
-                    <strong id="lotOriginStationText">Refuerzos de Corona</strong>
-                  </div>
-                  <span class="flow-arrow-icon">→</span>
-                  <div class="flow-step-chip chip-current">
-                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">Ubicación Actual:</span>
-                    <strong id="lotCurrentStationText">Prensas de Hormado</strong>
-                  </div>
-                  <span class="flow-arrow-icon">→</span>
-                  <div class="flow-step-chip chip-target">
-                    <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">>> Siguiente Destino:</span>
-                    <strong id="lotTargetStationText">Recorte y Alambrado</strong>
-                  </div>
-                </div>
+          <!-- ESTADO 2: OPCIONES DISPONIBLES AL USUARIO TRAS LEER EL LOTE (Oculto inicialmente hasta escanear) -->
+          <div id="terminalScannedLotActionsContainer" style="display:none;">
+            
+            <!-- Barra superior del lote escaneado con opción de escanear otro lote -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:12px 18px; border-radius:12px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span class="badge-status" id="activeLotBadgeStatus" style="background:var(--color-brand); color:#FFFFFF; font-size:13px; font-weight:800; padding:6px 12px; border-radius:8px;">
+                  LOTE ACTIVO: 49,633-3
+                </span>
+                <span class="badge-subtle" id="activeSublotTypeBadge" style="font-weight:700;">Sublote #3 (15 pzas)</span>
+                <span style="font-size:12.5px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">O. Prod: #15071</span>
+              </div>
+              <button type="button" class="btn-secondary btn-touch-lg" id="btnScanAnotherLot" style="font-weight:800; font-size:12.5px; display:inline-flex; align-items:center; gap:8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+                Escanear Otro Código QR
+              </button>
+            </div>
 
-                <!-- Metadatos Extraídos del QR -->
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:14px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:14px; border-radius:10px;">
-                  <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Modelo / Clase:</span>
-                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaModel">1000X Master Telar · Viejonón</strong>
-                  </div>
-                  <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Talla / Falda:</span>
-                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaSpecs">Talla #55 | Falda 9 1/2</strong>
-                  </div>
-                  <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Operador Responsable:</span>
-                    <strong style="color:var(--color-brand); font-size:13px;" id="lotMetaOperator">Jorge (Prensas)</strong>
-                  </div>
-                  <div>
-                    <span style="font-size:11px; color:var(--text-muted); display:block;">Cantidad en Torre:</span>
-                    <strong style="color:var(--text-primary); font-size:13px;" id="lotMetaPieces">15 piezas</strong>
-                  </div>
+            <!-- Ficha Detallada del Lote y Opciones de Flujo Desplegadas -->
+            <div class="card-glass" style="padding:24px; border-radius:16px;">
+              
+              <!-- Flujo Secuencial Automático de Ruta -->
+              <div class="route-sequence-flow">
+                <div class="flow-step-chip chip-origin">
+                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
+                  <strong id="lotOriginStationText">Refuerzos de Corona</strong>
                 </div>
-
-                <!-- Botón para Visualizar la Tarjeta Viajera Oficial (Solo disponible tras escanear el QR) -->
-                <div style="margin-bottom:14px;">
-                  <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal" style="width:100%; border:1.5px solid var(--color-brand-border); background:var(--color-brand-light); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                    <div style="text-align:left;">
-                      <div class="btt-title" style="font-size:13px; font-weight:800; color:var(--color-brand);">
-                        📄 Ver Tarjeta Viajera Oficial (Mica de Piso)
-                      </div>
-                      <div class="btt-desc" style="font-size:11px; color:var(--text-secondary); margin-top:2px;">
-                        Gafete reglamentario con sticker de operador, clase 1000X y especificaciones
-                      </div>
-                    </div>
-                    <span class="btt-pill" id="bttActiveLotPill" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800; padding:4px 8px; border-radius:6px;">Lote 49,633-3</span>
-                  </button>
+                <span class="flow-arrow-icon">→</span>
+                <div class="flow-step-chip chip-current">
+                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">Ubicación Actual:</span>
+                  <strong id="lotCurrentStationText">Prensas de Hormado</strong>
                 </div>
-
-                <!-- Contenedor de Alerta de Merma (Solo visible si el lote tiene merma registrada) -->
-                <div id="lotScrapBannerContainer" style="margin-bottom:12px;"></div>
+                <span class="flow-arrow-icon">→</span>
+                <div class="flow-step-chip chip-target">
+                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">>> Siguiente Destino:</span>
+                  <strong id="lotTargetStationText">Recorte y Alambrado</strong>
+                </div>
               </div>
 
-              <!-- RASTREABILIDAD OBLIGATORIA DE OPERADOR POR ESTACIÓN (D-01 A D-14) -->
-              <div style="margin-top:14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:10px 14px; border-radius:8px; flex-wrap:wrap;">
-                <div style="flex:1; min-width:180px;">
-                  <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); display:block;">Operador en Turno de esta Estación:</span>
+              <!-- Metadatos Extraídos del QR -->
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin-bottom:18px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:16px; border-radius:12px;">
+                <div>
+                  <span style="font-size:11px; color:var(--text-muted); display:block;">Modelo / Clase:</span>
+                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaModel">1000X Master Telar · Viejonón</strong>
+                </div>
+                <div>
+                  <span style="font-size:11px; color:var(--text-muted); display:block;">Talla / Falda:</span>
+                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaSpecs">Talla #55 | Falda 9 1/2</strong>
+                </div>
+                <div>
+                  <span style="font-size:11px; color:var(--text-muted); display:block;">Operador Responsable:</span>
+                  <strong style="color:var(--color-brand); font-size:13.5px;" id="lotMetaOperator">Jorge (Prensas)</strong>
+                </div>
+                <div>
+                  <span style="font-size:11px; color:var(--text-muted); display:block;">Cantidad en Torre:</span>
+                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaPieces">15 piezas</strong>
+                </div>
+              </div>
+
+              <!-- Botón para Visualizar la Tarjeta Viajera Oficial (Mica de Piso) -->
+              <div style="margin-bottom:18px;">
+                <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal" style="width:100%; border:1.5px solid var(--color-brand-border); background:var(--color-brand-light); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                  <div style="text-align:left;">
+                    <div class="btt-title" style="font-size:13.5px; font-weight:800; color:var(--color-brand);">
+                      📄 Ver Tarjeta Viajera Oficial (Mica de Piso)
+                    </div>
+                    <div class="btt-desc" style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">
+                      Gafete reglamentario con sticker de operador, clase 1000X y especificaciones
+                    </div>
+                  </div>
+                  <span class="btt-pill" id="bttActiveLotPill" style="background:var(--color-brand); color:#FFFFFF; font-size:11.5px; font-weight:800; padding:5px 10px; border-radius:6px;">Lote 49,633-3</span>
+                </button>
+              </div>
+
+              <!-- Contenedor de Alerta de Merma (Solo visible si el lote tiene merma) -->
+              <div id="lotScrapBannerContainer" style="margin-bottom:16px;"></div>
+
+              <!-- RASTREABILIDAD OBLIGATORIA DE OPERADOR POR ESTACIÓN -->
+              <div style="margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:12px 16px; border-radius:10px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:200px;">
+                  <span style="font-size:11.5px; text-transform:uppercase; font-weight:800; color:var(--text-muted); display:block;">Operador en Turno de esta Estación:</span>
                   <span style="font-size:12px; color:var(--text-secondary);">Rastreabilidad requerida en el lote</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                  <select id="depositOperatorSelect" class="custom-select" style="min-width:200px; font-weight:700; font-size:13px;">
+                  <select id="depositOperatorSelect" class="custom-select" style="min-width:220px; font-weight:700; font-size:13.5px;">
                     <option value="OP-DEFAULT">Cargando operadores...</option>
                   </select>
                 </div>
               </div>
 
-              <!-- ACCIÓN PRINCIPAL DE DEPÓSITO (BOTÓN GIGANTE TABLET) -->
+              <!-- ACCIÓN PRINCIPAL DE DEPÓSITO -->
               <div>
-                <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534;">
+                <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15.5px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534; box-shadow:0 6px 16px rgba(22, 163, 74, 0.25);">
                   Depositar Lote en Almacén de Recorte y Alambrado
                 </button>
-                <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:6px;">
-                  <span style="font-size:11.5px; color:var(--text-muted);">Requiere autorización del supervisor</span>
+                <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:8px;">
+                  <span style="font-size:12px; color:var(--text-muted);">Requiere autorización del supervisor</span>
                   <div class="info-tip">
-                    <button type="button" class="info-tip-btn" aria-label="Condiciones de depósito" style="width:15px; height:15px;">
+                    <button type="button" class="info-tip-btn" aria-label="Condiciones de depósito" style="width:16px; height:16px;">
                       <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                     </button>
                     <div class="info-tip-popup">
@@ -677,15 +650,15 @@
                 </div>
 
                 <!-- Bloque de Calidad MVP: Inspector Aprueba/Rechaza & Ingeniero decide destino -->
-                <div id="qualityActionsContainer" style="display:none; margin-top:14px; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:10px; padding:14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div id="qualityActionsContainer" style="display:none; margin-top:16px; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:12px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                      <span class="badge-status" style="background:#D97706; color:#FFFFFF; font-weight:800; font-size:11px;">PUNTO DE CONTROL DE CALIDAD</span>
-                      <strong style="font-size:13px; color:#92400E;" id="qualityCheckTitle">Inspección de Lote</strong>
+                      <span class="badge-status" style="background:#D97706; color:#FFFFFF; font-weight:800; font-size:11.5px;">PUNTO DE CONTROL DE CALIDAD</span>
+                      <strong style="font-size:13.5px; color:#92400E;" id="qualityCheckTitle">Inspección de Lote</strong>
                     </div>
-                    <span style="font-size:11px; color:#B45309;">Inspector aprueba/rechaza · Ing. decide destino</span>
+                    <span style="font-size:11.5px; color:#B45309;">Inspector aprueba/rechaza · Ing. decide destino</span>
                   </div>
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                     <button type="button" class="btn-primary btn-touch-lg" id="btnApproveQualityLot" style="background:#16A34A; border-color:#15803D; font-weight:700;">
                       Aprobar Lote (Avanzar)
                     </button>
@@ -694,12 +667,12 @@
                     </button>
                   </div>
                   <div id="qualityDestinationPanel" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #FCD34D;">
-                    <label class="field-label" style="font-size:11.5px; color:#92400E; margin-bottom:6px;">Decisión de Destino (Ingeniero / Calidad):</label>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:12px; font-weight:700;">
+                    <label class="field-label" style="font-size:12px; color:#92400E; margin-bottom:6px;">Decisión de Destino (Ingeniero / Calidad):</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:12.5px; font-weight:700;">
                         Enviar a Reproceso (Depto Sugerido)
                       </button>
-                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:12px; font-weight:700;">
+                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:12.5px; font-weight:700;">
                         Registrar como Merma Definitiva
                       </button>
                     </div>
@@ -707,14 +680,125 @@
                 </div>
 
                 <!-- Acciones Rápidas Aisladas: Modo Rampa Flujo Especial -->
-                <div style="margin-top:14px; border-top:1px dashed var(--border-subtle); padding-top:12px;">
+                <div style="margin-top:16px; border-top:1px dashed var(--border-subtle); padding-top:14px;">
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="width:100%; border:1.5px solid var(--color-brand); color:var(--color-brand); font-weight:800;">
                     ⚙️ Abrir Modo Rampa (Fraccionar Lote Madre 60 pzas → 4 Sublotes)
                   </button>
                 </div>
               </div>
+
             </div>
 
+          </div>
+
+          <!-- MODAL / KIOSKO AISLADO DE PANTALLA COMPLETA PARA EL ESCÁNER QR -->
+          <div id="kioskQrScannerModal" class="terminal-scanner-kiosk-view" style="display:none;">
+            <div class="terminal-scanner-kiosk-header">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:20px;">📷</span>
+                <div>
+                  <h3 style="margin:0; font-size:16px; font-weight:800; color:#FFFFFF;">Escáner QR de Tarjeta Viajera · Modo Pantalla Completa</h3>
+                  <span style="font-size:11.5px; color:#94A3B8;">Apunta la cámara del dispositivo al código QR de la tarjeta</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button type="button" class="btn-secondary" id="btnKioskSimulateScan" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.25); color:#FFFFFF; font-weight:700; font-size:12.5px; height:40px;">
+                  ⚡ Simular Lectura de QR
+                </button>
+                <button type="button" class="modal-close" id="btnCloseKioskScannerModal" aria-label="Cerrar Escáner" style="width:40px; height:40px; font-size:24px; color:#FFFFFF; background:rgba(255,255,255,0.15); border-radius:8px;">&times;</button>
+              </div>
+            </div>
+
+            <div class="terminal-scanner-kiosk-body">
+              <div class="kiosk-camera-pane">
+                <video id="qrCameraVideo" class="camera-video-feed" playsinline autoplay muted style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
+                
+                <div class="camera-placeholder-msg" id="cameraPlaceholderMsg" style="position:relative; z-index:2; text-align:center; padding:24px; color:#94A3B8;">
+                  <span style="font-size:52px; display:block; margin-bottom:10px;">📷</span>
+                  <strong style="color:#FFFFFF; font-size:18px; display:block; margin-bottom:6px;">Visor Óptico Activo</strong>
+                  <span style="font-size:13.5px; max-width:400px; display:block; line-height:1.5;">Coloca el código QR de la tarjeta viajera dentro del marco para detección automática.</span>
+                </div>
+
+                <div class="camera-reticle-overlay" id="cameraReticleOverlay" style="position:absolute; top:0; left:0; right:0; bottom:0; z-index:3; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.35);">
+                  <div class="camera-target-box" style="width:260px; height:260px; border:3px solid #22C55E; border-radius:18px; position:relative; box-shadow:0 0 0 9999px rgba(0,0,0,0.5);">
+                    <div class="camera-scan-laser" style="position:absolute; top:0; left:0; right:0; height:3px; background:#22C55E; box-shadow:0 0 14px #22C55E; animation:scanLaser 2s infinite ease-in-out;"></div>
+                  </div>
+                  <span style="color:#FFFFFF; font-size:12px; margin-top:16px; font-weight:800; background:rgba(0,0,0,0.8); padding:6px 16px; border-radius:20px; letter-spacing:0.5px;">
+                    ENFOCA EL CÓDIGO QR DE LA TARJETA
+                  </span>
+                </div>
+              </div>
+
+              <!-- Panel Lateral del Kiosko: Selección Rápida de Variaciones de Prueba -->
+              <div class="kiosk-sidebar-pane">
+                <h4 style="font-size:14px; font-weight:800; color:#FFFFFF; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">
+                  Simulador de Casos de Planta
+                </h4>
+                <p style="font-size:12px; color:#94A3B8; margin-bottom:16px; line-height:1.4;">
+                  Selecciona una variación para disparar la lectura inmediata y validar el flujo en pantalla:
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                  <button type="button" class="btn-secondary" id="kioskSimSublot3" style="text-align:left; padding:12px 14px; border-color:var(--color-brand); background:rgba(139,94,60,0.2); color:#FFFFFF; height:auto;">
+                    <div style="font-weight:800; color:#F59E0B;">Lote Normal (Sublote #3)</div>
+                    <div style="font-size:11.5px; opacity:0.85;">1000X Master Telar · Viejonón #55 (15 pzas)</div>
+                  </button>
+                  <button type="button" class="btn-secondary" id="kioskSimMotherLot" style="text-align:left; padding:12px 14px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.15); color:#FFFFFF; height:auto;">
+                    <div style="font-weight:800; color:#38BDF8;">Lote Madre (Rampa D-05)</div>
+                    <div style="font-size:11.5px; opacity:0.85;">Lote 49,386 (60 pzas sin fraccionar)</div>
+                  </button>
+                  <button type="button" class="btn-secondary" id="kioskSimScrapLot" style="text-align:left; padding:12px 14px; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#FFFFFF; height:auto;">
+                    <div style="font-weight:800; color:#F87171;">Lote con Merma Registrada</div>
+                    <div style="font-size:11.5px; opacity:0.85;">Lote 49,842 (1 pza con quemado en prensa)</div>
+                  </button>
+                  <button type="button" class="btn-secondary" id="kioskSimQualityStop" style="text-align:left; padding:12px 14px; background:rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.4); color:#FFFFFF; height:auto;">
+                    <div style="font-weight:800; color:#FCD34D;">Parada en Filtro de Calidad</div>
+                    <div style="font-size:11.5px; opacity:0.85;">Punto C-02 (Inspección intermedia de englopado)</div>
+                  </button>
+                  <button type="button" class="btn-secondary" id="kioskSimUnauthorized" style="text-align:left; padding:12px 14px; background:rgba(148,163,184,0.1); border-color:rgba(148,163,184,0.25); color:#FFFFFF; height:auto;">
+                    <div style="font-weight:800; color:#94A3B8;">Departamento No Autorizado</div>
+                    <div style="font-size:11.5px; opacity:0.85;">Lote en D-01 (Prueba de restricción RBAC)</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pestaña 3: Métricas, Recuentos y Estadísticas de Turno (Sección Puntual Diferenciada) -->
+        <div class="sub-tab-content" id="subtab-terminal-metrics">
+          <div class="card-glass" style="padding:24px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+              <div>
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
+                  Recuentos y Balance de Producción de Turno
+                </h3>
+                <p style="font-size:13px; color:var(--text-secondary); margin:0;">
+                  Auditoría detallada de piezas procesadas, segregación de calidad, segundas y mermas por departamento.
+                </p>
+              </div>
+              <span class="badge-subtle" id="supervisorDeptsBadgeMetrics" style="font-weight:700;">Departamentos Asignados: Prensas de Hormado</span>
+            </div>
+
+            <!-- Grid de Métricas Puntuales -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
+              <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas Procesadas Hoy:</span>
+                <strong style="font-size:26px; font-weight:800; color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
+                <span style="font-size:11.5px; color:var(--text-secondary); display:block; margin-top:4px;">En estaciones asignadas</span>
+              </div>
+              <div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:#B91C1C; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Mermas / Scrap Definitivo:</span>
+                <strong style="font-size:26px; font-weight:800; color:#DC2626;" id="terminalScrap">4 pzas</strong>
+                <span style="font-size:11.5px; color:#7F1D1D; display:block; margin-top:4px;">Segregadas para remate viernes</span>
+              </div>
+              <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:#B45309; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas de Segunda Calidad:</span>
+                <strong style="font-size:26px; font-weight:800; color:#D97706;" id="terminalSecondGrade">26 pzas</strong>
+                <span style="font-size:11.5px; color:#92400E; display:block; margin-top:4px;">Desviaciones menores toleradas</span>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -16,21 +16,30 @@ window.initTerminalView = function() {
   const terminalScrap    = document.getElementById('terminalScrap');
   const terminalSecond   = document.getElementById('terminalSecondGrade');
 
+  // Elementos de Contenedores de Estado en Escáner
+  const terminalScannerEmptyState          = document.getElementById('terminalScannerEmptyState');
+  const terminalScannedLotActionsContainer = document.getElementById('terminalScannedLotActionsContainer');
+  const btnLaunchFullscreenScanner         = document.getElementById('btnLaunchFullscreenScanner');
+  const btnScanAnotherLot                  = document.getElementById('btnScanAnotherLot');
+
+  // Modal / Kiosko Aislado de Pantalla Completa para Escáner QR
+  const kioskQrScannerModal       = document.getElementById('kioskQrScannerModal');
+  const btnCloseKioskScannerModal = document.getElementById('btnCloseKioskScannerModal');
+  const btnKioskSimulateScan      = document.getElementById('btnKioskSimulateScan');
+  const kioskSimSublot3           = document.getElementById('kioskSimSublot3');
+  const kioskSimMotherLot         = document.getElementById('kioskSimMotherLot');
+  const kioskSimScrapLot          = document.getElementById('kioskSimScrapLot');
+  const kioskSimQualityStop       = document.getElementById('kioskSimQualityStop');
+  const kioskSimUnauthorized      = document.getElementById('kioskSimUnauthorized');
+
   // Elementos de Escáner y Cámara
   const cameraWrapper      = document.getElementById('cameraScannerWrapper');
   const videoFeed          = document.getElementById('qrCameraVideo');
-  const btnToggleCamera    = document.getElementById('btnToggleCamera');
-  const btnToggleFullscreen= document.getElementById('btnToggleFullscreen');
-  const btnExitFullscreen  = document.getElementById('btnExitFullscreenScanner');
-  const btnFlipCamera      = document.getElementById('btnFlipCamera');
-  const fsTopBar           = document.getElementById('fsTopBar');
   const cameraPlaceholder  = document.getElementById('cameraPlaceholderMsg');
   const cameraReticle      = document.getElementById('cameraReticleOverlay');
   const cameraStatusBadge  = document.getElementById('cameraStatusBadge');
-  const manualQrInput      = document.getElementById('manualQrInput');
-  const btnScanQr          = document.getElementById('btnScanQr');
 
-  // Botones de Simulación Rápida
+  // Botones de Simulación Rápida (Vista previa en empty state)
   const btnSimSublot3      = document.getElementById('btnSimulateScanSublot3');
   const btnSimMotherLot    = document.getElementById('btnSimulateScanMotherLot');
   const btnSimScrapLot     = document.getElementById('btnSimulateScanScrapLot');
@@ -112,14 +121,10 @@ window.initTerminalView = function() {
   let activeScannedLot = UanifyState.activeLots[0] || null;
   let candidateScannedLot = null;
 
-  // ── 1. GESTIÓN DE CÁMARA WEB & PANTALLA COMPLETA ───────────────────────────
+  // ── 1. GESTIÓN DE CÁMARA WEB & KIOSKO DE PANTALLA COMPLETA ────────────────
   async function startCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      window.UanifyUI.toast(
-        'El navegador no soporta acceso directo a la cámara. Puedes utilizar la pistola USB o el ingreso manual.',
-        'warning',
-        'Cámara no soportada'
-      );
+      console.info('Dispositivo sin soporte getUserMedia directo.');
       return;
     }
 
@@ -144,27 +149,13 @@ window.initTerminalView = function() {
 
       if (cameraPlaceholder) cameraPlaceholder.style.display = 'none';
       if (cameraReticle)     cameraReticle.style.display = 'flex';
-      if (btnToggleCamera)   btnToggleCamera.textContent = 'Apagar Cámara Web';
-      if (btnFlipCamera)     btnFlipCamera.style.display = 'inline-flex';
       if (cameraStatusBadge) {
         cameraStatusBadge.textContent = ' Cámara en vivo activa';
         cameraStatusBadge.style.background = '#ECFDF5';
         cameraStatusBadge.style.color = '#047857';
       }
-
-      window.UanifyUI.toast('Visor de cámara iniciado en vivo. Apunta al código QR de la tarjeta viajera.', 'success', 'Cámara Activa');
     } catch (err) {
-      console.warn('Error al iniciar cámara:', err);
-      if (cameraStatusBadge) {
-        cameraStatusBadge.textContent = ' Sin acceso a cámara';
-        cameraStatusBadge.style.background = '#FEF2F2';
-        cameraStatusBadge.style.color = '#B91C1C';
-      }
-      window.UanifyUI.toast(
-        'No se pudo acceder a la cámara del dispositivo. Usa el campo manual o pistola USB para leer la tarjeta.',
-        'warning',
-        'Acceso a Cámara'
-      );
+      console.warn('Cámara en vivo no disponible o denegada:', err);
     }
   }
 
@@ -176,49 +167,83 @@ window.initTerminalView = function() {
     if (videoFeed) videoFeed.srcObject = null;
     if (cameraPlaceholder) cameraPlaceholder.style.display = 'flex';
     if (cameraReticle)     cameraReticle.style.display = 'none';
-    if (btnToggleCamera)   btnToggleCamera.textContent = '▶ Activar Cámara Web';
-    if (btnFlipCamera)     btnFlipCamera.style.display = 'none';
-    if (cameraStatusBadge) {
-      cameraStatusBadge.textContent = 'Cámara inactiva';
-      cameraStatusBadge.style.background = '#F1F5F9';
-      cameraStatusBadge.style.color = '#64748B';
-    }
   }
 
-  if (btnToggleCamera) {
-    btnToggleCamera.addEventListener('click', () => {
-      if (mediaStream) {
-        stopCamera();
-      } else {
-        startCamera();
-      }
-    });
-  }
-
-  if (btnFlipCamera) {
-    btnFlipCamera.addEventListener('click', () => {
-      currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+  function openKioskScanner() {
+    if (kioskQrScannerModal) {
+      kioskQrScannerModal.style.display = 'flex';
       startCamera();
+    }
+  }
+
+  function closeKioskScanner() {
+    if (kioskQrScannerModal) {
+      kioskQrScannerModal.style.display = 'none';
+      stopCamera();
+    }
+  }
+
+  if (btnLaunchFullscreenScanner) {
+    btnLaunchFullscreenScanner.addEventListener('click', openKioskScanner);
+  }
+
+  if (btnCloseKioskScannerModal) {
+    btnCloseKioskScannerModal.addEventListener('click', closeKioskScanner);
+  }
+
+  if (btnKioskSimulateScan) {
+    btnKioskSimulateScan.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
     });
   }
 
-  function enterFullscreenScanner() {
-    if (cameraWrapper) {
-      cameraWrapper.classList.add('is-fullscreen');
-      if (fsTopBar) fsTopBar.style.display = 'flex';
-      if (!mediaStream) startCamera();
-    }
+  if (kioskSimSublot3) {
+    kioskSimSublot3.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
+    });
   }
 
-  function exitFullscreenScanner() {
-    if (cameraWrapper) {
-      cameraWrapper.classList.remove('is-fullscreen');
-      if (fsTopBar) fsTopBar.style.display = 'none';
-    }
+  if (kioskSimMotherLot) {
+    kioskSimMotherLot.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49386|0|CHAPARRAL|9.0 Cm|56|15068|SIN_OPERADOR|D-04|D-05|OK');
+    });
   }
 
-  if (btnToggleFullscreen) btnToggleFullscreen.addEventListener('click', enterFullscreenScanner);
-  if (btnExitFullscreen)   btnExitFullscreen.addEventListener('click', exitFullscreenScanner);
+  if (kioskSimScrapLot) {
+    kioskSimScrapLot.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49842|0|MAGNUM|9 1/2|57|15075|MELANY|D-05|D-06|SCRAP:Quemado por prensa de vapor');
+    });
+  }
+
+  if (kioskSimQualityStop) {
+    kioskSimQualityStop.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK');
+    });
+  }
+
+  if (kioskSimUnauthorized) {
+    kioskSimUnauthorized.addEventListener('click', () => {
+      closeKioskScanner();
+      triggerScanEvaluation('TB|49700|0|DENVER|9 1/2|58|15080|RAUL|D-01|D-02|OK');
+    });
+  }
+
+  if (btnScanAnotherLot) {
+    btnScanAnotherLot.addEventListener('click', () => {
+      if (terminalScannedLotActionsContainer) {
+        terminalScannedLotActionsContainer.style.display = 'none';
+      }
+      if (terminalScannerEmptyState) {
+        terminalScannerEmptyState.style.display = 'block';
+      }
+      window.UanifyUI.toast('Terminal lista para escanear un nuevo código QR.', 'info', 'Nuevo Escaneo');
+    });
+  }
 
   // ── 2. GENERADOR DE RÉPLICA DE TARJETA VIAJERA (HTML OFICIAL) ─────────────
   function generateTravelerCardHtml(lotData) {
@@ -484,64 +509,40 @@ window.initTerminalView = function() {
       }
     }
 
-    // Salir de pantalla completa si estaba activa para mostrar modal
-    exitFullscreenScanner();
-
-    // Abrir modal de verificación
+    // Cerrar kiosko si estuviera abierto y abrir modal de verificación
+    closeKioskScanner();
     if (modalVerifyScannedCard) {
       modalVerifyScannedCard.style.display = 'flex';
     }
   }
 
-  // Eventos de Verificación de Tarjeta
-  if (btnScanQr) {
-    btnScanQr.addEventListener('click', () => {
-      const q = manualQrInput ? manualQrInput.value.trim() : '';
-      triggerScanEvaluation(q || '49633-3');
-    });
-  }
-
-  if (manualQrInput) {
-    manualQrInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        triggerScanEvaluation(manualQrInput.value.trim());
-      }
-    });
-  }
-
-  // Botones de Simulación Rápida
+  // Botones de Simulación Rápida (En Empty State)
   if (btnSimSublot3) {
     btnSimSublot3.addEventListener('click', () => {
-      if (manualQrInput) manualQrInput.value = '49633-3';
       triggerScanEvaluation('TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK');
     });
   }
 
   if (btnSimMotherLot) {
     btnSimMotherLot.addEventListener('click', () => {
-      if (manualQrInput) manualQrInput.value = '49386';
       triggerScanEvaluation('TB|49386|0|CHAPARRAL|9.0 Cm|56|15068|SIN_OPERADOR|D-04|D-05|OK');
     });
   }
 
   if (btnSimScrapLot) {
     btnSimScrapLot.addEventListener('click', () => {
-      if (manualQrInput) manualQrInput.value = '49842';
       triggerScanEvaluation('TB|49842|0|MAGNUM|9 1/2|57|15075|MELANY|D-05|D-06|SCRAP:Quemado por prensa de vapor');
     });
   }
 
   if (btnSimQualityStop) {
     btnSimQualityStop.addEventListener('click', () => {
-      if (manualQrInput) manualQrInput.value = '49633-2';
       triggerScanEvaluation('TB|49633|2|VIEJONON|9 1/2|55|15071|LUPITA|C-02|D-07|OK');
     });
   }
 
   if (btnSimUnauthorized) {
     btnSimUnauthorized.addEventListener('click', () => {
-      if (manualQrInput) manualQrInput.value = '49700';
       // Simula escaneo de lote en Corte de Telar (D-01), que no pertenece a supervisores de hormado
       triggerScanEvaluation('TB|49700|0|DENVER|9 1/2|58|15080|RAUL|D-01|D-02|OK');
     });
@@ -571,6 +572,14 @@ window.initTerminalView = function() {
       if (!candidateScannedLot) return;
       activeScannedLot = candidateScannedLot;
       closeVerifyModal();
+
+      // Progresión de UI: Ocultar escáner inicial y revelar opciones del lote
+      if (terminalScannerEmptyState) {
+        terminalScannerEmptyState.style.display = 'none';
+      }
+      if (terminalScannedLotActionsContainer) {
+        terminalScannedLotActionsContainer.style.display = 'block';
+      }
 
       renderActiveScannedLotCard(activeScannedLot);
 
@@ -1789,7 +1798,10 @@ window.initTerminalView = function() {
   }
 
   // ── 14. INICIALIZACIÓN GENERAL ─────────────────────────────────────────────
-  renderActiveScannedLotCard(activeScannedLot);
+  // Inicialmente solo el escáner está accesible; las opciones y acciones se revelan tras leer el QR
+  if (terminalScannerEmptyState) terminalScannerEmptyState.style.display = 'block';
+  if (terminalScannedLotActionsContainer) terminalScannedLotActionsContainer.style.display = 'none';
+
   renderPlantDepartmentsGrid();
   populateTrackerLotSelect();
   renderProcessTimeline(activeTrackedLotId);
