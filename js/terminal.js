@@ -281,24 +281,60 @@ window.initTerminalView = function() {
     const text = String(raw || '').trim();
     if (!text) return null;
 
-    // A) Formato Delimitado con Pipes (e.g. TB|49633|3|VIEJONON|9 1/2|55|15071|JORGE|D-05|D-06|OK)
-    if (text.startsWith('TB|') || text.includes('|')) {
+    // A) Formato Delimitado con Pipes Oficial de la Propuesta Técnica:
+    // LOTE_ID|TIPO|MODELO|CALIDAD|TALLA|ORD_PROD|TOTAL_PZAS|SUBLOTE_NUM
+    // ej. LT-2026-0941|S|1000XMT|PRIMERA|59|OP-2026-112|15|2
+    // O formato previo con prefijo TB|...
+    if (text.includes('|')) {
       const parts = text.split('|');
-      const lotId = parts[1] || '49,633';
-      const sublotNum = parseInt(parts[2], 10) || null;
-      const model = parts[3] || 'VIEJONON';
-      const brim = parts[4] || '9 1/2';
-      const size = parts[5] || '55';
-      const oProd = parts[6] || '15071';
-      const operator = parts[7] || 'JORGE';
-      const currentStationCode = parts[8] || 'D-05';
-      const scrapFlag = parts[10] || '';
-      const hasScrap = scrapFlag.toUpperCase().includes('SCRAP');
-      const scrapReason = hasScrap ? (scrapFlag.split(':')[1] || 'Defecto marcado en inspección') : '';
+      let lotId = parts[0];
+      let sublotNum = null;
+      let model = '1000X Master Telar';
+      let brim = '9 1/2';
+      let size = '55';
+      let oProd = '15071';
+      let operator = 'JORGE';
+      let currentStationCode = 'D-05';
+      let pieces = 15;
+      let hasScrap = false;
+      let scrapReason = '';
+
+      if (parts[0] === 'TB') {
+        // Formato legado TB|49633|3|VIEJONON|...
+        lotId = parts[1] || '49,633';
+        sublotNum = parseInt(parts[2], 10) || null;
+        model = parts[3] || 'VIEJONON';
+        brim = parts[4] || '9 1/2';
+        size = parts[5] || '55';
+        oProd = parts[6] || '15071';
+        operator = parts[7] || 'JORGE';
+        currentStationCode = parts[8] || 'D-05';
+        const scrapFlag = parts[10] || '';
+        hasScrap = scrapFlag.toUpperCase().includes('SCRAP');
+        scrapReason = hasScrap ? (scrapFlag.split(':')[1] || 'Defecto en inspección') : '';
+      } else {
+        // Formato oficial de la propuesta:
+        // parts[0] = LOTE_ID (ej. LT-2026-0941 o 49633)
+        // parts[1] = TIPO ('M' o 'S')
+        // parts[2] = MODELO
+        // parts[3] = CALIDAD
+        // parts[4] = TALLA
+        // parts[5] = ORD_PROD
+        // parts[6] = TOTAL_PZAS
+        // parts[7] = SUBLOTE_NUM
+        lotId = parts[0] || '49,633';
+        const tipo = (parts[1] || 'M').toUpperCase();
+        model = parts[2] || '1000X Master Telar';
+        size = parts[4] || '55';
+        oProd = parts[5] || '15071';
+        pieces = parseInt(parts[6], 10) || (tipo === 'S' ? 15 : 60);
+        sublotNum = parts[7] ? parseInt(parts[7], 10) : (tipo === 'S' ? 1 : null);
+      }
 
       return matchOrCreateLot({
         lotId,
         sublotNum,
+        pieces,
         model,
         brim,
         size,
@@ -621,10 +657,117 @@ window.initTerminalView = function() {
       }
     }
 
+    // ── GESTIÓN DE PUNTOS DE CONTROL DE CALIDAD (C-01 a C-04 / Rol Calidad e Ingeniero) ──
+    const qualityActionsContainer = document.getElementById('qualityActionsContainer');
+    const qualityCheckTitle = document.getElementById('qualityCheckTitle');
+    const qualityDestinationPanel = document.getElementById('qualityDestinationPanel');
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const isQualityRole = user.role === 'calidad' || user.role === 'ingeniero' || user.role === 'admin';
+    const isQualityStop = (lot.currentStationCode && lot.currentStationCode.startsWith('C-')) ||
+                          (lot.targetStationCode && lot.targetStationCode.startsWith('C-')) ||
+                          (lot.currentStationName && lot.currentStationName.toLowerCase().includes('calidad'));
+
+    if (qualityActionsContainer) {
+      if (isQualityStop || isQualityRole) {
+        qualityActionsContainer.style.display = 'block';
+        if (qualityCheckTitle) {
+          qualityCheckTitle.textContent = `Filtro de Inspección: ${lot.currentStationCode || 'C-01'} · ${lot.currentStationName || 'Control de Calidad'}`;
+        }
+      } else {
+        qualityActionsContainer.style.display = 'none';
+      }
+      if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+    }
+
     // Botón Principal de Depósito
     if (btnDepositToNextBuffer) {
       btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode} ${lot.targetStationName}`;
     }
+  }
+
+  // Manejadores del Flujo de Calidad MVP
+  const btnApproveQualityLot = document.getElementById('btnApproveQualityLot');
+  const btnRejectQualityLot = document.getElementById('btnRejectQualityLot');
+  const qualityDestinationPanel = document.getElementById('qualityDestinationPanel');
+  const btnQualitySendRework = document.getElementById('btnQualitySendRework');
+  const btnQualitySendScrap = document.getElementById('btnQualitySendScrap');
+
+  if (btnApproveQualityLot) {
+    btnApproveQualityLot.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+      const res = UanifyState.advanceLot(activeScannedLot.lotId);
+      if (res) {
+        activeScannedLot = matchOrCreateLot({
+          ...activeScannedLot,
+          currentStationCode: res.targetStep.code,
+          hasScrap: false
+        });
+        renderActiveScannedLotCard(activeScannedLot);
+        renderPlantDepartmentsGrid();
+        window.UanifyUI.toast(
+          `¡Lote ${activeScannedLot.lotId} APROBADO por Calidad (${user.name})! Avanzó con éxito a ${res.targetStep.code} ${res.targetStep.name}.`,
+          'success',
+          'Lote Aprobado en Calidad'
+        );
+      }
+    });
+  }
+
+  if (btnRejectQualityLot) {
+    btnRejectQualityLot.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      if (qualityDestinationPanel) {
+        qualityDestinationPanel.style.display = qualityDestinationPanel.style.display === 'none' ? 'block' : 'none';
+      }
+      window.UanifyUI.toast(
+        `Lote ${activeScannedLot.lotId} marcado con NO CONFORMIDAD. Ingeniero/Inspector: selecciona el destino (Reproceso o Merma).`,
+        'warning',
+        'Lote Rechazado en Inspección'
+      );
+    });
+  }
+
+  if (btnQualitySendRework) {
+    btnQualitySendRework.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      const res = UanifyState.rewindLot(activeScannedLot.lotId);
+      if (res) {
+        activeScannedLot = matchOrCreateLot({
+          ...activeScannedLot,
+          currentStationCode: res.targetStep.code,
+          hasScrap: true,
+          scrapReason: 'Reproceso por defecto en acabado'
+        });
+        renderActiveScannedLotCard(activeScannedLot);
+        renderPlantDepartmentsGrid();
+        if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+        window.UanifyUI.toast(
+          `Lote ${activeScannedLot.lotId} retornado a ${res.targetStep.code} ${res.targetStep.name} para reproceso prioritario.`,
+          'warning',
+          'Enviado a Reproceso'
+        );
+      }
+    });
+  }
+
+  if (btnQualitySendScrap) {
+    btnQualitySendScrap.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      activeScannedLot.hasScrap = true;
+      activeScannedLot.scrapReason = 'Merma definitiva rechazada en inspección';
+      UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + (activeScannedLot.pieces || 15);
+      const scrapEl = document.getElementById('terminalScrap');
+      if (scrapEl) scrapEl.textContent = `${UanifyState.scrapTotal} pzas`;
+      renderActiveScannedLotCard(activeScannedLot);
+      renderPlantDepartmentsGrid();
+      if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+      window.UanifyUI.toast(
+        `Lote ${activeScannedLot.lotId} clasificado como MERMA definitiva. Contabilizado en indicador de pérdidas.`,
+        'danger',
+        'Merma Registrada'
+      );
+    });
   }
 
   // ── 6. DEPÓSITO CON VALIDACIÓN DE PERMISOS DE SUPERVISOR (RF-57 & RF-58) ────
@@ -1221,26 +1364,62 @@ window.initTerminalView = function() {
   const rampaSub3Folio                 = document.getElementById('rampaSub3Folio');
   const rampaSub4Folio                 = document.getElementById('rampaSub4Folio');
   const rampaOperatorSelect            = document.getElementById('rampaOperatorSelect');
+  const rampaInputTotalPieces          = document.getElementById('rampaInputTotalPieces');
+  const rampaInputPiecesPerSublot      = document.getElementById('rampaInputPiecesPerSublot');
+  const rampaCalculatedSublotsText     = document.getElementById('rampaCalculatedSublotsText');
+  const rampaSublotsCountPill          = document.getElementById('rampaSublotsCountPill');
+  const rampaSublotsGrid               = document.getElementById('rampaSublotsGrid');
 
   let currentRampaMotherId = '49386';
+
+  function updateRampaSublotsGrid() {
+    const totalPzas = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
+    const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
+    const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
+    const cleanId = currentRampaMotherId.split('-')[0];
+
+    if (rampaMotherLotPieces) rampaMotherLotPieces.textContent = `${totalPzas} piezas totales`;
+    if (rampaCalculatedSublotsText) {
+      rampaCalculatedSublotsText.textContent = `${numSublots} Sublotes de ~${pzasPerSublot} pzas`;
+    }
+    if (rampaSublotsCountPill) {
+      rampaSublotsCountPill.textContent = `${numSublots} torres proyectadas`;
+    }
+
+    if (rampaSublotsGrid) {
+      let cardsHtml = '';
+      let remaining = totalPzas;
+      for (let i = 1; i <= numSublots; i++) {
+        const thisPzas = Math.min(remaining, pzasPerSublot);
+        remaining -= thisPzas;
+        cardsHtml += `
+          <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
+            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #${i}</span>
+            <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;">${cleanId}-${i}</div>
+            <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">${thisPzas} sombreros</span>
+            <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "${i}"</div>
+          </div>
+        `;
+      }
+      rampaSublotsGrid.innerHTML = cardsHtml;
+    }
+  }
+
+  if (rampaInputTotalPieces) rampaInputTotalPieces.addEventListener('input', updateRampaSublotsGrid);
+  if (rampaInputPiecesPerSublot) rampaInputPiecesPerSublot.addEventListener('input', updateRampaSublotsGrid);
 
   function setupRampaModalForLot(mId) {
     currentRampaMotherId = mId;
     const cleanId = mId.split('-')[0];
     if (rampaMotherLotId) rampaMotherLotId.textContent = cleanId;
-    if (rampaMotherLotPieces) rampaMotherLotPieces.textContent = '60 piezas totales';
-    
+
     // Asignar modelo de lote madre
     let mName = '1000X Chaparral';
     if (cleanId === '49633') mName = '1000X Master Telar · Viejonón';
     else if (cleanId === '49842') mName = 'Magnum Tradicional';
     if (rampaMotherLotModel) rampaMotherLotModel.textContent = mName;
 
-    // Actualizar los 4 folios de sublotes
-    if (rampaSub1Folio) rampaSub1Folio.textContent = `${cleanId}-1`;
-    if (rampaSub2Folio) rampaSub2Folio.textContent = `${cleanId}-2`;
-    if (rampaSub3Folio) rampaSub3Folio.textContent = `${cleanId}-3`;
-    if (rampaSub4Folio) rampaSub4Folio.textContent = `${cleanId}-4`;
+    updateRampaSublotsGrid();
   }
 
   window.openRampaFraccionamientoMode = function(optionalLotId) {
@@ -1284,13 +1463,18 @@ window.initTerminalView = function() {
       const cleanId = currentRampaMotherId.split('-')[0];
       const selectedOp = rampaOperatorSelect ? rampaOperatorSelect.value : 'JORGE';
       const mName = rampaMotherLotModel ? rampaMotherLotModel.textContent : '1000X Chaparral';
+      const totalPzas = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
+      const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
+      const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
 
       // Cargar Sublote #1 como activo en la terminal
       activeScannedLot = {
         lotId: `${cleanId}-1`,
         motherLotId: cleanId,
         sublotNum: 1,
-        pieces: 15,
+        totalSublots: numSublots,
+        pieces: pzasPerSublot,
+        motherPieces: totalPzas,
         clase: '1000X MASTER TELAR',
         model: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
         modelName: mName,
@@ -1322,7 +1506,7 @@ window.initTerminalView = function() {
       closeRampaModal();
 
       window.UanifyUI.toast(
-        `Lote Madre ${cleanId} fraccionado en 4 sublotes de 15 piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de Prensas de Hormado.`,
+        `Lote Madre ${cleanId} (${totalPzas} pzas) fraccionado en ${numSublots} sublotes de ${pzasPerSublot} piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de Prensas de Hormado.`,
         'success',
         'Fraccionamiento en Rampa Completado'
       );

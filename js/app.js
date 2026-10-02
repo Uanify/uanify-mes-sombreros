@@ -191,24 +191,24 @@ const UanifyState = {
       name: 'Edmundo González',
       email: 'egonzalez@tombstone.mx',
       role: 'admin',
-      roleName: 'Administrador General',
+      roleName: 'Ingeniero / Administrador General',
       pin: '1111',
       payrollNumber: '101',
       permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
-      badge: 'Admin'
+      badge: 'Ingeniero (Admin)'
     },
     {
       id: 'ing-1',
       name: 'Ing. Carlos Ortiz',
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
-      roleName: 'Ingeniero de Procesos',
+      roleName: 'Ingeniero de Procesos y Calidad',
       pin: '2222',
       payrollNumber: '102',
       permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
       assignedDepartments: ['*'],
-      badge: 'Ingeniero'
+      badge: 'Ingeniero (Admin)'
     },
     {
       id: 'sup-1',
@@ -233,6 +233,18 @@ const UanifyState = {
       permissions: ['terminal', 'andon', 'inventory', 'operators'],
       assignedDepartments: ['D-01', 'D-02', 'D-03', 'D-04'],
       badge: 'Supervisor'
+    },
+    {
+      id: 'cal-1',
+      name: 'Inspectora de Calidad (Turno)',
+      email: 'calidad@tombstone.mx',
+      role: 'calidad',
+      roleName: 'Inspector de Calidad',
+      pin: '5555',
+      payrollNumber: '105',
+      permissions: ['terminal', 'andon', 'inventory'],
+      assignedDepartments: ['C-01', 'C-02', 'C-03', 'C-04'],
+      badge: 'Inspector Calidad'
     }
   ],
 

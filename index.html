@@ -74,8 +74,8 @@
           </div>
 
           <div style="margin-top:14px; text-align:center; font-size:11px; color:var(--text-muted); background:#F8FAFC; padding:8px 12px; border-radius:8px; border:1px solid #E2E8F0;">
-            <span style="font-weight:700; color:var(--color-brand); display:block; margin-bottom:2px;">PINs de Demostración:</span>
-            <span>Roberto: <strong>4321</strong> · Juan Manuel: <strong>1234</strong> · Carlos: <strong>2222</strong> · Edmundo: <strong>1111</strong></span>
+            <span style="font-weight:700; color:var(--color-brand); display:block; margin-bottom:2px;">PINs de Demostración por Rol:</span>
+            <span>Edmundo/Carlos (Ingeniero Admin): <strong>1111 / 2222</strong> · Juan/Roberto (Supervisor): <strong>1234 / 4321</strong> · Calidad: <strong>5555</strong></span>
           </div>
         </div>
 
@@ -673,13 +673,40 @@
                   </div>
                 </div>
 
+                <!-- Bloque de Calidad MVP: Inspector Aprueba/Rechaza & Ingeniero decide destino -->
+                <div id="qualityActionsContainer" style="display:none; margin-top:14px; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:10px; padding:14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span class="badge-status" style="background:#D97706; color:#FFFFFF; font-weight:800; font-size:11px;">PUNTO DE CONTROL DE CALIDAD</span>
+                      <strong style="font-size:13px; color:#92400E;" id="qualityCheckTitle">Inspección de Lote</strong>
+                    </div>
+                    <span style="font-size:11px; color:#B45309;">Inspector aprueba/rechaza · Ing. decide destino</span>
+                  </div>
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <button type="button" class="btn-primary btn-touch-lg" id="btnApproveQualityLot" style="background:#16A34A; border-color:#15803D; font-weight:700;">
+                      Aprobar Lote (Avanzar)
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnRejectQualityLot" style="background:#FEF2F2; color:#DC2626; border-color:#FCA5A5; font-weight:700;">
+                      Rechazar Lote (Decidir Destino)
+                    </button>
+                  </div>
+                  <div id="qualityDestinationPanel" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #FCD34D;">
+                    <label class="field-label" style="font-size:11.5px; color:#92400E; margin-bottom:6px;">Decisión de Destino (Ingeniero / Calidad):</label>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:12px; font-weight:700;">
+                        Enviar a Reproceso (Depto Sugerido)
+                      </button>
+                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:12px; font-weight:700;">
+                        Registrar como Merma Definitiva
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Acciones Rápidas Complementarias -->
                 <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="flex:1; border:1.5px solid var(--color-brand); font-weight:700;">
                     Modo Rampa (Fraccionar Lote Madre)
-                  </button>
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnReportScrap" style="color:var(--color-amber);">
-                    Reportar Merma
                   </button>
                   <button type="button" class="btn-secondary btn-touch-lg" id="btnReportStop" style="color:var(--color-red);">
                     Paro de Línea
@@ -4021,34 +4048,60 @@
           </div>
         </div>
 
-        <!-- Explicación Visual de la Conversión -->
-        <div style="margin-bottom:16px;">
-          <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary); margin-bottom:8px;">
-            Generación de las 4 Torres de Sublote (15 pzas c/u):
+        <!-- Configuración Dinámica de Fraccionamiento por Orden -->
+        <div style="background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">
+              Parámetros de Fraccionamiento (Configurable por Orden):
+            </div>
+            <span class="badge-subtle">Regla MVP: Tamaño de lote y torres dinámicas</span>
           </div>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
-            <!-- Sublote 1 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1.2fr; gap:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label" style="font-size:11.5px;">Piezas Totales Lote Madre:</label>
+              <input type="number" id="rampaInputTotalPieces" class="form-input" value="60" min="10" max="500" style="min-height:44px; font-weight:700; font-family:var(--font-mono);">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label" style="font-size:11.5px;">Piezas por Torre / Sublote:</label>
+              <input type="number" id="rampaInputPiecesPerSublot" class="form-input" value="15" min="5" max="100" style="min-height:44px; font-weight:700; font-family:var(--font-mono);">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label" style="font-size:11.5px;">Sublotes Resultantes:</label>
+              <div style="min-height:44px; display:flex; align-items:center; background:#FFFFFF; border:1px solid var(--border-medium); border-radius:8px; padding:0 12px; font-weight:800; color:var(--color-brand); font-family:var(--font-mono);" id="rampaCalculatedSublotsText">
+                4 Sublotes de 15 pzas
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explicación Visual y Contenedor Dinámico de Sublotes -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">
+              Torres de Sublote Generadas:
+            </div>
+            <span style="font-size:11px; color:var(--text-muted);" id="rampaSublotsCountPill">4 torres proyectadas</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:12px;" id="rampaSublotsGrid">
+            <!-- Inyectado dinámicamente según piezas configuradas -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #1</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub1Folio">49386-1</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
               <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "1"</div>
             </div>
-            <!-- Sublote 2 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #2</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub2Folio">49386-2</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
               <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "2"</div>
             </div>
-            <!-- Sublote 3 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #3</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub3Folio">49386-3</div>
               <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">15 sombreros</span>
               <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "3"</div>
             </div>
-            <!-- Sublote 4 -->
             <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
               <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #4</span>
               <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;" id="rampaSub4Folio">49386-4</div>
