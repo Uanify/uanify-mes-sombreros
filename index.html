@@ -682,6 +682,16 @@
                   </div>
                 </div>
 
+                <!-- Conclusión del Lote y Retorno al Escáner (Visible tras confirmar depósito) -->
+                <div id="lotDepositSuccessWrap" style="display:none; margin-top:14px;">
+                  <button type="button" class="btn-primary btn-touch-hero" id="btnFinishLotAndScanNext" style="width:100%; font-size:15px; background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); border-color:#0284C7; box-shadow:0 6px 16px rgba(2, 132, 199, 0.25); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Movimiento Completado · Escanear Siguiente Lote</span>
+                  </button>
+                </div>
+
                 <!-- Bloque de Calidad MVP: Inspector Aprueba/Rechaza & Ingeniero decide destino -->
                 <div id="qualityActionsContainer" style="display:none; margin-top:16px; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:12px; padding:16px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -1914,10 +1924,20 @@
         <!-- Pestaña: Parámetros Generales & Horario de Turno -->
         <div class="sub-tab-content" id="subtab-config-params">
           <div class="config-grid">
-            <!-- Parámetros Generales de Turno -->
+            <!-- Columna 1: Horario del Turno & Jornada de Operación -->
             <div class="config-card card-glass">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 style="margin-bottom:0;">Horario del Turno de Producción</h3>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <h3 style="margin-bottom:0; font-size:16px;">Horario del Turno & Jornada</h3>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información de horario de turno" style="width:18px; height:18px;">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup" style="max-width:300px;">
+                      Define el marco horario laboral de la planta para cómputo de tiempos productivos y ritmo de takt time.
+                    </div>
+                  </div>
+                </div>
                 <span class="badge-status" style="background:var(--color-green-bg); color:var(--color-green); font-size:10px; font-weight:700;">Dato Informativo</span>
               </div>
               
@@ -1925,18 +1945,24 @@
                 <div class="form-group">
                   <label class="field-label">
                     <span>Hora de Entrada:</span>
-                    <span class="info-tooltip-icon" title="Horario programado de apertura y arranque de operaciones">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Hora de entrada" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Horario programado de apertura y arranque de operaciones en nave industrial.</div>
+                    </div>
                   </label>
                   <input type="time" class="form-input" id="cfgShiftStart" value="07:00">
                 </div>
                 <div class="form-group">
                   <label class="field-label">
                     <span>Hora de Salida:</span>
-                    <span class="info-tooltip-icon" title="Horario programado de conclusión de la jornada de producción">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Hora de salida" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Horario programado de conclusión de la jornada productiva.</div>
+                    </div>
                   </label>
                   <input type="time" class="form-input" id="cfgShiftEnd" value="15:30">
                 </div>
@@ -1947,24 +1973,30 @@
                 <div class="form-group">
                   <label class="field-label">
                     <span>Inicio Receso / Comida:</span>
-                    <span class="info-tooltip-icon" title="Hora de inicio de la pausa para alimentos del personal">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Inicio receso" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Hora de inicio de la pausa para alimentos del personal de piso.</div>
+                    </div>
                   </label>
                   <input type="time" class="form-input" id="cfgShiftLunchStart" value="12:00">
                 </div>
                 <div class="form-group">
                   <label class="field-label">
                     <span>Fin Receso / Comida:</span>
-                    <span class="info-tooltip-icon" title="Hora de reanudación de actividades en piso de producción">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Fin receso" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Hora de reanudación obligatoria de actividades en departamentos.</div>
+                    </div>
                   </label>
                   <input type="time" class="form-input" id="cfgShiftLunchEnd" value="12:45">
                 </div>
               </div>
 
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:6px 12px; background:#F8FAFC; border-radius:8px; border:1px solid var(--border-subtle); font-size:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:8px 12px; background:#F8FAFC; border-radius:8px; border:1px solid var(--border-subtle); font-size:12.5px;">
                 <span style="color:var(--text-muted); display:inline-flex; align-items:center; gap:6px;">
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                   Duración Receso:
@@ -1974,22 +2006,28 @@
 
               <div class="form-group">
                 <label class="field-label">
-                  <span>Días de Operación:</span>
-                  <span class="info-tooltip-icon" title="Jornada habitual de trabajo programada para la planta">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
+                  <span>Días de Operación de Planta:</span>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Días de operación" style="width:16px; height:16px;">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup">Jornada habitual de trabajo programada para la manufactura.</div>
+                  </div>
                 </label>
                 <input type="text" class="form-input" id="cfgShiftDays" value="Lunes a Viernes" placeholder="Lunes a Viernes">
               </div>
 
-              <!-- Régimen Dinámico de Arranque de Turno (US-17) - No configurable, datos reales -->
+              <!-- Régimen Dinámico de Arranque de Turno (US-17) -->
               <div class="form-group" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                   <label class="field-label" style="font-weight:700; margin-bottom:0;">
                     <span>Modo de Arranque de Turno (US-17):</span>
-                    <span class="info-tooltip-icon" title="Régimen Dinámico permanente: el inicio de turno se sincroniza en tiempo real al registrar el primer escaneo QR en planta para medir con máxima fidelidad el ramp-up operativo">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Régimen dinámico" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Régimen Dinámico permanente: el inicio de turno se sincroniza en tiempo real al registrar el primer escaneo QR en planta para medir con máxima fidelidad el ramp-up operativo.</div>
+                    </div>
                   </label>
                   <span class="table-status-pill status-active" style="font-size:11px; padding:3px 9px;">
                     <span class="status-dot"></span> Dinámico
@@ -2005,93 +2043,95 @@
                   </button>
                 </div>
               </div>
+            </div>
+
+            <!-- Columna 2: Parámetros Operativos & Umbrales de Alerta Andon -->
+            <div class="config-card card-glass">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <h3 style="margin-bottom:0; font-size:16px;">Parámetros Operativos & Umbrales WIP</h3>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información de parámetros operativos" style="width:18px; height:18px;">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup" style="max-width:300px;">
+                      Límites de acumulación en almacenes intermedios (pulmones) y metas de producción sincronizadas con el Andon.
+                    </div>
+                  </div>
+                </div>
+                <span class="badge-status" style="background:var(--color-brand-light); color:var(--color-brand); font-size:10px; font-weight:700;">Capacidad & Andon</span>
+              </div>
 
               <div class="form-group">
                 <label class="field-label">
                   <span>Meta Semanal de Planta (Piezas):</span>
-                  <span class="info-tooltip-icon" title="Meta base semanal para los 14 departamentos de la planta (~850 pzas/día)">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Meta semanal" style="width:16px; height:16px;">
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <div class="info-tip-popup">Meta base semanal para los 14 departamentos de la planta (~850 piezas/día).</div>
+                  </div>
                 </label>
                 <input type="number" class="form-input" id="cfgShiftGoal" value="4250">
               </div>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Takt Time Estándar (Segundos por Pieza):</span>
-                  <span class="info-tooltip-icon" title="Ritmo de salida requerido para cumplir la meta semanal">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="number" class="form-input" id="cfgTaktTime" value="42">
-              </div>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Tamaño Estándar de Lote Madre:</span>
-                  <span class="info-tooltip-icon" title="Lote estándar fraccionable libremente por el operador según criterio y necesidad del puesto">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
-              </div>
-            </div>
 
-            <!-- Alertas Andon & Umbrales WIP -->
-            <div class="config-card card-glass">
-              <h3>Umbrales de Alerta Andon (WIP)</h3>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Alerta de Acumulación en Almacén Intermedio:</span>
-                  <span class="info-tooltip-icon" title="Piezas en espera para marcar almacén intermedio en advertencia (amarillo)">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="number" class="form-input" value="70" id="cfgWipAlert">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div class="form-group">
+                  <label class="field-label">
+                    <span>Takt Time Estándar (Seg/Pza):</span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Takt Time" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Ritmo de salida requerido por pieza para cumplir con la meta semanal programada.</div>
+                    </div>
+                  </label>
+                  <input type="number" class="form-input" id="cfgTaktTime" value="42">
+                </div>
+                <div class="form-group">
+                  <label class="field-label">
+                    <span>Tamaño Lote Madre (Pzas):</span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Tamaño Lote Madre" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Lote estándar inicial fraccionable en rampa en 4 sublotes de 15 piezas trazables.</div>
+                    </div>
+                  </label>
+                  <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
+                </div>
               </div>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Umbral de Paro Crítico (Rojo):</span>
-                  <span class="info-tooltip-icon" title="Piezas en espera para disparar paro crítico y señal Andon en piso">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="number" class="form-input" value="95" id="cfgWipCritical">
-              </div>
-            </div>
 
-            <!-- Integración COMPAC / CONTPAQi -->
-            <div class="config-card card-glass">
-              <h3>Enlace con CONTPAQi (COMPAC)</h3>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Servidor / Gateway Local:</span>
-                  <span class="info-tooltip-icon" title="Dirección IP y puerto del conector local de CONTPAQi">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="text" class="form-input" value="" placeholder="Por definir con Dirección y Sistemas">
-              </div>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Intervalo de Sincronización:</span>
-                  <span class="info-tooltip-icon" title="Frecuencia de sondeo y reconciliación de órdenes de producción">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <select class="custom-select">
-                  <option selected>Por definir en reunión</option>
-                  <option>Cada 5 minutos</option>
-                  <option>Cada 15 minutos</option>
-                  <option>Tiempo real (Webhooks)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Contacto Soporte COMPAC:</span>
-                  <span class="info-tooltip-icon" title="Referencia de soporte contratado para la interfaz ERP">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                  </span>
-                </label>
-                <input type="text" class="form-input" value="Por definir con Dirección" readonly style="background:#F1F5F9;">
+              <div style="margin-top:8px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
+                <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">
+                  Monitoreo de Pulmones Intermedios (WIP):
+                </div>
+
+                <div class="form-group">
+                  <label class="field-label">
+                    <span>Alerta de Acumulación en Pulmón (Amarillo):</span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Alerta WIP" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Piezas en espera para marcar el almacén intermedio en estado de advertencia (color amarillo en Andon).</div>
+                    </div>
+                  </label>
+                  <input type="number" class="form-input" value="70" id="cfgWipAlert">
+                </div>
+
+                <div class="form-group">
+                  <label class="field-label">
+                    <span>Umbral de Paro Crítico Andon (Rojo):</span>
+                    <div class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Paro Crítico Andon" style="width:16px; height:16px;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <div class="info-tip-popup">Piezas acumuladas en espera para disparar alerta crítica de paro y saturación en piso Andon.</div>
+                    </div>
+                  </label>
+                  <input type="number" class="form-input" value="95" id="cfgWipCritical">
+                </div>
               </div>
             </div>
           </div>
