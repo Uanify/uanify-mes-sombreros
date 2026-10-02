@@ -3,8 +3,8 @@
 ## Tombstone Hats MES · Control de Planta, Trazabilidad y Tablero Andon
 
 > **Matriz Integral de Aseguramiento de Calidad (QA), Casos Positivos, Negativos, Límites y Pruebas en Piso**  
-> **Versión del Sistema:** `v2.18.0` | **Fecha:** 25 de Septiembre de 2026  
-> **Cobertura:** 96 Casos de Prueba estructurados para las 45 Historias de Usuario (`docs/HISTORIAS_DE_USUARIO.md`) y Requerimientos Funcionales (`docs/REQUERIMIENTOS_DEL_SISTEMA.md`).  
+> **Versión del Sistema:** `v2.38.0` | **Fecha:** 2 de Octubre de 2026  
+> **Cobertura:** 98 Casos de Prueba estructurados para las Historias de Usuario (`docs/HISTORIAS_DE_USUARIO.md`) y Requerimientos Funcionales (`docs/REQUERIMIENTOS_DEL_SISTEMA.md`).  
 > **Planta Matriz:** San Francisco del Rincón, Guanajuato | **Cliente:** Tombstone Hats
 
 ---

@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.37.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.38.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,9 +18,9 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.37.0)
+## Arquitectura Funcional Tombstone Hats (v2.38.0)
 
-El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)**:
+El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)** y **Componente Propio Universal de Dropdowns Desplegables (`UanifySelect`)**:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
@@ -49,14 +49,18 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 
 - **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
-- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-73`), no funcionales y matriz de trazabilidad.
+- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-75`), no funcionales y matriz de trazabilidad.
 - **Documentación Ejecutiva:** Consulta la carpeta `docs/` con las guías de descubrimiento y banco de proyectos adaptadas a Tombstone Hats.
 
 ---
 
 ## Historial de Versiones (Changelog)
 
-### [2.33.0] - 2026-09-27
+### [2.38.0] - 2026-10-02
+- **Componente Universal Custom Select Dropdown UI (`UanifySelect`) & Limpieza de Tooltips/Modales:**
+  - **Sustitución Total del Menú Desplegable Nativo del Sistema Operativo:** Implementación del componente universal interactivo `UanifySelect` (`.uanify-select-wrapper`, `.uanify-select-trigger`, `.uanify-select-menu`) con trigger táctil de 48px, chevron animado, elevación flotante desacoplada y buscador integrado para listas con más de 7 opciones (rutas de modelo, departamentos y operadores).
+  - **Corrección de Persistencia en Tooltips:** Remoción de `:focus-within` y adición de auto-cierre en `mouseleave` y `blur`, evitando que las burbujas de ayuda queden pegadas al hacer clic.
+  - **Unificación de Cierre de Modales:** Retiro de botones redundantes de "Cerrar/Cancelar" en los pies de modales informativos, dejando el cierre estrictamente centralizado en la `×` superior derecha.
 - **Estandarización Rigurosa del Padrón de Operadores y Directorio de Mano de Obra (Reglas 0.33, 0.35, 0.37):**
   - **Erradicación de Botones Rectangulares de Texto Plano:** Sustitución definitiva de botones `[Editar]` y `[Baja]` por botones ergonómicos touch tablet-first de 32x32px (`.btn-table-action.btn-action-edit` y `.btn-table-action.btn-action-delete`) con paleta suave pastel (`#F1F5F9`/`#E2E8F0` para editar y `#FEF2F2`/`#FEE2E2` para baja) con iconos SVG claros y tooltips nativos `title="Editar Operador"` y `title="Dar de Baja Operador"`.
   - **Buscador Limpio con Icono SVG Aislado:** Envoltura del vector SVG en `<span class="search-icon">` para erradicar cualquier empalme visual o artefacto de texto sobre el input `#operatorSearchInput`.

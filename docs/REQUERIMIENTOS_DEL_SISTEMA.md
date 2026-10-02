@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.19.0` | **Versión:** `v2.19.0`  
-> **Fecha de Emisión / Última Actualización:** 26 de Septiembre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.38.0` | **Versión:** `v2.38.0`  
+> **Fecha de Emisión / Última Actualización:** 2 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -804,3 +804,7 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-70** | Estilo Industrial Tradición Moderno y Sub-pestañas Sticky    | Todos los Módulos            | `v2.18.0`           | OK En Producción |
 | **RF-71** | Consola SuperAdmin Uanify y Portabilidad de Sesión Limpia    | SuperAdmin / DevTools        | `v2.19.0`           | OK En Producción |
 | **RF-72** | Navegación por Chips en Sub-tabs y Prioridad a Nombres Dept  | Configuración / Terminal     | `v2.19.0`           | OK En Producción |
+| **RF-73** | Sistema Universal de Tooltips e Higiene Visual (`.info-tip`)  | Interfaz / Todos los Módulos | `v2.37.0`           | OK En Producción |
+| **RF-74** | Cierre Centralizado Estricto de Modales en `×` Superior      | Modales / Interfaz           | `v2.37.2`           | OK En Producción |
+| **RF-75** | Componente Universal Dropdown UI (`UanifySelect`)            | Formularios / Interfaz       | `v2.38.0`           | OK En Producción |
+

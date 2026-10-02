@@ -3,7 +3,7 @@
 ## Tombstone Hats MES · Control de Planta, Trazabilidad y Tablero Andon
 
 > **Documento de Especificación Ágil de Historias de Usuario**  
-> **Versión del Sistema:** `v2.18.0` | **Fecha:** 25 de Septiembre de 2026  
+> **Versión del Sistema:** `v2.38.0` | **Fecha:** 2 de Octubre de 2026  
 > **Planta Matriz:** San Francisco del Rincón, Guanajuato | **Cliente:** Tombstone Hats  
 > **Estatus:** Base completa para revisión y validación de alcance con Dirección e Ingeniería.
 

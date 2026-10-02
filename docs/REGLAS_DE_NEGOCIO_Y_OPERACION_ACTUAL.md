@@ -7,7 +7,7 @@
 > **Interlocutores Validados:** Edmundo González ("Mundo", Director/Administrador General) e Ing. Carlos Ortiz (Jefe de Producción e Ingeniería)  
 > **Contacto Oficial:** `making.tombstone@gmail.com`  
 > **Fuentes de Sustento:** Grabaciones directas de audio en piso de producción, levantamiento técnico presencial, fotografías de pizarrones y maquinaria, y validaciones directas de arquitectura.  
-> **Versión de Referencia:** `v2.18.0` | **Fecha de Actualización:** 26 de Septiembre de 2026  
+> **Versión de Referencia:** `v2.38.0` | **Fecha de Actualización:** 2 de Octubre de 2026  
 > **Directiva de Integridad:** Este documento contiene exclusivamente información confirmada y validada. Cualquier regla en proceso de definición se delimita explícitamente en su sección correspondiente.
 
 ---
