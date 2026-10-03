@@ -206,7 +206,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.41.1</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.40.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -473,6 +473,63 @@
         <!-- Pestaña 1: Lector QR Heroico & Recepción/Depósito en Almacén Siguiente -->
         <div class="sub-tab-content active" id="subtab-terminal-scanner">
 
+          <!-- Selector de Estación de Planta (6 Estaciones Confirmadas por Carlos Ortiz) -->
+          <div class="terminal-station-selector-bar" style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:12px; padding:12px 18px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">🏭</span>
+              <div>
+                <span style="font-size:11px; text-transform:uppercase; font-weight:800; color:var(--text-muted); display:block;">Estación de Planta Activa:</span>
+                <strong style="font-size:13.5px; color:var(--color-brand);" id="activePlantStationLabel">Estación 1: D-02 Prensas (Control de Hormas & Paros)</strong>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label for="plantStationSelect" style="font-size:12px; font-weight:700; color:var(--text-secondary);">Cambiar Estación:</label>
+              <select id="plantStationSelect" class="custom-select" style="min-width:280px; font-weight:700;">
+                <option value="station-1" selected>Estación 1: Prensas (Control Hormas & Paros)</option>
+                <option value="station-2">Estación 2: Calidad Refuerzo/Pintura (Filtro 1)</option>
+                <option value="station-3">Estación 3: Patio Endopado / Recortes</option>
+                <option value="station-4">Estación 4: Calidad Hidráulicas (Filtro 2)</option>
+                <option value="station-5">Estación 5: Toquilla y Adorno (Buffer Tafiletes)</option>
+                <option value="station-6">Estación 6: Calidad Final y Embarque (Filtro 3 & Despacho)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Panel Contextual de Estación 1: Prensas (Bitácora de Paros y Horma Activa RF-79) -->
+          <div id="stationPrensasContextPanel" class="card-glass" style="margin-bottom:18px; padding:14px 18px; border-left:4px solid var(--color-brand); border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:13.5px; font-weight:800; color:var(--color-brand);">🛑 Bitácora de Paros de Prensa (Registro Inicio a Fin):</span>
+                <span class="badge-subtle" style="font-size:11.5px; font-weight:700;" id="prensasActiveMoldLabel">Prensa #04 · Horma Denver 4 1/4" Activa</span>
+              </div>
+              <span id="prensasStatusBadge" class="badge-status" style="background:#16A34A; color:#FFFFFF; font-weight:800; font-size:11px;">Operando Normal</span>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;" id="prensasStopActionsGroup">
+              <button type="button" class="btn-secondary btn-touch-lg btn-prensas-stop" data-stop="Cambio de Horma" style="font-weight:700; font-size:12px; border-color:#CBD5E1;">⚙️ Cambio de Horma</button>
+              <button type="button" class="btn-secondary btn-touch-lg btn-prensas-stop" data-stop="Falla Mecánica" style="font-weight:700; font-size:12px; border-color:#FCA5A5; color:#DC2626;">🔧 Falla Mecánica</button>
+              <button type="button" class="btn-secondary btn-touch-lg btn-prensas-stop" data-stop="Falta de Vapor en Caldera" style="font-weight:700; font-size:12px; border-color:#FDE047; color:#B45309;">💨 Falta de Vapor Caldera</button>
+              <button type="button" class="btn-secondary btn-touch-lg btn-prensas-stop" data-stop="Falta de Material" style="font-weight:700; font-size:12px; border-color:#CBD5E1;">📦 Falta de Material</button>
+            </div>
+          </div>
+
+          <!-- Panel Contextual de Estación 5: Adorno (Semáforo de Buffer Subensambles RF-81) -->
+          <div id="stationAdornoContextPanel" class="card-glass" style="display:none; margin-bottom:18px; padding:14px 18px; border-left:4px solid #16A34A; border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:13.5px; font-weight:800; color:#15803D;">🟢 Semáforo de Subensambles para Adorno:</span>
+                <span class="badge-subtle" style="font-size:11px;">Alimentación desde Tafiletes (9 op) y Toquillas (7 op)</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <span style="background:#DCFCE7; color:#166534; font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:1px solid #BBF7D0;">
+                  Tafiletes Talla 57: 150 pzas en buffer (Listo)
+                </span>
+                <span style="background:#DCFCE7; color:#166534; font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:1px solid #BBF7D0;">
+                  Toquillas Denver: 80 pzas confeccionadas (Listo)
+                </span>
+              </div>
+            </div>
+          </div>
+
           <!-- ESTADO 1: ESCÁNER INICIAL O EN ESPERA (Pantalla limpia previa a la lectura del lote) -->
           <div id="terminalScannerEmptyState" class="card-glass" style="padding:40px 24px; text-align:center; max-width:800px; margin:0 auto 20px auto; border:2px dashed var(--border-medium); border-radius:16px;">
             <div style="width:72px; height:72px; margin:0 auto 16px auto; border-radius:18px; background:rgba(139, 94, 60, 0.08); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
@@ -714,6 +771,9 @@
                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
                       <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:12.5px; font-weight:700;">
                         Enviar a Reproceso (Depto Sugerido)
+                      </button>
+                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendSecond" style="flex:1; background:#FFFBEB; color:#B45309; border-color:#FDE68A; font-size:12.5px; font-weight:700;">
+                        Separar Piezas de Segunda (Venta Directa)
                       </button>
                       <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:12.5px; font-weight:700;">
                         Registrar como Merma Definitiva
@@ -1350,7 +1410,11 @@
             <h1 class="view-title">Padrón de Operadores de Planta · Mano de Obra</h1>
             <p class="view-subtitle">Directorio oficial de personal de piso, máquinas asignadas, piezas procesadas en el turno único y estatus operativo</p>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="btn-secondary" id="btnExportDestajoExcel" style="font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Exportar Destajo (Excel / CSV)</span>
+            </button>
             <button class="btn-primary" onclick="window.openCreateOperatorModal()">+ Registrar Operador</button>
           </div>
         </div>
@@ -1359,8 +1423,8 @@
         <div class="operators-stats-banner">
           <div class="op-stat-card">
             <span class="op-stat-lbl">Total Operadores en Padrón</span>
-            <div class="op-stat-val" id="opStatTotal">48</div>
-            <small style="color:var(--text-muted); font-size:11px;">Mano de obra registrada</small>
+            <div class="op-stat-val" id="opStatTotal">108</div>
+            <small style="color:var(--text-muted); font-size:11px;">Mano de obra registrada en 14 áreas</small>
           </div>
           <div class="op-stat-card">
             <span class="op-stat-lbl">Operadores en Turno Hoy</span>

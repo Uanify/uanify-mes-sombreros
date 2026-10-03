@@ -1024,6 +1024,33 @@ window.initTerminalView = function() {
     });
   }
 
+  // Manejador de Registro de Piezas de Segunda (RF-80)
+  const btnQualitySendSecond = document.getElementById('btnQualitySendSecond');
+  if (btnQualitySendSecond) {
+    btnQualitySendSecond.addEventListener('click', () => {
+      if (!activeScannedLot) return;
+      const segundasCount = 2; // Piezas segregadas por detalle menor
+      const causa = 'Poro o deshilachado leve en telar';
+      
+      UanifyState.secondGradeTotal = (UanifyState.secondGradeTotal || 0) + segundasCount;
+      if (terminalSecond) terminalSecond.textContent = `${UanifyState.secondGradeTotal} pzas`;
+      
+      if (activeScannedLot.pieces && activeScannedLot.pieces > segundasCount) {
+        activeScannedLot.pieces -= segundasCount;
+      }
+      
+      if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+      renderActiveScannedLotCard(activeScannedLot);
+      renderPlantDepartmentsGrid();
+      
+      window.UanifyUI.toast(
+        `Se separaron ${segundasCount} piezas como SEGUNDA (Causa: ${causa}). Ingresadas al inventario virtual para venta directa. El lote continúa su avance con ${activeScannedLot.pieces} piezas conformes.`,
+        'warning',
+        'Piezas de Segunda Registradas'
+      );
+    });
+  }
+
   // ── 6. DEPÓSITO CON VALIDACIÓN DE PERMISOS DE SUPERVISOR (RF-57 & RF-58) ────
   if (btnDepositToNextBuffer) {
     btnDepositToNextBuffer.addEventListener('click', () => {
@@ -2030,4 +2057,85 @@ window.initTerminalView = function() {
     }
     renderPlantDepartmentsGrid();
   });
+
+  // ── 15. SELECTOR DE 6 ESTACIONES DE PLANTA & PANELES CONTEXTUALES (RF-78, RF-79, RF-81) ──
+  const plantStationSelect = document.getElementById('plantStationSelect');
+  const activePlantStationLabel = document.getElementById('activePlantStationLabel');
+  const stationPrensasContextPanel = document.getElementById('stationPrensasContextPanel');
+  const stationAdornoContextPanel = document.getElementById('stationAdornoContextPanel');
+
+  if (plantStationSelect) {
+    plantStationSelect.addEventListener('change', () => {
+      const val = plantStationSelect.value;
+      if (stationPrensasContextPanel) stationPrensasContextPanel.style.display = 'none';
+      if (stationAdornoContextPanel) stationAdornoContextPanel.style.display = 'none';
+
+      if (val === 'station-1') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 1: D-02 Prensas (Control de Hormas & Paros)';
+        if (stationPrensasContextPanel) stationPrensasContextPanel.style.display = 'block';
+      } else if (val === 'station-2') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 2: C-01 Calidad Refuerzo/Pintura (Filtro 1)';
+      } else if (val === 'station-3') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 3: D-03 Patio Endopado / Recortes';
+      } else if (val === 'station-4') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 4: C-02 Calidad Hidráulicas (Filtro 2)';
+      } else if (val === 'station-5') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 5: D-10 Toquilla y Adorno (Buffer Tafiletes)';
+        if (stationAdornoContextPanel) stationAdornoContextPanel.style.display = 'block';
+      } else if (val === 'station-6') {
+        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 6: C-03/D-11 Calidad Final y Embarque (Filtro 3 & Despacho)';
+      }
+    });
+  }
+
+  // Bitácora de Paros de Prensa (RF-79)
+  const btnPrensasStops = document.querySelectorAll('.btn-prensas-stop');
+  const prensasStatusBadge = document.getElementById('prensasStatusBadge');
+  btnPrensasStops.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const motivo = btn.getAttribute('data-stop');
+      if (prensasStatusBadge) {
+        prensasStatusBadge.textContent = `En Paro: ${motivo}`;
+        prensasStatusBadge.style.background = '#DC2626';
+      }
+      window.UanifyUI.toast(
+        `Paro de máquina registrado en Prensa #04: ${motivo}. Cronómetro de tiempo muerto activado en Andon de planta.`,
+        'warning',
+        'Paro de Prensa Registrado'
+      );
+    });
+  });
+
+  // Exportación Nativa de Pre-reporte Semanal de Destajo a Excel/CSV (RF-82)
+  const btnExportDestajoExcel = document.getElementById('btnExportDestajoExcel');
+  if (btnExportDestajoExcel) {
+    btnExportDestajoExcel.addEventListener('click', () => {
+      const csvRows = [
+        ['No. Nomina', 'Operador', 'Departamento', 'Maquina', 'Tipo Pago', 'Tarifa ($/pza)', 'Piezas Producidas', 'Total Destajo ($ MXN)', 'Estatus'],
+        ['OP-0101', 'Juan Manuel Torres', 'D-02 Prensas', 'Prensa Hidraulica #04', 'Destajo', '18.50', '85', '$1,572.50', 'Activo'],
+        ['OP-0102', 'Carlos Hernandez', 'D-02 Prensas', 'Prensa Vapor #02', 'Destajo', '18.50', '92', '$1,702.00', 'Activo'],
+        ['OP-0105', 'Martin Rocha', 'D-05 Alambrado', 'Engargoladora #01', 'Destajo', '14.20', '88', '$1,249.60', 'Activo'],
+        ['OP-0108', 'Ana Laura Gomez', 'S-01 Tafiletes', 'Mesa Tafilete #03', 'Destajo', '12.00', '150', '$1,800.00', 'Activo'],
+        ['OP-0110', 'Rosa Maria Santos', 'S-02 Toquillas', 'Taller Toquilla #01', 'Destajo', '11.50', '110', '$1,265.00', 'Activo'],
+        ['OP-0114', 'Jorge Ortiz', 'D-10 Adorno', 'Mesa Adorno #02', 'Destajo', '22.00', '78', '$1,716.00', 'Activo'],
+        ['OP-0118', 'Pedro Infante G.', 'D-07 Prensas Hidraulicas', 'Hidraulica #01', 'Destajo', '16.50', '80', '$1,320.00', 'Activo']
+      ];
+      
+      const csvContent = '\uFEFF' + csvRows.map(e => e.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Pre_Reporte_Destajo_Semana_Tombstone_MES.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.UanifyUI.toast(
+        'Archivo Excel/CSV descargado con éxito: Pre-reporte semanal de nómina a destajo para corte de los viernes.',
+        'success',
+        'Exportación Concluida'
+      );
+    });
+  }
 };
