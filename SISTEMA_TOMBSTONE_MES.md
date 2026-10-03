@@ -1,12 +1,14 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.40.0` | **Fecha de Actualización:** 2 de Octubre de 2026  
+> **Versión Actual:** `v2.39.0` | **Fecha de Actualización:** 3 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
 ### Suite de Documentación Viva del Proyecto:
 
+- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
+- **Cuestionario y Acuerdos de Operación con Ingeniería (Ing. Carlos Ortiz):** [docs/cuestionario_operativo_ingenieria_planta.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/cuestionario_operativo_ingenieria_planta.md)
 - **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
 - **Requerimientos del Sistema (PRD / SRS):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
 - **Diagramas de Flujos Principales por Actor / Usuario:** [docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md)
@@ -448,7 +450,11 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Botones de Fila de Icono Cuadrados y Paleta Suave:** Integración homogénea de botones de 32x32px para editar (`#F1F5F9`/`#E2E8F0`) y eliminar (`#FEF2F2`/`#FEE2E2`) con iconos SVG nítidos y tooltips descriptivos.
   - **Consistencia Dual de Operadores:** Normalización idéntica tanto en el módulo de Configuración (`subtab-config-operators`) como en el Directorio General de Mano de Obra (`view-operators`).
   - **Sincronización Universal de Versión:** Actualización transversal del sistema a `v2.25.0` en login, sidebar, package.json y documentación viva.
-- **`v2.24.0` (2026-09-26):**
+- **`v2.39.0` (2026-10-03):**
+  - **Formalización de Arquitectura Operativa MVP y Validación Técnica con Carlos Ortiz:** Consolidación de acuerdos definitivos de planta: padrón de 108 operadores fijos en 14 áreas, fraccionamiento de tarjetas en rampa con archivo de tarjeta madre, impresión de tarjetas viajeras en hojas carta estándar en Ingeniería y logística de traslado por recolectores dedicados.
+  - **Gestión Integral de Piezas de Segunda y Reprocesos:** Definición del flujo de avance continuo del lote con separación de segundas, registro obligatorio de causa raíz, inventario virtual de segundas y canalización directa a venta. Enrutamiento dinámico de reprocesos al departamento responsable de la no conformidad.
+  - **Semáforo de Buffer de Subensambles y Ficha Técnica con Foto:** Coordinación de tafiletes (9 op) y toquillas (7 op) con indicador semafórico en terminal de Adorno (11 op) e inclusión de fotografía del modelo terminado autorizado para confronta visual en calidad.
+  - **Bitácora de Paros y Destajo Semanal:** Registro de paros de inicio a fin en Prensas con motivos rápidos, mapeo de horma ↔ # de máquina y pre-reporte semanal de corte de destajo los viernes con exportación nativa a Excel.
 - **`v2.38.0` (2026-10-02):**
   - **Componente Universal Custom Select Dropdown UI (`UanifySelect`):** Erradicación total de los menús desplegables nativos del sistema operativo en favor de un componente personalizado con trigger táctil estético, chevron rotatorio suave, menú flotante desacoplado en el DOM con elevación (`box-shadow`), soporte de `optgroup`, badges de selección y buscador reactivo integrado para selectores de más de 7 opciones (ej. modelos de sombrero, departamentos, operadores).
   - **Blindaje en Regla 0.37 (`AGENTS.md`):** Formalización arquitectónica obligatoria para que todo selector actual y futuro adopte este patrón visual interactivo.

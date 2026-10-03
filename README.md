@@ -10,6 +10,8 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 - **Web Oficial del Cliente:** [Tombstone Hats](https://tombstone.mx/)
 - **Demostración en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Organización:** [Uanify](https://github.com/Uanify)
+- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
+- **Cuestionario y Acuerdos de Operación con Carlos Ortiz:** [docs/cuestionario_operativo_ingenieria_planta.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/cuestionario_operativo_ingenieria_planta.md)
 - **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
 - **Requerimientos del Sistema (PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
 - **Diagramas de Flujos Principales por Actor / Usuario:** [docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md)
@@ -66,6 +68,13 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
   - **Eliminación de Campos Redundantes:** Retirado el input de texto manual de QR y textos de simulación de pruebas que sobrecargaban la interfaz.
   - **Segregación de Métricas & Recuentos de Turno:** Las cifras de piezas producidas, mermas registradas y piezas de segunda calidad se trasladaron a una subpestaña dedicada (`subtab-terminal-metrics`) para no distraer ni obstaculizar la agilidad del escaneo en piso.
   - **Botón de Retorno Operativo:** Agregado el botón `btnScanAnotherLot` para regresar al estado limpio del escáner en cualquier momento tras completar la inspección de un lote.
+
+### [2.39.0] - 2026-10-03
+- **Formalización de Arquitectura Operativa MVP y Validación Técnica de Planta:**
+  - Consolidación del padrón oficial de 108 operadores fijos en 14 áreas, logística de recolectores de pasillo y fraccionamiento de tarjetas viajeras en Rampa con archivo de tarjeta madre.
+  - Reglas de negocio confirmadas para piezas de segunda (avance continuo del lote, registro obligatorio de causas raíz e inventario virtual para venta directa) y enrutamiento dinámico de reprocesos por tipo de falla.
+  - Sincronización del buffer de subensambles (Tafiletes y Toquillas) mediante semáforos de disponibilidad para Adorno e inclusión de fotografía del modelo terminado en ficha técnica.
+  - Protocolo de registro de paros de inicio a fin en Prensas con mapeo de hormas por número de máquina y pre-reporte semanal de corte de destajo los viernes con exportación nativa a Excel.
 
 ### [2.38.0] - 2026-10-02
 - **Componente Universal Custom Select Dropdown UI (`UanifySelect`) & Limpieza de Tooltips/Modales:**

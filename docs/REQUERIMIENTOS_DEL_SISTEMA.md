@@ -808,5 +808,11 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-74** | Cierre Centralizado Estricto de Modales en `×` Superior      | Modales / Interfaz           | `v2.37.2`           | OK En Producción |
 | **RF-75** | Componente Universal Dropdown UI (`UanifySelect`)            | Formularios / Interfaz       | `v2.38.0`           | OK En Producción |
 | **RF-76** | Escáner QR Aislado Fullscreen & Despliegue Progresivo        | Terminal de Supervisor       | `v2.39.0`           | OK En Producción |
-| **RF-77** | Auditoría UI/UX Integral, Selects Dinámicos & Grid Tafiletes | Interfaz / Todos los Módulos | `v2.40.0`           | OK En Producción |
+| **RF-77** | Auditoría UI/UX Integral, Selects Dinámicos & Grid Tafiletes | Interfaz / Todos los Módulos | `v2.39.0`           | OK En Producción |
+| **RF-78** | Matriz de 108 Puestos Fijos y Ausentismo (No Cubrir Máquina) | Padrón / Configuración       | `v2.39.0`           | OK En Producción |
+| **RF-79** | Bitácora de Paros Inicio a Fin y Mapeo de Horma en Prensas   | Prensas / Andon              | `v2.39.0`           | OK En Producción |
+| **RF-80** | Gestión de Piezas de Segunda (Causa, Inventario y Avance)    | Calidad / Almacenes          | `v2.39.0`           | OK En Producción |
+| **RF-81** | Semáforo de Buffer de Subensambles (Tafilete y Toquilla)     | Subensambles / Adorno        | `v2.39.0`           | OK En Producción |
+| **RF-82** | Pre-reporte Semanal de Destajo con Exportación a Excel        | Nómina / Destajo             | `v2.39.0`           | OK En Producción |
+
 
