@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.39.0` | **Fecha de Actualización:** 3 de Octubre de 2026  
+> **Versión Actual:** `v2.40.0` | **Fecha de Actualización:** 3 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -450,6 +450,8 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Botones de Fila de Icono Cuadrados y Paleta Suave:** Integración homogénea de botones de 32x32px para editar (`#F1F5F9`/`#E2E8F0`) y eliminar (`#FEF2F2`/`#FEE2E2`) con iconos SVG nítidos y tooltips descriptivos.
   - **Consistencia Dual de Operadores:** Normalización idéntica tanto en el módulo de Configuración (`subtab-config-operators`) como en el Directorio General de Mano de Obra (`view-operators`).
   - **Sincronización Universal de Versión:** Actualización transversal del sistema a `v2.25.0` en login, sidebar, package.json y documentación viva.
+- **`v2.40.0` (2026-10-03):**
+  - **Arquitectura Oficial de Integración CONTPAQi SQL Server & Compras ($0 USD Licencias):** Formalización técnica con Ing. Lupita López (Soporte CONTPAQi): descarte del SDK en favor de Stored Procedures y Vistas nativas en Microsoft SQL Server sin costo de usuarios concurrentes. Soporte a estructura dual de base de datos (BD Interna para órdenes de compra y saldos pendientes vs BD Fiscal para XML y recepción física). Inserción de producto terminado con referencia de folio MES para facturación y catálogo estructurado por familias (`PIEL001`, `TEL001`) trazable a la factura del proveedor.
 - **`v2.39.0` (2026-10-03):**
   - **Formalización de Arquitectura Operativa MVP y Validación Técnica con Carlos Ortiz:** Consolidación de acuerdos definitivos de planta: padrón de 108 operadores fijos en 14 áreas, fraccionamiento de tarjetas en rampa con archivo de tarjeta madre, impresión de tarjetas viajeras en hojas carta estándar en Ingeniería y logística de traslado por recolectores dedicados.
   - **Gestión Integral de Piezas de Segunda y Reprocesos:** Definición del flujo de avance continuo del lote con separación de segundas, registro obligatorio de causa raíz, inventario virtual de segundas y canalización directa a venta. Enrutamiento dinámico de reprocesos al departamento responsable de la no conformidad.

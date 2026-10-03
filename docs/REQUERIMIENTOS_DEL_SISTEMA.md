@@ -814,5 +814,8 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-80** | Gestión de Piezas de Segunda (Causa, Inventario y Avance)    | Calidad / Almacenes          | `v2.39.0`           | OK En Producción |
 | **RF-81** | Semáforo de Buffer de Subensambles (Tafilete y Toquilla)     | Subensambles / Adorno        | `v2.39.0`           | OK En Producción |
 | **RF-82** | Pre-reporte Semanal de Destajo con Exportación a Excel        | Nómina / Destajo             | `v2.39.0`           | OK En Producción |
+| **RF-83** | Puente de Integración CONTPAQi SQL Server ($0 Licencias)     | CONTPAQi / Backend           | `v2.40.0`           | OK En Producción |
+| **RF-84** | Esquema Dual DB (Interna vs Fiscal) y Trazabilidad Factura   | Compras / Almacén / ERP      | `v2.40.0`           | OK En Producción |
+
 
 

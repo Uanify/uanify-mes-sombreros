@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.39.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.40.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -68,6 +68,13 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
   - **Eliminación de Campos Redundantes:** Retirado el input de texto manual de QR y textos de simulación de pruebas que sobrecargaban la interfaz.
   - **Segregación de Métricas & Recuentos de Turno:** Las cifras de piezas producidas, mermas registradas y piezas de segunda calidad se trasladaron a una subpestaña dedicada (`subtab-terminal-metrics`) para no distraer ni obstaculizar la agilidad del escaneo en piso.
   - **Botón de Retorno Operativo:** Agregado el botón `btnScanAnotherLot` para regresar al estado limpio del escáner en cualquier momento tras completar la inspección de un lote.
+
+### [2.40.0] - 2026-10-03
+- **Arquitectura Oficial de Integración CONTPAQi SQL Server & Compras ($0 USD Licencias):**
+  - Validación con la Ing. Lupita López (Soporte CONTPAQi): integración limpia vía Stored Procedures y Vistas directamente en Microsoft SQL Server sin consumir licencias de usuarios concurrentes de CONTPAQi Comercial ni depender del SDK.
+  - Soporte de estructura dual de bases de datos: BD Interna (Órdenes de Compra y seguimiento a entregas parciales con vales internos) y BD Fiscal (Recepción física y validación de XML de factura).
+  - Trazabilidad desacoplada de lotes: inserción del producto terminado con el folio de lote del MES embebido en la referencia de la partida para facturación directa en CONTPAQi.
+  - Catálogo de materiales por familias estructuradas (`PIEL001`, `TEL001`) con trazabilidad de origen ligada al folio de factura del proveedor.
 
 ### [2.39.0] - 2026-10-03
 - **Formalización de Arquitectura Operativa MVP y Validación Técnica de Planta:**

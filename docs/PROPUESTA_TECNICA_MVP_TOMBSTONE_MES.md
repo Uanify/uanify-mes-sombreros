@@ -132,6 +132,54 @@ graph LR
 
 ---
 
-## 8. Sincronización y Mantenimiento de Documentación
+## 8. Extensión 1: Módulo Puente CONTPAQi Comercial 11 (Arquitectura SQL Server Validada)
+
+Tras la reunión de validación técnica con la **Ing. Lupita López (Soporte CONTPAQi)** y **Edmundo Quezada**, se definieron los lineamientos definitivos para la conexión:
+
+```mermaid
+graph TD
+    subgraph MES_TOMBSTONE["Tombstone MES (Piso de Producción)"]
+        VALE[Vale de Salida / Lote Concluido\nRef: Folio Lote MES]
+        MP_CONS[Consumo Real de Materia Prima\nLienzo, Tafilete, Herrajes]
+    end
+
+    subgraph SQL_BRIDGE["Microservicio Puente SQL Server (Local / Red Planta)"]
+        SP_IN[Stored Procedure:\nIngreso Producto Terminado]
+        SP_OUT[Stored Procedure:\nDescarga de Materia Prima]
+        V_CAT[Vistas SQL de Catálogos:\nFamilias PIEL001, TEL001, SAT]
+    end
+
+    subgraph CONTPAQI_DBS["CONTPAQi Comercial 11.3.1 (Microsoft SQL Server)"]
+        DB_INT[(BD Empresa Interna:\nÓrdenes de Compra y Saldos)]
+        DB_FISC[(BD Empresa Fiscal:\nFacturación y XML Recepción)]
+    end
+
+    VALE -->|Dispara| SP_IN
+    MP_CONS -->|Descarga| SP_OUT
+    SP_IN --> DB_FISC
+    SP_IN --> DB_INT
+    SP_OUT --> DB_INT
+    V_CAT -.->|Sincroniza Códigos| MES_TOMBSTONE
+```
+
+### Acuerdos Técnicos y Ventajas Estratégicas:
+1. **Acceso Nativo Vía Microsoft SQL Server ($0 Costo en Licencias Adicionales):**
+   - No se utiliza el SDK de CONTPAQi (evitando restricciones, bloqueos e inestabilidad).
+   - Se trabaja mediante **Vistas y Procedimientos Almacenados (Stored Procedures)** directamente sobre el motor de base de datos SQL Server.
+   - **Cero costo de licenciamiento:** La conexión a nivel SQL no consume usuarios concurrentes de la licencia de CONTPAQi Comercial.
+2. **Esquema de Dos Bases de Datos (Razón Social Interna vs. Fiscal):**
+   - **Base de Datos Interna:** Control de órdenes de compra abiertas y seguimiento a parcialidades del proveedor mediante vales internos.
+   - **Base de Datos Fiscal:** Registro exacto de mercancía recibida físicamente con asociación directa a los XML de los proveedores.
+3. **Manejo de Lotes Desacoplado:**
+   - Como CONTPAQi no opera con trazabilidad de lotes nativa, el MES inyecta el producto terminado insertando el **Folio del Lote del MES en el campo de referencia/observaciones de la partida**, permitiendo que Administración facture de forma habitual con plena trazabilidad hacia atrás.
+4. **Catálogo de Materiales Estructurado:**
+   - Clasificación por Familias + Consecutivo único (ej. `PIEL001` = Sintético Poring, `TEL001` = Fieltro).
+   - Atributos sincronizados: *Código, Nombre, Categoría, Almacén, Clave SAT, Unidad de Medida y Costo Unitario*.
+   - Trazabilidad de origen ligada al **Folio de Factura del Proveedor**.
+
+---
+
+## 9. Sincronización y Mantenimiento de Documentación
 
 Conforme a las directrices de Uanify, este documento se mantiene sincronizado de forma continua entre el repositorio de control de versiones y la suite de Google Workspace de la empresa, garantizando una fuente única de verdad para Dirección, Ingeniería y el equipo de desarrollo.
+
