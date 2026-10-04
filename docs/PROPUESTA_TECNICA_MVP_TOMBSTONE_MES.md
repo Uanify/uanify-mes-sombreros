@@ -2,8 +2,8 @@
 **Estrategia de Digitalización y Control de Manufactura · Uanify**  
 *Documento de Especificación de Alcance, Procesos de Piso y Modelo Operativo.*
 
-> **Versión Oficial:** `v2.39.0`  
-> **Fecha:** 3 de Octubre de 2026  
+> **Versión Oficial:** `v2.41.0`  
+> **Fecha:** 4 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato)  
 > **Dirección y Validación:** Edmundo González / Ing. Carlos Ortiz  
 > **Líder de Proyecto:** Andrés Villanueva (Uanify)
@@ -179,7 +179,70 @@ graph TD
 
 ---
 
-## 9. Sincronización y Mantenimiento de Documentación
+## 9. Metodología de Entrega y Cronograma (5 a 7 Semanas)
 
-Conforme a las directrices de Uanify, este documento se mantiene sincronizado de forma continua entre el repositorio de control de versiones y la suite de Google Workspace de la empresa, garantizando una fuente única de verdad para Dirección, Ingeniería y el equipo de desarrollo.
+1. **Plazo Oficial de Implementación del MVP:**
+   - Se establece un cronograma ágil de **5 a 7 semanas** para la puesta en marcha en piso (sustituyendo el planteamiento teórico de 16 semanas para asegurar tracción rápida).
+2. **Ciclos de Entrega y Demos Funcionales:**
+   - **Sprints de 2 semanas:** Demostraciones quincenales en piso con usuarios reales (supervisores e inspectores) para retroalimentación continua.
+3. **Product Owner y Contraparte Técnica:**
+   - **Ing. Carlos Ortiz** (Ingeniería de Procesos) funge como contraparte técnica y Product Owner de planta por parte de Tombstone Hats.
+
+---
+
+## 10. Arquitectura Tecnológica e Infraestructura
+
+1. **Tipo de Aplicación:**
+   - **PWA (Progressive Web App) Tablet-First:** Permite instalación táctil como aplicación de pantalla completa en tablets Android sin fricción de tiendas de apps ni costos de despliegue.
+2. **Infraestructura y Base de Datos ($0 USD Inicial):**
+   - Servidor web/API en la nube y base de datos relacional PostgreSQL con tier gratuito, complementado con el microservicio puente en red local LAN para conectar la base de datos Microsoft SQL Server de CONTPAQi.
+3. **Resiliencia Operativa Offline-First:**
+   - Almacenamiento local en tablets (`IndexedDB` y `localStorage`) para que ningún supervisor se detenga por micro-cortes de red Wi-Fi; sincronización automática en cola al reconectar.
+4. **Propiedad de Infraestructura:**
+   - Todas las cuentas, bases de datos, repositorios y códigos quedan a nombre de Tombstone Hats o bajo su custodia corporativa.
+
+---
+
+## 11. Modelo Comercial, Inversión y Soporte
+
+1. **Rango de Inversión del MVP Base:**
+   - Inversión de desarrollo: **$76,000 – $109,000 MXN + IVA** (desarrollo ágil de 5 a 7 semanas).
+2. **Garantía Post-Arranque:**
+   - **30 días naturales de garantía y soporte correctivo directo** incluidos a partir del Go-Live formal en planta.
+3. **Póliza de Mantenimiento y Evolución Continua:**
+   - Propuesta opcional post-garantía: **$3,500 – $6,000 MXN/mes** (incluye soporte técnico preventivo, optimización de consultas SQL con CONTPAQi y ajustes menores de flujo).
+
+---
+
+## 12. Matriz de Respuestas a Puntos de Decisión Técnica
+
+| # | Punto de Decisión | Definición Oficial Acordada | Impacto en Sistema |
+|:---:|:---|:---|:---|
+| **1.1** | **Líneas de Producto** | Exclusivamente **Línea de Sombreros** en Fase 1 (MVP). Accesorios (cintos, carteras) quedan para Fase 2. | Catálogo centrado en modelos texanos y campanas. |
+| **1.2** | **Gestión de Pedidos & Stock** | Incluido en MVP: Órdenes por cliente, desglose de modelos y stock meta. | Módulo de Órdenes y sincronización de vales B2B. |
+| **1.3** | **Compras e Insumos** | Control de recepción de rollos e insumos mediante el puente CONTPAQi Comercial SQL Server. | Tablas nativas `mgw10005` y `mgw10008` enlazadas. |
+| **1.4** | **Metas & Cadencia** | Turno Único (07:00 a 15:30) con meta semanal de **4,250 pzas** (~850 pzas/día) y Takt Time de **42s**. | Curva hora por hora y semáforos Andon en vivo. |
+| **1.5** | **Vales de Salida** | Generación de **Vale Digital de Salida** con descuento automático de piezas concluidas. | Base para timbrado y facturación en CONTPAQi. |
+| **2.1** | **Estructura de Lotes** | Lotes madre dinámicos (base 60 pzas) fraccionados en sublotes de 15 pzas (editables por orden de 4 a 14 sublotes). | Lotes madre y sublotes en micas viajeras. |
+| **2.2** | **Fraccionamiento en Rampa** | En Rampa (D-05) mediante activación formal en tablet. La tarjeta madre se archiva como histórico. | Botón heroico "Modo Rampa" en Terminal. |
+| **2.3** | **Calidad y Mermas** | 4 filtros de calidad con 6 inspectores. Segundas se venden directamente; el lote no se detiene. | Segregación de segundas y enrutamiento a causa raíz. |
+| **2.4** | **Destajo por Operador** | 108 operadores fijos. Pre-reporte semanal de corte de los viernes ($/pza) con exportación a Excel. | Módulo de cálculo y botón de descarga CSV/Excel. |
+| **2.5** | **Almacenes Intermedios** | Monitoreo en vivo de WIP por estación y buffers de salida entre departamentos. | Tablero Andon y monitores de rampa en tiempo real. |
+| **3.1** | **Perfiles de Acceso** | RBAC con 4 roles: Admin (Edmundo), Ingeniero (Carlos), Supervisor (Nave) e Inspectores de Calidad. | Seguridad modular con ocultamiento total de pestañas. |
+| **3.2** | **Autenticación en Piso** | Teclado numérico táctil de **PIN rápido de 4 dígitos** (más selector rápido de perfiles). | Cero contraseñas complejas que frenen el paso. |
+| **3.3** | **Auditoría & Trazabilidad** | Firma digital automática (usuario, estación, lote, piezas, fecha y hora exacta). | Kárdex cronológico y bitácora de movimientos. |
+| **4.1** | **Tipo de Aplicación** | PWA (Progressive Web App) responsiva optimizada Tablet-First. | Acceso universal vía navegador sin tiendas. |
+| **4.2** | **Infraestructura** | Servidor en la nube con base de datos PostgreSQL ($0 tier) + microservicio local para SQL Server. | Arquitectura híbrida sin costo de licenciamiento. |
+| **4.3** | **Modo Offline** | Resiliencia offline mediante almacenamiento local en navegador (`IndexedDB`). | Continuidad de escaneo ante caídas de Wi-Fi. |
+| **4.4** | **Enlace CONTPAQi** | Enlace nativo vía Vistas y Stored Procedures en Microsoft SQL Server ($0 USD licencias). | Cero dependencia de licencias concurrentes ni SDK. |
+| **5.1** | **Modelo de Tablets** | Tablets comerciales (Samsung Tab A9+ 11" / Xiaomi Pad) con funda rígida sellada de uso rudo. | Inversión eficiente sin sobrecosto de hardware militar. |
+| **5.2** | **Despliegue de Tablets** | Despliegue en las **6 estaciones clave** de piso (Prensas, 3 Filtros Calidad, Patio, Adorno). | Cobertura integral de los puntos de control de nave. |
+| **5.3** | **Pantallas Andon** | Visualización en tablets y PCs en Fase 1. Pantallas físicas Smart TV en viga pausadas para Fase 2. | $0 costo anticipado en cableado o pantallas de TV. |
+| **5.4** | **Impresora de Tarjetas** | Impresora láser de oficina en **Ingeniería en hoja tamaño carta estándar** recortable para micas. | Utilización de infraestructura de impresión existente. |
+
+---
+
+## 13. Sincronización y Mantenimiento de Documentación
+
+Conforme a la **REGLA 0.4.1** de desarrollo, este documento se mantiene estrictamente sincronizado de forma automática entre el repositorio de código y la suite de Google Workspace de la empresa (`Tombstone Hats`), garantizando una fuente única de verdad para Dirección, Ingeniería y Uanify.
 
