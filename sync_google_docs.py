@@ -2,9 +2,11 @@ import os
 import json
 import argparse
 from pathlib import Path
+import markdown
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from googleapiclient.http import MediaInMemoryUpload
 
 SCOPES = [
     'https://www.googleapis.com/auth/drive',
@@ -47,32 +49,175 @@ def get_services():
     docs = build('docs', 'v1', credentials=creds)
     return drive, docs
 
-def list_drive_items(name_filter=None, is_folder=False):
-    drive, _ = get_services()
-    q = "trashed = false"
-    if is_folder:
-        q += " and mimeType = 'application/vnd.google-apps.folder'"
-    if name_filter:
-        q += f" and name contains '{name_filter}'"
+def md_to_styled_html(md_text, title="Documento Corporativo"):
+    """Convierte Markdown crudo a HTML tipográfico corporativo con estilos premium."""
+    # Pre-procesar Mermaid diagrams para no romper el texto
+    lines = md_text.split('\n')
+    cleaned_lines = []
+    in_mermaid = False
+    for line in lines:
+        if line.strip().startswith('```mermaid'):
+            in_mermaid = True
+            cleaned_lines.append('<div style="background:#F1F5F9; border:1px solid #CBD5E1; border-radius:6px; padding:12px; margin:14px 0; font-family:monospace; font-size:9pt; color:#475569;"><em>[Diagrama de Flujo del Proceso]</em><br>')
+            continue
+        elif in_mermaid and line.strip().startswith('```'):
+            in_mermaid = False
+            cleaned_lines.append('</div>')
+            continue
+        elif in_mermaid:
+            cleaned_lines.append(f"{line}<br>")
+            continue
+        cleaned_lines.append(line)
 
-    res = drive.files().list(
-        q=q,
-        pageSize=30,
-        fields="files(id, name, mimeType, webViewLink, parents)"
-    ).execute()
-    return res.get('files', [])
+    preprocessed_md = '\n'.join(cleaned_lines)
 
-def upload_or_update(file_path, folder_id=None, doc_title=None):
+    raw_html = markdown.markdown(
+        preprocessed_md,
+        extensions=['tables', 'fenced_code', 'nl2br', 'sane_lists']
+    )
+
+    styled_html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{title}</title>
+<style>
+  body {{
+    font-family: 'Arial', 'Calibri', sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1E293B;
+  }}
+  h1 {{
+    font-size: 22pt;
+    font-weight: bold;
+    color: #8B5E3C;
+    border-bottom: 2.5px solid #8B5E3C;
+    padding-bottom: 8px;
+    margin-top: 28px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }}
+  h2 {{
+    font-size: 15pt;
+    font-weight: bold;
+    color: #0F172A;
+    border-bottom: 1.5px solid #E2E8F0;
+    padding-bottom: 6px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+  }}
+  h3 {{
+    font-size: 12.5pt;
+    font-weight: bold;
+    color: #334155;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }}
+  h4 {{
+    font-size: 11.5pt;
+    font-weight: bold;
+    color: #475569;
+    margin-top: 12px;
+    margin-bottom: 6px;
+  }}
+  p {{
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: justify;
+  }}
+  blockquote {{
+    border-left: 4.5px solid #8B5E3C;
+    background-color: #F8FAFC;
+    padding: 10px 16px;
+    margin: 14px 0;
+    color: #475569;
+    font-size: 10.5pt;
+  }}
+  table {{
+    border-collapse: collapse;
+    width: 100%;
+    margin: 18px 0;
+    font-size: 9.5pt;
+  }}
+  th, td {{
+    border: 1px solid #CBD5E1;
+    padding: 8px 10px;
+    vertical-align: middle;
+  }}
+  th {{
+    background-color: #F1F5F9;
+    color: #0F172A;
+    font-weight: bold;
+    text-align: center;
+  }}
+  tr:nth-child(even) {{
+    background-color: #F8FAFC;
+  }}
+  code {{
+    background-color: #F1F5F9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    color: #8B5E3C;
+  }}
+  pre {{
+    background-color: #0F172A;
+    color: #F8FAFC;
+    padding: 14px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.4;
+  }}
+  ul, ol {{
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding-left: 24px;
+  }}
+  li {{
+    margin-bottom: 4px;
+  }}
+  hr {{
+    border: 0;
+    height: 1px;
+    background: #E2E8F0;
+    margin: 22px 0;
+  }}
+  strong {{
+    color: #0F172A;
+  }}
+  a {{
+    color: #8B5E3C;
+    text-decoration: none;
+    font-weight: bold;
+  }}
+</style>
+</head>
+<body>
+{raw_html}
+</body>
+</html>
+"""
+    return styled_html
+
+def upload_styled_doc(file_path, folder_id=None, doc_title=None):
+    """Convierte y sube el archivo Markdown a Google Docs con formato HTML nativo enriquecido."""
     local_p = Path(file_path)
     if not local_p.exists():
         raise FileNotFoundError(f"No existe el archivo {local_p}")
 
-    content = local_p.read_text(encoding='utf-8')
+    content_md = local_p.read_text(encoding='utf-8')
     title = doc_title or local_p.stem
+
+    styled_html = md_to_styled_html(content_md, title=title)
+    media = MediaInMemoryUpload(styled_html.encode('utf-8'), mimetype='text/html', resumable=True)
 
     drive, docs = get_services()
 
-    # Buscar si ya existe
+    # Buscar si ya existe el doc en Drive
     q = f"name = '{title}' and mimeType = 'application/vnd.google-apps.document' and trashed = false"
     if folder_id:
         q += f" and '{folder_id}' in parents"
@@ -82,66 +227,33 @@ def upload_or_update(file_path, folder_id=None, doc_title=None):
 
     if files:
         doc_id = files[0]['id']
-        link = files[0].get('webViewLink')
-        print(f"Actualizando Google Doc existente: '{title}' (ID: {doc_id})")
-
-        # Limpiar y reinsertar
-        doc = docs.documents().get(documentId=doc_id).execute()
-        body = doc.get('body', {})
-        items = body.get('content', [])
-        end_idx = items[-1].get('endIndex', 1) - 1 if items else 1
-
-        requests = []
-        if end_idx > 1:
-            requests.append({
-                'deleteContentRange': {
-                    'range': {'startIndex': 1, 'endIndex': end_idx}
-                }
-            })
-        requests.append({
-            'insertText': {
-                'location': {'index': 1},
-                'text': content
-            }
-        })
-        docs.documents().batchUpdate(documentId=doc_id, body={'requests': requests}).execute()
-        return {'status': 'updated', 'id': doc_id, 'name': title, 'link': link}
+        updated_file = drive.files().update(
+            fileId=doc_id,
+            media_body=media,
+            fields='id, name, webViewLink'
+        ).execute()
+        return {'status': 'updated', 'id': doc_id, 'name': title, 'link': updated_file.get('webViewLink')}
     else:
-        print(f"Creando nuevo Google Doc: '{title}'")
         meta = {
             'name': title,
-            'mimeType': 'application/vnd.google-apps.document'
+            'mimeType': 'application/vnd.google-apps.document',
+            'parents': [folder_id] if folder_id else []
         }
-        if folder_id:
-            meta['parents'] = [folder_id]
-
-        doc_file = drive.files().create(body=meta, fields='id, name, webViewLink').execute()
-        doc_id = doc_file['id']
-        link = doc_file.get('webViewLink')
-
-        requests = [{
-            'insertText': {
-                'location': {'index': 1},
-                'text': content
-            }
-        }]
-        docs.documents().batchUpdate(documentId=doc_id, body={'requests': requests}).execute()
-        return {'status': 'created', 'id': doc_id, 'name': title, 'link': link}
+        created_file = drive.files().create(
+            body=meta,
+            media_body=media,
+            fields='id, name, webViewLink'
+        ).execute()
+        return {'status': 'created', 'id': created_file['id'], 'name': title, 'link': created_file.get('webViewLink')}
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--folders', action='store_true', help='Listar carpetas de Drive')
-    parser.add_argument('--search', type=str, help='Buscar carpetas o docs')
     parser.add_argument('--sync-file', type=str, help='Ruta local de archivo Markdown')
     parser.add_argument('--folder-id', type=str, help='ID de carpeta destino en Drive')
     parser.add_argument('--title', type=str, help='Título del doc')
 
     args = parser.parse_args()
 
-    if args.folders or args.search:
-        items = list_drive_items(name_filter=args.search, is_folder=args.folders)
-        for i in items:
-            print(f"[{i['mimeType'].split('.')[-1]}] {i['name']} | ID: {i['id']} | Link: {i.get('webViewLink')}")
-    elif args.sync_file:
-        res = upload_or_update(args.sync_file, folder_id=args.folder_id, doc_title=args.title)
+    if args.sync_file:
+        res = upload_styled_doc(args.sync_file, folder_id=args.folder_id, doc_title=args.title)
         print(json.dumps(res, indent=2))
