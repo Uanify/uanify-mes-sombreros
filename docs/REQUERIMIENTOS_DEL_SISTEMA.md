@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.41.0` | **Versión:** `v2.41.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.42.0` | **Versión:** `v2.42.0`  
 > **Fecha de Emisión / Última Actualización:** 4 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -840,6 +840,6 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-83** | Puente de Integración CONTPAQi SQL Server ($0 Licencias)     | CONTPAQi / Backend           | `v2.40.0`           | OK En Producción |
 | **RF-84** | Esquema Dual DB (Interna vs Fiscal) y Trazabilidad Factura   | Compras / Almacén / ERP      | `v2.40.0`           | OK En Producción |
 | **RF-85** | Terminal Tablet-First Heroica (3 Acciones QR/Rampa/Paro)     | Terminal de Supervisor       | `v2.41.0`           | OK En Producción |
-
-
-
+| **RF-86** | Modo Rampa Multi-QR Batch con Validación de Estación         | Rampa / Terminal             | `v2.42.0`           | OK En Producción |
+| **RF-87** | Mapa de Planta Centrado en Almacenes Físicos (ALM-01 a ALM-05)| Terminal / Almacenes         | `v2.42.0`           | OK En Producción |
+| **RF-88** | Flujo Integral de Merma con Registro Kárdex y Depósito       | Calidad / Inventarios        | `v2.42.0`           | OK En Producción |

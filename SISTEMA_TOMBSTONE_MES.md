@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.41.0` | **Fecha de Actualización:** 4 de Octubre de 2026  
+> **Versión Actual:** `v2.42.0` | **Fecha de Actualización:** 4 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -450,6 +450,11 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Botones de Fila de Icono Cuadrados y Paleta Suave:** Integración homogénea de botones de 32x32px para editar (`#F1F5F9`/`#E2E8F0`) y eliminar (`#FEF2F2`/`#FEE2E2`) con iconos SVG nítidos y tooltips descriptivos.
   - **Consistencia Dual de Operadores:** Normalización idéntica tanto en el módulo de Configuración (`subtab-config-operators`) como en el Directorio General de Mano de Obra (`view-operators`).
   - **Sincronización Universal de Versión:** Actualización transversal del sistema a `v2.25.0` en login, sidebar, package.json y documentación viva.
+- **`v2.42.0` (2026-10-04):**
+  - **Modo Rampa Multi-QR Batch & Validación de Estación (`RF-86`):** Soporte para escanear múltiples tarjetas viajeras de lotes madre en el puesto de rampa formando una cola de fraccionamiento. Validación estricta para asegurar que solo lotes arribados a Rampa puedan dividirse, y que solo supervisores con puesto de Rampa puedan ejecutar la división de torres.
+  - **Mapa de Planta Centrado en Almacenes Físicos (`RF-87`):** Reestructuración de la vista de mapa para priorizar las 5 ubicaciones físicas reales de depósito (ALM-01 Materia Prima, ALM-02 Rampa WIP, ALM-03 Pulmón Pre-Prensas, ALM-04 Producto Terminado, ALM-05 Saldos y Merma) frente a la agrupación abstracta departamental.
+  - **Flujo Integral de Registro de Mermas y Kárdex (`RF-88`):** Acción directa para registrar mermas o defectos sobre lotes escaneados, canalización inmediata al almacén de merma ALM-05 e inserción automática en el Kárdex de movimientos.
+  - **Remoción de Búsqueda y Reubicación Ficticia de Lotes:** Eliminación de controles de rectificación no autorizados para preservar la integridad de trazabilidad por QR estricto.
 - **`v2.41.0` (2026-10-04):**
   - **Terminal Tablet-First Heroica (3 Acciones QR/Rampa/Paro · `RF-85`):** Rediseño ergonómico de la terminal de supervisor con tres tarjetas touch directas (Escáner QR, Modo Rampa de fraccionamiento y Reportar Paro de Máquina), eliminando selectores manuales de estación que duplicaban la inteligencia de la tarjeta viajera física.
   - **Diferenciación Visual en Tablero Andon:** Realce de color y doble borde dorado para los 4 filtros de calidad obligatorios, y actualización de la bitácora viva de tiempos muertos.

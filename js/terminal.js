@@ -1041,13 +1041,100 @@ window.initTerminalView = function() {
       
       if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
       renderActiveScannedLotCard(activeScannedLot);
-      renderPlantDepartmentsGrid();
-      
+      // Registrar en historial Kárdex de Inventarios (ALM-05)
+      if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
+      UanifyState.inventoryMovements.unshift({
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        shift: 'Turno Único',
+        type: 'Segregación Segunda',
+        originWh: activeScannedLot.currentStationCode || 'D-05',
+        origin: activeScannedLot.currentStationName || 'Piso',
+        destWh: 'ALM-05',
+        dest: 'ALM-05 Merma & Segundas',
+        item: `Lote ${activeScannedLot.lotId} (${activeScannedLot.model || 'Sombrero'})`,
+        qty: `${segundasCount} pzas`,
+        user: user.name,
+        doc: `SEG-${Date.now().toString().slice(-4)}`
+      });
+
       window.UanifyUI.toast(
-        `Se separaron ${segundasCount} piezas como SEGUNDA (Causa: ${causa}). Ingresadas al inventario virtual para venta directa. El lote continúa su avance con ${activeScannedLot.pieces} piezas conformes.`,
+        `Se separaron ${segundasCount} piezas como SEGUNDA (Causa: ${causa}). Ingresadas al Kárdex de ALM-05. El lote continúa su avance con ${activeScannedLot.pieces} piezas conformes.`,
         'warning',
         'Piezas de Segunda Registradas'
       );
+    });
+  }
+
+  // ── MANEJADOR DE REGISTRO DE MERMA / DEFECTO DESDE EL LOTE ESCANEADO ──
+  const btnScannedLotRegisterScrap = document.getElementById('btnScannedLotRegisterScrap');
+  const modalScrap = document.getElementById('modalScrap');
+  const btnCloseScrapModal = document.getElementById('btnCloseScrapModal');
+
+  if (btnScannedLotRegisterScrap) {
+    btnScannedLotRegisterScrap.addEventListener('click', () => {
+      if (modalScrap) modalScrap.classList.add('active');
+    });
+  }
+
+  if (btnCloseScrapModal) {
+    btnCloseScrapModal.addEventListener('click', () => {
+      if (modalScrap) modalScrap.classList.remove('active');
+    });
+  }
+
+  if (modalScrap) {
+    modalScrap.addEventListener('click', (e) => {
+      if (e.target === modalScrap) modalScrap.classList.remove('active');
+    });
+
+    const scrapOptBtns = modalScrap.querySelectorAll('.scrap-opt-btn');
+    scrapOptBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-type') || 'merma';
+        const reason = btn.getAttribute('data-reason') || 'Defecto de proceso';
+        const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+
+        if (activeScannedLot) {
+          activeScannedLot.hasScrap = true;
+          activeScannedLot.scrapReason = reason;
+
+          if (type === 'segunda') {
+            UanifyState.secondGradeTotal = (UanifyState.secondGradeTotal || 0) + 1;
+            if (terminalSecond) terminalSecond.textContent = `${UanifyState.secondGradeTotal} pzas`;
+          } else {
+            UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + 1;
+            if (terminalScrap) terminalScrap.textContent = `${UanifyState.scrapTotal} pzas`;
+          }
+
+          // Registrar en Kárdex de movimientos
+          if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
+          UanifyState.inventoryMovements.unshift({
+            date: new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            shift: 'Turno Único',
+            type: type === 'segunda' ? 'Segregación Segunda' : 'Registro Merma',
+            originWh: activeScannedLot.currentStationCode || 'D-05',
+            origin: activeScannedLot.currentStationName || 'Piso',
+            destWh: 'ALM-05',
+            dest: 'ALM-05 Merma & Segundas',
+            item: `Lote ${activeScannedLot.lotId} (${activeScannedLot.model || 'Sombrero'})`,
+            qty: '1 pza',
+            user: user.name,
+            doc: `MER-${Date.now().toString().slice(-4)}`
+          });
+
+          renderActiveScannedLotCard(activeScannedLot);
+          renderPlantDepartmentsGrid();
+        }
+
+        if (modalScrap) modalScrap.classList.remove('active');
+        window.UanifyUI.toast(
+          `Defecto registrado (${reason}). Movimiento reflejado en almacén de merma ALM-05 y Kárdex.`,
+          type === 'segunda' ? 'warning' : 'danger',
+          type === 'segunda' ? 'Segunda Registrada' : 'Merma Registrada'
+        );
+      });
     });
   }
 
@@ -1184,72 +1271,155 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 8. MAPA GENERAL DE DEPARTAMENTOS & ALMACENES INTERMEDIOS (RF-59) ──────
+  // ── 8. MAPA GENERAL DE ALMACENES FÍSICOS & PULMONES WIP (CENTRADOS EN ALMACENES) ──────
   function renderPlantDepartmentsGrid() {
     if (!plantDepartmentsGrid) return;
     const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const myDepts = user.assignedDepartments || ['*'];
     const isSuperUser = myDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
 
-    // Lista de estaciones de manufactura
-    const stations = UanifyState.stations || [];
+    if (currentPlantMapFilter === 'all') {
+      // 1. VISTA RECTORA: ALMACENES FÍSICOS PRINCIPALES DE PLANTA (ALM-01 A ALM-05)
+      const warehouses = UanifyState.warehouses || [
+        { code: 'ALM-01', name: 'Almacén 1: Materia Prima (Rollos de Telar)', type: 'Materia Prima', location: 'Nave A - Acceso Proveedores', capPercent: 82, stock: '1,850 m²' },
+        { code: 'ALM-02', name: 'Almacén 2: Rampa WIP & Pulmón Fraccionamiento', type: 'WIP Intermedio', location: 'Rampa Central (Paso a Prensas)', capPercent: 65, stock: '240 sombreros' },
+        { code: 'ALM-03', name: 'Almacén 3: Pulmón Pre-Prensas & Vapor', type: 'Pulmón de Proceso', location: 'Batería Prensas Michelagnoli', capPercent: 50, stock: '75 sombreros' },
+        { code: 'ALM-04', name: 'Almacén 4: Producto Terminado & Embarque', type: 'Producto Terminado', location: 'Nave B - Andén de Carga', capPercent: 70, stock: '520 sombreros' },
+        { code: 'ALM-05', name: 'Almacén 5: Merma & Segundas (Venta Viernes)', type: 'Saldos y Merma', location: 'Área Segregación Almacén 5', capPercent: 26, stock: '26 sombreros' }
+      ];
 
-    const filtered = stations.filter(st => {
-      if (currentPlantMapFilter === 'my-depts') {
-        if (isSuperUser) return true;
-        return myDepts.includes(st.code);
+      plantDepartmentsGrid.innerHTML = warehouses.map(wh => {
+        const whLots = getLotsInWarehouse(wh.code);
+        const scrapCount = whLots.filter(l => l.hasScrap).length;
+
+        return `
+          <div class="dept-plant-card is-assigned-to-me" onclick="window.openPhysicalWarehouseModal('${wh.code}')" style="cursor:pointer;" title="Toca para ver lotes depositados en ${wh.name}">
+            <div class="dept-card-header">
+              <div>
+                <span class="dept-code-tag" style="background:#0F172A; color:#FFFFFF;">${wh.code} · ${wh.type}</span>
+                <h4 class="dept-name-heading" style="margin-top:4px;">${wh.name}</h4>
+                <span style="font-size:11px; color:var(--text-muted); display:block; margin-top:2px;">📍 ${wh.location}</span>
+              </div>
+              <span class="badge-status" style="background:var(--color-brand-light); color:var(--color-brand); font-weight:800; font-size:11px;">Almacén Físico</span>
+            </div>
+
+            <div class="dept-card-stats">
+              <div class="dept-card-stat-item">
+                <span class="dept-card-stat-val">${whLots.length}</span>
+                <span class="dept-card-stat-lbl">Lotes Físicos</span>
+              </div>
+              <div class="dept-card-stat-item">
+                <span class="dept-card-stat-val">${whLots.reduce((acc, l) => acc + (l.pieces || 15), 0)} pzas</span>
+                <span class="dept-card-stat-lbl">WIP Acumulado</span>
+              </div>
+            </div>
+
+            ${scrapCount > 0 ? `
+              <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
+                ⚠️ ${scrapCount} lote(s) con pieza de merma en segregación
+              </div>
+            ` : ''}
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+              <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Ocupación: ${wh.capPercent || 60}%</span>
+              <span style="font-size:12px; font-weight:800; color:var(--color-brand);">Auditar Almacén ↗</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } else {
+      // 2. VISTA DE TODOS LOS PULMONES INTERMEDIOS DE ESTACIÓN
+      const stations = UanifyState.stations || [];
+      plantDepartmentsGrid.innerHTML = stations.map(st => {
+        const isAssigned = isSuperUser || myDepts.includes(st.code);
+        const lotCount = countLotsAtStation(st.code);
+        const scrapWarningCount = countScrapLotsAtStation(st.code);
+        const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
+
+        return `
+          <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}" onclick="window.openDeptWarehouseModal('${st.code}')" style="cursor:pointer;" title="Toca para ver pulmón intermedio de ${st.name}">
+            <div class="dept-card-header">
+              <div>
+                <span class="dept-code-tag">${isQuality ? 'Pulmón de Calidad' : 'Pulmón de Proceso'}</span>
+                <h4 class="dept-name-heading">${st.name}</h4>
+              </div>
+              ${isAssigned ? `<span class="dept-assigned-badge">Mi Asignación</span>` : ''}
+            </div>
+
+            <div class="dept-card-stats">
+              <div class="dept-card-stat-item">
+                <span class="dept-card-stat-val">${lotCount.lots}</span>
+                <span class="dept-card-stat-lbl">Lotes en Buffer</span>
+              </div>
+              <div class="dept-card-stat-item">
+                <span class="dept-card-stat-val">${lotCount.pieces} pzas</span>
+                <span class="dept-card-stat-lbl">En Espera</span>
+              </div>
+            </div>
+
+            ${scrapWarningCount > 0 ? `
+              <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
+                ⚠️ ${scrapWarningCount} lote(s) con merma
+              </div>
+            ` : ''}
+
+            <div style="font-size:11.5px; font-weight:700; color:var(--color-brand); text-align:right; margin-top:4px;">
+              Ver Lotes ↗
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function getLotsInWarehouse(whCode) {
+    const list = [];
+    (UanifyState.activeLots || []).forEach(l => {
+      if (whCode === 'ALM-02' && (l.currentStationCode === 'D-04' || l.currentStationCode === 'D-05' || !l.currentStationCode)) {
+        list.push(l);
+      } else if (whCode === 'ALM-03' && (l.currentStationCode === 'D-02' || l.currentStationCode === 'D-03')) {
+        list.push(l);
+      } else if (whCode === 'ALM-04' && (l.currentStationCode === 'D-10' || l.currentStationCode === 'D-11' || l.currentStationCode === 'PT')) {
+        list.push(l);
+      } else if (whCode === 'ALM-05' && l.hasScrap) {
+        list.push(l);
+      } else if (whCode === 'ALM-01' && (l.currentStationCode === 'D-01' || !l.currentStationCode)) {
+        list.push(l);
       }
-      return true;
     });
 
-    plantDepartmentsGrid.innerHTML = filtered.map(st => {
-      const isAssigned = isSuperUser || myDepts.includes(st.code);
-      
-      // Contar lotes presentes en este departamento
-      const lotCount = countLotsAtStation(st.code);
-      const scrapWarningCount = countScrapLotsAtStation(st.code);
-
-      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
-      return `
-        <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}" onclick="window.openDeptWarehouseModal('${st.code}')" style="cursor:pointer;" title="Toca para ver almacén intermedio de ${st.name}">
-          <div class="dept-card-header">
-            <div>
-              <span class="dept-code-tag">${isQuality ? 'Punto de Calidad' : 'Estación Productiva'}</span>
-              <h4 class="dept-name-heading">${st.name}</h4>
-            </div>
-            ${isAssigned ? `<span class="dept-assigned-badge">Mi Departamento Asignado</span>` : ''}
-          </div>
-
-          <div class="dept-card-stats">
-            <div class="dept-card-stat-item">
-              <span class="dept-card-stat-val">${lotCount.lots}</span>
-              <span class="dept-card-stat-lbl">Lotes en Almacén</span>
-            </div>
-            <div class="dept-card-stat-item">
-              <span class="dept-card-stat-val">${lotCount.pieces} pzas</span>
-              <span class="dept-card-stat-lbl">En Proceso / Espera</span>
-            </div>
-          </div>
-
-          ${scrapWarningCount > 0 ? `
-            <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
-              ⚠️ Atención: ${scrapWarningCount} lote(s) con sombrero de merma en torre
-            </div>
-          ` : ''}
-
-          <div style="font-size:11.5px; font-weight:700; color:var(--color-brand); text-align:right; margin-top:4px;">
-            Consultar Almacén ↗
-          </div>
-        </div>
-      `;
-    }).join('');
+    if (list.length === 0) {
+      if (whCode === 'ALM-02') {
+        list.push({ lotId: '49386', model: 'Chaparral', pieces: 60, operator: 'Pedro Morales', hasScrap: false });
+        list.push({ lotId: '49633-1', model: 'Viejonón', pieces: 15, operator: 'Jorge', hasScrap: false });
+      } else if (whCode === 'ALM-03') {
+        list.push({ lotId: '49633-3', model: 'Viejonón', pieces: 15, operator: 'Jorge Ramírez', hasScrap: false });
+      } else if (whCode === 'ALM-05') {
+        list.push({ lotId: '49842', model: 'Magnum', pieces: 15, operator: 'Melany', hasScrap: true, scrapReason: 'Quemado por vapor' });
+      } else {
+        list.push({ lotId: '49720-1', model: 'Denver', pieces: 15, operator: 'Carmen', hasScrap: false });
+      }
+    }
+    return list;
   }
+
+  window.openPhysicalWarehouseModal = function(whCode) {
+    const whMap = {
+      'ALM-01': 'D-01',
+      'ALM-02': 'D-04',
+      'ALM-03': 'D-05',
+      'ALM-04': 'D-10',
+      'ALM-05': 'D-06'
+    };
+    const deptMapped = whMap[whCode] || 'D-05';
+    window.openDeptWarehouseModal(deptMapped);
+  };
 
   function countLotsAtStation(code) {
     let lots = 0;
     let pieces = 0;
 
-    // Lotes activos en este depto
     (UanifyState.activeLots || []).forEach(l => {
       if (l.currentStationCode === code || (code === 'D-05' && !l.currentStationCode)) {
         lots++;
@@ -1257,7 +1427,6 @@ window.initTerminalView = function() {
       }
     });
 
-    // Lotes en buffer esperando recolección
     (UanifyState.bufferReadyLots || []).forEach(b => {
       if (b.originDeptCode === code || b.targetDeptCode === code) {
         lots++;
@@ -1265,7 +1434,6 @@ window.initTerminalView = function() {
       }
     });
 
-    // Mínimo de muestra para realismo de planta
     if (lots === 0) {
       if (code === 'D-01' || code === 'D-02' || code === 'D-06') {
         lots = 2;
@@ -1630,86 +1798,186 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 11. MODO FRACCIONAMIENTO EN RAMPA (RF-08 & GAP-11) ────────────────────
+  // ── 11. MODO FRACCIONAMIENTO EN RAMPA (MULTI-QR BATCH & VALIDACIÓN DE PUESTO) ────
   const btnActivateRampaMode           = document.getElementById('btnActivateRampaMode');
   const modalRampaFraccionamiento      = document.getElementById('modalRampaFraccionamiento');
   const btnCloseRampaModal             = document.getElementById('btnCloseRampaModal');
   const btnCancelRampaModal            = document.getElementById('btnCancelRampaModal');
   const btnExecuteRampaFraccionamiento = document.getElementById('btnExecuteRampaFraccionamiento');
-  const btnRampaScanAnotherMother      = document.getElementById('btnRampaScanAnotherMother');
-  const rampaMotherLotId               = document.getElementById('rampaMotherLotId');
-  const rampaMotherLotPieces           = document.getElementById('rampaMotherLotPieces');
-  const rampaMotherLotModel            = document.getElementById('rampaMotherLotModel');
-  const rampaSub1Folio                 = document.getElementById('rampaSub1Folio');
-  const rampaSub2Folio                 = document.getElementById('rampaSub2Folio');
-  const rampaSub3Folio                 = document.getElementById('rampaSub3Folio');
-  const rampaSub4Folio                 = document.getElementById('rampaSub4Folio');
+  const rampaBatchQrInput              = document.getElementById('rampaBatchQrInput');
+  const btnAddLotToRampaBatch          = document.getElementById('btnAddLotToRampaBatch');
+  const btnRampaScanCamera             = document.getElementById('btnRampaScanCamera');
+  const rampaBatchQueueContainer       = document.getElementById('rampaBatchQueueContainer');
+  const rampaBatchCountText            = document.getElementById('rampaBatchCountText');
+  const rampaBatchTotalPiecesText      = document.getElementById('rampaBatchTotalPiecesText');
   const rampaOperatorSelect            = document.getElementById('rampaOperatorSelect');
   const rampaInputTotalPieces          = document.getElementById('rampaInputTotalPieces');
   const rampaInputPiecesPerSublot      = document.getElementById('rampaInputPiecesPerSublot');
   const rampaCalculatedSublotsText     = document.getElementById('rampaCalculatedSublotsText');
-  const rampaSublotsCountPill          = document.getElementById('rampaSublotsCountPill');
-  const rampaSublotsGrid               = document.getElementById('rampaSublotsGrid');
+  const rampaAuthNotice                = document.getElementById('rampaAuthNotice');
+  const rampaAuthNoticeText            = document.getElementById('rampaAuthNoticeText');
 
-  let currentRampaMotherId = '49386';
+  // Cola de Lotes Madre Escaneados en Rampa
+  let rampaMotherBatchQueue = [
+    { lotId: '49386', model: '1000X Chaparral', pieces: 60, station: 'D-04', order: 'OP-15068' }
+  ];
 
-  function updateRampaSublotsGrid() {
-    const totalPzas = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
+  function renderRampaBatchQueue() {
+    if (!rampaBatchQueueContainer) return;
+    
+    if (rampaMotherBatchQueue.length === 0) {
+      rampaBatchQueueContainer.innerHTML = `
+        <div style="text-align:center; padding:18px; color:var(--text-muted); font-size:12.5px;">
+          No hay lotes en la cola. Escanea o teclea el QR del Lote Madre para agregarlo.
+        </div>
+      `;
+      if (rampaBatchCountText) rampaBatchCountText.textContent = '0 lotes';
+      if (rampaBatchTotalPiecesText) rampaBatchTotalPiecesText.textContent = 'Total: 0 piezas';
+      return;
+    }
+
+    const totalPieces = rampaMotherBatchQueue.reduce((acc, l) => acc + (l.pieces || 60), 0);
+    if (rampaBatchCountText) {
+      rampaBatchCountText.textContent = `${rampaMotherBatchQueue.length} ${rampaMotherBatchQueue.length === 1 ? 'lote' : 'lotes'}`;
+    }
+    if (rampaBatchTotalPiecesText) {
+      rampaBatchTotalPiecesText.textContent = `Total: ${totalPieces} piezas`;
+    }
+
+    rampaBatchQueueContainer.innerHTML = rampaMotherBatchQueue.map((lot, idx) => `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:8px 12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--color-brand);">${lot.lotId}</span>
+          <span class="badge-subtle" style="font-weight:700;">${lot.model}</span>
+          <span style="font-size:12px; color:var(--text-secondary);">${lot.pieces} pzas (${lot.order || 'OP'})</span>
+        </div>
+        <button type="button" class="btn-secondary" onclick="window.removeLotFromRampaBatch(${idx})" style="padding:4px 10px; font-size:11px; color:#DC2626; border-color:#FCA5A5; height:30px;">
+          ✕ Quitar
+        </button>
+      </div>
+    `).join('');
+  }
+
+  window.removeLotFromRampaBatch = function(index) {
+    rampaMotherBatchQueue.splice(index, 1);
+    renderRampaBatchQueue();
+    updateRampaCalculations();
+  };
+
+  function updateRampaCalculations() {
+    const pzasPerMother = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
     const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
-    const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
-    const cleanId = currentRampaMotherId.split('-')[0];
+    const numSublots = Math.max(1, Math.ceil(pzasPerMother / pzasPerSublot));
+    const totalSublotsProjected = numSublots * rampaMotherBatchQueue.length;
 
-    if (rampaMotherLotPieces) rampaMotherLotPieces.textContent = `${totalPzas} piezas totales`;
     if (rampaCalculatedSublotsText) {
-      rampaCalculatedSublotsText.textContent = `${numSublots} Sublotes de ~${pzasPerSublot} pzas`;
-    }
-    if (rampaSublotsCountPill) {
-      rampaSublotsCountPill.textContent = `${numSublots} torres proyectadas`;
-    }
-
-    if (rampaSublotsGrid) {
-      let cardsHtml = '';
-      let remaining = totalPzas;
-      for (let i = 1; i <= numSublots; i++) {
-        const thisPzas = Math.min(remaining, pzasPerSublot);
-        remaining -= thisPzas;
-        cardsHtml += `
-          <div style="background:#FFFFFF; border:1.5px solid var(--color-brand-border); border-radius:10px; padding:12px; text-align:center;">
-            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:10px; font-weight:800;">SUBLOTE #${i}</span>
-            <div style="font-family:'JetBrains Mono'; font-size:15px; font-weight:800; color:var(--color-brand); margin:6px 0;">${cleanId}-${i}</div>
-            <span style="font-size:12px; color:var(--text-secondary); font-weight:700;">${thisPzas} sombreros</span>
-            <div style="font-size:10.5px; color:var(--text-muted); margin-top:4px;">Mica con "${i}"</div>
-          </div>
-        `;
-      }
-      rampaSublotsGrid.innerHTML = cardsHtml;
+      rampaCalculatedSublotsText.textContent = `${numSublots} Sublotes de ${pzasPerSublot} pzas c/u (${totalSublotsProjected} torres totales)`;
     }
   }
 
-  if (rampaInputTotalPieces) rampaInputTotalPieces.addEventListener('input', updateRampaSublotsGrid);
-  if (rampaInputPiecesPerSublot) rampaInputPiecesPerSublot.addEventListener('input', updateRampaSublotsGrid);
+  if (rampaInputTotalPieces) rampaInputTotalPieces.addEventListener('input', updateRampaCalculations);
+  if (rampaInputPiecesPerSublot) rampaInputPiecesPerSublot.addEventListener('input', updateRampaCalculations);
 
-  function setupRampaModalForLot(mId) {
-    currentRampaMotherId = mId;
-    const cleanId = mId.split('-')[0];
-    if (rampaMotherLotId) rampaMotherLotId.textContent = cleanId;
+  function addLotToRampaBatchByQuery(query) {
+    const cleanId = String(query).trim().replace(/^TB\|/i, '').split('|')[0] || query;
+    if (!cleanId) return;
 
-    // Asignar modelo de lote madre
-    let mName = '1000X Chaparral';
-    if (cleanId === '49633') mName = '1000X Master Telar · Viejonón';
-    else if (cleanId === '49842') mName = 'Magnum Tradicional';
-    if (rampaMotherLotModel) rampaMotherLotModel.textContent = mName;
+    // Validación 1: Verificar si ya está en la cola
+    if (rampaMotherBatchQueue.some(l => l.lotId === cleanId)) {
+      window.UanifyUI.toast(`El lote ${cleanId} ya se encuentra agregado en la cola de fraccionamiento.`, 'info');
+      return;
+    }
 
-    updateRampaSublotsGrid();
+    // Validación 2: Validar que sea un lote válido
+    const knownLot = (UanifyState.activeLots || []).find(l => l.lotId === cleanId || l.lotId.replace(/,/g, '') === cleanId.replace(/,/g, ''));
+    
+    // Validación 3: Estación de Rampa (D-04 o D-05)
+    const lotStation = knownLot ? (knownLot.currentStationCode || 'D-04') : 'D-04';
+    if (knownLot && lotStation !== 'D-04' && lotStation !== 'D-05' && lotStation !== 'D-01' && lotStation !== 'D-02') {
+      window.UanifyUI.toast(
+        `⛔ El lote ${cleanId} no está en Rampa. Se encuentra en ${knownLot.currentStationName || lotStation}. Solo se pueden fraccionar lotes arribados a Rampa.`,
+        'danger',
+        'Validación de Estación Rampa'
+      );
+      return;
+    }
+
+    const modelName = knownLot ? (knownLot.model || '1000X Master Telar') : (cleanId === '49633' ? 'Viejonón 1000X' : cleanId === '49842' ? 'Magnum' : 'Chaparral');
+    const pieces = knownLot ? (knownLot.pieces || 60) : 60;
+
+    rampaMotherBatchQueue.push({
+      lotId: cleanId,
+      model: modelName,
+      pieces: pieces,
+      station: lotStation,
+      order: knownLot ? (knownLot.oProd || 'OP-15071') : 'OP-15071'
+    });
+
+    if (rampaBatchQrInput) rampaBatchQrInput.value = '';
+    renderRampaBatchQueue();
+    updateRampaCalculations();
+
+    window.UanifyUI.toast(`Lote Madre ${cleanId} agregado a la cola de fraccionamiento (${rampaMotherBatchQueue.length} listos).`, 'success');
+  }
+
+  if (btnAddLotToRampaBatch) {
+    btnAddLotToRampaBatch.addEventListener('click', () => {
+      const val = rampaBatchQrInput ? rampaBatchQrInput.value.trim() : '';
+      if (!val) {
+        window.UanifyUI.toast('Ingresa o escanea un folio de lote madre para agregarlo.', 'warning');
+        return;
+      }
+      addLotToRampaBatchByQuery(val);
+    });
+  }
+
+  if (rampaBatchQrInput) {
+    rampaBatchQrInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const val = rampaBatchQrInput.value.trim();
+        if (val) addLotToRampaBatchByQuery(val);
+      }
+    });
+  }
+
+  if (btnRampaScanCamera) {
+    btnRampaScanCamera.addEventListener('click', () => {
+      window.UanifyUI.toast('Apunta la cámara al código QR de la tarjeta del lote madre en Rampa.', 'info');
+      if (typeof window.openKioskScanner === 'function') {
+        window.openKioskScanner();
+      }
+    });
+  }
+
+  function validateSupervisorRampaAuth() {
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const isSuperUser = user.role === 'admin' || user.role === 'ingeniero' || 
+                        (user.assignedDepartments && (user.assignedDepartments.includes('*') || user.assignedDepartments.includes('D-04') || user.assignedDepartments.includes('D-05')));
+    
+    if (rampaAuthNotice) {
+      if (!isSuperUser) {
+        rampaAuthNotice.style.display = 'block';
+        if (rampaAuthNoticeText) {
+          rampaAuthNoticeText.textContent = `Tu usuario (${user.name}) no tiene asignado el puesto de Rampa (D-04 / D-05). Operación en modo solo lectura.`;
+        }
+        if (btnExecuteRampaFraccionamiento) btnExecuteRampaFraccionamiento.disabled = true;
+      } else {
+        rampaAuthNotice.style.display = 'none';
+        if (btnExecuteRampaFraccionamiento) btnExecuteRampaFraccionamiento.disabled = false;
+      }
+    }
   }
 
   window.openRampaFraccionamientoMode = function(optionalLotId) {
-    let targetId = optionalLotId;
-    if (!targetId && activeScannedLot) {
-      targetId = activeScannedLot.lotId.split('-')[0];
+    if (optionalLotId) {
+      if (!rampaMotherBatchQueue.some(l => l.lotId === optionalLotId)) {
+        addLotToRampaBatchByQuery(optionalLotId);
+      }
     }
-    if (!targetId) targetId = '49386';
-    setupRampaModalForLot(targetId);
+    validateSupervisorRampaAuth();
+    renderRampaBatchQueue();
+    updateRampaCalculations();
 
     if (modalRampaFraccionamiento) {
       modalRampaFraccionamiento.style.display = 'flex';
@@ -1738,65 +2006,86 @@ window.initTerminalView = function() {
   if (btnCloseRampaModal) btnCloseRampaModal.addEventListener('click', closeRampaModal);
   if (btnCancelRampaModal) btnCancelRampaModal.addEventListener('click', closeRampaModal);
 
-  if (btnRampaScanAnotherMother) {
-    btnRampaScanAnotherMother.addEventListener('click', () => {
-      const nextId = currentRampaMotherId === '49386' ? '49633' : '49386';
-      setupRampaModalForLot(nextId);
-      window.UanifyUI.toast(`Cambiado a Lote Madre ${nextId} (${rampaMotherLotModel.textContent}) para fraccionamiento.`, 'info');
-    });
-  }
-
+  // Ejecución masiva de fraccionamiento al confirmar la cola completa
   if (btnExecuteRampaFraccionamiento) {
     btnExecuteRampaFraccionamiento.addEventListener('click', () => {
-      const cleanId = currentRampaMotherId.split('-')[0];
-      const selectedOp = rampaOperatorSelect ? rampaOperatorSelect.value : 'JORGE';
-      const mName = rampaMotherLotModel ? rampaMotherLotModel.textContent : '1000X Chaparral';
-      const totalPzas = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
-      const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
-      const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
-
-      // Cargar Sublote #1 como activo en la terminal
-      activeScannedLot = {
-        lotId: `${cleanId}-1`,
-        motherLotId: cleanId,
-        sublotNum: 1,
-        totalSublots: numSublots,
-        pieces: pzasPerSublot,
-        motherPieces: totalPzas,
-        clase: '1000X MASTER TELAR',
-        model: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
-        modelName: mName,
-        horma: mName.includes('Viejonón') ? 'Viejonón' : 'Chaparral',
-        brim: '9 1/2 cm',
-        bend: 'Doblado Arriba',
-        size: '55',
-        oProd: '15071',
-        orderNumber: 'OP-15071',
-        operator: `${selectedOp} (Prensas)`,
-        operatorSticker: selectedOp,
-        originStationCode: 'D-04',
-        originStationName: 'Rampa de Ensamble',
-        currentStationCode: 'D-04',
-        currentStationName: 'Rampa de Ensamble',
-        targetStationCode: 'D-05',
-        targetStationName: 'Prensas de Hormado',
-        hasScrap: false,
-        isSubdivided: true
-      };
-
-      // Si existe en UanifyState marcar lote madre como subdividido
-      const existing = UanifyState.lots.find(l => l.lotId === cleanId);
-      if (existing) {
-        existing.isSubdivided = true;
+      if (rampaMotherBatchQueue.length === 0) {
+        window.UanifyUI.toast('Debes escanear al menos un lote madre en la cola para ejecutar el fraccionamiento.', 'warning');
+        return;
       }
 
-      renderActiveScannedLotCard(activeScannedLot);
+      const selectedOp = rampaOperatorSelect ? rampaOperatorSelect.value : 'JORGE';
+      const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
+      const countLots = rampaMotherBatchQueue.length;
+      let totalNewSublots = 0;
+
+      // Procesar cada lote madre en la cola
+      rampaMotherBatchQueue.forEach(m => {
+        const cleanId = m.lotId;
+        const totalPzas = m.pieces || 60;
+        const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
+        totalNewSublots += numSublots;
+
+        // Marcar en estado global si existe
+        const existing = (UanifyState.lots || []).find(l => l.lotId === cleanId);
+        if (existing) {
+          existing.isSubdivided = true;
+        }
+
+        // Generar y agregar sublotes a la lista activa
+        for (let s = 1; s <= numSublots; s++) {
+          const sublotId = `${cleanId}-${s}`;
+          const newSublot = {
+            lotId: sublotId,
+            motherLotId: cleanId,
+            sublotNum: s,
+            totalSublots: numSublots,
+            pieces: pzasPerSublot,
+            clase: '1000X MASTER TELAR',
+            model: m.model,
+            currentStationCode: 'D-05',
+            currentStationName: 'Prensas de Hormado',
+            targetStationCode: 'D-06',
+            targetStationName: 'Pintura y Acabados',
+            operator: `${selectedOp} (Prensas)`,
+            operatorSticker: selectedOp,
+            hasScrap: false,
+            isSubdivided: true
+          };
+          
+          if (!UanifyState.activeLots.some(l => l.lotId === sublotId)) {
+            UanifyState.activeLots.push(newSublot);
+          }
+        }
+      });
+
+      // Poner el primer sublote del primer lote procesado en terminal
+      const firstMother = rampaMotherBatchQueue[0];
+      activeScannedLot = (UanifyState.activeLots || []).find(l => l.lotId === `${firstMother.lotId}-1`) || {
+        lotId: `${firstMother.lotId}-1`,
+        model: firstMother.model,
+        pieces: pzasPerSublot,
+        currentStationCode: 'D-05',
+        currentStationName: 'Prensas de Hormado',
+        targetStationCode: 'D-06',
+        targetStationName: 'Pintura y Acabados',
+        operator: selectedOp
+      };
+
+      // Limpiar cola tras procesar
+      const processedCount = rampaMotherBatchQueue.length;
+      rampaMotherBatchQueue = [];
       closeRampaModal();
 
+      renderPlantDepartmentsGrid();
+      if (terminalScannerEmptyState) terminalScannerEmptyState.style.display = 'none';
+      if (terminalScannedLotActionsContainer) terminalScannedLotActionsContainer.style.display = 'block';
+      renderActiveScannedLotCard(activeScannedLot);
+
       window.UanifyUI.toast(
-        `Lote Madre ${cleanId} (${totalPzas} pzas) fraccionado en ${numSublots} sublotes de ${pzasPerSublot} piezas. Sublote ${cleanId}-1 cargado en la terminal listo para depositar en Almacén de Prensas de Hormado.`,
+        `✅ Fraccionamiento en Rampa Completado: ${processedCount} lotes madre divididos exitosamente en ${totalNewSublots} torres de sublote (${pzasPerSublot} pzas c/u). Sublote ${activeScannedLot.lotId} cargado en la terminal.`,
         'success',
-        'Fraccionamiento en Rampa Completado'
+        'Lotes Fraccionados en Rampa'
       );
     });
   }
@@ -2052,8 +2341,6 @@ window.initTerminalView = function() {
   if (terminalScannedLotActionsContainer) terminalScannedLotActionsContainer.style.display = 'none';
 
   renderPlantDepartmentsGrid();
-  populateTrackerLotSelect();
-  renderProcessTimeline(activeTrackedLotId);
 
   // Sincronizar cuando cambie de usuario en el sistema
   EventBus.on('user-switched', () => {
