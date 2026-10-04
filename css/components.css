@@ -80,8 +80,9 @@
 }
 
 .station-card.status-running {
-  border-color: #86EFAC;
+  border: 1.5px solid #4ADE80;
   background: linear-gradient(180deg, #F0FDF4 0%, #F8FAF9 50%, #FFFFFF 100%);
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08);
 }
 
 .station-card.status-running::before {
@@ -90,9 +91,9 @@
 }
 
 .station-card.status-warning {
-  border-color: #FDE68A;
+  border: 1.5px solid #F59E0B;
   background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 35%, #FFFFFF 100%);
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.12);
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.16);
 }
 
 .station-card.status-warning::before {
@@ -101,9 +102,9 @@
 }
 
 .station-card.status-stopped {
-  border-color: #FCA5A5;
+  border: 2px solid #EF4444;
   background: linear-gradient(180deg, #FEF2F2 0%, #FEE2E2 40%, #FFFFFF 100%);
-  box-shadow: 0 3px 12px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.22);
 }
 
 .station-card.status-stopped::before {
@@ -111,28 +112,27 @@
   box-shadow: 0 2px 12px rgba(220, 38, 38, 0.7);
 }
 
-/* Checkpoints de Calidad (Diferenciación visual destacada) */
+/* Checkpoints de Calidad (Diferenciación visual destacada y borde doble dorado) */
 .station-card.station-quality-checkpoint {
-  border-width: 2px;
-  border-style: solid;
-  border-color: #B45309;
-  background: linear-gradient(180deg, #FFFDF7 0%, #FEF9EE 45%, #FFFFFF 100%);
+  border: 2px solid #D97706 !important;
+  outline: 2px solid #FDE68A;
+  background: linear-gradient(180deg, #FFFDF5 0%, #FEF9EE 45%, #FFFFFF 100%);
   position: relative;
 }
 
 .station-card.station-quality-checkpoint::after {
-  content: 'CALIDAD';
+  content: '★ FILTRO CALIDAD';
   position: absolute;
   top: 10px;
   right: 12px;
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 9px;
   font-weight: 900;
-  letter-spacing: 1px;
-  color: #B45309;
+  letter-spacing: 0.8px;
+  color: #92400E;
   background: #FEF3C7;
-  border: 1px solid #FDE68A;
-  padding: 1px 6px;
+  border: 1px solid #FCD34D;
+  padding: 2px 7px;
   border-radius: 4px;
 }
 

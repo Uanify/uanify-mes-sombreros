@@ -3116,11 +3116,11 @@ function enrichStationWithDefaults(st, idx) {
 
   window.viewKardexDoc = function(docFolio, item) {
     const mov = (UanifyState.inventoryMovements || []).find(m => m.doc === docFolio) || {
-      doc: docFolio, item: item || 'Lote de Producción', time: '12:00', type: 'Traspaso WIP', origin: 'Almacén Central', dest: 'Línea de Ensamble', qty: '60 pzas', user: 'Logística MES'
+      doc: docFolio, item: item || 'Lote de Producción', time: '12:00', type: 'Traspaso WIP', origin: 'Almacén Central', dest: 'Línea de Ensamble', qty: '60 pzas', user: 'Carlos Ramos (Almacén)'
     };
     window.UanifyUI.alert(
       `Vale Oficial de Traspaso · ${mov.doc}`,
-      `Detalle de custodia y movimiento en Kárdex:\n\n• Documento / Folio: ${mov.doc}\n• Tipo de Movimiento: ${mov.type}\n• Lote / Material: ${mov.item}\n• Cantidad Transferida: ${mov.qty}\n• Almacén Origen: ${mov.origin}\n• Almacén Destino: ${mov.dest}\n• Hora de Registro: ${mov.time} hrs\n• Responsable: ${mov.user}\n• Estatus de Auditoría: Aprobado y sincronizado por Logística MES.`,
+      `Detalle de custodia y movimiento en Kárdex:\n\n• Documento / Folio: ${mov.doc}\n• Tipo de Movimiento: ${mov.type}\n• Lote / Material: ${mov.item}\n• Cantidad Transferida: ${mov.qty}\n• Almacén Origen: ${mov.origin}\n• Almacén Destino: ${mov.dest}\n• Hora de Registro: ${mov.time} hrs\n• Responsable: ${mov.user}\n• Estatus de Custodia: Verificado y registrado en almacén intermedio.`,
       'Cerrar Vale'
     );
   };

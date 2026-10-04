@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.40.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.41.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -22,52 +22,34 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.40.0)
+## Arquitectura Funcional Tombstone Hats (v2.41.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)** y **Componente Propio Universal de Dropdowns Desplegables (`UanifySelect`)**:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
 | **0.  Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
-| **1.  Terminal de Supervisor** | Supervisores y Operación | **Escáner QR Aislado en Pantalla Completa (Kiosko) & Despliegue Progresivo de Acciones**: Inicialmente solo se presenta el disparador del escáner; tras la lectura y validación del código QR y su lote correspondiente se revelan las opciones operativas (depósito, merma, calidad, mica viajera). Simulador integrado con múltiples variaciones de lote para pruebas de planta sin inputs manuales innecesarios. Subpestaña diferenciada e independiente para métricas y recuentos de turno. |
-| **2.  Tablero Andon (Piso)** | Supervisores, Dirección y Planta (Web / Tablet) | Monitoreo visual de avance de estaciones en tiempo real, Takt Time (42s), semáforos de estación y comparación hora por hora de producción (despliegue en pantallas físicas de TV pendiente de acordar con cliente). |
-| **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados** con variaciones (tallas, faldas, toquillas) y visor de ficha técnica; **Catálogo de Hormas y Moldes Maquinados** con ciclo de vida, specs térmicas y ficha técnica; carga de fotos con Drag & Drop; 5 almacenes físicos, tafiletes y Kárdex general. |
-| **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de mano de obra en planta con máquina asignada, piezas procesadas hoy, turno y filtros dinámicos estandarizados. |
-| **5.  Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, KPIs de supervisores, balanceo de líneas & cuellos de botella, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
-| **6.  Configuración & Catálogos** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno y **Módulo de Integración CONTPAQi ERP en Espera de Homologación**. |
-
----
-
-##  Proceso Productivo Tombstone Modelado
-
-1. **Engomado & Apresto:** Inmersión y rigidez química de campanas y telares 1000X Master Telar.
-2. **Prensas de Hormado:** Moldeado con vapor a alta temperatura en hormas Denver, Bullrider y Laredo.
-3. **Troquelado de Falda & Plancha:** Corte circular de ala y asentado de falda de 4" a 4.5".
-4. **Ribeteado & Tafilete:** Costura de badana interior de piel con estampado dorado Tombstone.
-5. **Toquillas, Plumas & Herrajes:** Ensamble de toquilla de piel, plumas y pin plateado Tombstone.
-6. **Inspección de Calidad & Cajas B2B:** Control de calidad de primera, etiquetado y empaque para mayoristas.
-
----
-
-## Acceso Directo y Ejecución
-
-- **Link para Dispositivo Móvil:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
-- **Documento Maestro del Proyecto:** [SISTEMA_TOMBSTONE_MES.md](SISTEMA_TOMBSTONE_MES.md) — Fuente única de verdad de arquitectura, procesos de planta y reglas de negocio.
-- **Especificación de Requerimientos de Software (SRS / PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](docs/REQUERIMIENTOS_DEL_SISTEMA.md) — Catálogo exhaustivo de requerimientos funcionales (`RF-01` a `RF-76`), no funcionales y matriz de trazabilidad.
-- **Documentación Ejecutiva:** Consulta la carpeta `docs/` con las guías de descubrimiento y banco de proyectos adaptadas a Tombstone Hats.
+| **1.  Terminal de Supervisor** | Supervisores y Operación | **3 Acciones Heroicas en Tablet**: (1) Escáner QR de Tarjeta Viajera en Pantalla Completa, (2) Modo Rampa (Fraccionamiento en D-05), y (3) Reportar Paro de Máquina. Detección automática de estación por QR sin selectores manuales redundantes. |
+| **2.  Tablero Andon (Piso)** | Supervisores, Dirección y Planta (Web / Tablet) | Monitoreo visual de avance de estaciones en tiempo real con alto contraste, Takt Time (42s), 4 filtros de calidad destacados y bitácora viva de tiempos muertos. |
+| **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados**, **Catálogo de Hormas y Moldes Maquinados**, inventario ergonómico de tafiletes por talla (54-60) y Kárdex general. |
+| **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de 108 operadores fijos en planta con máquina asignada, piezas procesadas hoy, turno y filtros estandarizados. |
+| **5.  Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
+| **6.  Configuración & Catálogos** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno e integración silenciosa CONTPAQi SQL Server. |
 
 ---
 
 ## Historial de Versiones (Changelog)
 
-### [2.39.0] - 2026-10-02
-- **Aislamiento de Escáner QR en Pantalla Completa (Kiosko) & Despliegue Progresivo de Acciones (`RF-76`):**
-  - **Estado Inicial Minimalista:** La terminal de supervisor abre en un estado limpio donde únicamente es accesible el disparador del escáner QR (`#btnLaunchFullscreenScanner`) y las opciones de simulación de planta. Las opciones operativas del lote permanecen ocultas hasta que se lee e interpreta un código QR válido.
-  - **Kiosko Modal en Pantalla Completa:** Al presionar el escáner se lanza el modo inmersivo de pantalla completa (`#kioskQrScannerModal`) con visor óptico y retícula verde de enfoque automático, sin botones superfluos de prender/apagar cámara web ni toggle manual de pantalla completa.
-  - **Simulador de Disparo de Escaneo QR con Variaciones Reales:** Generación de payloads simulados con múltiples variaciones de prueba (Sublote #3 estándar, Lote Madre de 60 pzas, Lote con merma por quemado en prensa, Punto C-02 de inspección de calidad intermedia y Lote en departamento restringido por RBAC).
-  - **Eliminación de Campos Redundantes:** Retirado el input de texto manual de QR y textos de simulación de pruebas que sobrecargaban la interfaz.
-  - **Segregación de Métricas & Recuentos de Turno:** Las cifras de piezas producidas, mermas registradas y piezas de segunda calidad se trasladaron a una subpestaña dedicada (`subtab-terminal-metrics`) para no distraer ni obstaculizar la agilidad del escaneo en piso.
-  - **Botón de Retorno Operativo:** Agregado el botón `btnScanAnotherLot` para regresar al estado limpio del escáner en cualquier momento tras completar la inspección de un lote.
+### [2.41.0] - 2026-10-04
+- **Arquitectura Tablet-First Heroica en Terminal de Planta (`RF-85`):**
+  - **Tres Acciones Primordiales en Estado Vacío:** La terminal presenta 3 tarjetas heroicas ergonómicas con botones táctiles de 48px:
+    1. *Abrir Escáner QR:* Kiosko modal inmersivo con retícula visual y detección continua.
+    2. *Modo Rampa (Fraccionamiento D-05):* Activación directa para dividir lotes madre en 4 sublotes de 15 piezas y auditar tarjetas viajeras.
+    3. *Reportar Paro de Máquina:* Acceso instantáneo a la bitácora de tiempos muertos (cambio de horma SMED, falta de vapor o mantenimiento) con reflejo en vivo en el Andon.
+  - **Eliminación de Selectores Manuales Antipadrón:** Retirado el combobox manual de selección de estación del hero bar y el badge estático "Lote Activo: 1094", dado que el código QR define automáticamente el tramo y departamento.
+  - **Diferenciación Visual en Tablero Andon:** Mayor contraste de color en tarjetas de estación y distintivo dorado con doble borde para los 4 filtros de calidad obligatorios.
+  - **Estandarización de Textos de Custodia:** Actualización de folios y sellos de auditoría de Kárdex al control interno de almacén de Tombstone.
+  - **Actualización Documental y Dudas de Cliente:** Cierre formal de preguntas resueltas en planta y registro de nueva consulta sobre muestreo AQL vs inspección 100% en filtros de calidad (`DUD-13`).
 
 ### [2.40.0] - 2026-10-03
 - **Arquitectura Oficial de Integración CONTPAQi SQL Server & Compras ($0 USD Licencias):**

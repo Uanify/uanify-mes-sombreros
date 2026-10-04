@@ -1,7 +1,7 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.40.0` | **Fecha de Actualización:** 3 de Octubre de 2026  
+> **Versión Actual:** `v2.41.0` | **Fecha de Actualización:** 4 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -450,6 +450,10 @@ Todos los requerimientos funcionales (`RF-01` a `RF-40`) y no funcionales (`RNF-
   - **Botones de Fila de Icono Cuadrados y Paleta Suave:** Integración homogénea de botones de 32x32px para editar (`#F1F5F9`/`#E2E8F0`) y eliminar (`#FEF2F2`/`#FEE2E2`) con iconos SVG nítidos y tooltips descriptivos.
   - **Consistencia Dual de Operadores:** Normalización idéntica tanto en el módulo de Configuración (`subtab-config-operators`) como en el Directorio General de Mano de Obra (`view-operators`).
   - **Sincronización Universal de Versión:** Actualización transversal del sistema a `v2.25.0` en login, sidebar, package.json y documentación viva.
+- **`v2.41.0` (2026-10-04):**
+  - **Terminal Tablet-First Heroica (3 Acciones QR/Rampa/Paro · `RF-85`):** Rediseño ergonómico de la terminal de supervisor con tres tarjetas touch directas (Escáner QR, Modo Rampa de fraccionamiento y Reportar Paro de Máquina), eliminando selectores manuales de estación que duplicaban la inteligencia de la tarjeta viajera física.
+  - **Diferenciación Visual en Tablero Andon:** Realce de color y doble borde dorado para los 4 filtros de calidad obligatorios, y actualización de la bitácora viva de tiempos muertos.
+  - **Estandarización de Kárdex y Dudas Técnicas:** Actualización de folios de custodia de almacén y registro de la duda técnica sobre muestreo AQL vs inspección 100% en calidad (`DUD-13`).
 - **`v2.40.0` (2026-10-03):**
   - **Arquitectura Oficial de Integración CONTPAQi SQL Server & Compras ($0 USD Licencias):** Formalización técnica con Ing. Lupita López (Soporte CONTPAQi): descarte del SDK en favor de Stored Procedures y Vistas nativas en Microsoft SQL Server sin costo de usuarios concurrentes. Soporte a estructura dual de base de datos (BD Interna para órdenes de compra y saldos pendientes vs BD Fiscal para XML y recepción física). Inserción de producto terminado con referencia de folio MES para facturación y catálogo estructurado por familias (`PIEL001`, `TEL001`) trazable a la factura del proveedor.
 - **`v2.39.0` (2026-10-03):**

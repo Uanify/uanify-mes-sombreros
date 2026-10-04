@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.40.0` | **Versión:** `v2.40.0`  
-> **Fecha de Emisión / Última Actualización:** 2 de Octubre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.41.0` | **Versión:** `v2.41.0`  
+> **Fecha de Emisión / Última Actualización:** 4 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -533,6 +533,29 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 
 ---
 
+### Bloque R: Estabilización Visual, Ergonomía de Piso y Despliegue Progresivo (v2.37.0 - v2.39.0)
+
+- **`RF-73` Sistema Universal de Tooltips e Higiene Visual (`.info-tip`):** Implementación de tooltips contextuales discretos para guiar a supervisores y personal de planta sin saturar la pantalla.
+- **`RF-74` Cierre Centralizado Estricto de Modales en `×` Superior:** Todos los modales incorporan botón de cierre unificado en la esquina superior derecha (`.modal-close`) con soporte de tecla Escape y clic en backdrop.
+- **`RF-75` Componente Universal Dropdown UI (`UanifySelect`):** Reemplazo de controles de formulario nativos rígidos por componentes estandarizados de diseño industrial con altura táctil ergonómica (44-48px).
+- **`RF-76` Escáner QR Aislado Fullscreen & Despliegue Progresivo:** La terminal de piso cuenta con un kiosko de escaneo en pantalla completa con cámara web estándar (`getUserMedia`), retícula visual y revelado progresivo de acciones tras escanear el lote.
+- **`RF-77` Auditoría UI/UX Integral, Selects Dinámicos & Grid Tafiletes:** Sustitución de listas toscas por un grid responsivo de subensambles de tafilete por tallas (54 a 60) con indicador semafórico de disponibilidad.
+- **`RF-78` Matriz de 108 Puestos Fijos y Ausentismo (No Cubrir Máquina):** Modelado de la plantilla fija de 108 operarios asignados a estaciones de trabajo fijas (no rotativos); en caso de falta, la máquina se reporta como no cubierta sin alterar la nómina de otros operarios.
+- **`RF-79` Bitácora de Paros Inicio a Fin y Mapeo de Horma en Prensas:** Registro de eventos de paro de máquinas (SMED por cambio de horma de aluminio, falta de vapor o avería) reflejado en tiempo real en el Andon.
+- **`RF-80` Gestión de Piezas de Segunda (Causa, Inventario y Avance Continuo):** Las piezas con defectos leves se tipifican con causa raíz y se destinan a venta directa; la tarjeta viajera continúa su flujo con las piezas conformes restantes sin detener el lote madre.
+- **`RF-81` Semáforo de Buffer de Subensambles (Tafilete y Toquilla):** Indicador visual en Adorno que alerta si existen o faltan tafiletes/toquillas de la talla requerida antes de montar el sombrero.
+- **`RF-82` Pre-reporte Semanal de Destajo con Exportación Nativa a Excel/CSV:** Cálculo de producción $/pza para corte de nómina de los viernes con botón de descarga directa sin dependencias externas.
+
+---
+
+### Bloque S: Integración Silenciosa CONTPAQi SQL Server ($0 USD) y Arquitectura Tablet-First (v2.40.0 - v2.41.0)
+
+- **`RF-83` Puente de Integración CONTPAQi SQL Server ($0 Licencias API):** Enlace directo de solo lectura/escritura a través de Stored Procedures y Vistas sobre la base de datos Microsoft SQL Server de CONTPAQi Comercial (versión 11.3.1) en red local corporativa, evitando cobros por licencias de software intermediario.
+- **`RF-84` Esquema Dual de Base de Datos (Interna vs Fiscal) y Trazabilidad Factura:** Desacoplamiento entre el control de producción real de planta (100% de lotes y piezas físicas procesadas) y la emisión selectiva de facturas/remisiones según requerimiento comercial y fiscal del cliente.
+- **`RF-85` Terminal Tablet-First Heroica (3 Acciones Principales en Vacío):** La terminal de piso presenta en estado inicial 3 acciones touch heroicas: (1) Escáner QR de Tarjeta Viajera, (2) Modo Rampa (Fraccionamiento en D-05), y (3) Reportar Paro de Máquina, eliminando selectores manuales innecesarios ya que el código QR define automáticamente la estación de trabajo y ruta.
+
+---
+
 ## 4. Módulos del Sistema vs. Proceso de Producción Real & Análisis de Gaps
 
 Esta sección desglosa las capacidades funcionales de cada uno de los **7 módulos** del sistema frente al flujo real de manufactura de sombreros de paja telar, fieltro y campana en la planta matriz de San Francisco del Rincón, Guanajuato. Su propósito explícito es **auditar y detectar qué pasos del proceso físico real hacen falta agregar o ajustar en el software**.
@@ -816,6 +839,7 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-82** | Pre-reporte Semanal de Destajo con Exportación a Excel        | Nómina / Destajo             | `v2.39.0`           | OK En Producción |
 | **RF-83** | Puente de Integración CONTPAQi SQL Server ($0 Licencias)     | CONTPAQi / Backend           | `v2.40.0`           | OK En Producción |
 | **RF-84** | Esquema Dual DB (Interna vs Fiscal) y Trazabilidad Factura   | Compras / Almacén / ERP      | `v2.40.0`           | OK En Producción |
+| **RF-85** | Terminal Tablet-First Heroica (3 Acciones QR/Rampa/Paro)     | Terminal de Supervisor       | `v2.41.0`           | OK En Producción |
 
 
 

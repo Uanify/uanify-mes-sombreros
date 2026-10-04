@@ -1722,6 +1722,13 @@ window.initTerminalView = function() {
     });
   }
 
+  const btnHeroActivateRampa = document.getElementById('btnHeroActivateRampa');
+  if (btnHeroActivateRampa) {
+    btnHeroActivateRampa.addEventListener('click', () => {
+      window.openRampaFraccionamientoMode();
+    });
+  }
+
   function closeRampaModal() {
     if (modalRampaFraccionamiento) {
       modalRampaFraccionamiento.style.display = 'none';
@@ -2087,6 +2094,65 @@ window.initTerminalView = function() {
       }
     });
   }
+
+  // Modal de Reporte de Paro de Línea (Botón Heroico en Terminal y Prensas)
+  const modalStop = document.getElementById('modalStop');
+  const btnCloseStopModal = document.getElementById('btnCloseStopModal');
+  const stopOptBtns = document.querySelectorAll('.stop-opt-btn');
+
+  function openStopModal() {
+    if (modalStop) modalStop.classList.add('active');
+  }
+
+  function closeStopModal() {
+    if (modalStop) modalStop.classList.remove('active');
+  }
+
+  if (btnReportStop) {
+    btnReportStop.addEventListener('click', openStopModal);
+  }
+
+  if (btnCloseStopModal) {
+    btnCloseStopModal.addEventListener('click', closeStopModal);
+  }
+
+  if (modalStop) {
+    modalStop.addEventListener('click', (e) => {
+      if (e.target === modalStop) closeStopModal();
+    });
+  }
+
+  stopOptBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cause = btn.getAttribute('data-stop') || 'Ajuste operativo / Mantenimiento';
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      
+      const newDowntime = {
+        time: timeStr,
+        station: 'D-02 Prensas Vapor #04',
+        cause: cause,
+        duration: 'En curso (0 min)',
+        impact: 'Línea Detenida'
+      };
+
+      if (window.UanifyState && window.UanifyState.downtimes) {
+        window.UanifyState.downtimes.unshift(newDowntime);
+      }
+
+      if (typeof window.renderDowntimes === 'function') {
+        window.renderDowntimes();
+      }
+
+      closeStopModal();
+
+      window.UanifyUI.toast(
+        `Paro de máquina registrado a las ${timeStr}: "${cause}". Notificación activa en Tablero Andon.`,
+        'warning',
+        'Paro de Línea Registrado'
+      );
+    });
+  });
 
   // Bitácora de Paros de Prensa (RF-79)
   const btnPrensasStops = document.querySelectorAll('.btn-prensas-stop');
