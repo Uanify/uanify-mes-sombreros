@@ -1,0 +1,26 @@
+# Credenciales y tokens sensibles
+client_secret.json
+token.json
+credentials.json
+*.token
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Scripts temporales de autenticacion
+auth_receiver.py
+test_link.py
+list_folder.py
+exchange_token.py
+
+# Node y dependencias
+node_modules/
+package-lock.json
+
+# Logs y temporales
+*.log
+scratch/
+.tempmediaStorage/

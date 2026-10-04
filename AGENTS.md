@@ -76,6 +76,21 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 ---
 
+## REGLA 0.4.1: Sincronización Automática con Google Drive Corporativo (MANDATORIA)
+
+**Toda la documentación técnica del repositorio debe mantenerse estrictamente sincronizada con la carpeta oficial de Google Drive de Tombstone Hats (`1Ha5sFNTo-I0qT9mK38tW9TBt7d8yRnh3`).**
+
+1. **Cero Copiado Manual:** Queda prohibido solicitarle a Andrés que copie y pegue manualmente información de Markdown a Google Docs. La actualización se ejecuta automáticamente mediante el script `python sync_all_tombstone_docs.py`.
+2. **Documentos Sincronizados Oficiales:**
+   - `docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md` ↔ *Propuesta Técnica & Comercial – Sistema MES (MVP)*
+   - `docs/cuestionario_operativo_ingenieria_planta.md` ↔ *Preguntas Tecnicas – Sistema MES Tombstone Hats (MVP)*
+   - `docs/REQUERIMIENTOS_DEL_SISTEMA.md` ↔ *Requerimientos del Sistema (PRD / SRS) – Tombstone MES*
+   - `docs/DUDAS_Y_VALIDACIONES_CLIENTE.md` ↔ *Banco Oficial de Dudas y Validaciones Técnicas*
+   - `SISTEMA_TOMBSTONE_MES.md` ↔ *Documento Maestro de Arquitectura y Reglas de Negocio MES*
+3. **Ejecución al Desplegar o Cerrar Tarea:** Al igual que el commit y push a GitHub, la sincronización hacia Google Drive debe dispararse cada vez que se actualicen requerimientos, propuestas o reglas para garantizar que los socios y clientes siempre lean la versión vigente en tiempo real.
+
+---
+
 ## REGLA 0.5: Operación Consolidada en Turno Único & RBAC
 
 1. **Régimen de Operación:** La planta opera formalmente en **Turno Único (07:00 a 15:30 hrs · Lunes a Viernes)**, con un receso/comida programado de 12:00 a 12:45 hrs.
