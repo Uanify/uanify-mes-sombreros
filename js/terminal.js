@@ -164,13 +164,64 @@ window.initTerminalView = function() {
   }
 
   function stopCamera() {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop());
-      mediaStream = null;
+    try {
+      if (videoFeed && videoFeed.srcObject) {
+        const stream = videoFeed.srcObject;
+        if (stream && typeof stream.getTracks === 'function') {
+          stream.getTracks().forEach(track => {
+            try {
+              track.stop();
+              track.enabled = false;
+            } catch (e) {}
+          });
+        }
+        videoFeed.srcObject = null;
+        try { videoFeed.pause(); } catch (e) {}
+      }
+
+      if (mediaStream) {
+        if (typeof mediaStream.getTracks === 'function') {
+          mediaStream.getTracks().forEach(track => {
+            try {
+              track.stop();
+              track.enabled = false;
+            } catch (e) {}
+          });
+        }
+        mediaStream = null;
+      }
+    } catch (err) {
+      console.warn('Error al detener la cámara:', err);
     }
-    if (videoFeed) videoFeed.srcObject = null;
+
     if (cameraPlaceholder) cameraPlaceholder.style.display = 'flex';
     if (cameraReticle)     cameraReticle.style.display = 'none';
+    if (cameraStatusBadge) {
+      cameraStatusBadge.textContent = ' Cámara apagada';
+      cameraStatusBadge.style.background = '#F1F5F9';
+      cameraStatusBadge.style.color = 'var(--text-muted)';
+    }
+  }
+
+  // Apagar la cámara de inmediato si la pestaña o ventana pierde visibilidad
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopCamera();
+    }
+  });
+
+  // Apagar la cámara si se abandona la página
+  window.addEventListener('beforeunload', stopCamera);
+  window.addEventListener('pagehide', stopCamera);
+
+  // Apagar la cámara si se cambia de módulo en la app
+  if (window.EventBus) {
+    window.EventBus.on('tab-changed', (newTab) => {
+      if (newTab !== 'terminal') {
+        stopCamera();
+        if (kioskQrScannerModal) kioskQrScannerModal.style.display = 'none';
+      }
+    });
   }
 
   // ── Mover el modal del kiosko al root de <body> para escapar stacking contexts ──
