@@ -2,11 +2,9 @@
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Documento Oficial de Procesos, Flujo por Rol y Arquitectura Modular.*
 
-> **Versión:** `v2.44.0`  
 > **Fecha:** 7 de Octubre de 2026  
-> **Estado:** Documento Oficial de Entrega  
-> **Cliente:** Tombstone Hats  
-> **Proveedor:** Uanify
+> **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato)  
+> **Líder de Proyecto:** Andrés Villanueva (Uanify)
 
 ---
 
@@ -73,7 +71,7 @@ graph TD
 * **Bitácora Mínima del Lote:** Consulta rápida del historial de movimientos, hora exacta, estación y usuario responsable del depósito de cada lote o sublote.
 
 ### Módulo 3: Terminal Táctil de Piso (Supervisores)
-* **Escaneo de Lotes:** Identificación de tarjeta viajera mediante cámara integrada de la tablet o lector óptico industrial 2D (Opción B).
+* **Escaneo de Lotes:** Identificación de tarjeta viajera mediante cámara integrada de la tablet (Xiaomi Redmi Pad SE / Samsung) o lector óptico industrial 2D (Opción B).
 * **Registro de Depósito:** Confirmación de depósito en el almacén intermedio correspondiente al concluir el trabajo en la estación.
 * **Modo Rampa (Fraccionamiento Multi-QR):** Escaneo en lote para archivar la tarjeta madre de 60 piezas y activar formalmente los códigos QR de los sublotes de 15 piezas.
 * **Captura de Paros de Máquina:** Registro ágil de paros productivos con motivo de catálogo táctil (cambio de horma, falla mecánica, falta de vapor, falta de material) y tiempos de detención.
@@ -87,11 +85,11 @@ graph TD
 
 ### Módulo 5: Subensambles y Ficha Técnica Multiperspectiva
 * **Semáforo de Buffer en Adorno:** Monitoreo visual de disponibilidad de inventario intermedio en subensambles (Tafiletes y Toquillas) para evitar paros en Adorno.
-* **Ficha Técnica Visual con Fotos Oficiales:** Despliegue en pantalla de varias fotografías de la muestra oficial autorizada del sombrero en diferentes perspectivas (armado, doblado, toquilla, herraje) para comparación física en Adorno e Inspección Final.
+* **Ficha Técnica Visual con Fotos Oficiales:** Despliegue en pantalla de varias fotografías de la muestra oficial autorizada del sombrero (almacenadas en AWS S3) en diferentes perspectivas (armado, doblado, toquilla, herraje) para comparación física en Adorno e Inspección Final.
 
 ### Módulo 6: Pre-Nómina de Destajo y Reportes
 * **Cálculo de Destajo Semanal:** Acumulado automático de piezas concluidas por operador con base en su tarifa fija ($/pza).
-* **Exportación Administrativa:** Descarga en un clic en formato nativo Microsoft Excel para conciliación de nómina de los viernes.
+* **Exportación Administrativa:** Descarga en un clic en formato nativo Microsoft Excel para conciliación de nómina.
 
 ### Módulo 7: Microservicio Puente CONTPAQi SQL Server
 * **Integración Local ($0 Licencias SDK):** Vistas y Procedimientos Almacenados en Microsoft SQL Server dentro de red local para sincronizar catálogos, registrar entrada de producto terminado con el folio del lote MES en observaciones y descargar materia prima consumida.
