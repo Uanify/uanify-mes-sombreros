@@ -141,12 +141,12 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
 
 ## REGLA 0.10: Matriz de Asignaciones, Hormas y Métricas Clave
 
-1. **Meta Semanal Rectora:** La meta rectora de la planta se define como **Meta Semanal (4,250 piezas/semana)** correspondiente al Turno Único de Lunes a Viernes (~850 pzas/día).
-2. **Asignación Departamental para Supervisores:** Cada usuario con rol Supervisor únicamente tiene visibilidad y capacidad de acción sobre los departamentos que tiene asignados (un supervisor puede tener múltiples departamentos a cargo, ej. D-05 a D-08).
-3. **Privilegios de Ingeniería:** Los usuarios Ingenieros pueden ver y auditar todos los departamentos, y tienen la facultad de dar de alta nuevos Supervisores de Planta, pero **NO pueden crear otros Ingenieros ni Administradores** (facultad exclusiva de Dirección/Admin).
-4. **Acceso Exclusivo a KPIs de Rendimiento:** La sección de métricas y KPIs de rendimiento de Supervisores y Departamentos es de acceso exclusivo para Ingeniería y Dirección.
+1. **Métrica Rectora de Planta:** La métrica principal se define como el **Avance Real vs. Programado por Orden de Producción** y el **Monitoreo de Inventario en Proceso (WIP) por Almacén Intermedio**, sustituyendo cualquier cálculo teórico o cuotas fijas artificiales.
+2. **Asignación Departamental para Supervisores:** Cada usuario con rol Supervisor únicamente tiene visibilidad y capacidad de acción sobre los almacenes y departamentos que tiene asignados (un supervisor puede tener múltiples departamentos a cargo, ej. D-05 a D-08).
+3. **Privilegios de Ingeniería Admin:** Los usuarios con perfil Ingeniero (Admin Mayor) auditan todos los almacenes y departamentos, administran usuarios, ingresan órdenes desde CONTPAQi SQL y generan/imprimen tarjetas viajeras oficiales.
+4. **Bitácora Mínima por Lote:** Registro auditable de eventos que documenta fecha/hora, estación, usuario, piezas y resultado (depósito, merma o reproceso) al consultar un lote.
 5. **Catálogo de Hormas y Moldes:** Registro centralizado de hormas de aluminio fundido (Denver, Bullrider, Viejonón, Laredo, Frontier, Chaparral) con especificación de copa, falda, máquina asignada y estado.
-6. **Lector QR de Pantalla Completa con Cámara Web:** La terminal de piso despliega directamente el flujo de video en vivo de la cámara del dispositivo mediante la API estándar `navigator.mediaDevices.getUserMedia()`, garantizando compatibilidad universal en dispositivos móviles, laptops y terminales de piso.
+6. **Lector QR de Pantalla Completa con Cámara Web / Lector Óptico:** La terminal de piso despliega directamente el flujo de video en vivo de la cámara del dispositivo mediante la API estándar `navigator.mediaDevices.getUserMedia()` o admite lectores ópticos 2D en emulación teclado (HID).
 
 ---
 

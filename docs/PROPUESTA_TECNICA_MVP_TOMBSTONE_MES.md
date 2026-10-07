@@ -1,248 +1,179 @@
-# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats (MVP)
-**Estrategia de Digitalización y Control de Manufactura · Uanify**  
-*Documento de Especificación de Alcance, Procesos de Piso y Modelo Operativo.*
+﻿# Propuesta Técnica & Comercial · Tombstone Hats MES (MVP)
+**Digitalización y Control de Manufactura en Planta · Uanify**  
+*Documento Oficial de Alcance, Arquitectura de Flujo y Modelo Comercial.*
 
-> **Versión Oficial:** `v2.41.0`  
-> **Fecha:** 4 de Octubre de 2026  
-> **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato)  
+> **Versión:** `v2.44.0`  
+> **Fecha:** 7 de Octubre de 2026  
+> **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Dirección y Validación:** Edmundo González / Ing. Carlos Ortiz  
 > **Líder de Proyecto:** Andrés Villanueva (Uanify)
 
 ---
 
-## 1. Resumen Ejecutivo y Enfoque Estratégico ($0 Costo en Licenciamiento Externo)
+## 1. Resumen Ejecutivo y Enfoque Estratégico
 
-La presente propuesta define la arquitectura, flujos operativos y alcance funcional del **Sistema MES (Manufacturing Execution System) para Tombstone Hats**, diseñado bajo el estándar industrial del Clúster Sombrerero de San Francisco del Rincón.
+El **Sistema MES (Manufacturing Execution System)** de Tombstone Hats está concebido para resolver las dos necesidades críticas de la planta:
+1. **Conocer el avance real de la orden de producción vs. lo programado.**
+2. **Visualizar el inventario en proceso (WIP) actual por almacén intermedio** (dónde se encuentran físicamente los sombreros en tiempo real).
 
-### Directrices Rectoras de la Estrategia:
-1. **MVP Base Standalone (Independiente y Ágil):** Despliegue de piso sin dependencias bloqueantes de terceros. Control de órdenes, balanceo de línea, trazabilidad QR por tarjetas viajeras y paradas de calidad en Turno Único (meta rectora: 850 pzas/día · 4,250 pzas/semana).
-2. **Extensión 1 (Módulo Puente CONTPAQi Comercial 11.3.1):** Cotizado y estructurado como un anexo modular para sincronizar compras/almacén, vales de salida oficiales y facturación, protegiendo los tiempos del despliegue inicial.
-3. **Extensión 2 (Hardware de Piso e Insumos):** Soporte técnico para lectores ópticos QR vía USB/Bluetooth (emulación HID) en terminales de piso para maximizar ergonomía y velocidad frente al uso de cámaras en tablets.
-
----
-
-## 2. Padrón Operativo de Planta (108 Operadores Fijos)
-
-De acuerdo a la auditoría técnica confirmada con el Ing. Carlos Ortiz, la planta opera con personal 100% fijo en sus estaciones (sin rotación). Si un operario se ausenta, la máquina no se cubre (permanece inactiva).
-
-| Código | Departamento / Estación | Operadores Fijos | Tipo de Compensación | Dinámica Operativa |
-|:---:|:---|:---:|:---:|:---|
-| **D-01** | Corte | 2 | Cuadrilla / Fijo | Preparación y corte inicial de lienzos |
-| **D-02** | Prensas (Cuello de Botella) | 19 | Destajo ($/pza) | Prensado térmico por vapor; control de hormas |
-| **D-03** | Endopado | 9 | Cuadrilla / Fijo | Aplicación de resinas y rigidizado de copas |
-| **D-04** | Recortado | 4 | Cuadrilla / Fijo | Nivelación y corte de sobrantes de falda |
-| **D-05** | Alambrado | 8 | Destajo ($/pza) | Engargolado de alambre de memoria en falda |
-| **D-06** | Pintura y Acabados | 18 | Mixto | Brochas (4), Refuerzo (6), Pintura (5), Brillo (3) |
-| **D-07** | Prensas Hidráulicas | 8 | Destajo ($/pza) | Planchado de falda y asentamiento final |
-| **D-08** | Refaldeo | 3 | Cuadrilla / Fijo | Perfilado y rebaje de orillas |
-| **D-09** | Pegado y Perforado | 4 | Destajo ($/pza) | Ojillado y preparación para herrajes |
-| **D-10** | Adorno | 11 | Destajo ($/pza) | Montaje de tafilete, toquilla y herraje final |
-| **D-11** | Embarque | 4 | Cuadrilla / Fijo | Empaque final en cajas y entarimado |
-| **S-01** | Subensamble Tafilete | 9 | Destajo ($/pza) | Fabricación por tallas de interiores |
-| **S-02** | Subensamble Toquilla | 7 | Destajo ($/pza) | Confección de cintillos exteriores por modelo |
-| **ALM** | Almacén Materia Prima | 2 | Fijo | Recepción y suministro a corte |
-| **CAL** | Puntos de Calidad en Línea | 6 | Inspectores Fijos | 4 filtros oficiales de inspección |
-| **TOTAL** | **Nave Industrial** | **108** | — | **Personal distribuido en 14 áreas clave** |
+### Opciones de Implementación:
+* **Opción A — Sistema MES Integral con Enlace CONTPAQi SQL Server (Recomendada):**  
+  Plataforma completa de piso, trazabilidad de lotes/sublotes mediante tarjetas viajeras con código QR, monitoreo de WIP por almacén, enlace nativo a Microsoft SQL Server de CONTPAQi Comercial para ingesta de órdenes y descarga de materia prima. Operación en pantallas/tablets táctiles utilizando la cámara integrada del dispositivo para lectura QR.
+* **Opción B — Sistema MES Integral + Extensión de Hardware de Escaneo:**  
+  Todo el alcance de la Opción A, integrando en las estaciones clave lectores ópticos industriales 2D (código QR) vía USB/Bluetooth en modo emulación teclado (HID) para acelerar el flujo de escaneo continuo sin depender del enfoque de cámara.
 
 ---
 
-## 3. Arquitectura del Flujo Productivo y Tarjetas Viajeras
+## 2. Ingesta de Órdenes, Creación de Lotes e Impresión de Tarjetas
 
-```mermaid
-graph LR
-    subgraph INGENIERIA["Ingeniería"]
-        OP[Orden de Producción] --> IMP[Imprime Carta:\nMadre + Sublotes]
-    end
-
-    subgraph PREPARACION["Flujo Madre (60 pzas)"]
-        IMP --> D01[D-01: Corte]
-        D01 --> D02[D-02: Prensas]
-    end
-
-    subgraph FRACCIONAMIENTO["Rampa (D-05)"]
-        D02 --> RAMPA[Intercambio Físico:\nArchivo Tarjeta Madre\nActivación Sublotes 15 a 60 pzas]
-    end
-
-    subgraph ACABADOS["Línea de Sublotes"]
-        RAMPA --> Q1{Filtro 1: Pintura}
-        Q1 --> D07[Patio / Endopado]
-        D07 --> Q2{Filtro 2: Hidráulicas}
-        Q2 --> D10[D-10: Adorno]
-        D10 --> Q3{Filtro 3: Calidad Final}
-        Q3 --> D11[D-11: Embarque]
-    end
+```
+[CONTPAQi Comercial / Microsoft SQL Server]
+                   │
+                   ▼ (Lectura directa de Órdenes de Producción / Pedidos)
+[Módulo de Programación MES (Ingeniero Admin)]
+   ├── Carga de la orden y volumen a producir
+   ├── Asignación manual de lotes madre (base 60 pzas) y sublotes (15 pzas)
+   └── Generación e Impresión In-App de Tarjetas Viajeras oficiales
+                   │
+                   ▼
+[Impresión en Planta (Hojas Carta recortables para micas viajeras)]
 ```
 
-### Reglas de Movimiento y Custodia Física:
-1. **Emisión de Tarjetas:** Se generan e imprimen en **Ingeniería** en hojas tamaño carta estándar con códigos QR de alta densidad y se recortan para introducirlas en fundas plásticas cosidas de alta resistencia.
-2. **Fraccionamiento en Rampa (D-05):** El supervisor recoge en Ingeniería el juego de tarjetas de sublote. En Rampa se realiza el cambio físico; la **Tarjeta Madre original se archiva en la mesa de rampa** como bitácora y control histórico.
-3. **Escaneo de Avance:** Se realiza **AL SALIR del departamento** por el auxiliar de producción o el supervisor que concluye el proceso.
-4. **Logística de Pasillo:** Los operadores dejan los sombreros en carros rodantes; un **recolector físico de pasillo** traslada las pilas (torres de 60 pzas) al almacén intermedio de la siguiente estación.
+### Reglas Operativas:
+1. **Generación e Impresión Directa en Planta:** El Ingeniero Admin consulta la orden proveniente de CONTPAQi, define manualmente la cantidad y partición de lotes/sublotes en el sistema y, **desde esa misma pantalla, genera e imprime las tarjetas viajeras oficiales con sus códigos QR**.
+2. **Sin Algoritmos Matemáticos de Optimización en MVP:** La decisión de cómo y cuántos lotes crear la toma el Ingeniero con base en la planeación de la semana.
+3. **Mica Viajera:** Las tarjetas impresas se colocan en fundas plásticas y acompañan físicamente al lote durante todo el proceso.
 
 ---
 
-## 4. Gestión de Calidad, Piezas de Segunda y Reprocesos
+## 3. Flujo Productivo, Almacenes Intermedios y Rampa
 
-1. **Estructura de Calidad Independiente:**
-   - 6 inspectores dedicados que no dependen de la supervisión de producción, garantizando objetividad en los 4 filtros de revisión.
-   - El Inspector da el visto bueno al avance del lote. Si existe una no conformidad, el **Supervisor o Ingeniero de Calidad** dictamina: *Reproceso, Merma o Segunda*.
-2. **Reprocesos con Enrutamiento Específico:**
-   - El lote o piezas rechazadas no regresan al paso anterior por defecto, sino que el sistema las canaliza al **departamento exacto que causó el defecto** (ej. retorno a Pintura o a Hidráulicas).
-3. **Tratamiento de Piezas de Segunda (Regla Operativa Validada):**
-   - **Flujo en Planta:** Las piezas de segunda detectadas se separan físicamente, pero **el lote principal NO se detiene**; continúa avanzando hasta concluir.
-   - **En el Sistema MES:**
-     * Registro obligatorio del número de piezas y la **Causa Raíz de Segunda** (ej. poro en lienzo, mancha de tinta, quemadura de vapor).
-     * Ingreso automático a un **Inventario Virtual de Sombreros de Segunda**.
-     * Físicamente se derivan a la ruta de **Venta Directa de Segundas**.
-
----
-
-## 5. Módulo de Destajo y Bitácora de Paros de Máquina
-
-1. **Pre-nómina Semanal a Destajo:**
-   - Cálculo automático del acumulado de piezas buenas por operador conforme a la tarifa fija asignada ($/pza).
-   - Generación de **Pre-reporte de corte los viernes** con función obligatoria de **exportación nativa a Microsoft Excel** para su conciliación con Administración.
-2. **Bitácora de Paros en Prensas (Inicio a Fin):**
-   - Panel táctil con botones rápidos: *Cambio de Horma, Falla Mecánica, Falta de Vapor en Caldera, Falta de Material*.
-   - Mapeo diario: Qué horma de aluminio está montada en qué número de prensa para la programación de la jornada.
-
----
-
-## 6. Subensambles (Tafiletes y Toquillas) y Ficha Técnica con Foto
-
-1. **Semáforo de Buffer en Adorno:**
-   - Tafiletes (9 op) y Toquillas (7 op) alimentan a Adorno (11 op) como buffers independientes.
-   - La inclusión de estos elementos depende de la Orden de Producción del cliente.
-   - La terminal de Adorno despliega un **semáforo de disponibilidad por talla y modelo** para evitar cuellos de botella antes de iniciar el armado.
-2. **Ficha Técnica Visual:**
-   - En Adorno e Inspección Final se muestra en pantalla la **fotografía autorizada del sombrero terminado** para confrontar físicamente doblado, color, toquilla y herraje contra la muestra oficial.
-
----
-
-## 7. Despliegue de Hardware en Nave (6 Estaciones Confirmadas)
-
-| Estación | Ubicación en Nave | Perfil de Terminal en Sistema | Funcionalidad Clave |
-|:---:|:---|:---|:---|
-| **1** | Prensas | Terminal de Formado | Control de hormas, bitácora de paros y destajo |
-| **2** | Calidad Refuerzo / Pintura | Terminal de Filtro 1 | Aprobación de calidad y desvío a reprocesos |
-| **3** | Patio Endopado / Recortes | Terminal de Proceso Seco | Registro de avance y tiempos de curado |
-| **4** | Calidad Prensas Hidráulicas | Terminal de Filtro 2 | Inspección de planchado y falda |
-| **5** | Toquilla y Adorno | Terminal de Acabados | Semáforo de subensambles y Ficha con Foto |
-| **6** | Calidad Final y Embarque | Terminal de Despacho | Filtro 3, captura de segundas y Vale de Salida |
-
----
-
-## 8. Extensión 1: Módulo Puente CONTPAQi Comercial 11 (Arquitectura SQL Server Validada)
-
-Tras la reunión de validación técnica con la **Ing. Lupita López (Soporte CONTPAQi)** y **Edmundo Quezada**, se definieron los lineamientos definitivos para la conexión:
+El sistema rastrea los sombreros **a nivel de Almacenes Intermedios**. Los departamentos delimitan las áreas de trabajo y la asignación de supervisores.
 
 ```mermaid
 graph TD
-    subgraph MES_TOMBSTONE["Tombstone MES (Piso de Producción)"]
-        VALE[Vale de Salida / Lote Concluido\nRef: Folio Lote MES]
-        MP_CONS[Consumo Real de Materia Prima\nLienzo, Tafilete, Herrajes]
-    end
+    classDef dep fill:#F1F5F9,stroke:#94A3B8,stroke-width:1px,color:#0F172A;
+    classDef alm fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E,font-weight:bold;
+    classDef qual fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B,font-weight:bold;
 
-    subgraph SQL_BRIDGE["Microservicio Puente SQL Server (Local / Red Planta)"]
-        SP_IN[Stored Procedure:\nIngreso Producto Terminado]
-        SP_OUT[Stored Procedure:\nDescarga de Materia Prima]
-        V_CAT[Vistas SQL de Catálogos:\nFamilias PIEL001, TEL001, SAT]
-    end
-
-    subgraph CONTPAQI_DBS["CONTPAQi Comercial 11.3.1 (Microsoft SQL Server)"]
-        DB_INT[(BD Empresa Interna:\nÓrdenes de Compra y Saldos)]
-        DB_FISC[(BD Empresa Fiscal:\nFacturación y XML Recepción)]
-    end
-
-    VALE -->|Dispara| SP_IN
-    MP_CONS -->|Descarga| SP_OUT
-    SP_IN --> DB_FISC
-    SP_IN --> DB_INT
-    SP_OUT --> DB_INT
-    V_CAT -.->|Sincroniza Códigos| MES_TOMBSTONE
+    A0["Almacén Materia Prima"]:::alm --> D1["D-01: Corte (Lote Madre 60 pzas)"]:::dep
+    D1 --> A1["Almacén Salida Corte"]:::alm
+    A1 --> D2["D-02: Prensas (Control Hormas)"]:::dep
+    D2 --> A2["Almacén Salida Prensas"]:::alm
+    A2 --> RAMPA["Rampa (D-05: Alambrado)\nFraccionamiento Lote Madre a Sublotes"]:::dep
+    RAMPA --> A_RAMPA["Almacén Intermedio Rampa"]:::alm
+    
+    A_RAMPA --> Q1{"Filtro Calidad 1"}:::qual
+    Q1 -->|Aprobado| A3["Almacén Entrada Acabados"]:::alm
+    A3 --> D6["D-06: Pintura / Acabados"]:::dep
+    D6 --> A4["Almacén Salida Pintura"]:::alm
+    A4 --> D7["D-07: Prensas Hidráulicas"]:::dep
+    D7 --> Q2{"Filtro Calidad 2"}:::qual
+    Q2 -->|Aprobado| A5["Almacén Entrada Adorno"]:::alm
+    A5 --> D10["D-10: Adorno (Tafilete / Toquilla)"]:::dep
+    D10 --> Q3{"Filtro Calidad 3 (Final)"}:::qual
+    Q3 -->|Aprobado| A_PT["Almacén Producto Terminado / Embarque"]:::alm
 ```
 
-### Acuerdos Técnicos y Ventajas Estratégicas:
-1. **Acceso Nativo Vía Microsoft SQL Server ($0 Costo en Licencias Adicionales):**
-   - No se utiliza el SDK de CONTPAQi (evitando restricciones, bloqueos e inestabilidad).
-   - Se trabaja mediante **Vistas y Procedimientos Almacenados (Stored Procedures)** directamente sobre el motor de base de datos SQL Server.
-   - **Cero costo de licenciamiento:** La conexión a nivel SQL no consume usuarios concurrentes de la licencia de CONTPAQi Comercial.
-2. **Esquema de Dos Bases de Datos (Razón Social Interna vs. Fiscal):**
-   - **Base de Datos Interna:** Control de órdenes de compra abiertas y seguimiento a parcialidades del proveedor mediante vales internos.
-   - **Base de Datos Fiscal:** Registro exacto de mercancía recibida físicamente con asociación directa a los XML de los proveedores.
-3. **Manejo de Lotes Desacoplado:**
-   - Como CONTPAQi no opera con trazabilidad de lotes nativa, el MES inyecta el producto terminado insertando el **Folio del Lote del MES en el campo de referencia/observaciones de la partida**, permitiendo que Administración facture de forma habitual con plena trazabilidad hacia atrás.
-4. **Catálogo de Materiales Estructurado:**
-   - Clasificación por Familias + Consecutivo único (ej. `PIEL001` = Sintético Poring, `TEL001` = Fieltro).
-   - Atributos sincronizados: *Código, Nombre, Categoría, Almacén, Clave SAT, Unidad de Medida y Costo Unitario*.
-   - Trazabilidad de origen ligada al **Folio de Factura del Proveedor**.
+### Dinámica de Movimiento:
+1. **Depósito y Disponibilidad:** Al concluir el trabajo en una máquina, el supervisor o auxiliar escanea el lote y lo registra como **depositado en el almacén intermedio**.
+2. **Visualización de WIP:** El siguiente departamento visualiza en su pantalla los lotes disponibles en el almacén de entrada para tomarlos y procesarlos.
+3. **Modo Rampa (Fraccionamiento Multi-QR):** En el área de Rampa, el supervisor activa la función para escanear y fraccionar lotes madre de 60 piezas en sublotes (ej. 4 de 15 piezas), archivando la tarjeta madre y activando los códigos QR de los sublotes.
 
 ---
 
-## 9. Metodología de Entrega y Cronograma (5 a 7 Semanas)
+## 4. Gestión de Calidad: Rechazos, Mermas y Segundas
 
-1. **Plazo Oficial de Implementación del MVP:**
-   - Se establece un cronograma ágil de **5 a 7 semanas** para la puesta en marcha en piso (sustituyendo el planteamiento teórico de 16 semanas para asegurar tracción rápida).
-2. **Ciclos de Entrega y Demos Funcionales:**
-   - **Sprints de 2 semanas:** Demostraciones quincenales en piso con usuarios reales (supervisores e inspectores) para retroalimentación continua.
-3. **Product Owner y Contraparte Técnica:**
-   - **Ing. Carlos Ortiz** (Ingeniería de Procesos) funge como contraparte técnica y Product Owner de planta por parte de Tombstone Hats.
-
----
-
-## 10. Arquitectura Tecnológica e Infraestructura
-
-1. **Tipo de Aplicación:**
-   - **PWA (Progressive Web App) Tablet-First:** Permite instalación táctil como aplicación de pantalla completa en tablets Android sin fricción de tiendas de apps ni costos de despliegue.
-2. **Infraestructura y Base de Datos ($0 USD Inicial):**
-   - Servidor web/API en la nube y base de datos relacional PostgreSQL con tier gratuito, complementado con el microservicio puente en red local LAN para conectar la base de datos Microsoft SQL Server de CONTPAQi.
-3. **Resiliencia Operativa Offline-First:**
-   - Almacenamiento local en tablets (`IndexedDB` y `localStorage`) para que ningún supervisor se detenga por micro-cortes de red Wi-Fi; sincronización automática en cola al reconectar.
-4. **Propiedad de Infraestructura:**
-   - Todas las cuentas, bases de datos, repositorios y códigos quedan a nombre de Tombstone Hats o bajo su custodia corporativa.
+1. **Roles y Flujo de Decisión en Filtros de Calidad:**
+   * **Inspector de Calidad:** Revisa las piezas físicamente y registra el resultado: **Aprobar** o **Rechazar**.
+   * **Determinación de Destino (Supervisor / Ingeniero):** Ante un rechazo, el Supervisor o el Ingeniero dictamina la acción en el sistema:
+     * **Reproceso:** Se selecciona manualmente en la pantalla a qué estación o proceso anterior debe regresar el lote para ser corregido.
+     * **Segunda:** El lote principal continúa su curso; se captura la cantidad de piezas separadas y la causa raíz para registro histórico.
+     * **Merma:** Registro de piezas descartadas definitivamente con su motivo de fallo.
+2. **Alcance de Mermas y Segundas en MVP:**
+   * **Estrictamente Captura y Registro Histórico:** El sistema almacena piezas afectadas, causa raíz, lote de origen, fecha y estación.
+   * **Exclusión:** No se incluye recosteo automático, notas contables ni facturación especial de segundas en esta fase.
 
 ---
 
-## 11. Modelo Comercial, Inversión y Soporte
+## 5. Paros de Máquina y Módulo de Destajo
 
-1. **Rango de Inversión del MVP Base:**
-   - Inversión de desarrollo: **$76,000 – $109,000 MXN + IVA** (desarrollo ágil de 5 a 7 semanas).
-2. **Garantía Post-Arranque:**
-   - **30 días naturales de garantía y soporte correctivo directo** incluidos a partir del Go-Live formal en planta.
-3. **Póliza de Mantenimiento y Evolución Continua:**
-   - Propuesta opcional post-garantía: **$3,500 – $6,000 MXN/mes** (incluye soporte técnico preventivo, optimización de consultas SQL con CONTPAQi y ajustes menores de flujo).
-
----
-
-## 12. Matriz de Respuestas a Puntos de Decisión Técnica
-
-| # | Punto de Decisión | Definición Oficial Acordada | Impacto en Sistema |
-|:---:|:---|:---|:---|
-| **1.1** | **Líneas de Producto** | Exclusivamente **Línea de Sombreros** en Fase 1 (MVP). Accesorios (cintos, carteras) quedan para Fase 2. | Catálogo centrado en modelos texanos y campanas. |
-| **1.2** | **Gestión de Pedidos & Stock** | Incluido en MVP: Órdenes por cliente, desglose de modelos y stock meta. | Módulo de Órdenes y sincronización de vales B2B. |
-| **1.3** | **Compras e Insumos** | Control de recepción de rollos e insumos mediante el puente CONTPAQi Comercial SQL Server. | Tablas nativas `mgw10005` y `mgw10008` enlazadas. |
-| **1.4** | **Metas & Cadencia** | Turno Único (07:00 a 15:30) con meta semanal de **4,250 pzas** (~850 pzas/día) y Takt Time de **42s**. | Curva hora por hora y semáforos Andon en vivo. |
-| **1.5** | **Vales de Salida** | Generación de **Vale Digital de Salida** con descuento automático de piezas concluidas. | Base para timbrado y facturación en CONTPAQi. |
-| **2.1** | **Estructura de Lotes** | Lotes madre dinámicos (base 60 pzas) fraccionados en sublotes de 15 pzas (editables por orden de 4 a 14 sublotes). | Lotes madre y sublotes en micas viajeras. |
-| **2.2** | **Fraccionamiento en Rampa** | En Rampa (D-05) mediante activación formal en tablet. La tarjeta madre se archiva como histórico. | Botón heroico "Modo Rampa" en Terminal. |
-| **2.3** | **Calidad y Mermas** | 4 filtros de calidad con 6 inspectores. Segundas se venden directamente; el lote no se detiene. | Segregación de segundas y enrutamiento a causa raíz. |
-| **2.4** | **Destajo por Operador** | 108 operadores fijos. Pre-reporte semanal de corte de los viernes ($/pza) con exportación a Excel. | Módulo de cálculo y botón de descarga CSV/Excel. |
-| **2.5** | **Almacenes Intermedios** | Monitoreo en vivo de WIP por estación y buffers de salida entre departamentos. | Tablero Andon y monitores de rampa en tiempo real. |
-| **3.1** | **Perfiles de Acceso** | RBAC con 4 roles: Admin (Edmundo), Ingeniero (Carlos), Supervisor (Nave) e Inspectores de Calidad. | Seguridad modular con ocultamiento total de pestañas. |
-| **3.2** | **Autenticación en Piso** | Teclado numérico táctil de **PIN rápido de 4 dígitos** (más selector rápido de perfiles). | Cero contraseñas complejas que frenen el paso. |
-| **3.3** | **Auditoría & Trazabilidad** | Firma digital automática (usuario, estación, lote, piezas, fecha y hora exacta). | Kárdex cronológico y bitácora de movimientos. |
-| **4.1** | **Tipo de Aplicación** | PWA (Progressive Web App) responsiva optimizada Tablet-First. | Acceso universal vía navegador sin tiendas. |
-| **4.2** | **Infraestructura** | Servidor en la nube con base de datos PostgreSQL ($0 tier) + microservicio local para SQL Server. | Arquitectura híbrida sin costo de licenciamiento. |
-| **4.3** | **Modo Offline** | Resiliencia offline mediante almacenamiento local en navegador (`IndexedDB`). | Continuidad de escaneo ante caídas de Wi-Fi. |
-| **4.4** | **Enlace CONTPAQi** | Enlace nativo vía Vistas y Stored Procedures en Microsoft SQL Server ($0 USD licencias). | Cero dependencia de licencias concurrentes ni SDK. |
-| **5.1** | **Modelo de Tablets** | Tablets comerciales (Samsung Tab A9+ 11" / Xiaomi Pad) con funda rígida sellada de uso rudo. | Inversión eficiente sin sobrecosto de hardware militar. |
-| **5.2** | **Despliegue de Tablets** | Despliegue en las **6 estaciones clave** de piso (Prensas, 3 Filtros Calidad, Patio, Adorno). | Cobertura integral de los puntos de control de nave. |
-| **5.3** | **Pantallas Andon** | Visualización en tablets y PCs en Fase 1. Pantallas físicas Smart TV en viga pausadas para Fase 2. | $0 costo anticipado en cableado o pantallas de TV. |
-| **5.4** | **Impresora de Tarjetas** | Impresora láser de oficina en **Ingeniería en hoja tamaño carta estándar** recortable para micas. | Utilización de infraestructura de impresión existente. |
+1. **Registro de Paros Productivos:**
+   * Captura rápida en pantalla: Estación/Máquina, operador, hora inicio, hora fin y motivo general (ej. *Cambio de horma, falla mecánica, falta de vapor, falta de material*).
+   * *Pendiente por afinar con cliente:* Criterios de tolerancia y campos obligatorios exactos.
+2. **Pre-nómina Semanal a Destajo:**
+   * Conteo de piezas concluidas por operador con base en su tarifa fija ($/pza).
+   * Generación de pre-reporte semanal con **exportación directa a Microsoft Excel** para conciliación administrativa.
 
 ---
 
-## 13. Sincronización y Mantenimiento de Documentación
+## 6. Enlace Técnico CONTPAQi Comercial 11 (Vía Microsoft SQL Server)
 
-Conforme a la **REGLA 0.4.1** de desarrollo, este documento se mantiene estrictamente sincronizado de forma automática entre el repositorio de código y la suite de Google Workspace de la empresa (`Tombstone Hats`), garantizando una fuente única de verdad para Dirección, Ingeniería y Uanify.
+* **Conexión Directa a Base de Datos ($0 Costo en Licencias de SDK):**
+  * Comunicación mediante Vistas y Procedimientos Almacenados en SQL Server dentro de la red local.
+  * No consume licencias concurrentes de usuarios CONTPAQi.
+* **Flujo Bidireccional:**
+  * **Lectura:** Extracción de órdenes de producción/pedidos, códigos de artículos y almacenes.
+  * **Escritura:** Registro de entrada de producto terminado referenciando el folio del lote MES en el campo de observaciones/referencia, y descarga de materia prima consumida.
 
+---
+
+## 7. Perfiles de Acceso (3 Roles)
+
+1. **Ingeniero (Admin Mayor):** Acceso total al sistema. Alta de órdenes, creación y partición de lotes, impresión de tarjetas viajeras, configuración de rutas, almacenes y usuarios.
+2. **Supervisor:** Consulta de WIP de sus almacenes asignados, registro de depósito de lotes, ejecución de Modo Rampa, captura de paros de máquina y resolución de reprocesos.
+3. **Inspector de Calidad:** Acceso exclusivo a los filtros de calidad para validar, aprobar o rechazar lotes.
+*(Nota: Para Dirección General se asigna un perfil con privilegios de Ingeniero Admin para consulta y auditoría total).*
+
+---
+
+## 8. Infraestructura, Conectividad y Póliza de Mantenimiento
+
+1. **Conectividad 100% En Línea (Sin Modo Offline):**
+   * El sistema requiere cobertura Wi-Fi continua en las áreas de trabajo de la nave para garantizar la sincronización inmediata del WIP entre almacenes.
+2. **Arquitectura y Custodia de Servicios:**
+   * Uanify aloja y administra el servidor de aplicaciones, la base de datos principal y el microservicio puente de red local.
+3. **Póliza Mensual de Mantenimiento y Operación:**
+   * Incluye: Respaldos diarios automáticos, monitoreo de disponibilidad, optimización y mantenimiento del microservicio SQL Server CONTPAQi, y soporte técnico continuo.
+   * *Entrega si no se contrata póliza:* Si el cliente opta por operar de manera autónoma, se le entregan los instaladores y base de datos local, cesando la administración y soporte continuo de Uanify.
+
+---
+
+## 9. Cronograma de Implementación (12 Semanas Totales)
+
+| Fase | Duración | Actividades Clave |
+|:---|:---:|:---|
+| **Fase 1: Desarrollo e Integraciones** | 8 semanas | Construcción de módulos, vistas de almacén, terminal QR y puente SQL CONTPAQi. |
+| **Fase 2: Pruebas UAT en Planta** | 1 semana | Despliegue en piso, pruebas con usuarios reales y validación de tarjetas viajeras. |
+| **Fase 3: Refinamiento y Ajustes** | 2 semanas | Ajustes de ergonomía táctil, afinación de vistas y validación de descargas SQL. |
+| **Fase 4: Pruebas Finales y Go-Live** | 1 semana | Puesta en marcha oficial en nave industrial y arranque productivo. |
+| **TOTAL** | **12 semanas** | **Entrega formal del sistema en piso.** |
+
+> **Garantía Post-Arranque:** **5 semanas de soporte correctivo directo** a partir del Go-Live oficial en planta.
+
+---
+
+## 10. Propuesta Económica
+
+1. **Desarrollo del Sistema MES (12 semanas):**
+   * *Rango de Inversión:* **[Pendiente de definir tras aprobación de módulos y diagramas de flujo]**
+2. **Hardware de Piso (Aplica para Opción B):**
+   * Cotización de lectores industriales 2D USB/Bluetooth y soportes ergonómicos según cantidad de terminales requeridas.
+3. **Póliza de Mantenimiento y Soporte Continuo:**
+   * Cuota mensual administrada: Respaldos, monitoreo de servidor, afinación de enlace SQL y soporte a incidencias.
+
+---
+
+## 11. Supuestos y Exclusiones del MVP
+
+### Supuestos Obligatorios:
+1. Red local Wi-Fi con cobertura estable y continua en los puntos de almacén y calidad de la nave.
+2. Servidor de CONTPAQi Comercial accesible en red local con credenciales de lectura/escritura a Microsoft SQL Server.
+3. Impresora láser de oficina funcional para impresión de tarjetas en papel carta estándar.
+
+### Exclusiones Explícitas del Alcance:
+1. **Modo Offline:** No se contempla almacenamiento en desconexión.
+2. **Algoritmos automáticos de optimización de corte o loteo:** La partición la define el usuario.
+3. **Kárdex contable valorizado:** Se entrega bitácora mínima de movimientos físicos por lote; la contabilidad de costos permanece en CONTPAQi.
+4. **Pantallas Smart TV / Andon en vigas:** La visualización se concentra en tablets y computadoras de escritorio.
+5. **Sensores IoT / Telemetría física en prensas:** El registro de paros es por captura manual táctil.
