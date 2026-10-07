@@ -89,8 +89,8 @@ def set_card_borders(cell, border_color="8B5E3C"):
     tcPr.append(tcBorders)
 
 def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, default_font="Arial", default_bold=False):
-    """Parsea markdown inline (**negrita** y *cursiva*) dentro de cualquier parrafo o celda."""
-    parts = re.split(r'(\*\*.*?\*\*|\*.*?\*)', text)
+    """Parsea markdown inline (**negrita**, *cursiva* y `codigo`) dentro de cualquier parrafo o celda."""
+    parts = re.split(r'(\*\*.*?\*\*|\*.*?\*|`.*?`)', text)
     for part in parts:
         if not part:
             continue
@@ -107,6 +107,12 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
             r.font.name = default_font
             r.font.size = Pt(default_size)
             r.font.color.rgb = default_color
+        elif part.startswith('`') and part.endswith('`') and len(part) >= 2:
+            r = p.add_run(part[1:-1])
+            r.bold = True
+            r.font.name = "Consolas"
+            r.font.size = Pt(default_size - 0.5)
+            r.font.color.rgb = COLOR_BRAND
         else:
             r = p.add_run(part)
             r.bold = default_bold
@@ -131,7 +137,7 @@ def md_to_docx(md_path, docx_path, doc_title):
         f_run.font.size = Pt(8.5)
         f_run.font.color.rgb = COLOR_MUTED
 
-    with open(md_path, 'r', encoding='utf-8') as f:
+    with open(md_path, 'r', encoding='utf-8-sig') as f:
         lines = f.readlines()
 
     in_metadata_card = False
