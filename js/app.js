@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.42.0',
+  version: '2.43.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2020,6 +2020,11 @@ function initSubTabs() {
           targetContent.classList.add('active');
           targetContent.style.setProperty('display', 'block', 'important');
         }
+
+        // Restablecer scroll al inicio del contenedor para ergonomía inmediata en tablet y desktop
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        const appContent = document.querySelector('.app-content');
+        if (appContent) appContent.scrollTop = 0;
       });
     });
   });
@@ -2054,6 +2059,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       const targetPanel = document.getElementById(`view-${targetTab}`);
       if (targetPanel) targetPanel.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      const appContent = document.querySelector('.app-content');
+      if (appContent) appContent.scrollTop = 0;
       EventBus.emit('tab-changed', targetTab);
     });
   });

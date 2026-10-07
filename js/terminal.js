@@ -984,6 +984,22 @@ window.initTerminalView = function() {
       dynamicLotOptionsList.innerHTML = optionsListHtml;
     }
 
+    // Modo Rampa visible exclusivamente si es lote madre
+    const terminalRampaActionContainer = document.getElementById('terminalRampaActionContainer');
+    if (terminalRampaActionContainer) {
+      terminalRampaActionContainer.style.display = isMotherLot && !isFinalLot ? 'block' : 'none';
+    }
+
+    // Asegurar que el bloque de conclusión esté oculto al renderizar lote inicialmente
+    const lotDepositSuccessWrap = document.getElementById('lotDepositSuccessWrap');
+    const lotMainActionButtonsGroup = document.getElementById('lotMainActionButtonsGroup');
+    if (lotDepositSuccessWrap && !lot._isDepositedJustNow) {
+      lotDepositSuccessWrap.style.display = 'none';
+    }
+    if (lotMainActionButtonsGroup && !lot._isDepositedJustNow) {
+      lotMainActionButtonsGroup.style.display = 'flex';
+    }
+
     // Botón Principal de Depósito
     if (btnDepositToNextBuffer) {
       btnDepositToNextBuffer.textContent = `Depositar Lote en Almacén de ${lot.targetStationCode} ${lot.targetStationName}`;
@@ -1008,8 +1024,19 @@ window.initTerminalView = function() {
           currentStationCode: res.targetStep.code,
           hasScrap: false
         });
+        activeScannedLot._isDepositedJustNow = true;
         renderActiveScannedLotCard(activeScannedLot);
         renderPlantDepartmentsGrid();
+
+        const lotDepositSuccessWrap = document.getElementById('lotDepositSuccessWrap');
+        const lotMainActionButtonsGroup = document.getElementById('lotMainActionButtonsGroup');
+        const lotDepositSuccessMessage = document.getElementById('lotDepositSuccessMessage');
+        if (lotDepositSuccessWrap) lotDepositSuccessWrap.style.display = 'block';
+        if (lotMainActionButtonsGroup) lotMainActionButtonsGroup.style.display = 'none';
+        if (lotDepositSuccessMessage) {
+          lotDepositSuccessMessage.textContent = `Lote APROBADO por Calidad (${user.name}). Avanzó a ${res.targetStep.code} ${res.targetStep.name}.`;
+        }
+
         window.UanifyUI.toast(
           `¡Lote ${activeScannedLot.lotId} APROBADO por Calidad (${user.name})! Avanzó con éxito a ${res.targetStep.code} ${res.targetStep.name}.`,
           'success',
@@ -1026,7 +1053,7 @@ window.initTerminalView = function() {
         qualityDestinationPanel.style.display = qualityDestinationPanel.style.display === 'none' ? 'block' : 'none';
       }
       window.UanifyUI.toast(
-        `Lote ${activeScannedLot.lotId} marcado con NO CONFORMIDAD. Ingeniero/Inspector: selecciona el destino (Reproceso o Merma).`,
+        `Lote ${activeScannedLot.lotId} marcado con NO CONFORMIDAD. Selecciona el destino correspondiente (Reproceso, Segunda o Merma).`,
         'warning',
         'Lote Rechazado en Inspección'
       );
@@ -1044,9 +1071,20 @@ window.initTerminalView = function() {
           hasScrap: true,
           scrapReason: 'Reproceso por defecto en acabado'
         });
+        activeScannedLot._isDepositedJustNow = true;
         renderActiveScannedLotCard(activeScannedLot);
         renderPlantDepartmentsGrid();
         if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+
+        const lotDepositSuccessWrap = document.getElementById('lotDepositSuccessWrap');
+        const lotMainActionButtonsGroup = document.getElementById('lotMainActionButtonsGroup');
+        const lotDepositSuccessMessage = document.getElementById('lotDepositSuccessMessage');
+        if (lotDepositSuccessWrap) lotDepositSuccessWrap.style.display = 'block';
+        if (lotMainActionButtonsGroup) lotMainActionButtonsGroup.style.display = 'none';
+        if (lotDepositSuccessMessage) {
+          lotDepositSuccessMessage.textContent = `Lote retornado a ${res.targetStep.code} ${res.targetStep.name} para reproceso prioritario.`;
+        }
+
         window.UanifyUI.toast(
           `Lote ${activeScannedLot.lotId} retornado a ${res.targetStep.code} ${res.targetStep.name} para reproceso prioritario.`,
           'warning',
@@ -1059,16 +1097,49 @@ window.initTerminalView = function() {
   if (btnQualitySendScrap) {
     btnQualitySendScrap.addEventListener('click', () => {
       if (!activeScannedLot) return;
+      const pzas = activeScannedLot.pieces || 15;
       activeScannedLot.hasScrap = true;
       activeScannedLot.scrapReason = 'Merma definitiva rechazada en inspección';
-      UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + (activeScannedLot.pieces || 15);
+      UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + pzas;
       const scrapEl = document.getElementById('terminalScrap');
       if (scrapEl) scrapEl.textContent = `${UanifyState.scrapTotal} pzas`;
+
+      // Registrar formalmente en Kárdex ALM-05
+      const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+      if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
+      const newDocId = 'MER-' + Date.now().toString().slice(-4);
+      UanifyState.inventoryMovements.unshift({
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        shift: 'Turno Único',
+        type: 'Registro Merma Definitiva',
+        originWh: activeScannedLot.currentStationCode || 'C-01',
+        origin: activeScannedLot.currentStationName || 'Control de Calidad',
+        destWh: 'ALM-05',
+        dest: 'ALM-05 Merma & Segundas',
+        item: `Lote ${activeScannedLot.lotId} (${activeScannedLot.model})`,
+        qty: `${pzas} pzas`,
+        user: user.name,
+        doc: newDocId,
+        notes: 'Rechazado en punto de inspección de calidad'
+      });
+
+      activeScannedLot._isDepositedJustNow = true;
       renderActiveScannedLotCard(activeScannedLot);
       renderPlantDepartmentsGrid();
       if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
+
+      const lotDepositSuccessWrap = document.getElementById('lotDepositSuccessWrap');
+      const lotMainActionButtonsGroup = document.getElementById('lotMainActionButtonsGroup');
+      const lotDepositSuccessMessage = document.getElementById('lotDepositSuccessMessage');
+      if (lotDepositSuccessWrap) lotDepositSuccessWrap.style.display = 'block';
+      if (lotMainActionButtonsGroup) lotMainActionButtonsGroup.style.display = 'none';
+      if (lotDepositSuccessMessage) {
+        lotDepositSuccessMessage.textContent = `Lote clasificado como MERMA definitiva (${pzas} pzas) e ingresado a ALM-05 (Doc ${newDocId}).`;
+      }
+
       window.UanifyUI.toast(
-        `Lote ${activeScannedLot.lotId} clasificado como MERMA definitiva. Contabilizado en indicador de pérdidas.`,
+        `Lote ${activeScannedLot.lotId} clasificado como MERMA definitiva (${pzas} pzas). Registrado en Kárdex ALM-05 (Doc ${newDocId}).`,
         'danger',
         'Merma Registrada'
       );
@@ -1092,100 +1163,143 @@ window.initTerminalView = function() {
       
       if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
       renderActiveScannedLotCard(activeScannedLot);
+
       // Registrar en historial Kárdex de Inventarios (ALM-05)
+      const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
       if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
+      const newDocId = 'SEG-' + Date.now().toString().slice(-4);
       UanifyState.inventoryMovements.unshift({
         date: new Date().toISOString().split('T')[0],
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         shift: 'Turno Único',
         type: 'Segregación Segunda',
-        originWh: activeScannedLot.currentStationCode || 'D-05',
+        originWh: activeScannedLot.currentStationCode || 'C-01',
         origin: activeScannedLot.currentStationName || 'Piso',
         destWh: 'ALM-05',
         dest: 'ALM-05 Merma & Segundas',
         item: `Lote ${activeScannedLot.lotId} (${activeScannedLot.model || 'Sombrero'})`,
         qty: `${segundasCount} pzas`,
         user: user.name,
-        doc: `SEG-${Date.now().toString().slice(-4)}`
+        doc: newDocId,
+        notes: `Causa: ${causa}`
       });
 
       window.UanifyUI.toast(
-        `Se separaron ${segundasCount} piezas como SEGUNDA (Causa: ${causa}). Ingresadas al Kárdex de ALM-05. El lote continúa su avance con ${activeScannedLot.pieces} piezas conformes.`,
+        `Se separaron ${segundasCount} piezas como SEGUNDA (Causa: ${causa}). Ingresadas a ALM-05. El lote continúa con ${activeScannedLot.pieces} piezas conformes.`,
         'warning',
         'Piezas de Segunda Registradas'
       );
     });
   }
 
+  // ── MANEJADORES DE RETORNO Y NUEVO ESCANEO POST-DEPÓSITO ──
+  const btnFinishLotAndScanNext = document.getElementById('btnFinishLotAndScanNext');
+  const btnFinishLotGoHome      = document.getElementById('btnFinishLotGoHome');
+
+  if (btnFinishLotAndScanNext) {
+    btnFinishLotAndScanNext.addEventListener('click', () => {
+      activeScannedLot = null;
+      candidateScannedLot = null;
+      if (terminalScannedLotActionsContainer) terminalScannedLotActionsContainer.style.display = 'none';
+      if (terminalScannerEmptyState) terminalScannerEmptyState.style.display = 'none';
+      openKioskScanner();
+    });
+  }
+
+  if (btnFinishLotGoHome) {
+    btnFinishLotGoHome.addEventListener('click', () => {
+      finishLotSession();
+      window.UanifyUI.toast('Consola de piso restablecida.', 'info', 'Operación Concluida');
+    });
+  }
+
   // ── MANEJADOR DE REGISTRO DE MERMA / DEFECTO DESDE EL LOTE ESCANEADO ──
   const btnScannedLotRegisterScrap = document.getElementById('btnScannedLotRegisterScrap');
-  const modalScrap = document.getElementById('modalScrap');
-  const btnCloseScrapModal = document.getElementById('btnCloseScrapModal');
+  const modalScrap                 = document.getElementById('modalScrap');
+  const btnCloseScrapModal         = document.getElementById('btnCloseScrapModal');
+  const btnCancelScrapModal        = document.getElementById('btnCancelScrapModal');
+  const btnSubmitScrapRecord       = document.getElementById('btnSubmitScrapRecord');
+  const scrapModalLotBadge         = document.getElementById('scrapModalLotBadge');
+  const scrapDispositionType       = document.getElementById('scrapDispositionType');
+  const scrapPiecesCount           = document.getElementById('scrapPiecesCount');
+  const scrapRootCauseSelect       = document.getElementById('scrapRootCauseSelect');
+  const scrapNotesInput            = document.getElementById('scrapNotesInput');
+
+  function openScrapModal() {
+    if (!activeScannedLot) return;
+    if (scrapModalLotBadge) {
+      const folio = activeScannedLot.sublotNum ? `${activeScannedLot.lotId}-${activeScannedLot.sublotNum}` : activeScannedLot.lotId;
+      scrapModalLotBadge.textContent = `Lote #${folio} (${activeScannedLot.model})`;
+    }
+    if (scrapPiecesCount) scrapPiecesCount.value = '1';
+    if (scrapNotesInput) scrapNotesInput.value = '';
+    if (modalScrap) modalScrap.classList.add('active');
+  }
+
+  function closeScrapModal() {
+    if (modalScrap) modalScrap.classList.remove('active');
+  }
 
   if (btnScannedLotRegisterScrap) {
-    btnScannedLotRegisterScrap.addEventListener('click', () => {
-      if (modalScrap) modalScrap.classList.add('active');
-    });
+    btnScannedLotRegisterScrap.addEventListener('click', openScrapModal);
   }
 
-  if (btnCloseScrapModal) {
-    btnCloseScrapModal.addEventListener('click', () => {
-      if (modalScrap) modalScrap.classList.remove('active');
-    });
-  }
+  if (btnCloseScrapModal) btnCloseScrapModal.addEventListener('click', closeScrapModal);
+  if (btnCancelScrapModal) btnCancelScrapModal.addEventListener('click', closeScrapModal);
 
-  if (modalScrap) {
-    modalScrap.addEventListener('click', (e) => {
-      if (e.target === modalScrap) modalScrap.classList.remove('active');
-    });
+  if (btnSubmitScrapRecord) {
+    btnSubmitScrapRecord.addEventListener('click', () => {
+      if (!activeScannedLot) {
+        closeScrapModal();
+        return;
+      }
 
-    const scrapOptBtns = modalScrap.querySelectorAll('.scrap-opt-btn');
-    scrapOptBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const type = btn.getAttribute('data-type') || 'merma';
-        const reason = btn.getAttribute('data-reason') || 'Defecto de proceso';
-        const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+      const disposition = scrapDispositionType ? scrapDispositionType.value : 'merma';
+      const pieces = parseInt(scrapPiecesCount ? scrapPiecesCount.value : 1, 10) || 1;
+      const rootCause = scrapRootCauseSelect ? scrapRootCauseSelect.value : 'Defecto de proceso';
+      const notes = scrapNotesInput ? scrapNotesInput.value.trim() : '';
+      const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
 
-        if (activeScannedLot) {
-          activeScannedLot.hasScrap = true;
-          activeScannedLot.scrapReason = reason;
+      activeScannedLot.hasScrap = true;
+      activeScannedLot.scrapReason = rootCause;
+      activeScannedLot.scrapPieces = (activeScannedLot.scrapPieces || 0) + pieces;
 
-          if (type === 'segunda') {
-            UanifyState.secondGradeTotal = (UanifyState.secondGradeTotal || 0) + 1;
-            if (terminalSecond) terminalSecond.textContent = `${UanifyState.secondGradeTotal} pzas`;
-          } else {
-            UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + 1;
-            if (terminalScrap) terminalScrap.textContent = `${UanifyState.scrapTotal} pzas`;
-          }
+      if (disposition === 'segunda') {
+        UanifyState.secondGradeTotal = (UanifyState.secondGradeTotal || 0) + pieces;
+        if (terminalSecond) terminalSecond.textContent = `${UanifyState.secondGradeTotal} pzas`;
+      } else {
+        UanifyState.scrapTotal = (UanifyState.scrapTotal || 0) + pieces;
+        if (terminalScrap) terminalScrap.textContent = `${UanifyState.scrapTotal} pzas`;
+      }
 
-          // Registrar en Kárdex de movimientos
-          if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
-          UanifyState.inventoryMovements.unshift({
-            date: new Date().toISOString().split('T')[0],
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            shift: 'Turno Único',
-            type: type === 'segunda' ? 'Segregación Segunda' : 'Registro Merma',
-            originWh: activeScannedLot.currentStationCode || 'D-05',
-            origin: activeScannedLot.currentStationName || 'Piso',
-            destWh: 'ALM-05',
-            dest: 'ALM-05 Merma & Segundas',
-            item: `Lote ${activeScannedLot.lotId} (${activeScannedLot.model || 'Sombrero'})`,
-            qty: '1 pza',
-            user: user.name,
-            doc: `MER-${Date.now().toString().slice(-4)}`
-          });
-
-          renderActiveScannedLotCard(activeScannedLot);
-          renderPlantDepartmentsGrid();
-        }
-
-        if (modalScrap) modalScrap.classList.remove('active');
-        window.UanifyUI.toast(
-          `Defecto registrado (${reason}). Movimiento reflejado en almacén de merma ALM-05 y Kárdex.`,
-          type === 'segunda' ? 'warning' : 'danger',
-          type === 'segunda' ? 'Segunda Registrada' : 'Merma Registrada'
-        );
+      // Registrar formalmente en Kárdex de Almacén y Control de Inventarios (ALM-05)
+      if (!UanifyState.inventoryMovements) UanifyState.inventoryMovements = [];
+      const newDocId = (disposition === 'segunda' ? 'SEG-' : 'MER-') + Date.now().toString().slice(-4);
+      UanifyState.inventoryMovements.unshift({
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        shift: 'Turno Único',
+        type: disposition === 'segunda' ? 'Segregación Segunda' : 'Registro Merma',
+        originWh: activeScannedLot.currentStationCode || 'D-05',
+        origin: activeScannedLot.currentStationName || 'Piso',
+        destWh: 'ALM-05',
+        dest: 'ALM-05 Merma & Segundas',
+        item: `Lote ${activeScannedLot.lotId}${activeScannedLot.sublotNum ? '-' + activeScannedLot.sublotNum : ''} (${activeScannedLot.model})`,
+        qty: `${pieces} pza${pieces > 1 ? 's' : ''}`,
+        user: user.name,
+        doc: newDocId,
+        notes: notes ? `${rootCause} · Nota: ${notes}` : rootCause
       });
+
+      renderActiveScannedLotCard(activeScannedLot);
+      renderPlantDepartmentsGrid();
+      closeScrapModal();
+
+      window.UanifyUI.toast(
+        `Defecto registrado (${pieces} pza${pieces > 1 ? 's' : ''} - ${rootCause}). Guardado en bitácora e inventario de merma ALM-05 (Doc ${newDocId}).`,
+        disposition === 'segunda' ? 'warning' : 'danger',
+        disposition === 'segunda' ? 'Segunda Registrada' : 'Merma Registrada'
+      );
     });
   }
 
@@ -1278,15 +1392,26 @@ window.initTerminalView = function() {
           ...activeScannedLot,
           currentStationCode: activeScannedLot.targetStationCode
         });
+        activeScannedLot._isDepositedJustNow = true;
         renderActiveScannedLotCard(activeScannedLot);
+
+        // Desplegar panel de conclusión con opciones aisladas
+        const lotDepositSuccessWrap = document.getElementById('lotDepositSuccessWrap');
+        const lotMainActionButtonsGroup = document.getElementById('lotMainActionButtonsGroup');
+        const lotDepositSuccessMessage = document.getElementById('lotDepositSuccessMessage');
+        if (lotDepositSuccessWrap) lotDepositSuccessWrap.style.display = 'block';
+        if (lotMainActionButtonsGroup) lotMainActionButtonsGroup.style.display = 'none';
+        if (lotDepositSuccessMessage) {
+          lotDepositSuccessMessage.textContent = `Lote transferido con éxito al almacén de "${activeScannedLot.currentStationName}". Operador: ${chosenOperator}. Firma: ${user.name}.`;
+        }
 
         // Refrescar mapa de planta y almacenes
         renderPlantDepartmentsGrid();
 
         window.UanifyUI.toast(
-          `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}". Operador asignado: ${chosenOperator}. Movimiento firmado por ${user.name}.`,
+          `¡Lote ${activeScannedLot.lotId} depositado con éxito! Se encuentra listo en el almacén de entrada de "${activeScannedLot.currentStationName}".`,
           'success',
-          ' Depósito en Almacén Concluido'
+          'Depósito en Almacén Concluido'
         );
       }
     });

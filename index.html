@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.42.0</span>
+        <span class="system-version-pill login-version-pill">v2.43.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -206,7 +206,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.42.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.43.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -544,233 +544,195 @@
               </div>
 
             </div>
-
-            <!-- Barra de Simulador de Desarrollo para Pruebas (Tablet-Friendly) -->
-            <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:12px; padding:14px 18px; text-align:left;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
-                  Simulador de Triggers QR (Pruebas de Flujo sin Cámara Física):
-                </span>
-                <span class="badge-subtle" style="font-size:10.5px; font-weight:700;">Emulación en Piso</span>
-              </div>
-              <div class="sim-scan-grid">
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanRandom" style="border-color:#F59E0B; background:#FFFBEB;">
-                  <span class="sim-title" style="color:#B45309;">🎲 Aleatorio</span>
-                  <span class="sim-desc" style="color:#D97706;">Lote al Azar</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanSublot3" style="border-color:var(--color-brand-border); background:var(--color-brand-light);">
-                  <span class="sim-title" style="color:var(--color-brand);">Lote Normal</span>
-                  <span class="sim-desc" style="color:var(--text-secondary);">Sublote #3 (#55)</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanMotherLot" style="border-color:#0284C7; background:#F0F9FF;">
-                  <span class="sim-title" style="color:#0284C7;">Lote Madre</span>
-                  <span class="sim-desc" style="color:#0369A1;">60 pzas (Rampa)</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanScrapLot" style="border-color:#FCA5A5; background:#FEF2F2;">
-                  <span class="sim-title" style="color:#B91C1C;">Con Merma</span>
-                  <span class="sim-desc" style="color:#DC2626;">Quemado Prensa</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanQualityStop" style="border-color:#FCD34D; background:#FFFBEB;">
-                  <span class="sim-title" style="color:#B45309;">Filtro Calidad</span>
-                  <span class="sim-desc" style="color:#D97706;">Punto C-02</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanFinalLot" style="border-color:#86EFAC; background:#F0FDF4;">
-                  <span class="sim-title" style="color:#15803D;">Empaque Final</span>
-                  <span class="sim-desc" style="color:#166534;">Ingreso PT D-10</span>
-                </button>
-                <button type="button" class="btn-sim-scan" id="btnSimulateScanUnauthorized" style="border-color:#CBD5E1; background:#FFFFFF;">
-                  <span class="sim-title" style="color:#475569;">No Asignado</span>
-                  <span class="sim-desc" style="color:var(--text-muted);">Prueba RBAC</span>
-                </button>
-              </div>
-            </div>
           </div>
 
-          <!-- ESTADO 2: OPCIONES DISPONIBLES AL USUARIO TRAS LEER EL LOTE (Oculto inicialmente hasta escanear) -->
-          <div id="terminalScannedLotActionsContainer" style="display:none;">
+          <!-- ESTADO 2: MÓDULO AISLADO DE ATENCIÓN DE LOTE ESCANEADO (Piso Industrial Tablet-First) -->
+          <div id="terminalScannedLotActionsContainer" style="display:none; max-width:980px; margin:0 auto 24px auto;">
             
-            <!-- Barra superior del lote escaneado con opción de escanear otro lote -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:12px 18px; border-radius:12px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span class="badge-status" id="activeLotBadgeStatus" style="background:var(--color-brand); color:#FFFFFF; font-size:13px; font-weight:800; padding:6px 12px; border-radius:8px;">
+            <!-- Barra Superior Inmersiva del Lote Escaneado -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px; background:#FFFFFF; border:1.5px solid var(--border-medium); padding:14px 20px; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span class="badge-status" id="activeLotBadgeStatus" style="background:var(--color-brand); color:#FFFFFF; font-size:14px; font-weight:800; padding:8px 14px; border-radius:8px; letter-spacing:0.5px;">
                   LOTE ESCANEADO
                 </span>
-                <span class="badge-subtle" id="activeSublotTypeBadge" style="font-weight:700;">—</span>
-                <span style="font-size:12.5px; color:var(--text-muted); font-weight:600;" id="activeLotOProdText">—</span>
+                <span class="badge-subtle" id="activeSublotTypeBadge" style="font-weight:700; font-size:12.5px;">—</span>
+                <span style="font-size:13px; color:var(--text-muted); font-weight:700;" id="activeLotOProdText">—</span>
               </div>
-              <button type="button" class="btn-secondary btn-touch-lg" id="btnScanAnotherLot" style="font-weight:800; font-size:12.5px; display:inline-flex; align-items:center; gap:8px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <button type="button" class="btn-secondary btn-touch-lg" id="btnScanAnotherLot" style="font-weight:800; font-size:13px; display:inline-flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                 </svg>
-                Escanear Otro Código QR
+                <span>Cerrar Lote y Volver a Consola</span>
               </button>
             </div>
 
             <!-- Ficha Detallada del Lote y Opciones de Flujo Desplegadas -->
-            <div class="card-glass" style="padding:24px; border-radius:16px;">
+            <div class="card-glass" style="padding:26px; border-radius:18px;">
               
               <!-- Flujo Secuencial Automático de Ruta -->
-              <div class="route-sequence-flow">
+              <div class="route-sequence-flow" style="margin-bottom:20px;">
                 <div class="flow-step-chip chip-origin">
-                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Viene de:</span>
-                  <strong id="lotOriginStationText">Refuerzos de Corona</strong>
+                  <span style="font-size:10px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Estación Previa:</span>
+                  <strong id="lotOriginStationText" style="font-size:13px;">Refuerzos de Corona</strong>
                 </div>
-                <span class="flow-arrow-icon">→</span>
-                <div class="flow-step-chip chip-current">
-                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">Ubicación Actual:</span>
-                  <strong id="lotCurrentStationText">Prensas de Hormado</strong>
+                <span class="flow-arrow-icon" style="font-size:18px; color:var(--color-brand);">→</span>
+                <div class="flow-step-chip chip-current" style="border:2px solid var(--color-brand); background:var(--color-brand-light);">
+                  <span style="font-size:10px; text-transform:uppercase; font-weight:800; color:var(--color-brand);">Ubicación Actual:</span>
+                  <strong id="lotCurrentStationText" style="font-size:13.5px; color:var(--color-brand);">Prensas de Hormado</strong>
                 </div>
-                <span class="flow-arrow-icon">→</span>
-                <div class="flow-step-chip chip-target">
-                  <span style="font-size:9.5px; text-transform:uppercase; font-weight:800;">>> Siguiente Destino:</span>
-                  <strong id="lotTargetStationText">Recorte y Alambrado</strong>
+                <span class="flow-arrow-icon" style="font-size:18px; color:var(--color-green);">→</span>
+                <div class="flow-step-chip chip-target" style="border:1.5px solid var(--color-green-border); background:var(--color-green-bg);">
+                  <span style="font-size:10px; text-transform:uppercase; font-weight:800; color:var(--color-green);">Destino Siguiente:</span>
+                  <strong id="lotTargetStationText" style="font-size:13.5px; color:var(--color-green);">Recorte y Alambrado</strong>
                 </div>
               </div>
 
               <!-- Metadatos Extraídos del QR -->
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin-bottom:18px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:16px; border-radius:12px;">
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:20px; background:#F8FAFC; border:1px solid var(--border-subtle); padding:18px; border-radius:14px;">
                 <div>
-                  <span style="font-size:11px; color:var(--text-muted); display:block;">Modelo / Clase:</span>
-                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaModel">1000X Master Telar · Viejonón</strong>
+                  <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700; text-transform:uppercase;">Modelo / Horma:</span>
+                  <strong style="color:var(--text-primary); font-size:14px;" id="lotMetaModel">1000X Master Telar · Viejonón</strong>
                 </div>
                 <div>
-                  <span style="font-size:11px; color:var(--text-muted); display:block;">Talla / Falda:</span>
-                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaSpecs">Talla #55 | Falda 9 1/2</strong>
+                  <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700; text-transform:uppercase;">Talla / Falda:</span>
+                  <strong style="color:var(--text-primary); font-size:14px;" id="lotMetaSpecs">Talla #55 | Falda 9 1/2</strong>
                 </div>
                 <div>
-                  <span style="font-size:11px; color:var(--text-muted); display:block;">Operador Responsable:</span>
-                  <strong style="color:var(--color-brand); font-size:13.5px;" id="lotMetaOperator">Jorge (Prensas)</strong>
+                  <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700; text-transform:uppercase;">Operador Responsable:</span>
+                  <strong style="color:var(--color-brand); font-size:14px;" id="lotMetaOperator">Jorge (Prensas)</strong>
                 </div>
                 <div>
-                  <span style="font-size:11px; color:var(--text-muted); display:block;">Cantidad en Torre:</span>
-                  <strong style="color:var(--text-primary); font-size:13.5px;" id="lotMetaPieces">15 piezas</strong>
+                  <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700; text-transform:uppercase;">Cantidad en Lote:</span>
+                  <strong style="color:var(--text-primary); font-size:14px;" id="lotMetaPieces">15 piezas</strong>
                 </div>
               </div>
 
-              <!-- Botón para Visualizar la Tarjeta Viajera Oficial (Mica de Piso) -->
-              <div style="margin-bottom:18px;">
-                <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal" style="width:100%; border:1.5px solid var(--color-brand-border); background:var(--color-brand-light); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+              <!-- Botón para Visualizar Tarjeta Viajera Oficial (Mica Física de Piso) -->
+              <div style="margin-bottom:20px;">
+                <button type="button" class="btn-traveler-trigger" id="btnOpenTravelerModal" style="width:100%; border:1.5px solid var(--color-brand-border); background:var(--color-brand-light); border-radius:12px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
                   <div style="text-align:left;">
-                    <div class="btt-title" style="font-size:13.5px; font-weight:800; color:var(--color-brand);">
-                      📄 Ver Tarjeta Viajera Oficial (Mica de Piso)
+                    <div class="btt-title" style="font-size:14px; font-weight:800; color:var(--color-brand);">
+                      📄 Consultar Tarjeta Viajera Oficial (Mica de Piso)
                     </div>
-                    <div class="btt-desc" style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">
-                      Gafete reglamentario con sticker de operador, clase 1000X y especificaciones
+                    <div class="btt-desc" style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                      Visualizar gafete reglamentario, sticker de operador, clase y especificaciones completas
                     </div>
                   </div>
-                  <span class="btt-pill" id="bttActiveLotPill" style="background:var(--color-brand); color:#FFFFFF; font-size:11.5px; font-weight:800; padding:5px 10px; border-radius:6px;">Lote 49,633-3</span>
+                  <span class="btt-pill" id="bttActiveLotPill" style="background:var(--color-brand); color:#FFFFFF; font-size:12px; font-weight:800; padding:6px 12px; border-radius:8px;">Lote 49,633-3</span>
                 </button>
               </div>
 
-              <!-- Contenedor de Alerta de Merma (Solo visible si el lote tiene merma) -->
-              <div id="lotScrapBannerContainer" style="margin-bottom:16px;"></div>
+              <!-- Banner de Alerta de Merma (Visible si el lote contiene merma) -->
+              <div id="lotScrapBannerContainer" style="margin-bottom:18px;"></div>
 
-              <!-- RASTREABILIDAD OBLIGATORIA DE OPERADOR POR ESTACIÓN -->
-              <div style="margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; gap:14px; background:#FFFFFF; border:1px solid var(--border-subtle); padding:12px 16px; border-radius:10px; flex-wrap:wrap;">
-                <div style="flex:1; min-width:200px;">
-                  <span style="font-size:11.5px; text-transform:uppercase; font-weight:800; color:var(--text-muted); display:block;">Operador en Turno de esta Estación:</span>
-                  <span style="font-size:12px; color:var(--text-secondary);">Rastreabilidad requerida en el lote</span>
+              <!-- Rastreabilidad Obligatoria de Operador en la Estación -->
+              <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:#FFFFFF; border:1.5px solid var(--border-subtle); padding:14px 18px; border-radius:12px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:220px;">
+                  <span style="font-size:12px; text-transform:uppercase; font-weight:800; color:var(--text-muted); display:block;">Operador en Turno de la Estación:</span>
+                  <span style="font-size:12px; color:var(--text-secondary);">Firma de destajo requerida para el lote</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                  <select id="depositOperatorSelect" class="custom-select" style="min-width:220px; font-weight:700; font-size:13.5px;">
+                  <select id="depositOperatorSelect" class="custom-select" style="min-width:240px; font-weight:700; font-size:13.5px; height:44px;">
                     <option value="OP-DEFAULT">Cargando operadores...</option>
                   </select>
                 </div>
               </div>
 
-              <!-- PANEL DINÁMICO: OPCIONES DISPONIBLES SEGÚN INFORMACIÓN DEL LOTE (US-FLOW) -->
-              <div id="dynamicLotOptionsContainer" style="margin-bottom:18px; background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px;">
+              <!-- Opciones Condicionales Disponibles según el Estado del Lote -->
+              <div id="dynamicLotOptionsContainer" style="margin-bottom:20px; background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:14px; padding:18px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                   <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:16px;">📋</span>
                     <strong style="font-size:13.5px; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.5px;">
-                      Opciones Disponibles para este Lote:
+                      Opciones y Condiciones Disponibles:
                     </strong>
                   </div>
                   <span id="dynamicLotTypeBadge" class="badge-status" style="font-size:11px; font-weight:800; background:var(--color-brand); color:#FFFFFF;">
                     Sublote Regular
                   </span>
                 </div>
-                <div id="dynamicLotOptionsList" style="display:flex; flex-direction:column; gap:8px;">
+                <div id="dynamicLotOptionsList" style="display:flex; flex-direction:column; gap:10px;">
                   <!-- Inyectado dinámicamente según estado del lote -->
                 </div>
               </div>
 
-              <!-- BOTONES DE ACCIÓN SOBRE EL LOTE (DEPÓSITO & REPORTE DE MERMA) -->
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15.5px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534; box-shadow:0 6px 16px rgba(22, 163, 74, 0.25);">
-                  Depositar Lote en Almacén Siguiente
-                </button>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnScannedLotRegisterScrap" style="flex:1; border-color:#FCA5A5; color:#DC2626; background:#FEF2F2; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-                    <span>⚠️ Registrar Merma / Pieza Defectuosa</span>
+              <!-- BLOQUE DE CALIDAD MVP (Visible en paradas C-XX o roles Calidad/Ingeniero) -->
+              <div id="qualityActionsContainer" style="display:none; margin-bottom:20px; background:#FFFBEB; border:2px solid #FCD34D; border-radius:14px; padding:18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="badge-status" style="background:#D97706; color:#FFFFFF; font-weight:800; font-size:11.5px;">PUNTO DE CONTROL DE CALIDAD</span>
+                    <strong style="font-size:14px; color:#92400E;" id="qualityCheckTitle">Inspección de Lote</strong>
+                  </div>
+                  <span style="font-size:11.5px; color:#B45309; font-weight:600;">Validación de especificaciones</span>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                  <button type="button" class="btn-primary btn-touch-hero" id="btnApproveQualityLot" style="background:#16A34A; border-color:#15803D; font-weight:800; font-size:14.5px;">
+                    ✓ Aprobar Lote y Avanzar
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-hero" id="btnRejectQualityLot" style="background:#FEF2F2; color:#DC2626; border-color:#FCA5A5; font-weight:800; font-size:14.5px;">
+                    ✕ Rechazar Lote (Decidir Destino)
                   </button>
                 </div>
-                <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:2px;">
-                  <span style="font-size:12px; color:var(--text-muted);">Requiere autorización del supervisor</span>
-                  <div class="info-tip">
-                    <button type="button" class="info-tip-btn" aria-label="Condiciones de depósito" style="width:16px; height:16px;">
-                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div id="qualityDestinationPanel" style="display:none; margin-top:14px; padding-top:14px; border-top:1.5px dashed #FCD34D;">
+                  <label class="field-label" style="font-size:12.5px; color:#92400E; margin-bottom:8px; font-weight:800; display:block;">Destino tras Rechazo (Ingeniería / Calidad):</label>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:13px; font-weight:800; min-height:46px;">
+                      🔄 Enviar a Reproceso (Depto Sugerido)
                     </button>
-                    <div class="info-tip-popup">
-                      Requiere asignación departamental del supervisor activo. Solo puedes mover lotes correspondientes a tus departamentos autorizados.
-                    </div>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendSecond" style="flex:1; background:#FFFBEB; color:#B45309; border-color:#FDE68A; font-size:13px; font-weight:800; min-height:46px;">
+                      🏷️ Separar Piezas de Segunda
+                    </button>
+                    <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:13px; font-weight:800; min-height:46px;">
+                      🛑 Registrar como Merma Definitiva
+                    </button>
                   </div>
                 </div>
               </div>
 
-                <!-- Conclusión del Lote y Retorno al Escáner (Visible tras confirmar depósito) -->
-                <div id="lotDepositSuccessWrap" style="display:none; margin-top:14px;">
-                  <button type="button" class="btn-primary btn-touch-hero" id="btnFinishLotAndScanNext" style="width:100%; font-size:15px; background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); border-color:#0284C7; box-shadow:0 6px 16px rgba(2, 132, 199, 0.25); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Movimiento Completado · Escanear Siguiente Lote</span>
+              <!-- ACCIONES PRINCIPALES SOBRE EL LOTE (DEPÓSITO & REGISTRO DE MERMA) -->
+              <div id="lotMainActionButtonsGroup" style="display:flex; flex-direction:column; gap:12px;">
+                <button type="button" class="btn-primary btn-touch-hero" id="btnDepositToNextBuffer" style="width:100%; font-size:15.5px; background:linear-gradient(135deg, #16A34A 0%, #15803D 100%); border-color:#166534; box-shadow:0 6px 16px rgba(22, 163, 74, 0.25); min-height:50px;">
+                  Depositar Lote en Almacén Siguiente
+                </button>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                  <button type="button" class="btn-secondary btn-touch-hero" id="btnScannedLotRegisterScrap" style="flex:1; border-color:#FCA5A5; color:#DC2626; background:#FEF2F2; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px;">
+                    <span>⚠️ Registrar Merma / Pieza Defectuosa</span>
                   </button>
                 </div>
+              </div>
 
-                <!-- Bloque de Calidad MVP: Inspector Aprueba/Rechaza & Ingeniero decide destino -->
-                <div id="qualityActionsContainer" style="display:none; margin-top:16px; background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:12px; padding:16px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <span class="badge-status" style="background:#D97706; color:#FFFFFF; font-weight:800; font-size:11.5px;">PUNTO DE CONTROL DE CALIDAD</span>
-                      <strong style="font-size:13.5px; color:#92400E;" id="qualityCheckTitle">Inspección de Lote</strong>
-                    </div>
-                    <span style="font-size:11.5px; color:#B45309;">Inspector aprueba/rechaza · Ing. decide destino</span>
-                  </div>
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                    <button type="button" class="btn-primary btn-touch-lg" id="btnApproveQualityLot" style="background:#16A34A; border-color:#15803D; font-weight:700;">
-                      Aprobar Lote (Avanzar)
-                    </button>
-                    <button type="button" class="btn-secondary btn-touch-lg" id="btnRejectQualityLot" style="background:#FEF2F2; color:#DC2626; border-color:#FCA5A5; font-weight:700;">
-                      Rechazar Lote (Decidir Destino)
-                    </button>
-                  </div>
-                  <div id="qualityDestinationPanel" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #FCD34D;">
-                    <label class="field-label" style="font-size:12px; color:#92400E; margin-bottom:6px;">Decisión de Destino (Ingeniero / Calidad):</label>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendRework" style="flex:1; background:#EFF6FF; color:#1D4ED8; border-color:#93C5FD; font-size:12.5px; font-weight:700;">
-                        Enviar a Reproceso (Depto Sugerido)
-                      </button>
-                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendSecond" style="flex:1; background:#FFFBEB; color:#B45309; border-color:#FDE68A; font-size:12.5px; font-weight:700;">
-                        Separar Piezas de Segunda (Venta Directa)
-                      </button>
-                      <button type="button" class="btn-secondary btn-touch-lg" id="btnQualitySendScrap" style="flex:1; background:#FEF2F2; color:#B91C1C; border-color:#FCA5A5; font-size:12.5px; font-weight:700;">
-                        Registrar como Merma Definitiva
-                      </button>
-                    </div>
-                  </div>
+              <!-- Acciones Rápidas Aisladas: Modo Rampa Flujo Especial (Solo para Lotes Madre) -->
+              <div id="terminalRampaActionContainer" style="margin-top:16px; border-top:1px dashed var(--border-subtle); padding-top:14px; display:none;">
+                <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="width:100%; border:1.5px solid #0284C7; color:#0284C7; font-weight:800; min-height:46px;">
+                  ✂️ Abrir Modo Rampa (Fraccionar Lote Madre 60 pzas → 4 Sublotes)
+                </button>
+              </div>
+
+              <!-- PANEL DE CONCLUSIÓN DE DEPÓSITO CONTEXTUAL (Visible tras confirmar depósito) -->
+              <div id="lotDepositSuccessWrap" style="display:none; margin-top:18px; padding-top:18px; border-top:1.5px solid var(--border-subtle);">
+                <div style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:16px; margin-bottom:14px; text-align:center;">
+                  <div style="font-size:24px; margin-bottom:4px;">✓</div>
+                  <strong style="color:#15803D; font-size:15px; display:block;">Depósito Registrado con Éxito</strong>
+                  <span style="font-size:12.5px; color:#166534;" id="lotDepositSuccessMessage">
+                    El lote ha sido transferido físicamente al siguiente almacén de departamento.
+                  </span>
                 </div>
-
-                <!-- Acciones Rápidas Aisladas: Modo Rampa Flujo Especial (Solo para Lotes Madre sin fraccionar) -->
-                <div id="terminalRampaActionContainer" style="margin-top:16px; border-top:1px dashed var(--border-subtle); padding-top:14px;">
-                  <button type="button" class="btn-secondary btn-touch-lg" id="btnActivateRampaMode" style="width:100%; border:1.5px solid var(--color-brand); color:var(--color-brand); font-weight:800;">
-                    ⚙️ Abrir Modo Rampa (Fraccionar Lote Madre 60 pzas → 4 Sublotes)
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <button type="button" class="btn-primary btn-touch-hero" id="btnFinishLotAndScanNext" style="font-size:14.5px; background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); border-color:#0284C7; box-shadow:0 6px 16px rgba(2, 132, 199, 0.25); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                    </svg>
+                    <span>📷 Escanear Siguiente Lote</span>
+                  </button>
+                  <button type="button" class="btn-secondary btn-touch-hero" id="btnFinishLotGoHome" style="font-size:14.5px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+                    <span>⬅ Volver a Consola Principal</span>
                   </button>
                 </div>
               </div>
 
             </div>
+
+          </div>
 
           </div>
 
@@ -862,42 +824,6 @@
 
         </div>
 
-        <!-- Pestaña 3: Métricas, Recuentos y Estadísticas de Turno (Sección Puntual Diferenciada) -->
-        <div class="sub-tab-content" id="subtab-terminal-metrics">
-          <div class="card-glass" style="padding:24px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-              <div>
-                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
-                  Recuentos y Balance de Producción de Turno
-                </h3>
-                <p style="font-size:13px; color:var(--text-secondary); margin:0;">
-                  Auditoría detallada de piezas procesadas, segregación de calidad, segundas y mermas por departamento.
-                </p>
-              </div>
-              <span class="badge-subtle" id="supervisorDeptsBadgeMetrics" style="font-weight:700;">Departamentos Asignados: Prensas de Hormado</span>
-            </div>
-
-            <!-- Grid de Métricas Puntuales -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
-              <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:18px;">
-                <span style="font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas Procesadas Hoy:</span>
-                <strong style="font-size:26px; font-weight:800; color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
-                <span style="font-size:11.5px; color:var(--text-secondary); display:block; margin-top:4px;">En estaciones asignadas</span>
-              </div>
-              <div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:12px; padding:18px;">
-                <span style="font-size:12px; color:#B91C1C; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Mermas / Scrap Definitivo:</span>
-                <strong style="font-size:26px; font-weight:800; color:#DC2626;" id="terminalScrap">4 pzas</strong>
-                <span style="font-size:11.5px; color:#7F1D1D; display:block; margin-top:4px;">Segregadas para remate viernes</span>
-              </div>
-              <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:12px; padding:18px;">
-                <span style="font-size:12px; color:#B45309; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas de Segunda Calidad:</span>
-                <strong style="font-size:26px; font-weight:800; color:#D97706;" id="terminalSecondGrade">26 pzas</strong>
-                <span style="font-size:11.5px; color:#92400E; display:block; margin-top:4px;">Desviaciones menores toleradas</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Pestaña 2: Mapa General de Almacenes Físicos & Pulmones WIP de Planta -->
         <div class="sub-tab-content" id="subtab-terminal-tracker">
           <div class="card-glass" style="padding:22px; margin-bottom:20px;">
@@ -935,8 +861,42 @@
               <!-- Renderizado dinámicamente por terminal.js -->
             </div>
           </div>
+        </div>
 
+        <!-- Pestaña 3: Métricas, Recuentos y Estadísticas de Turno (Sección Puntual Diferenciada) -->
+        <div class="sub-tab-content" id="subtab-terminal-metrics">
+          <div class="card-glass" style="padding:24px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+              <div>
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
+                  Recuentos y Balance de Producción de Turno
+                </h3>
+                <p style="font-size:13px; color:var(--text-secondary); margin:0;">
+                  Auditoría detallada de piezas procesadas, segregación de calidad, segundas y mermas por departamento.
+                </p>
+              </div>
+              <span class="badge-subtle" id="supervisorDeptsBadgeMetrics" style="font-weight:700;">Departamentos Asignados: Prensas de Hormado</span>
+            </div>
 
+            <!-- Grid de Métricas Puntuales -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
+              <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas Procesadas Hoy:</span>
+                <strong style="font-size:26px; font-weight:800; color:var(--color-brand);" id="terminalProduced">98 pzas</strong>
+                <span style="font-size:11.5px; color:var(--text-secondary); display:block; margin-top:4px;">En estaciones asignadas</span>
+              </div>
+              <div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:#B91C1C; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Mermas / Scrap Definitivo:</span>
+                <strong style="font-size:26px; font-weight:800; color:#DC2626;" id="terminalScrap">4 pzas</strong>
+                <span style="font-size:11.5px; color:#7F1D1D; display:block; margin-top:4px;">Segregadas para remate viernes</span>
+              </div>
+              <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:12px; padding:18px;">
+                <span style="font-size:12px; color:#B45309; font-weight:700; text-transform:uppercase; display:block; margin-bottom:6px;">Piezas de Segunda Calidad:</span>
+                <strong style="font-size:26px; font-weight:800; color:#D97706;" id="terminalSecondGrade">26 pzas</strong>
+                <span style="font-size:11.5px; color:#92400E; display:block; margin-top:4px;">Desviaciones menores toleradas</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -2616,36 +2576,63 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: REGISTRAR MERMA / SEGUNDA
+       MODAL: REGISTRAR MERMA / SEGUNDA (HISTÓRICO INDUSTRIAL)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalScrap">
-    <div class="modal-box card-glass">
+    <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3>Clasificación de Calidad · Defecto / Segunda</h3>
-          <p class="modal-header-sub">Selecciona la tipificación para control de mermas y venta de viernes</p>
+          <h3>Registro de Merma / Producto No Conforme</h3>
+          <p class="modal-header-sub">Clasificación técnica para trazabilidad de calidad e inventario de mermas</p>
         </div>
         <button class="modal-close" id="btnCloseScrapModal">&times;</button>
       </div>
-      <div class="modal-body">
-        <p style="font-size:13px; color:var(--text-secondary);">Selecciona si la pieza es regular/segunda (recuperable para venta de viernes) o merma total:</p>
-        <div class="scrap-options">
-          <button class="scrap-opt-btn" data-type="segunda" data-reason="Detalle estético leve en telar (Pasa a Segunda de Viernes)" style="border-color:var(--color-amber-border); background:var(--color-amber-bg); color:var(--color-amber);">
-            Producto Regular / Segunda (Para venta de Viernes al 50%)
-          </button>
-          <button class="scrap-opt-btn" data-type="merma" data-reason="Quemado en prensa de hormado por exceso de calor/vapor">
-            Quemado por vapor/prensa (Merma total)
-          </button>
-          <button class="scrap-opt-btn" data-type="merma" data-reason="Falla en engomado / mancha de resina en telar">
-            Mancha de apresto o laca (Merma total)
-          </button>
-          <button class="scrap-opt-btn" data-type="merma" data-reason="Rotura de campana / ala rasgada al troquelar">
-             Rotura de ala o campana (Merma total)
-          </button>
-          <button class="scrap-opt-btn" data-type="merma" data-reason="Costura chueca / tafilete torcido en badana">
-            Costura o tafilete chueco
-          </button>
+      <div class="modal-body" style="padding:20px;">
+        <div style="margin-bottom:14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Lote Asociado:</span>
+            <strong id="scrapModalLotBadge" style="font-size:13.5px; color:var(--color-brand);">Lote Actual</strong>
+          </div>
         </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div>
+            <label class="field-label" style="font-size:12px; font-weight:700; margin-bottom:4px;">Tipo de Disposición:</label>
+            <select id="scrapDispositionType" class="custom-select" style="width:100%; font-weight:700;">
+              <option value="merma" selected>Merma Total / Destrucción</option>
+              <option value="segunda">Segregación a Segunda (Venta Viernes)</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" style="font-size:12px; font-weight:700; margin-bottom:4px;">Piezas Afectadas:</label>
+            <input type="number" id="scrapPiecesCount" class="form-input" min="1" max="60" value="1" style="width:100%; font-weight:700;">
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label class="field-label" style="font-size:12px; font-weight:700; margin-bottom:4px;">Causa Raíz del Defecto:</label>
+          <select id="scrapRootCauseSelect" class="custom-select" style="width:100%; font-weight:700;">
+            <option value="Quemado en prensa de hormado por exceso de calor/vapor">Quemado en prensa de hormado por exceso de calor/vapor</option>
+            <option value="Falla en engomado / mancha de resina en telar">Falla en engomado / mancha de resina en telar</option>
+            <option value="Rotura de campana / ala rasgada al troquelar">Rotura de campana / ala rasgada al troquelar</option>
+            <option value="Costura chueca / tafilete torcido en badana">Costura chueca / tafilete torcido en badana</option>
+            <option value="Poro o hebra deshilachada en tejido telar">Poro o hebra deshilachada en tejido telar</option>
+            <option value="Detalle cosmético menor (Pasa a Segunda de Viernes)">Detalle cosmético menor (Pasa a Segunda de Viernes)</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label class="field-label" style="font-size:12px; font-weight:700; margin-bottom:4px;">Observaciones / Notas de Calidad:</label>
+          <input type="text" id="scrapNotesInput" class="form-input" placeholder="Ej. Detectado en inspección visual de copa, operador notificado" style="width:100%;">
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px;">
+        <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelScrapModal" style="flex:1;">
+          Cancelar
+        </button>
+        <button type="button" class="btn-primary btn-touch-hero" id="btnSubmitScrapRecord" style="flex:1.4; background:#DC2626; border-color:#B91C1C;">
+          Confirmar y Guardar Merma
+        </button>
       </div>
     </div>
   </div>

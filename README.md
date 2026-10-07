@@ -22,14 +22,14 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.42.0)
+## Arquitectura Funcional Tombstone Hats (v2.43.0)
 
 El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)** y **Componente Propio Universal de Dropdowns Desplegables (`UanifySelect`)**:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave |
 |---|---|---|
 | **0.  Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
-| **1.  Terminal de Supervisor** | Supervisores y Operación | **3 Acciones Heroicas en Tablet**: (1) Escáner QR de Tarjeta Viajera en Pantalla Completa, (2) Modo Rampa (Fraccionamiento Multi-QR en D-04/D-05), y (3) Reportar Paro de Máquina. Detección automática de estación por QR sin selectores manuales redundantes. |
+| **1.  Terminal de Supervisor** | Supervisores y Operación | **3 Acciones Heroicas en Tablet**: (1) Escáner QR de Tarjeta Viajera en Pantalla Completa, (2) Modo Rampa (Fraccionamiento Multi-QR en D-04/D-05), y (3) Reportar Paro de Máquina. Flujo inmersivo de atención a lote escaneado, verificación de tarjeta física, captura de mermas a Kárdex ALM-05 y panel de calidad. |
 | **2.  Tablero Andon (Piso)** | Supervisores, Dirección y Planta (Web / Tablet) | Monitoreo visual de avance de estaciones en tiempo real con alto contraste, Takt Time (42s), 4 filtros de calidad destacados y bitácora viva de tiempos muertos. |
 | **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados**, **Catálogo de Hormas y Moldes Maquinados**, inventario ergonómico de tafiletes por talla (54-60) y Kárdex general. |
 | **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de 108 operadores fijos en planta con máquina asignada, piezas procesadas hoy, turno y filtros estandarizados. |
@@ -39,6 +39,18 @@ El sistema MES está estructurado en 6 módulos especializados con autenticació
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.43.0] - 2026-10-05
+- **Módulo Aislado e Inmersivo de Lote Escaneado (`RF-89`):**
+  - El escaneo QR abre el visor en pantalla completa y transiciona directamente a la confirmación de coincidencia de tarjeta viajera física (`#modalVerifyScannedCard`).
+  - Al confirmar, el lote se gestiona en un módulo inmersivo dedicado que no expulsa al usuario al sistema principal.
+  - Opciones de lote condicionales: Depósito a siguiente almacén, registro detallado de merma/producto no conforme a Kárdex de ALM-05 con captura de causa raíz, y panel de calidad con aprobación directa o bifurcación por rechazo (Reproceso, Segunda o Merma definitiva).
+  - Al concluir el depósito, panel de cierre con dos opciones táctiles claras: *📷 Escanear Siguiente Lote* o *⬅ Volver a Consola Principal*.
+- **Aislamiento Previo de Acciones del Supervisor:**
+  - Consola limpia con 3 tarjetas rectoras: Escáner QR, Modo Rampa y Registro de Paro.
+  - Eliminados simuladores de desarrollo y textos de prueba visibles.
+- **Corrección de Scroll y Orden de Sub-pestañas:**
+  - Corrección de visualización inmediata en "Mapa de Almacenes Intermedios" y "Métricas y Rendimiento" mediante reset instantáneo de scroll en `initSubTabs()` y reordenamiento coherente en el DOM.
 
 ### [2.42.0] - 2026-10-04
 - **Modo Rampa Multi-QR Batch & Validación de Estación (`RF-86`):**
