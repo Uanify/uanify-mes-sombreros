@@ -1,4 +1,4 @@
-﻿# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
+# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
 **Estrategia de Digitalización y Control de Manufactura · Uanify**  
 *Documento de Especificación de Alcance, Procesos de Piso y Modelo Operativo.*
 
@@ -152,27 +152,16 @@ Los siguientes consumos mensuales de infraestructura cloud son facturados direct
 * **Rango de Inversión del MVP:** **[Pendiente de definir tras análisis del diagrama de flujo y catálogo de módulos]**
 
 ### 10.2 Hardware de Piso e Insumos (Estimación para 6 Estaciones de Nave):
-Se presentan opciones comerciales de excelente desempeño para uso en planta:
+Se presenta la estimación consolidada de adquisición de equipos para las 6 estaciones oficiales:
 
-#### A. Opciones de Tablets Industriales Recomendadas:
-* **Opción 1 (Recomendada por Calidad/Precio):** **Xiaomi Redmi Pad SE 11"** (Snapdragon 680, 128GB ROM, pantalla FHD 90Hz, chasis de aluminio, Wi-Fi 5GHz de alta sensibilidad). Rendimiento extraordinario para web apps táctiles a un costo sumamente competitivo: **$3,200 – $3,600 MXN / pza**.
-* **Opción 2 (Alternativa Comercial):** **Samsung Galaxy Tab A9+ 11"** (Snapdragon 695, 64GB/128GB, soporte corporativo Samsung Knox): **$4,200 – $4,800 MXN / pza**.
-
-#### B. Modelos de Lectores Ópticos 2D Industriales (Solo Aplica para Opción B):
-Para la captura inmediata de códigos QR sin depender de la cámara de la tablet, se cotizan dos modelos de alta confiabilidad en emulación teclado (HID):
-* **Modelo 1 — Escáner de Pistola Inalámbrico Industrial (Netum / Tera HW-0002):** Conexión dual 2.4GHz USB + Bluetooth, lectura instantánea sobre papel y mica plástica, batería de larga duración y resistencia a caídas de 1.5m: **$1,450 – $1,850 MXN / pza**.
-* **Modelo 2 — Escáner Fijo Omnidireccional de Mesa (Zebra / Eyoyo 2D Hands-Free):** Escáner de ventana fija manos libres de sobremesa; el operador pasa la tarjeta viajera por enfrente y lee a 360° sin necesidad de presionar gatillo: **$2,200 – $2,900 MXN / pza**.
-
-#### Resumen Económico de Hardware (6 Estaciones):
-
-| Concepto de Hardware | Especificación Técnica | Cantidad | Costo Unitario Estimado | Inversión Total Estimada |
+| Concepto de Hardware | Especificación Técnica y Modelos Recomendados | Cantidad | Costo Unitario Estimado | Inversión Total Estimada |
 |:---|:---|:---:|:---:|:---:|
-| **Tablets de Planta (Android)** | Xiaomi Redmi Pad SE 11" (o Samsung Tab A9+) con Wi-Fi 5GHz | 6 pzas | $3,200 – $3,600 MXN | **$19,200 – $21,600 MXN** |
-| **Fundas de Uso Rudo con Correa** | Carcasa antichoque de alta protección con soporte rotativo 360° | 6 pzas | $650 – $850 MXN | **$3,900 – $5,100 MXN** |
+| **Tablets de Planta (Android)** | **Xiaomi Redmi Pad SE 11"** (128GB ROM, Wi-Fi 5GHz, chasis aluminio) *(Alt: Samsung Galaxy Tab A9+)* | 6 pzas | $3,200 – $3,600 MXN | **$19,200 – $21,600 MXN** |
+| **Fundas de Uso Rudo con Correa** | Carcasa antichoque tricapa de alta protección con soporte rotativo 360° para piso industrial | 6 pzas | $650 – $850 MXN | **$3,900 – $5,100 MXN** |
 | **Soportes Articulados de Mesa** | Brazo metálico de sujeción fija para mesas de Rampa, Adorno y Prensas | 6 pzas | $750 – $950 MXN | **$4,500 – $5,700 MXN** |
-| **Subtotal Hardware Base (Opción A):** | *Operación mediante cámara integrada de alta resolución* | — | — | **$27,600 – $32,400 MXN + IVA** |
-| **Lectores Ópticos 2D (Solo Opción B)** | 6 Escáneres industriales 2D inalámbricos (Modelo Netum o Zebra) | 6 pzas | $1,450 – $2,200 MXN | **$8,700 – $13,200 MXN** |
-| **Total Hardware Completo (Opción B):** | *Kits de Tablets Xiaomi + Soportes + Escáneres Ópticos 2D* | — | — | **$36,300 – $45,600 MXN + IVA** |
+| **Subtotal Hardware Base (Opción A):** | *Operación táctil con escaneo vía cámara integrada del dispositivo* | — | — | **$27,600 – $32,400 MXN + IVA** |
+| **Lectores Ópticos 2D (Solo Opción B)** | **Modelo 1:** Pistola inalámbrica industrial Netum/Tera HW-0002 ($1,450 – $1,850)<br>**Modelo 2:** Escáner fijo de mesa Zebra/Eyoyo 2D manos libres ($2,200 – $2,900) | 6 pzas | $1,450 – $2,200 MXN | **$8,700 – $13,200 MXN** |
+| **Total Hardware Completo (Opción B):** | *Kits completos: 6 Tablets Xiaomi + 6 Fundas + 6 Soportes + 6 Escáneres 2D* | — | — | **$36,300 – $45,600 MXN + IVA** |
 
 *Nota: Los equipos deben ser adquiridos directamente por Tombstone Hats bajo la ficha técnica recomendada.*
 

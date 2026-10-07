@@ -241,6 +241,19 @@ def md_to_docx(md_path, docx_path, doc_title):
             r.font.color.rgb = COLOR_BRAND
             continue
 
+        if stripped.startswith('#### '):
+            h_text = stripped[5:].strip()
+            p = doc.add_paragraph()
+            p.paragraph_format.space_before = Pt(10)
+            p.paragraph_format.space_after = Pt(2)
+            p.paragraph_format.keep_with_next = True
+            r = p.add_run(h_text)
+            r.font.name = "Arial"
+            r.font.size = Pt(10.5)
+            r.bold = True
+            r.font.color.rgb = COLOR_DARK
+            continue
+
         if stripped in ['---', '***', '___']:
             continue
 
