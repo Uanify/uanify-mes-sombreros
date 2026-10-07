@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import argparse
 from pathlib import Path
@@ -66,7 +66,7 @@ def set_cell_background(cell, fill_hex):
     shading_elm = parse_xml(f'<w:shd {nsdecls("w")} w:fill="{fill_hex}"/>')
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
-def set_cell_margins(cell, top=140, bottom=140, left=200, right=200):
+def set_cell_margins(cell, top=120, bottom=120, left=180, right=180):
     tcPr = cell._tc.get_or_add_tcPr()
     tcMar = OxmlElement('w:tcMar')
     for m, val in [('top', top), ('bottom', bottom), ('left', left), ('right', right)]:
@@ -87,6 +87,32 @@ def set_card_borders(cell, border_color="8B5E3C"):
         </w:tcBorders>
     ''')
     tcPr.append(tcBorders)
+
+def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, default_font="Arial", default_bold=False):
+    """Parsea markdown inline (**negrita** y *cursiva*) dentro de cualquier parrafo o celda."""
+    parts = re.split(r'(\*\*.*?\*\*|\*.*?\*)', text)
+    for part in parts:
+        if not part:
+            continue
+        if part.startswith('**') and part.endswith('**') and len(part) >= 4:
+            r = p.add_run(part[2:-2])
+            r.bold = True
+            r.font.name = default_font
+            r.font.size = Pt(default_size)
+            r.font.color.rgb = COLOR_DARK
+        elif part.startswith('*') and part.endswith('*') and len(part) >= 2:
+            r = p.add_run(part[1:-1])
+            r.italic = True
+            r.bold = default_bold
+            r.font.name = default_font
+            r.font.size = Pt(default_size)
+            r.font.color.rgb = default_color
+        else:
+            r = p.add_run(part)
+            r.bold = default_bold
+            r.font.name = default_font
+            r.font.size = Pt(default_size)
+            r.font.color.rgb = default_color
 
 def md_to_docx(md_path, docx_path, doc_title):
     doc = docx.Document()
@@ -129,7 +155,7 @@ def md_to_docx(md_path, docx_path, doc_title):
                 tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
                 cell = tbl.cell(0, 0)
                 set_cell_background(cell, "0F172A")
-                set_cell_margins(cell, top=160, bottom=160, left=240, right=240)
+                set_cell_margins(cell, top=140, bottom=140, left=200, right=200)
                 p = cell.paragraphs[0]
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(0)
@@ -164,21 +190,10 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.line_spacing = 1.25
             
             for m_line in metadata_lines:
-                parts = re.split(r'(\*\*.*?\*\*)', m_line)
-                for part in parts:
-                    if part.startswith('**') and part.endswith('**'):
-                        r = p.add_run(part[2:-2])
-                        r.bold = True
-                        r.font.name = "Arial"
-                        r.font.size = Pt(9.5)
-                        r.font.color.rgb = COLOR_DARK
-                    else:
-                        r = p.add_run(part)
-                        r.font.name = "Arial"
-                        r.font.size = Pt(9.5)
-                        r.font.color.rgb = COLOR_BODY
+                add_formatted_runs(p, m_line, default_color=COLOR_BODY, default_size=9.5)
                 p.add_run('\n')
-            p.runs[-1].text = p.runs[-1].text.rstrip('\n')
+            if p.runs and p.runs[-1].text.endswith('\n'):
+                p.runs[-1].text = p.runs[-1].text[:-1]
             doc.add_paragraph().paragraph_format.space_after = Pt(6)
             metadata_lines = []
 
@@ -246,69 +261,53 @@ def md_to_docx(md_path, docx_path, doc_title):
                         
                         if r_idx == 0:
                             set_cell_background(cell, COLOR_TH_BG)
-                            cr = cp.add_run(val)
-                            cr.bold = True
-                            cr.font.name = "Arial"
-                            cr.font.size = Pt(9.5)
-                            cr.font.color.rgb = COLOR_DARK
+                            add_formatted_runs(cp, val, default_color=COLOR_DARK, default_size=9.5, default_bold=True)
                         else:
                             bg = COLOR_BG_CARD if r_idx % 2 == 0 else "FFFFFF"
                             set_cell_background(cell, bg)
-                            cr = cp.add_run(val)
-                            cr.font.name = "Arial"
-                            cr.font.size = Pt(9.0)
-                            cr.font.color.rgb = COLOR_BODY
+                            add_formatted_runs(cp, val, default_color=COLOR_BODY, default_size=9.0)
                 doc.add_paragraph().paragraph_format.space_after = Pt(6)
             table_rows = []
 
         if stripped:
-            p = doc.add_paragraph()
-            p.paragraph_format.line_spacing = 1.25
-            p.paragraph_format.space_after = Pt(4)
-            p.paragraph_format.space_before = Pt(0)
-
             content_to_parse = stripped
+            is_bullet = False
+            is_numbered = False
+
             if stripped.startswith('* ') or stripped.startswith('- '):
-                p.paragraph_format.left_indent = Inches(0.25)
+                is_bullet = True
                 content_to_parse = stripped[2:].strip()
-                r_dot = p.add_run("▪  ")
-                r_dot.font.color.rgb = COLOR_BRAND
-                r_dot.font.size = Pt(9.5)
             elif re.match(r'^\d+\.\s', stripped):
+                is_numbered = True
                 m = re.match(r'^\d+\.\s', stripped)
-                p.paragraph_format.left_indent = Inches(0.25)
                 num_prefix = m.group(0)
                 content_to_parse = stripped[len(num_prefix):].strip()
-                r_num = p.add_run(num_prefix)
-                r_num.bold = True
-                r_num.font.color.rgb = COLOR_DARK
-                r_num.font.size = Pt(10)
 
-            parts = re.split(r'(\*\*.*?\*\*|\*.*?\*)', content_to_parse)
-            for part in parts:
-                if part.startswith('**') and part.endswith('**'):
-                    r = p.add_run(part[2:-2])
-                    r.bold = True
-                    r.font.name = "Arial"
-                    r.font.size = Pt(10)
-                    r.font.color.rgb = COLOR_DARK
-                elif part.startswith('*') and part.endswith('*') and len(part) > 2:
-                    r = p.add_run(part[1:-1])
-                    r.italic = True
-                    r.font.name = "Arial"
-                    r.font.size = Pt(10)
-                    r.font.color.rgb = COLOR_BODY
-                else:
-                    r = p.add_run(part)
-                    r.font.name = "Arial"
-                    r.font.size = Pt(10)
-                    r.font.color.rgb = COLOR_BODY
+            if is_bullet:
+                # Estilo Nativo de Vineta de Word/Docs
+                p = doc.add_paragraph(style='List Bullet')
+                p.paragraph_format.space_before = Pt(0)
+                p.paragraph_format.space_after = Pt(3)
+                p.paragraph_format.line_spacing = 1.25
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
+            elif is_numbered:
+                # Estilo Nativo de Lista Numerada de Word/Docs
+                p = doc.add_paragraph(style='List Number')
+                p.paragraph_format.space_before = Pt(1)
+                p.paragraph_format.space_after = Pt(3)
+                p.paragraph_format.line_spacing = 1.25
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
+            else:
+                p = doc.add_paragraph()
+                p.paragraph_format.line_spacing = 1.25
+                p.paragraph_format.space_after = Pt(4)
+                p.paragraph_format.space_before = Pt(0)
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
 
     doc.save(docx_path)
     return docx_path
 
 def upload_styled_doc(file_path, folder_id=None, doc_title=None):
-    """Genera DOCX nativo estilizado y lo sube como Google Doc oficial con formato editorial impecable."""
     local_p = Path(file_path)
     if not local_p.exists():
         raise FileNotFoundError(f"No existe el archivo {local_p}")
@@ -327,7 +326,6 @@ def upload_styled_doc(file_path, folder_id=None, doc_title=None):
 
         drive, docs = get_services()
 
-        # Buscar si ya existe el doc en Drive
         q = f"name = '{title}' and mimeType = 'application/vnd.google-apps.document' and trashed = false"
         if folder_id:
             q += f" and '{folder_id}' in parents"
