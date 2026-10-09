@@ -36,103 +36,81 @@ graph TD
 
     MES["TOMBSTONE HATS MES<br/>Control de Planta & Tablero Andon"]:::root
 
-    %% Nivel 1: Modulos Principales
-    M0["0. SEGURIDAD & ACCESO RBAC"]:::module
-    M1["1. TERMINAL DE PISO & LECTURA QR"]:::module
-    M2["2. TABLERO ANDON INDUSTRIAL"]:::module
-    M3["3. ALMACENES & CONTROL WIP"]:::module
-    M4["4. OPERADORES & DESTAJO"]:::module
-    M5["5. ANALÍTICA, FINANZAS & KPIS"]:::module
-    M6["6. CONFIGURACIÓN & ERP COMPAC"]:::module
+    %% Nivel 1: Modulos Principales (7 Modulos Oficiales MVP)
+    M1["1. PROGRAMACIÓN, LOTEO E IMPRESIÓN"]:::module
+    M2["2. MONITOREO DE PISO & 5 KPIS"]:::module
+    M3["3. TERMINAL TÁCTIL DE PISO (T1-T6)"]:::module
+    M4["4. PUNTOS DE CALIDAD (FILTROS C1-C5)"]:::module
+    M5["5. SUBENSAMBLES & FICHA TÉCNICA"]:::module
+    M6["6. PRE-NÓMINA DE DESTAJO & REPORTES"]:::module
+    M7["7. MICROSERVICIO CONTPAQi SQL"]:::module
 
-    MES --> M0
     MES --> M1
     MES --> M2
     MES --> M3
     MES --> M4
     MES --> M5
     MES --> M6
+    MES --> M7
 
-    %% Submodulos M0
-    M0 --> M0_1["0.1 Autenticación Rápida"]:::submod
-    M0 --> M0_2["0.2 Control de Accesos RBAC"]:::submod
-    M0_1 --> M0_1_1["PIN Pad táctil 4 dígitos (piso)"]:::leaf
-    M0_1 --> M0_1_2["Selector de perfiles (oficina)"]:::leaf
-    M0_1 --> M0_1_3["Auto-submit al 4to dígito"]:::leaf
-    M0_2 --> M0_2_1["Ocultamiento estricto de vistas"]:::leaf
-    M0_2 --> M0_2_2["Matriz de permisos por usuario"]:::leaf
-    M0_2 --> M0_2_3["Asignación de tramos de supervisión"]:::leaf
+    %% Modulo 1: Programacion, Loteo e Impresion
+    M1 --> M1_1["1.1 Ingesta de Pedidos SQL"]:::submod
+    M1 --> M1_2["1.2 Lotes Madre 60 pzas"]:::submod
+    M1 --> M1_3["1.3 Impresión Tarjetas QR"]:::submod
+    M1_1 --> M1_1_1["Lectura de pedidos CONTPAQi ($0 SDK)"]:::leaf
+    M1_1 --> M1_1_2["Captura de fecha compromiso"]:::leaf
+    M1_2 --> M1_2_1["Generación folio LOT-YYYY-XXXX"]:::leaf
+    M1_2 --> M1_2_2["Fraccionamiento precalculado a 15 pzas"]:::leaf
+    M1_3 --> M1_3_1["Impresión en hoja carta para recortar"]:::leaf
+    M1_3 --> M1_3_2["Micas plásticas cosidas con lona"]:::leaf
 
-    %% Submodulos M1
-    M1 --> M1_1["1.1 Captura Óptica QR"]:::submod
-    M1 --> M1_2["1.2 Avance Automático de Lote"]:::submod
-    M1 --> M1_3["1.3 Registro de Incidencias"]:::submod
-    M1_1 --> M1_1_1["Lectura de tarjeta en mica física"]:::leaf
-    M1_1 --> M1_1_2["Extracción: Orden, Lote, Modelo, Talla"]:::leaf
-    M1_2 --> M1_2_1["Cruce Lote + Estación del Supervisor"]:::leaf
-    M1_2 --> M1_2_2["Cálculo automático de destino por receta"]:::leaf
-    M1_2 --> M1_2_3["Depósito en almacén en 1 toque (<1s)"]:::leaf
-    M1_3 --> M1_3_1["Disparo de paros de línea Andon"]:::leaf
-    M1_3 --> M1_3_2["Reporte de merma justificada"]:::leaf
-    M1_3 --> M1_3_3["Separación de segundas de viernes"]:::leaf
+    %% Modulo 2: Monitoreo de Piso & 5 KPIs
+    M2 --> M2_1["2.1 WIP en Vivo por Buffer"]:::submod
+    M2 --> M2_2["2.2 Piezas por Área"]:::submod
+    M2 --> M2_3["2.3 5 KPIs Industriales"]:::submod
+    M2_1 --> M2_1_1["Monitoreo buffers T1 a T6"]:::leaf
+    M2_2 --> M2_2_1["Conteo acumulado turno 07:00-15:30"]:::leaf
+    M2_3 --> M2_3_1["Materiales vs BOM CONTPAQi"]:::leaf
+    M2_3 --> M2_3_2["Mapeo reprocesos C1-C5 con causa raíz"]:::leaf
+    M2_3 --> M2_3_3["Semáforo de entrega vs compromiso"]:::leaf
 
-    %% Submodulos M2
-    M2 --> M2_1["2.1 Monitoreo en Vivo (Tablero Digital Nave)"]:::submod
-    M2 --> M2_2["2.2 Ritmo & Cadencia de Producción"]:::submod
-    M2 --> M2_3["2.3 Control de Cuellos de Botella"]:::submod
-    M2_1 --> M2_1_1["Semáforo de estado (Normal/Alerta/Paro)"]:::leaf
-    M2_1 --> M2_1_2["Contador horario turno 07:00 a 15:30"]:::leaf
-    M2_2 --> M2_2_1["Tacómetro Takt Time (42s por pieza)"]:::leaf
-    M2_2 --> M2_2_2["Meta dinámica diaria (850 pzas/día)"]:::leaf
-    M2_3 --> M2_3_1["Monitoreo buffer Prensas D-05"]:::leaf
-    M2_3 --> M2_3_2["Alerta buffer Rampa WIP (>70 pzas)"]:::leaf
+    %% Modulo 3: Terminal Tactil de Piso (T1-T6)
+    M3 --> M3_1["3.1 Escaneo QR Tablet/Lector"]:::submod
+    M3 --> M3_2["3.2 Depósito en Buffer Salida"]:::submod
+    M3 --> M3_3["3.3 División Sublotes (T4)"]:::submod
+    M3 --> M3_4["3.4 Paros de Máquina"]:::submod
+    M3_1 --> M3_1_1["Cámara integrada o lector 2D HID"]:::leaf
+    M3_2 --> M3_2_1["Confirmación táctil de depósito"]:::leaf
+    M3_3 --> M3_3_1["Archivado madre 60 y activación 4x15"]:::leaf
+    M3_4 --> M3_4_1["Catálogo: horma, vapor, material, mecánico"]:::leaf
 
-    %% Submodulos M3
-    M3 --> M3_1["3.1 Buffers Intermedios"]:::submod
-    M3 --> M3_2["3.2 Catálogo Maestro de Hormas"]:::submod
-    M3 --> M3_3["3.3 Kárdex & Movimientos"]:::submod
-    M3_1 --> M3_1_1["Rampa WIP: Fraccionamiento 60 a 15 pzas"]:::leaf
-    M3_1 --> M3_1_2["Pulmón pre-prensas y secado"]:::leaf
-    M3_1 --> M3_1_3["Almacén de segundas y producto terminado"]:::leaf
-    M3_2 --> M3_2_1["Moldes de aluminio maquinado por color"]:::leaf
-    M3_2 --> M3_2_2["Control de temperatura (165-180 C)"]:::leaf
-    M3_2 --> M3_2_3["Horas de uso, ciclos y vida útil"]:::leaf
-    M3_3 --> M3_3_1["Bitácora de transferencias inter-estación"]:::leaf
-    M3_3 --> M3_3_2["Filtros multi-criterio y búsqueda rápida"]:::leaf
+    %% Modulo 4: Puntos de Calidad (Filtros C1-C5)
+    M4 --> M4_1["4.1 Filtros C1 a C5"]:::submod
+    M4 --> M4_2["4.2 Resolución de Defectos"]:::submod
+    M4_1 --> M4_1_1["C1 cuadros, C2 refuerzo, C3 pintura, C4 hidráulicas, C5 final"]:::leaf
+    M4_2 --> M4_2_1["Reproceso a estación de origen"]:::leaf
+    M4_2 --> M4_2_2["Dictamen de Segundas para venta"]:::leaf
+    M4_2 --> M4_2_3["Registro y costeo de Merma"]:::leaf
 
-    %% Submodulos M4
-    M4 --> M4_1["4.1 Padrón del Personal"]:::submod
-    M4 --> M4_2["4.2 Acreditación de Destajo"]:::submod
-    M4_1 --> M4_1_1["Catálogo de operadores y cuadrillas"]:::leaf
-    M4_1 --> M4_1_2["Asignación de estación y rol en turno"]:::leaf
-    M4_2 --> M4_2_1["Acumulación automática de piezas trabajadas"]:::leaf
-    M4_2 --> M4_2_2["Matriz de tarifas por departamento"]:::leaf
-    M4_2 --> M4_2_3["Generación de prenómina exportable"]:::leaf
+    %% Modulo 5: Subensambles & Ficha Tecnica
+    M5 --> M5_1["5.1 Semáforo Buffer T5"]:::submod
+    M5 --> M5_2["5.2 Ficha Multiperspectiva"]:::submod
+    M5_1 --> M5_1_1["Disponibilidad tafiletes talla 55-60"]:::leaf
+    M5_1 --> M5_1_2["Stock de toquillas para Adorno"]:::leaf
+    M5_2 --> M5_2_1["Fotos autorizadas en alta resolución S3"]:::leaf
 
-    %% Submodulos M5
-    M5 --> M5_1["5.1 Eficiencia Operativa (OEE)"]:::submod
-    M5 --> M5_2["5.2 Finanzas & Costos de Lote"]:::submod
-    M5 --> M5_3["5.3 Balanceo & Matriz BOM"]:::submod
-    M5_1 --> M5_1_1["Cálculo global: Disponibilidad, Desempeño, Calidad"]:::leaf
-    M5_1 --> M5_1_2["Bitácora SMED y tiempos de cambio de horma"]:::leaf
-    M5_1 --> M5_1_3["Rendimiento comparativo de supervisores"]:::leaf
-    M5_2 --> M5_2_1["Valorización comercial de lote ($1,310 MXN/pza)"]:::leaf
-    M5_2 --> M5_2_2["Costeo de merma acumulada"]:::leaf
-    M5_2 --> M5_2_3["Recuperación de segundas ($450 MXN/pza)"]:::leaf
-    M5_3 --> M5_3_1["Explosión de materiales por modelo (BOM)"]:::leaf
-    M5_3 --> M5_3_2["Monitoreo de cuellos de botella por estación"]:::leaf
+    %% Modulo 6: Pre-Nomina de Destajo & Reportes
+    M6 --> M6_1["6.1 Acumulado $/pza"]:::submod
+    M6 --> M6_2["6.2 Exportación Excel"]:::submod
+    M6_1 --> M6_1_1["Conteo por operario en turno único"]:::leaf
+    M6_2 --> M6_2_1["Descarga en 1 clic formato .xlsx"]:::leaf
 
-    %% Submodulos M6
-    M6 --> M6_1["6.1 Catálogos de Fabricación"]:::submod
-    M6 --> M6_2["6.2 Infraestructura de Procesos"]:::submod
-    M6 --> M6_3["6.3 Enlace CONTPAQi ERP (COMPAC)"]:::submod
-    M6_1 --> M6_1_1["Catálogo de modelos y fichas técnicas"]:::leaf
-    M6_1 --> M6_1_2["Rutas y secuencias con Drag & Drop"]:::leaf
-    M6_2 --> M6_2_1["CRUD de 14 estaciones de proceso"]:::leaf
-    M6_2 --> M6_2_2["CRUD de Filtros de Calidad (C-01 a C-04)"]:::leaf
-    M6_3 --> M6_3_1["Monitor de enlace ODBC y prueba ping"]:::leaf
-    M6_3 --> M6_3_2["Mapeo de almacenes comerciales B2B"]:::leaf
-    M6_3 --> M6_3_3["Emisor de vales de traspaso y pre-facturas"]:::leaf
+    %% Modulo 7: Microservicio CONTPAQi SQL
+    M7 --> M7_1["7.1 Lectura SQL Server"]:::submod
+    M7 --> M7_2["7.2 Entrada de PT y Cierre"]:::submod
+    M7_1 --> M7_1_1["Consultas directas en red local ($0 SDK)"]:::leaf
+    M7_2 --> M7_2_1["Inserción de entrada con folio de lote"]:::leaf
+    M7_2 --> M7_2_2["Descarga automática de componentes BOM"]:::leaf
 ```
 
 > **Regla de Actualización Continua del Diagrama:** Este mapa de descomposición jerárquico debe reflejar cualquier nuevo módulo, submódulo o función específica que se apruebe o desarrolle en el sistema.

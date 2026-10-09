@@ -1,532 +1,181 @@
-# Catálogo Integral de Historias de Usuario (User Stories)
+﻿# Historias de Usuario (User Stories) · Alcance Oficial MVP
+**Tombstone Hats MES · Control de Planta & Trazabilidad**  
+*Documento Interno de Ingeniería y QA · Alineado al Diagrama de Flujo y Catálogo Oficial del MVP.*
 
-## Tombstone Hats MES · Control de Planta, Trazabilidad y Tablero Andon
-
-> **Documento de Especificación Ágil de Historias de Usuario**  
-> **Versión del Sistema:** `v2.38.0` | **Fecha:** 2 de Octubre de 2026  
-> **Planta Matriz:** San Francisco del Rincón, Guanajuato | **Cliente:** Tombstone Hats  
-> **Estatus:** Base completa para revisión y validación de alcance con Dirección e Ingeniería.
-
----
-
-## Guía de Clasificación de Estatus
-
-Cada historia de usuario cuenta con un indicador de estado para facilitar tu revisión:
-
-- **`[Implementado v2.18.0]`**: Funcionalidad ya programada, probada y desplegada en la versión actual.
-- **`[En Revisión / Propuesto]`**: Funcionalidad planteada en el alcance que requiere confirmación de reglas con el cliente.
-- **`[Fase 2 / Escalabilidad]`**: Funcionalidad contemplada en la arquitectura técnica para activarse en una etapa posterior.
+> **Fecha:** Octubre 2026 | **Versión:** `v2.50.0`  
+> **Planta Matriz:** San Francisco del Rincón, Gto. | **Cliente:** Tombstone Hats  
+> **Reglas Clave:** Turno Único (07:00-15:30), Tablets T1 a T6, Filtros C1 a C5, $0 USD en APIs/licencias.
 
 ---
 
-## Índice de Módulos de Historias de Usuario
+## Módulo 1: Programación, Loteo e Impresión (Ingeniería Admin)
 
-1. [Módulo 0: Autenticación, Seguridad y RBAC](#módulo-0-autenticación-seguridad-y-control-de-acceso-rbac)
-2. [Módulo 1: Terminal de Supervisor, Escaneo QR y Control de Piso](#módulo-1-terminal-de-supervisor-escaneo-qr-y-control-de-piso)
-3. [Módulo 2: Tablero Andon Digital en Nave Central](#módulo-2-tablero-andon-digital-en-nave-central)
-4. [Módulo 3: Almacenes Físicos, Inventarios, Catálogo de Sombreros y Hormas](#módulo-3-almacenes-físicos-inventarios-catálogo-de-sombreros-y-hormas)
-5. [Módulo 4: Padrón de Operadores y Mano de Obra](#módulo-4-padrón-de-operadores-y-mano-de-obra)
-6. [Módulo 5: Analítica & KPIs de Planta (Ingeniería y Dirección)](#módulo-5-analítica--kpis-de-planta-ingeniería-y-dirección)
-7. [Módulo 6: Configuración de Planta, Rutas y CONTPAQi ERP (COMPAC)](#módulo-6-configuración-de-planta-rutas-y-contpaqi-erp-compac)
-8. [Módulo 7: Generación de Tarjetas Viajeras, Pedidos y Compras (Nuevas Propuestas)](#módulo-7-generación-de-tarjetas-viajeras-pedidos-y-compras-nuevas-propuestas)
+### US-M1-01: Ingesta de Pedidos desde CONTPAQi SQL Server
+- **Como:** Ingeniero de Producción / Administrador.
+- **Quiero:** Consultar las órdenes de producción y pedidos pendientes leídos directamente desde SQL Server de CONTPAQi.
+- **Para:** Evitar recapturas manuales en Excel y sincronizar el folio del pedido, modelo, cantidad y lista de materiales (BOM).
+- **Criterios de Aceptación:**
+  - Tabla de órdenes leídas con estado, modelo, piezas totales y cliente.
+  - Sincronización local directa sin costos de licencias SDK.
+
+### US-M1-02: Captura de Fecha Compromiso y Creación de Lotes Madre (60 Pzas)
+- **Como:** Ingeniero de Producción.
+- **Quiero:** Registrar la fecha compromiso pactada con el cliente y fraccionar la orden en lotes madre estándar de 60 piezas.
+- **Para:** Establecer el punto de partida de la trazabilidad y calcular el semáforo de entrega en piso.
+- **Criterios de Aceptación:**
+  - Asignación automática de folio de lote: `LOT-{AÑO}-{ORDEN}-{SECUENCIA}` (ej. `LOT-2026-0842-A`).
+  - Cálculo automático de sublotes de 15 piezas que se activarán posteriormente en Rampa/Alineado (T4).
+
+### US-M1-03: Impresión de Tarjetas Viajeras con Código QR
+- **Como:** Ingeniero de Producción.
+- **Quiero:** Generar e imprimir hojas carta de oficina con las tarjetas viajeras y sus códigos QR listos para recortar.
+- **Para:** Introducirlas en las fundas plásticas protectoras cosidas que viajan físicamente con el lote en el carrito de producción.
+- **Criterios de Aceptación:**
+  - Hoja carta con QR legible, folio, modelo, talla, horma, fecha y tramo.
+  - Formato listo para impresión física sin depender de software de terceros.
 
 ---
 
-## Módulo 0: Autenticación, Seguridad y Control de Acceso (RBAC)
+## Módulo 2: Monitoreo de Piso, WIP por Almacén y Tablero de 5 KPIs
 
-### US-01: Selección de Perfil y Login Rápido
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Operador, Supervisor, Ingeniero o Administrador de planta.
-- **Quiero:** Poder ingresar con un PIN rápido de 4 dígitos (o número de nómina) a través de un teclado numérico táctil de pantalla completa o seleccionar mi usuario desde un selector visual.
-- **Para:** Acceder a la plataforma en menos de 2 segundos desde la tablet o quiosco en piso de producción sin teclear correos largos ni contraseñas alfanuméricas con guantes o dedos con adhesivo.
+### US-M2-01: Visualización de Inventario en Proceso (WIP) en Tiempo Real
+- **Como:** Director de Planta / Ingeniero de Producción.
+- **Quiero:** Ver en una sola pantalla cuántos sombreros se encuentran detenidos o procesándose en cada estación y almacén intermedio.
+- **Para:** Identificar cuellos de botella al instante y balancear las cargas de trabajo entre estaciones.
 - **Criterios de Aceptación:**
-  - Al ingresar al sistema sin sesión activa se ofrece una interfaz dual:
-    1. **Pestaña PIN Rápido (Piso):** Con 4 dots indicadores (`.pin-dot`), Numpad táctil 3x4 (`pin-numpad-grid`) con botones 0-9, botón `C` (limpiar) y botón `⌫` (borrar). Al digitar el 4to dígito, el sistema ejecuta auto-submit instantáneo sin requerir pulsar 'Entrar'.
-    2. **Pestaña Selector de Perfiles:** Con tarjetas visuales, avatares y roles claros (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel - Supervisor Depts 05-08, Roberto - Supervisor Depts 01-04).
-  - Feedback visual inmediato: Si el PIN es correcto, los dots se iluminan en verde esmeralda (`.success`) y redirigen a la Terminal en <300ms. Si es incorrecto, los dots se tiñen de rojo carmesí con animación de sacudida (`@keyframes pinShake`) y se limpian automáticamente tras 800ms.
-  - Soporte para teclado físico y pistolas lectoras con emulación de teclado numérico (teclas 0-9, Backspace y Escape).
-  - La sesión seleccionada se almacena en memoria local (`localStorage`) para persistir si se refresca la página.
+  - Tarjetas por estación (T1 Prensas, T1 Alambrado, T2 Endopado, T3 Pintura, T4 Hidráulicas/Rampa, T5 Subensambles, T6 Adorno).
+  - Contador de piezas y semáforo de saturación en buffer.
 
-### US-02: Ocultamiento Estricto de Módulos No Autorizados
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea (`Juan Manuel` / `Roberto`).
-- **Quiero:** Que en mi menú de navegación únicamente se muestren los módulos que me corresponden (Terminal y Tablero Andon).
-- **Para:** No distraerme con módulos administrativos ni ver candados disuasorios (``) o alertas de permiso denegado.
+### US-M2-02: Tablero de 5 KPIs Industriales en Vivo
+- **Como:** Director de Planta (Edmundo González) / Producción.
+- **Quiero:** Consultar los 5 indicadores clave del turno sin hacer clics adicionales:
+  1. **WIP en Vivo:** Piezas activas en piso por buffer.
+  2. **Piezas por Área:** Conteo escaneado acumulado por estación en el turno.
+  3. **Materiales vs. BOM:** Materia prima entregada vs consumo teórico CONTPAQi.
+  4. **Mapeo de Reprocesos C1-C5:** Conteo de piezas rechazadas por estación de origen y causa raíz.
+  5. **Entrega vs. Compromiso:** Semáforo visual (Verde: a tiempo, Ámbar: riesgo, Rojo: atrasado).
+- **Para:** Tomar decisiones operativas inmediatas en sala de juntas o pasillo de planta.
 - **Criterios de Aceptación:**
-  - Si el usuario no tiene permiso para `analytics`, `config`, `inventory` u `operators`, los botones no se muestran en el DOM o tienen `display: none`.
-  - La barra lateral solo muestra las opciones autorizadas.
-
-### US-03: Matriz de Permisos Modulares por Usuario
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador (`Edmundo González`).
-- **Quiero:** Un modal interactivo donde pueda marcar o desmarcar permisos módulo por módulo para cualquier usuario.
-- **Para:** Ajustar las facultades de cada mando de planta de acuerdo con la evolución del equipo.
-- **Criterios de Aceptación:**
-  - Modal `modalEditPermissions` con checkboxes para cada módulo (`Andon`, `Terminal`, `Almacenes`, `Operadores`, `Analítica`, `Configuración`).
-  - Los cambios se aplican de inmediato en la sesión activa y persisten en la base local.
-
-### US-04: Cierre de Sesión Seguro
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Cualquier usuario del sistema.
-- **Quiero:** Un botón accesible de "Cerrar Sesión" en la barra superior o lateral.
-- **Para:** Dejar la terminal libre cuando cambio de turno o entrego la tablet a otro compañero.
-- **Criterios de Aceptación:**
-  - Al pulsar "Cerrar Sesión" se purga la sesión activa y se regresa de inmediato a la pantalla de Login RBAC.
+  - Actualización automática reactiva sin recargar página.
+  - Diseño Light Mode industrial (`#8B5E3C` / Slate) legible a distancia.
 
 ---
 
-## Módulo 1: Terminal de Supervisor, Escaneo QR y Control de Piso
+## Módulo 3: Terminal Táctil de Piso (Supervisores y Tablets T1 a T6)
 
-### US-05: Escaneo de Tarjeta Viajera con Cámara en Vivo
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea.
-- **Quiero:** Abrir el escáner de cámara web/tablet con retícula visual industrial para leer el código QR de la tarjeta viajera de la torre de sombreros.
-- **Para:** Identificar de inmediato el lote sin teclear números de folio manualmente.
+### US-M3-01: Escaneo Táctil de Tarjetas Viajeras (Cámara / Lector 2D)
+- **Como:** Supervisor de Línea asignado a tablet (T1 a T6).
+- **Quiero:** Escanear el código QR de la tarjeta viajera usando la cámara integrada o un lector USB/Bluetooth.
+- **Para:** Registrar la entrada del lote a la estación en menos de 2 segundos sin teclear.
 - **Criterios de Aceptación:**
-  - La cámara se activa mediante `getUserMedia` y ajusta el enfoque.
-  - Al detectar el QR, decodifica: Orden (`15068`), Lote (`49,386`), Sublote (`0` si es madre o `1..4`), Modelo (`Denver Master`), Talla (`56`), Falda (`9.0 cm`).
+  - Detección inmediata y despliegue de datos del lote (modelo, piezas, horma, siguiente paso).
+  - Botones táctiles grandes (mínimo 44px de altura) optimizados para dedos con guantes o adhesivo.
 
-### US-06: Verificación Previa Obligatoria de Tarjeta Física (Mica de Piso)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea.
-- **Quiero:** Que tras escanear el QR se despliegue en pantalla una réplica visual idéntica de la tarjeta viajera física para cotejar contra la torre.
-- **Para:** Asegurar al 100% que la mica que tengo en las manos coincide con el lote digital antes de autorizar cualquier movimiento.
+### US-M3-02: Confirmación de Depósito en Almacén Intermedio
+- **Como:** Supervisor de Línea.
+- **Quiero:** Registrar el término del proceso en la estación y confirmar el depósito del lote en el buffer de salida.
+- **Para:** Que el auxiliar o recolector de la siguiente estación sepa que el lote está disponible para traspaso.
 - **Criterios de Aceptación:**
-  - Modal visual con encabezado departamental (`TARJETA HIDRÁULICAS - ADORNO`), sticker de operador (`JORGE`), modelo, falda, doblado, talla y cantidad (15 o 60 pzas).
-  - Dos botones táctiles gigantes: `"Tarjeta Incorrecta / Re-escanear"` vs `"Confirmar y Proceder"`.
+  - Registro de piezas conformes depositadas.
+  - Descuento inmediato del WIP en la estación actual y traspaso al buffer siguiente.
 
-### US-07: Depósito y Traspaso Automático por Secuencia de Ruta
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea.
-- **Quiero:** Que al confirmar el trabajo en mi estación, el sistema calcule automáticamente cuál es el departamento siguiente según la ruta del modelo y deposite el lote en el almacén intermedio correspondiente.
-- **Para:** No tener que seleccionar a mano a dónde mandar el sombrero, evitando errores de desvío de producto.
+### US-M3-03: Fraccionamiento de Lote Madre a 4 Sublotes de 15 Pzas (T4 · Rampa)
+- **Como:** Supervisor en T4 (Hidráulicas - Alineado / Rampa).
+- **Quiero:** Archivar el lote madre de 60 piezas y activar formalmente los 4 códigos QR de 15 piezas cada uno.
+- **Para:** Adaptar el volumen de piezas al tamaño de las mesas de pre-adorno y adorno (T5/T6).
 - **Criterios de Aceptación:**
-  - El sistema consulta la secuencia del modelo (`El Viejonón`, `Denver`, etc.) y transfiere el lote al almacén de amortiguamiento de la siguiente estación.
-  - Se genera una notificación toast de confirmación y se actualiza el contador de piezas en rampa.
+  - Modal táctil de fraccionamiento con validación de suma exacta (15 x 4 = 60).
+  - Trazabilidad heredada: cada sublote conserva modelo, O.P. y folio padre.
 
-### US-08: Rastreabilidad Universal de Operador por Lote (Todos los Departamentos D-01 a D-14)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea en cualquier departamento de planta.
-- **Quiero:** Que en todos los departamentos del proceso (D-01 a D-14) quede registrado de forma obligatoria qué operador o cuadrilla procesó el lote antes de autorizar la transferencia.
-- **Para:** Garantizar el 100% de trazabilidad de mano de obra en toda la ruta del sombrero, extendiendo la cobertura digital a las estaciones que hoy en día no pegan sticker físico de papel (como almacenes, engomado, rampa o empaque).
+### US-M3-04: Captura de Paros de Máquina
+- **Como:** Supervisor de Línea.
+- **Quiero:** Declarar paros de línea con un toque (cambio de horma, falla de vapor, falta de material, ajuste mecánico).
+- **Para:** Medir tiempos muertos reales y justificar la productividad del turno.
 - **Criterios de Aceptación:**
-  - En estaciones con destajo individual (Prensas D-03, Troquelado D-04, Ribeteado D-06, Adorno D-08), el supervisor selecciona o confirma al operario específico de la máquina.
-  - En estaciones logísticas o de proceso continuo que hoy no manejan sticker (Almacén MP D-01, Engomado D-02, Rampa D-05, Calidad D-11, Empaque D-13), el sistema pre-selecciona automáticamente al operador titular del turno (o cuadrilla asignada), permitiendo validar el movimiento con 1 solo toque sin fricción.
-  - El récord histórico del lote almacena invariablemente: `Fecha`, `Hora`, `Lote`, `Estación`, `Operador Asignado`, `Piezas`.
-
-### US-09: Fraccionamiento de Lote Madre (60 a 15 piezas) en Rampa (D-05)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor o Encargado de Rampa (D-05).
-- **Quiero:** Poder escanear el Lote Madre de 60 piezas y pulsar un botón `"Fraccionar Lote en 4 Sublotes de 15 pzas"`.
-- **Para:** Dividir la torre madre en 4 sublotes individuales (`49,633-1`, `49,633-2`, `49,633-3`, `49,633-4`) para que viajen de forma independiente a ribeteado y adorno.
-- **Criterios de Aceptación:**
-  - El botón solo se habilita si el lote es de 60 piezas y está en la Rampa D-05.
-  - El sistema genera los 4 registros de sublote con 15 piezas cada uno y descuenta el lote madre de 60 piezas.
-
-### US-10: Restricción Departamental Estricta para Supervisores
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador de planta.
-- **Quiero:** Que cada supervisor solo pueda mover lotes que estén en sus departamentos autorizados (ej. Roberto solo D-01 a D-04; Juan Manuel solo D-05 a D-08).
-- **Para:** Evitar que un supervisor firme por error el avance de un departamento que no le corresponde supervisar.
-- **Criterios de Aceptación:**
-  - Si Juan Manuel intenta procesar un lote ubicado en Prensas (D-03), el sistema bloquea la acción con un mensaje indicando que la estación pertenece a Roberto Méndez.
-
-### US-11: Monitor de Almacenes Intermedios ("Mis Almacenes")
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de línea.
-- **Quiero:** Una vista consolidada en mi tablet con tarjetas de cada uno de mis departamentos asignados, mostrando cuántos lotes y piezas tengo retenidas en el buffer.
-- **Para:** Ver el estado de mi línea sin tener que caminar de un extremo a otro de la nave.
-- **Criterios de Aceptación:**
-  - Tarjetas por departamento con indicador numérico de piezas activas, capacidad máxima WIP y barra de saturación cromática (Verde si <70%, Amarillo si >70%, Rojo si >90%).
-
-### US-12: Mapa de Proceso y Rastreador de Lote en Tiempo Real (Value Stream Map)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor, Ingeniero o Administrador.
-- **Quiero:** Buscar cualquier folio de lote o sublote y ver una línea de tiempo horizontal con todas las estaciones del proceso.
-- **Para:** Saber exactamente en qué departamento físico está la torre en este segundo, qué operador la trabajó y cuánto tiempo lleva detenida.
-- **Criterios de Aceptación:**
-  - Despliegue secuencial: estaciones completadas con palomita verde (OK), estación activa con badge pulsante (**[AQUÍ ESTÁ EL LOTE]**), y próximas estaciones por recorrer.
-  - Botones de avance rápido (`>>`) o retroceso (`<<`) para corregir desfasamientos de piso.
+  - Botón táctil prominente de paro.
+  - Catálogo de motivos predefinidos sin necesidad de escribir texto libre.
 
 ---
 
-## Módulo 2: Tablero Andon Digital en Nave Central
+## Módulo 4: Puntos de Control de Calidad e Inspección (Filtros C1 a C5)
 
-### US-13: Semáforos Visuales de Avance por Estación en Piso
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Operadores y Supervisores en la nave de producción.
-- **Quiero:** Ver una pantalla Smart TV central con el estado en tiempo real de los 14 departamentos en verde, amarillo o rojo.
-- **Para:** Detectar a 20 metros de distancia si alguna estación está parada o acumulando material.
-- **Criterios de Aceptación:**
-  - Cada departamento tiene su semáforo visible con piezas acumuladas y Takt Time.
-
-### US-14: Control de Takt Time Estándar (42 segundos)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos y Supervisores.
-- **Quiero:** Un reloj de Takt Time en el Andon que marque el ritmo de 42 segundos por pieza.
-- **Para:** Asegurar que la nave mantenga el ritmo necesario para cumplir la meta diaria de 850 piezas sin requerir tiempo extra.
-- **Criterios de Aceptación:**
-  - Indicador de Takt Time con comparativa de tiempo real vs estándar.
-
-### US-15: Monitoreo de Meta Diaria y Meta Semanal (4,250 piezas)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Dirección (`Edmundo`) y Supervisores.
-- **Quiero:** Un velocímetro de avance con las piezas terminadas hoy contra la meta diaria (850 pzas) y el acumulado semanal contra 4,250 piezas.
-- **Para:** Conocer el porcentaje exacto de cumplimiento de la semana al instante.
-- **Criterios de Aceptación:**
-  - Barra de progreso con porcentaje, piezas faltantes y proyección de cierre de turno.
-
-### US-16: Comparativa Hora por Hora de Producción (Reemplazo del Pizarrón)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de producción.
-- **Quiero:** Una tabla horaria (07:00-08:00, 08:00-09:00... hasta las 15:30) que muestre las piezas programadas vs las piezas reales producidas.
-- **Para:** Eliminar el pizarrón blanco de pared donde antes se anotaba con plumón cada hora.
-- **Criterios de Aceptación:**
-  - Tabla con meta por hora (~106 pzas/hora), producido real y delta (+/-). Resalta en rojo las horas con déficit.
-
-### US-17: Inicio de Turno Dinámico con el Primer Escaneo del Día
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos y Supervisor de Línea.
-- **Quiero:** Que el cronómetro de Takt Time y el cálculo de horas efectivas de producción se disparen automáticamente al registrar el **primer código QR del día**, midiendo la hora real de arranque y los minutos de calentamiento/preparación (_ramp-up_).
-- **Para:** Medir el tiempo real de precalentamiento y arranque de línea sin penalizar artificialmente la primera hora del turno si la caldera o maquinaria tardó en alcanzar temperatura de trabajo.
-- **Criterios de Aceptación:**
-  - Al escanear y validar el primer código QR de la jornada en la Terminal, el sistema fija la hora real de arranque (`actualStartTime`), calcula el delta respecto a la hora programada (`rampUpMinutes`) y vincula el lote detonador.
-  - El Tablero Andon exhibe el badge de estatus en el encabezado general y sobre la tira hora por hora (`Arranque Real: HH:MM · Ramp-up: +XX min`).
-  - En Configuración de Turno, el Ingeniero o Administrador puede alternar entre modalidad **Dinámica** (predeterminada) y modalidad **Rígida** (fija a las 07:00:00), y dispone de un botón para reiniciar el arranque en simulacros y pruebas.
-
----
-
-## Módulo 3: Almacenes Físicos, Inventarios, Catálogo de Sombreros y Hormas
-
-### US-18: Catálogo Maestro de Sombreros Fabricados y Variaciones
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Almacenista, Ingeniero o Vendedor.
-- **Quiero:** Consultar la lista maestra de sombreros que produce la planta (_Denver Master_, _El Viejonón_, _Chaparral_, _Sonora_, etc.) con sus tallas (54 a 61), faldas (3.5" a 4.5"), toquillas y precios B2B.
-- **Para:** Tener centralizadas las especificaciones técnicas de producto terminado.
-- **Criterios de Aceptación:**
-  - Tabla estandarizada con thumbnail del sombrero, código, nombre, material, tallas disponibles, dimensiones de copa/falda, horma asociada, precio y estatus.
-
-### US-19: Visor de Ficha Técnica de Sombrero
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de Adorno, Calidad o Ingeniero.
-- **Quiero:** Pulsar el botón `"Ficha"` en cualquier sombrero y abrir un modal técnico con la foto en alta resolución, dimensiones exactas y materiales de ensamble.
-- **Para:** Comparar el sombrero físico en mesa de ensamble contra su especificación de diseño oficial.
-- **Criterios de Aceptación:**
-  - Modal `modalHatTechnicalSheet` con layout técnico: foto lateral del sombrero, tabla de variaciones de talla, horma requerida y lista de componentes (toquilla, tafilete, herrajes).
-
-### US-20: Alta y Edición de Sombreros con Carga de Fotos Drag & Drop
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Producto / Administrador.
-- **Quiero:** Registrar un nuevo modelo de sombrero arrastrando una fotografía o seleccionándola desde mi dispositivo, guardándose offline en Base64.
-- **Para:** Dar de alta nuevos estilos de temporada sin depender de servidores externos ni enlaces rotos.
-- **Criterios de Aceptación:**
-  - Dropzone interactivo con preview inmediato, validación de formato (.jpg, .png, .webp) y botón de eliminar foto.
-  - Al guardar, el sombrero se añade de inmediato a la tabla y persiste en almacenamiento local.
-
-### US-21: Catálogo Maestro de Hormas y Moldes Maquinados de Aluminio
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de Prensas / Ingeniero.
-- **Quiero:** Consultar las hormas de aluminio de los racks de planta (`#54 Johnson`, `#55 Viejonón`, `#57 Sonora`, etc.) con su aleación, temperatura de vapor requerida (165°C-180°C) y presión de prensado.
-- **Para:** Montar la horma correcta en la prensa `Michelagnoli` correspondiente y evitar quemar campanas.
-- **Criterios de Aceptación:**
-  - Tabla con thumbnail de la horma, código de rack, nombre, máquina asignada, temperatura/presión estándar y ciclo de vida útil acumulado.
-
-### US-22: Ficha Técnica y Control de Ciclos de Vida de Hormas
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Encargado de Mantenimiento / Prensas.
-- **Quiero:** Abrir la ficha técnica de una horma y consultar su barra de progreso de desgaste (ciclos de prensado acumulados vs vida útil de 50,000 golpes).
-- **Para:** Mandar a rectificar o pulir el molde antes de que provoque imperfecciones en la copa del sombrero.
-- **Criterios de Aceptación:**
-  - Modal `modalMoldTechnicalSheet` con gráfico de barra de vida útil, ciclos restantes y moldes complementarios requeridos.
-
-### US-23: Monitor de los 5 Almacenes Físicos de Planta
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Almacenista General / Ingeniero.
-- **Quiero:** Consultar el stock consolidado en los 5 almacenes clave: Materia Prima (D-01), Rampa WIP (D-05), Pulmón Pre-Prensas, Producto Terminado y Almacén de Merma/Retrabajo (D-12).
-- **Para:** Saber en qué almacén físico está concentrado el inventario de la fábrica.
-- **Criterios de Aceptación:**
-  - Selector de almacén, desglose de lotes por almacén y valorización estimada.
-
-### US-24: Control de Inventario de Tafiletes por Talla Crítica (#54 a #60)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Supervisor de Ribeteado (D-06).
-- **Quiero:** Ver en una tabla cuántos tafiletes de cuero foliados con oro Tombstone hay en stock para cada talla craneal.
-- **Para:** Alertar al taller de corte antes de que se agote una talla y frene la línea de producción.
-- **Criterios de Aceptación:**
-  - Tabla por tallas con cantidad disponible, stock mínimo de seguridad y pastilla de alerta si está por debajo de 50 piezas.
-
-### US-25: Kárdex General de Movimientos y Transferencias
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador / Auditor de Inventarios.
-- **Quiero:** Un historial cronológico de todas las entradas, salidas, mermas y traspasos entre almacenes con fecha, hora, lote y usuario responsable.
-- **Para:** Rastrear cualquier discrepancia física de inventario contra lo registrado en el sistema.
-- **Criterios de Aceptación:**
-  - Tabla de kárdex con filtros multi-criterio por tipo de movimiento (Entrada, Traspaso, Ajuste, Merma) y rango de fechas.
-
----
-
-## Módulo 4: Padrón de Operadores y Mano de Obra
-
-### US-26: Directorio Integral de Operadores de Planta
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos / Supervisor.
-- **Quiero:** Una lista de todos los operarios de la planta con su número de nómina, departamento, máquina asignada y turno.
-- **Para:** Saber quién está activo en cada puesto sin darles cuentas de acceso ni contraseñas innecesarias.
-- **Criterios de Aceptación:**
-  - Tabla con foto/avatar del operador, nómina, nombre completo, departamento, máquina, piezas procesadas en el turno y estatus activo/inactivo.
-
-### US-27: Conteo Diario de Piezas Procesadas por Operador (Destajo)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Recursos Humanos / Nóminas / Supervisor.
-- **Quiero:** Ver en tiempo real la sumatoria de sombreros que cada trabajador ha procesado el día de hoy.
-- **Para:** Validar la nómina por destajo y calcular bonos de productividad sin vales de libreta de papel.
-- **Criterios de Aceptación:**
-  - Contador dinámico de piezas que se incrementa cada vez que un supervisor transfiere un lote asignado a ese operador.
-
-### US-28: Alta y Edición de Operadores
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador o Ingeniero.
-- **Quiero:** Dar de alta nuevos trabajadores asignándoles su máquina y estación correspondiente.
-- **Para:** Mantener el padrón actualizado cuando entra nuevo personal o hay rotación de puestos.
-- **Criterios de Aceptación:**
-  - Modal `modalCreateOperator` con validación de nómina única y selección de estación de trabajo.
-
----
-
-## Módulo 5: Analítica & KPIs de Planta (Ingeniería y Dirección)
-
-### US-29: Tablero Centralizado de OEE (Eficiencia Global de Planta)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos (`Carlos`) y Dirección (`Edmundo`).
-- **Quiero:** Consultar el indicador OEE de la planta desagregado en sus tres factores: Disponibilidad, Rendimiento y Calidad.
-- **Para:** Saber con precisión matemática en cuál de los tres pilares estamos perdiendo capacidad productiva.
-- **Criterios de Aceptación:**
-  - Tarjetas de OEE global (ej. 83.4%) con sub-métricas: Disponibilidad (91.2%), Rendimiento (88.7%) y Calidad (98.2%), con semáforo estándar internacional.
-
-### US-30: Valorización Financiera de Producción en Vivo
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador (`Edmundo`).
-- **Quiero:** Ver el valor comercial en pesos mexicanos ($ MXN) de todo el lote que se encuentra en proceso y terminado, calculado a precio de catálogo ($1,310 MXN).
-- **Para:** Conocer el valor del inventario en piso en cualquier momento de la semana.
-- **Criterios de Aceptación:**
-  - Tarjeta de valor total (ej. `$801,720 MXN`), porcentaje destinado a pedidos mayoristas B2B (72%), valor recuperable en segundas ($17,030 MXN) y costo de merma ($18,340 MXN).
-
-### US-31: KPIs de Cumplimiento por Supervisor y Tramo Departamental
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Dirección e Ingeniería.
-- **Quiero:** Comparar el rendimiento del tramo de Roberto Méndez (D-01 a D-04) contra el tramo de Juan Manuel Pérez (D-05 a D-08).
-- **Para:** Identificar cuál supervisor tiene saturada su línea o acumulando retrasos en el flujo.
-- **Criterios de Aceptación:**
-  - Gráficas comparativas de piezas entregadas a tiempo, tiempo promedio de ciclo y tasa de defectos por supervisor.
-
-### US-32: Balanceo de Líneas y Detección de Cuellos de Botella
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos.
-- **Quiero:** Una gráfica de barras con el tiempo de ciclo real de cada departamento comparado contra la línea roja del Takt Time (42s).
-- **Para:** Detectar qué máquina está trabajando por encima del ritmo (cuello de botella) y balancear operadores.
-- **Criterios de Aceptación:**
-  - Gráfica donde Prensas de Vapor (D-03) o Ribeteado (D-06) resaltan si superan los 42 segundos estándar.
-
-### US-33: Bitácora de Paros e Incidencias SMED (Tiempos Muertos)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos / Supervisor.
-- **Quiero:** Registrar y consultar los paros de máquina (cambios de horma, caídas de caldera de vapor, desabasto de insumos, fallas mecánicas) con hora de inicio, fin y duración.
-- **Para:** Analizar las causas raíz de paros mediante un diagrama de Pareto y reducir el tiempo de cambio de molde (SMED).
-- **Criterios de Aceptación:**
-  - Tabla histórica con fecha, estación, tipo de paro, duración en minutos e impacto estimado en piezas no producidas.
-
-### US-34: Matriz de Materiales (BOM) y Simulación de Proveedores
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos / Compras.
-- **Quiero:** Consultar la lista de materiales requerida para armar cada modelo de sombrero (campana, adhesivo, badana de piel, toquilla, herrajes) y simular el impacto en costos si cambio de proveedor de materia prima.
-- **Para:** Evaluar márgenes de rentabilidad antes de autorizar órdenes de compra mayoristas.
-- **Criterios de Aceptación:**
-  - Tabla BOM interactiva con desglose de insumos, unidad de medida, proveedor actual, costo unitario y costo total por sombrero.
-
----
-
-## Módulo 6: Configuración de Planta, Rutas y CONTPAQi ERP (COMPAC)
-
-### US-35: CRUD Integral de Departamentos y Almacenes Intermedios
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos / Administrador.
-- **Quiero:** Crear, editar y dar de baja departamentos de planta, asignándoles su código (`D-XX`), nombre, supervisor responsable, Takt Time estándar y capacidad buffer WIP.
-- **Para:** Modelar la estructura física de la fábrica y adaptarla si se agrega una nueva máquina o área de trabajo.
-- **Criterios de Aceptación:**
-  - Modal `modalCreateStation` y `modalEditStation` con validación de código único y persistencia en base local.
-
-### US-36: Modelador de Rutas y Secuencias por Modelo con Drag & Drop
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Procesos.
-- **Quiero:** Una pantalla donde seleccione un modelo de sombrero y pueda reordenar visualmente sus pasos de fabricación arrastrando y soltando las estaciones (`⠿`), o agregando/quitando filtros de calidad.
-- **Para:** Configurar que los sombreros de 2 piezas sigan una ruta larga (14 pasos) y los de campana preformada sigan una ruta corta sin troquelado ni rampa.
-- **Criterios de Aceptación:**
-  - Interfaz drag & drop táctil y de cursor. Los cambios se guardan por modelo y determinan a qué estación se transfiere el lote al escanear.
-
-### US-37: CRUD de Puntos de Inspección de Calidad (`C-XX`) y Tolerancias
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Ingeniero de Calidad / Procesos.
-- **Quiero:** Dar de alta puntos de inspección intermedios (`C-01` a `C-04`) con sus tolerancias dimensionales en falda y copa, criterios de inspección e inspector asignado.
-- **Para:** Asegurar que los estándares de calidad de Tombstone se cumplan antes de autorizar el paso del lote a empaque.
-- **Criterios de Aceptación:**
-  - Tabla y modal de filtros de calidad con captura de tolerancias numéricas (ej. `± 2 mm` en falda) e inspectores responsables.
-
-### US-38: Configuración del Horario de Turno Único de Planta
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador de planta.
-- **Quiero:** Configurar la hora de entrada (`07:00`), hora de salida (`15:30`), horario de comida/descanso (`12:00 a 12:45`) y días laborables (`Lunes a Viernes`).
-- **Para:** Que todos los cálculos de Takt Time, horas efectivas de producción y Andon estén sincronizados con la jornada real de Tombstone.
-- **Criterios de Aceptación:**
-  - Formulario de turno con previsualización en vivo de minutos netos de producción (465 min netos).
-
-### US-39: Monitor Aislado de Integración CONTPAQi ERP (COMPAC)
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador / Encargado de Sistemas.
-- **Quiero:** Un módulo técnico aislado dentro de Configuración con el estatus de conexión ODBC al servidor de COMPAC, prueba de ping en vivo y mapeo de almacenes contables.
-- **Para:** Monitorear el enlace con el ERP sin interferir con la operación en piso ni exponer configuraciones fiscales a los supervisores.
-- **Criterios de Aceptación:**
-  - Botón `"Probar Conexión con CONTPAQi ERP"` que simula el handshake ODBC con la base de datos SQL Server y arroja diagnóstico de latencia y estado.
-  - Tabla de mapeo de bodegas (Almacén 01 Materia Prima, Almacén 05 WIP, Almacén 10 Terminado).
-
-### US-40: Emisión de Vales de Salida y Remisión B2B
-
-- **Estatus:** `[Implementado v2.18.0]`
-- **Como:** Administrador (`Edmundo`).
-- **Quiero:** Generar un vale de camioneta digital al concluir un lote en empaque, indicando piezas de primera aprobadas, mermas y cliente destino.
-- **Para:** Entregar el comprobante al chofer de reparto y sincronizar el descuento de inventario en COMPAC.
-- **Criterios de Aceptación:**
-  - Modal de emisión de vale con folio único, desglose de piezas, firma de entrega y opción de exportación a CSV/Excel.
-
----
-
-## Módulo 7: Generación de Tarjetas Viajeras, Pedidos y Compras (Nuevas Propuestas)
-
-### US-41: Módulo Propio de Generación e Impresión de Tarjetas Viajeras
-
-- **Estatus:** `[En Revisión / Propuesto]`
-- **Como:** Encargado de Almacén de Materia Prima (D-01) o Programación.
-- **Quiero:** Un botón en el sistema para generar la tarjeta viajera con su formato estándar (datos fijos, O. Prod, modelo, talla, falda y código QR) y mandarla a imprimir directamente a una impresora láser de oficina conectada en red.
-- **Para:** Independizarnos del sistema de etiquetas actual y asegurar que cada torre salga a piso con su QR legible desde el primer minuto.
-- **Criterios de Aceptación:**
-  - Generador de plantilla de impresión en tamaño carta/media carta para recortar y colocar dentro de la mica transparente existente.
-  - Folios secuenciales automáticos sin duplicados y registro de reimpresiones en caso de extravío.
-
-### US-42: Registro de Pedidos de Clientes Mayoristas y Metas de Stock
-
-- **Estatus:** `[En Revisión / Propuesto]`
-- **Como:** Área de Ventas / Planeación.
-- **Quiero:** Capturar los pedidos de clientes mayoristas (ej. 300 sombreros Viejonón para _Tiendas Western_) con fecha compromiso de entrega.
-- **Para:** Que el sistema genere automáticamente las órdenes de producción necesarias y establezca la prioridad de fabricación en piso.
-- **Criterios de Aceptación:**
-  - Pantalla de pedidos con estatus de avance porcentual en tiempo real (% fabricado vs % solicitado).
-
-### US-43: Solicitudes a Compras y Recepción de Materia Prima
-
-- **Estatus:** `[En Revisión / Propuesto]`
-- **Como:** Almacenista de Materia Prima / Compras.
-- **Quiero:** Registrar la entrada de rollos de telar, campanas de lana, piel para tafiletes y cajas al almacén D-01, con alertas automáticas cuando el stock llegue a un nivel crítico.
-- **Para:** Evitar desabastos de insumos que detengan las prensas de vapor o las mesas de ribeteado.
-- **Criterios de Aceptación:**
-  - Formulario de recepción de materia prima con afectación al inventario inicial de planta y semáforos de stock mínimo.
-
-### US-44: Modo Sin Conexión a Internet (Offline Cache y Sincronización)
-
-- **Estatus:** `[En Revisión / Propuesto]`
-- **Como:** Supervisor con tablet en zonas de la nave con Wi-Fi débil o intermitente.
-- **Quiero:** Que la aplicación me permita seguir escaneando lotes y registrando avances aunque se corte la señal momentáneamente, y que se sincronice sola al reconectarse.
-- **Para:** No frenar el trabajo de los operarios por problemas de red local.
-- **Criterios de Aceptación:**
-  - Almacenamiento temporal de eventos en cola local (`IndexedDB / localStorage`). Al recuperar conexión a la red, los movimientos se envían al servidor en el orden cronológico exacto.
-
-### US-45: Gestión y Clasificación de Segundas y Retrabajos (Almacén D-12)
-
-- **Estatus:** `[En Revisión / Propuesto · Pendiente de Validación con Cliente]`
+### US-M4-01: Dictamen de Calidad en Filtros C1 a C5
 - **Como:** Inspector de Calidad / Supervisor.
-- **Quiero:** Un módulo específico para auditar las piezas defectuosas acumuladas en el Almacén D-12 (Merma y Segundas), clasificándolas en: a) Recuperables por reproceso, b) Segunda de fábrica para venta de remate en mostrador, o c) Desecho total.
-- **Para:** Regularizar la recuperación de merma y monetizar las piezas con defectos menores de acuerdo con la frecuencia y proceso real que defina el cliente (sin asumir días fijos preestablecidos).
+- **Quiero:** Inspeccionar físicamente el lote y seleccionar con un toque: **Aprobar** o **Rechazar**.
+  - **C1:** Revisión de cuadros (previo a prensas).
+  - **C2:** Calidad refuerzo (pistola).
+  - **C3:** Calidad pintura.
+  - **C4:** Calidad hidráulicas / alineado.
+  - **C5:** Calidad final y terminado.
+- **Para:** Evitar que defectos avancen a estaciones posteriores consumiendo mano de obra innecesaria.
 - **Criterios de Aceptación:**
-  - Pantalla de revisión de segundas con registro de causas de defecto (mancha, deformación, costura) y reasignación de estatus en inventario.
-  - La periodicidad y operativa de revisión se adaptará formalmente tras la reunión de validación (`DUD-07`).
+  - Aprobado: avanza automáticamente a la siguiente estación.
+  - Rechazado: abre modal de resolución de defectos.
 
-### US-46: Consola Maestra SuperAdmin Uanify y Portabilidad de Sesión Limpia / Mock
-
-- **Estatus:** `[Implementado v2.19.0]`
-- **Como:** Equipo de Ingeniería y QA de Uanify (exclusivo interno, oculto para el cliente).
-- **Quiero:** Acceder de forma sigilosa mediante atajo `Ctrl+Shift+U`, PIN `0000`/`9999` o 5 toques en el logo para conmutar de inmediato entre el dataset demostrativo mock de fábrica y una sesión limpia en cero absoluto.
-- **Para:** Probar corridas completas desde cero en planta sin interferencia de datos previos y descargar/cargar snapshots JSON offline sin servicios externos de cobro ($0 USD).
+### US-M4-02: Resolución de Rechazos (Reproceso, Segundas y Mermas)
+- **Como:** Supervisor / Ingeniero de Calidad.
+- **Quiero:** Dictaminar las piezas rechazadas especificando cantidad, tipo y destino:
+  - **Reproceso:** Envía las piezas a la estación de origen (C2 a Refuerzo, C3 a Pintura, C4 a Alineado, C5 a Adorno).
+  - **Segunda:** Registra piezas con defectos cosméticos leves vendibles a menor precio.
+  - **Merma:** Registra desperdicio irrecuperable y descuenta piezas del lote.
+- **Para:** Alimentar el KPI de reprocesos y descontar inventario en CONTPAQi.
 - **Criterios de Aceptación:**
-  - Acceso invisible para el cliente Tombstone sin botones o enlaces expuestos en la interfaz pública.
-  - El modo sesión limpia resetea a 0 lotes, piezas producidas, buffers y paros, manteniendo intacta la infraestructura base de la planta (departamentos, modelos, hormas y operadores).
-  - El botón de exportación genera un archivo `.json` descargable de inmediato con el snapshot de prueba.
-
-### US-47: Navegación Ergonómica por Chips en Sub-Pestañas y Priorización Visual del Nombre de Departamento
-
-- **Estatus:** `[Implementado v2.19.0]`
-- **Como:** Supervisor y Operario de planta.
-- **Quiero:** Que las sub-pestañas se organicen de forma limpia en chips/pastillas sin scroll horizontal tosco y que todas las pantallas muestren los departamentos por su nombre real en lugar de un código técnico ID.
-- **Para:** Navegar ágilmente en tablets industriales y reconocer de inmediato en qué estación física me encuentro sin memorizar códigos como D-01 o D-05.
-- **Criterios de Aceptación:**
-  - Envoltorio flexible `flex-wrap: wrap` con barras de scroll horizontal ocultas en `.sub-nav-tabs`.
-  - La tabla de departamentos, tarjetas de terminal, timeline, Andon y botones de depósito destacan como dato primario el Nombre del Departamento (_Prensas de Hormado_, _Corte de Cuadros_, _Alambrado de Ala_).
+  - Desglose numérico obligatorio: suma de Aprobadas + Reproceso + Segunda + Merma = Total lote.
+  - Registro de motivo y causa raíz en la bitácora del lote.
 
 ---
 
-## Matriz de Resumen y Cobertura
+## Módulo 5: Subensambles (T5) y Ficha Técnica Multiperspectiva
 
-| Módulo                               | Historias Implementadas (`v2.19.0`) | Historias Propuestas / Por Validar | Total Historias  |
-| ------------------------------------ | :---------------------------------: | :--------------------------------: | :--------------: |
-| **0. Seguridad y RBAC**              |      5 (US-01 a US-04, US-46)       |                 0                  |        5         |
-| **1. Terminal y Escaneo QR**         |          8 (US-05 a US-12)          |                 0                  |        8         |
-| **2. Tablero Andon**                 |          4 (US-13 a US-16)          |             1 (US-17)              |        5         |
-| **3. Almacenes, Sombreros y Hormas** |          8 (US-18 a US-25)          |                 0                  |        8         |
-| **4. Padrón de Operadores**          |          3 (US-26 a US-28)          |                 0                  |        3         |
-| **5. Analítica & KPIs**              |          6 (US-29 a US-34)          |                 0                  |        6         |
-| **6. Configuración, UX y COMPAC**    |      7 (US-35 a US-40, US-47)       |                 0                  |        7         |
-| **7. Tarjetas, Pedidos y Compras**   |                  0                  |         5 (US-41 a US-45)          |        5         |
-| **TOTAL GENERAL**                    |       **41 Historias Listas**       |     **6 Historias a Validar**      | **47 Historias** |
+### US-M5-01: Semáforo de Buffer de Tafiletes y Toquillas (T5)
+- **Como:** Supervisor de Adorno / Subensambles.
+- **Quiero:** Ver el semáforo de disponibilidad de tafiletes por talla (55 a 60) y toquillas preparadas en buffer.
+- **Para:** Garantizar que Adorno nunca se detenga por falta de componentes interiores o exteriores.
+- **Criterios de Aceptación:**
+  - Semáforo Verde (stock suficiente para la orden actual), Ámbar (stock justo), Rojo (falta stock).
+
+### US-M5-02: Ficha Técnica Visual Multiperspectiva (AWS S3)
+- **Como:** Operador / Inspector en Adorno (T6).
+- **Quiero:** Ver fotos autorizadas del sombrero en alta resolución desde múltiples perspectivas (armado, doblado, toquilla, herraje, costura).
+- **Para:** Contrastar físicamente la pieza con el estándar aprobado por el cliente antes de colocar el parche final y empacar.
+- **Criterios de Aceptación:**
+  - Carrusel o galería táctil rápida por modelo.
+  - Carga optimizada de imágenes alojadas en repositorio estático/S3.
 
 ---
 
-### Recomendación para tu Revisión:
+## Módulo 6: Pre-Nómina de Destajo y Reportes
 
-1. Revisa las historias del **Módulo 1** y **Módulo 3** para confirmar que el flujo de escaneo y el catálogo de sombreros reflejen exactamente lo que necesitas.
-2. Analiza las **5 historias del Módulo 7 (US-41 a US-45)**: son las que provienen de la propuesta de tu amigo y de las pláticas recientes. Dime cuáles de esas 5 quieres que incorporemos formalmente en el sistema ahora o cuáles dejamos para la Fase 2.
+### US-M6-01: Acumulado Semanal de Destajo por Operador
+- **Como:** Administrador / Contador de Planta.
+- **Quiero:** Consultar el número exacto de piezas procesadas por cada operador en el turno y su pago acumulado según su tarifa ($/pza).
+- **Para:** Calcular la nómina de destajo semanal en minutos sin conciliar libretas de papel ni stickers extraviados.
+- **Criterios de Aceptación:**
+  - Tabla desglosada por operador, nómina, estación, piezas validadas y monto total en MXN.
+  - Filtro por fecha, semana y estación.
+
+### US-M6-02: Exportación de Nómina a Microsoft Excel
+- **Como:** Contador / Recursos Humanos.
+- **Quiero:** Descargar el reporte de destajo y producción en un archivo Excel (`.xlsx` o `.csv`) en un solo clic.
+- **Para:** Importarlo directamente al sistema contable sin manipulación intermedia.
+- **Criterios de Aceptación:**
+  - Descarga limpia con encabezados estandarizados.
+
+---
+
+## Módulo 7: Microservicio Puente CONTPAQi SQL Server
+
+### US-M7-01: Lectura Local de Catálogos y Pedidos ($0 Licencias)
+- **Como:** Administrador del Sistema.
+- **Quiero:** Que el microservicio lea las tablas de CONTPAQi Comercial en red local vía SQL Server sin consumir licencias SDK adicionales.
+- **Para:** Mantener actualizados clientes, modelos, lista de materiales y órdenes sin costo recurrente.
+- **Criterios de Aceptación:**
+  - Conexión por red local mediante vistas y credenciales seguras.
+
+### US-M7-02: Registro de Salida y Cierre de Orden en CONTPAQi
+- **Como:** Supervisor de Embarque / Liberación (T6).
+- **Quiero:** Que al liberarse el lote tras pasar C5, se inserte la entrada de producto terminado y se descuente la materia prima con el folio del lote en observaciones.
+- **Para:** Cerrar el ciclo contable de inventarios de forma 100% automatizada.
+- **Criterios de Aceptación:**
+  - Inserción de registro de entrada con lote y fecha.
+  - Alerta en pantalla si la conexión de red local estuviera temporalmente inaccesible.

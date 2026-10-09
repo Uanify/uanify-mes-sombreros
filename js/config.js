@@ -2207,7 +2207,6 @@ window.initConfigView = function() {
     }
   }
 
-  const btnSaveConfig = document.getElementById('btnSaveConfig');
   if (btnSaveConfig) {
     btnSaveConfig.addEventListener('click', handleSavePlantConfig);
   }
