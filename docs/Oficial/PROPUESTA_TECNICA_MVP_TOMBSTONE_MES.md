@@ -1,4 +1,4 @@
-# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
+﻿# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
 **Estrategia de Digitalización y Control de Manufactura · Uanify**  
 *Documento de Especificación de Alcance, Procesos de Piso y Modelo Operativo.*
 
@@ -10,11 +10,19 @@
 
 ## 1. Resumen Ejecutivo y Enfoque Estratégico ($0 Costo en Licenciamiento Externo)
 
-La presente propuesta define la arquitectura, flujos operativos y alcance funcional del **Sistema MES (Manufacturing Execution System) para Tombstone Hats**.
+La presente propuesta define la arquitectura, flujos operativos y alcance funcional del **Sistema MES (Manufacturing Execution System) para Tombstone Hats**, digitalizando la producción desde que copa y falda se unen en Prensas hasta la entrega al cliente, y conectándolo con CONTPAQi Comercial 11.3.1.
 
-El sistema está enfocado en resolver dos necesidades críticas de planta:
-* **Conocer el avance real de la orden de producción vs. lo programado.**
-* **Visualizar el inventario en proceso (WIP) actual por almacén intermedio** (dónde se encuentran físicamente los sombreros en tiempo real).
+El objetivo central es que Dirección e Ingeniería visualicen en tiempo real los **5 Indicadores Clave de Desempeño (KPIs)** solicitados por la planta:
+
+| KPI | Pregunta de Negocio que Responde | Origen del Dato en Piso | Consulta en Sistema |
+|:---|:---|:---|:---|
+| **Inventario en Proceso (WIP)** | ¿Cuántos sombreros hay hoy en cada departamento y a qué orden pertenecen? | Escaneo de tarjeta viajera al depositar en almacén intermedio | Por departamento, orden, modelo y talla |
+| **Piezas Producidas por Área** | ¿Cuánto produjo cada departamento en el día y en la semana? | Escaneo de salida del departamento | Por día, semana, departamento y operador |
+| **Consumo de Materiales** | ¿Cuánto material consumió realmente cada orden contra su lista estándar? | Salidas de almacén cargadas a la orden vs lista de materiales (BOM) en CONTPAQi | Por orden, modelo e insumo |
+| **Reprocesos y Defectos** | ¿Cuántas piezas regresaron, desde qué punto de calidad y por qué causa raíz? | Registro del inspector en los 5 puntos de calidad con dictamen de supervisor | Por punto de calidad, causa y departamento origen |
+| **Tiempo de Entrega** | ¿Cada pedido llegará a tiempo respecto a la fecha compromiso acordada? | Fecha compromiso capturada al crear la orden + registro de entrega final | Por pedido, cliente y semana |
+
+*Nota sobre materiales y reprocesos:* El control de materiales mide el consumo en unidades físicas contra la lista de materiales (BOM); la valorización monetaria se calcula con base en los costos unitarios registrados en CONTPAQi. Los reprocesos se contabilizan en piezas y causa raíz sin recosteo contable en esta fase. El tablero alerta en amarillo los pedidos próximos al vencimiento y en rojo los atrasados.
 
 ### Directrices Rectoras de la Estrategia (2 Opciones):
 * **Opción A (Recomendada):** Sistema MES Integral con enlace nativo a Microsoft SQL Server de CONTPAQi Comercial 11, trazabilidad por códigos QR en tarjetas viajeras y monitoreo de WIP por almacén intermedio. Operado en tablets/pantallas táctiles utilizando la cámara integrada del dispositivo.
@@ -24,24 +32,36 @@ El sistema está enfocado en resolver dos necesidades críticas de planta:
 
 ## 2. Ingesta de Órdenes, Creación de Lotes e Impresión de Tarjetas
 
+* **Inicio del Seguimiento:**  
+  El lote nace formalmente en el MES cuando copa y falda se unen en **Prensas (T1)**. El proceso previo (Corte, Endopado y Entallado de lienzos) no se rastrea con lote individual en piso, pero sí se carga su consumo de materia prima a la orden de producción.
 * **Emisión de Tarjetas Directa en Planta:**  
-  El Ingeniero Admin consulta en el MES la orden proveniente de CONTPAQi. Asigna manualmente la cantidad de lotes madre (base 60 pzas) y sublotes (15 pzas) conforme a la programación. Desde la misma pantalla genera e imprime las tarjetas viajeras oficiales con sus códigos QR en hojas tamaño carta para recortar e introducirlas en fundas plásticas.
-* **Fraccionamiento en Rampa (D-05):**  
-  El supervisor recoge en Ingeniería el juego de tarjetas de sublote. En Rampa se realiza el cambio físico; la **Tarjeta Madre original se archiva en la mesa de rampa** como bitácora y control histórico.
-* **Escaneo de Avance:**  
-  Se realiza al salir del departamento por el usuario/supervisor que concluye el proceso al depositar en el almacén intermedio.
+  El Ingeniero Admin consulta en el MES la orden proveniente de CONTPAQi Comercial. Asigna manualmente la cantidad de lotes madre (base 60 pzas) y sublotes (15 pzas) conforme a la programación. Desde la misma pantalla genera e imprime las tarjetas viajeras oficiales con sus códigos QR en hojas tamaño carta estándar de oficina para recortar e introducirlas en fundas plásticas cosidas.
+* **División en Sublotes en Hidráulicas (T4):**  
+  El lote viaja como lote madre de 60 piezas desde Prensas hasta Alineado en Hidráulicas (T4), donde se divide formalmente en sublotes de 15 piezas mediante escaneo para transitar por acabados hasta Producto Liberado. El número de sublotes es configurable por orden.
+* **Momento del Escaneo:**  
+  Se realiza al salir del departamento por el usuario/supervisor que concluye el proceso al depositar el lote en el almacén intermedio para el siguiente proceso. Con ello, el lote sale del WIP de un departamento e ingresa al inventario del siguiente.
 
 ---
 
-## 3. Gestión de Calidad, Piezas de Segunda y Reprocesos
+## 3. Puntos de Control de Calidad, Rechazos y Piezas de Segunda
 
-* **Estructura de Calidad y Decisión:**  
-  El **Inspector de Calidad** valida físicamente las piezas en los filtros oficiales y registra en sistema: **Aprobar** o **Rechazar**. Ante una no conformidad, el Supervisor o Ingeniero dictamina en pantalla:
-  * **Reproceso:** Selecciona manualmente en el sistema a qué estación o proceso anterior debe regresar el lote para ser corregido.
-  * **Segunda:** El lote principal no se detiene; se captura la cantidad de piezas separadas y su causa raíz.
-  * **Merma:** Registro de piezas descartadas definitivamente con su causa de falla.
-* **Alcance de Mermas y Segundas en MVP:**  
-  Registro obligatorio del número de piezas y la **Causa Raíz**. Estrictamente captura y registro histórico para consulta y KPIs. No se incluye recosteo contable automático ni facturación especial en esta fase.
+### 3.1 Estructura de Decisión en Filtros de Calidad:
+El **Inspector de Calidad** valida físicamente las piezas en los filtros oficiales y tiene únicamente dos acciones: **Aprobar** o **Rechazar**. Ante una no conformidad, el Supervisor o el Ingeniero de Calidad dictamina en pantalla:
+* **Reproceso:** Selecciona a qué proceso anterior regresa el lote para ser corregido.
+* **Segunda:** El lote principal no se detiene; se captura la cantidad de piezas separadas y su causa raíz.
+* **Merma:** Registro de piezas descartadas definitivamente con su causa de falla.
+
+*Regla de Oro de Planta:* Ningún lote sale incompleto hacia el cliente. Las piezas descartadas como segunda o merma se sustituyen físicamente en línea y quedan registradas contra su lote y orden.
+
+### 3.2 Los 5 Puntos de Calidad en Línea y Destino de Rechazo:
+
+| Punto de Calidad | Ubicación en Nave | Inspector / Tablet | Acción y Destino si No Pasa |
+|:---|:---|:---:|:---|
+| **C1 · Revisión de Cuadros** | Corte de lienzos | Inspección visual | Almacén de cuadros con defecto (se descuenta del material de la orden) |
+| **C2 · Calidad Refuerzo** | Cabina de Refuerzo | T3 (Pintura) | Regresa a Refuerzo a pistola para reaplicación |
+| **C3 · Calidad Pintura** | Cabina de Pintura | T3 (Pintura) | Regresa a Pintura del sombrero para retoque |
+| **C4 · Calidad Hidráulicas** | Prensas Hidráulicas | T4 (Hidráulicas) | Regresa a Alineado para corrección de prensado |
+| **C5 · Calidad Final** | Inspección Final | T6 (Calidad Final) | Regresa a Adorno (montaje de toquilla, tafilete o herraje) |
 
 ---
 
@@ -50,16 +70,16 @@ El sistema está enfocado en resolver dos necesidades críticas de planta:
 * **Pre-nómina Semanal a Destajo:**  
   Cálculo automático del acumulado de piezas concluidas por operador conforme a la tarifa fija asignada ($/pza). Generación de Pre-reporte de corte con función de exportación nativa a Microsoft Excel para conciliación administrativa.
 * **Bitácora de Paros Productivos:**  
-  Panel para registro de paro operativo: Estación/Máquina, operador, hora inicio, hora fin y motivo general. Mapeo y registro histórico para análisis de disponibilidad.
+  Panel táctil para registro de paro operativo en piso: Estación/Máquina, operador, hora inicio, hora fin y motivo general. Mapeo y registro histórico para análisis de disponibilidad de línea.
 
 ---
 
 ## 5. Subensambles (Tafiletes y Toquillas) y Ficha Técnica con Fotos
 
-* **Semáforo de Buffer en Adorno:**  
+* **Semáforo de Buffer en Adorno (T5):**  
   Tafiletes y Toquillas alimentan a Adorno como buffers independientes según la orden de producción. La terminal de Adorno despliega un semáforo de disponibilidad por talla y modelo para evitar cuellos de botella antes de iniciar el ensamble.
 * **Ficha Técnica Visual Multiperspectiva:**  
-  En Adorno e Inspección Final se muestran en pantalla **varias fotografías de la muestra oficial del modelo autorizado** (diferentes ángulos de armado, detalle de toquilla, herraje, color de fieltro y doblado de falda) para confrontar físicamente el sombrero terminado contra el estándar autorizado de planta.
+  En Adorno e Inspección Final se muestran en pantalla **varias fotografías de la muestra oficial del modelo autorizado** (almacenadas en AWS S3 en diferentes ángulos de armado, toquilla, herraje, color y doblado de falda) para confrontar físicamente el sombrero terminado contra el estándar oficial.
 
 ---
 
@@ -91,18 +111,30 @@ graph TD
     V_CAT -.->|Sincroniza Códigos| MES_TOMBSTONE
 ```
 
-### Acuerdos Técnicos y Ventajas Estratégicas:
-* **Acceso Nativo Vía Microsoft SQL Server ($0 Costo en Licencias Adicionales):** No se utiliza el SDK de CONTPAQi. Se trabaja mediante Vistas y Procedimientos Almacenados directamente sobre el motor SQL Server sin consumir licencias concurrentes.
-* **Manejo de Lotes Desacoplado:** El MES inyecta el producto terminado insertando el Folio del Lote del MES en el campo de referencia/observaciones de la partida.
-* **Catálogo de Materiales Estructurado:** Clasificación por Familias + Consecutivo único (ej. `PIEL001` = Sintético Poring, `TEL001` = Fieltro) con trazabilidad de origen ligada al folio de factura del proveedor.
+### Intercambio de Datos y Ventajas Técnicas:
+* **Lectura CONTPAQi ➔ MES:** Pedidos del cliente, fecha compromiso, catálogo de productos, lista de materiales estándar (BOM) e inventario de insumos.
+* **Escritura MES ➔ CONTPAQi:** Salidas de materia prima cargadas a la orden (consumo real) y entrada de producto terminado referenciando el folio del lote MES en el campo de observaciones de la partida.
+* **Cero Costo en Licencias SDK:** Acceso directo vía Vistas y Procedimientos Almacenados en Microsoft SQL Server con usuario dedicado. No consume licencias concurrentes de usuario de CONTPAQi Comercial.
 
 ---
 
-## 7. Perfiles de Acceso (3 Roles)
+## 7. Mapeo de Terminales de Piso (Las 6 Tablets) y Perfiles de Acceso
 
-* **Ingeniero (Admin Mayor):** Acceso total. Administración de órdenes, creación y partición de lotes, impresión de tarjetas viajeras, configuración de rutas, almacenes y usuarios.
-* **Supervisor de Planta:** Consulta de WIP de sus almacenes asignados, registro de depósito de lotes, Modo Rampa, captura de paros de máquina y resolución de reprocesos.
-* **Inspector de Calidad:** Acceso exclusivo a los filtros de calidad para aprobar o rechazar lotes.
+### 7.1 Distribución de las 6 Tablets en Planta:
+
+| Terminal | Estación en Nave | Departamentos y Procesos que Registra |
+|:---:|:---|:---|
+| **T1** | **Prensas** | Pegado copa-falda (nacimiento del lote de 60 pzas), Alambrado, Replanchado con alambre y Refaldeo de falda |
+| **T2** | **Patio Endopado** | Baño con alambre (Endopado y rigidizado) |
+| **T3** | **Calidad Refuerzo y Pintura** | Refuerzo a pistola, Filtro C2, Pintura, Filtro C3 y Acabado de brillo |
+| **T4** | **Calidad Hidráulicas** | Hidráulicas Alineado (división en sublotes de 15 pzas), Filtro C4 y Pre-adorno (perforado y tafilete) |
+| **T5** | **Toquilla y Tafilete** | Entregas de subensambles a Adorno (semáforo de disponibilidad por talla y modelo) |
+| **T6** | **Calidad Final y Embarque** | Adorno (etiquetas, parche, toquilla), Filtro C5, Producto Liberado y entrega al cliente |
+
+### 7.2 Perfiles de Acceso (3 Roles):
+* **Ingeniero (Admin Mayor):** Acceso total. Administración de órdenes, creación y partición de lotes, impresión de tarjetas viajeras, configuración de rutas, almacenes y usuarios. *(Dirección General opera con perfil Ingeniero Admin para consulta y auditoría total).*
+* **Supervisor de Planta:** Consulta de WIP de sus almacenes asignados, registro de depósito de lotes, división en sublotes, captura de paros de máquina y resolución de reprocesos.
+* **Inspector de Calidad:** Acceso exclusivo a los 5 filtros de calidad para aprobar o rechazar lotes.
 
 ---
 
@@ -186,5 +218,7 @@ Al concluir las **5 semanas de garantía post-arranque**, se ofrece una póliza 
 
 ### Exclusiones Explícitas del Alcance:
 * **Modo Offline:** No se contempla almacenamiento en desconexión.
-* **Algoritmos automáticos de optimización de corte o loteo:** La partición la define el usuario.
-* **Pantallas Smart TV / Andon en vigas:** La visualización se concentra en tablets y PCs.
+* **División automática algorítmica de lotes:** La partición la define el Ingeniero en el sistema.
+* **Pantallas Smart TV / Andon en vigas:** La visualización se concentra en tablets y computadoras.
+* **Sensores IoT / Telemetría física en prensas:** El registro de paros se realiza de manera manual en la tablet.
+* **Facturación y Contabilidad:** Se realizan de forma habitual dentro de CONTPAQi Comercial.
