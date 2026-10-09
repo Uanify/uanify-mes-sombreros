@@ -154,27 +154,8 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
             r.font.size = Pt(default_size)
             r.font.color.rgb = default_color
 
-def render_mermaid_to_image(mermaid_code: str, output_png_path: Path) -> bool:
-    """Renderiza código de diagrama Mermaid a una imagen PNG de alta resolución usando mermaid-cli."""
-    temp_mmd = output_png_path.parent / f"{output_png_path.stem}.mmd"
-    try:
-        temp_mmd.write_text(mermaid_code, encoding='utf-8')
-        cmd = ['npx.cmd', '-y', '@mermaid-js/mermaid-cli@12.0.0', '-i', str(temp_mmd), '-o', str(output_png_path), '-b', 'white', '-s', '2']
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=40)
-        return output_png_path.exists() and output_png_path.stat().st_size > 0
-    except Exception as e:
-        print(f"Error renderizando diagrama Mermaid: {e}")
-        return False
-    finally:
-        if temp_mmd.exists():
-            try:
-                temp_mmd.unlink()
-            except Exception:
-                pass
-
 def md_to_docx(md_path, docx_path, doc_title):
     doc = docx.Document()
-    generated_images = []
     
     # 1. Configuración de Márgenes Ejecutivos (Sin logo en header)
     for section in doc.sections:
@@ -221,47 +202,20 @@ def md_to_docx(md_path, docx_path, doc_title):
                 code_lines = []
             else:
                 in_code = False
-                if code_type == 'mermaid':
-                    # RENDERIZAR MERMAID COMO IMAGEN
-                    mermaid_code = '\n'.join(code_lines).strip()
-                    png_name = f"mermaid_{len(generated_images) + 1}.png"
-                    png_path = Path(docx_path).parent / png_name
-                    success = render_mermaid_to_image(mermaid_code, png_path)
-                    if success:
-                        generated_images.append(png_path)
-                        p_img = doc.add_paragraph()
-                        p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                        p_img.paragraph_format.space_before = Pt(8)
-                        p_img.paragraph_format.space_after = Pt(12)
-                        p_img.add_run().add_picture(str(png_path), width=Inches(6.2))
-                    else:
-                        # Si fallara la imagen, fallback a bloque de texto limpio
-                        tbl = doc.add_table(rows=1, cols=1)
-                        tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-                        cell = tbl.cell(0, 0)
-                        set_cell_background(cell, "0F172A")
-                        set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
-                        p = cell.paragraphs[0]
-                        run = p.add_run(mermaid_code)
-                        run.font.name = "Consolas"
-                        run.font.size = Pt(8.5)
-                        run.font.color.rgb = RGBColor(241, 245, 249)
-                else:
-                    # Bloque de código estándar
-                    tbl = doc.add_table(rows=1, cols=1)
-                    tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-                    cell = tbl.cell(0, 0)
-                    set_cell_background(cell, "0F172A")
-                    set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
-                    p = cell.paragraphs[0]
-                    p.paragraph_format.space_before = Pt(0)
-                    p.paragraph_format.space_after = Pt(0)
-                    p.paragraph_format.line_spacing = 1.15
-                    run = p.add_run('\n'.join(code_lines))
-                    run.font.name = "Consolas"
-                    run.font.size = Pt(8.5)
-                    run.font.color.rgb = RGBColor(241, 245, 249)
-                    doc.add_paragraph().paragraph_format.space_after = Pt(4)
+                tbl = doc.add_table(rows=1, cols=1)
+                tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+                cell = tbl.cell(0, 0)
+                set_cell_background(cell, "0F172A")
+                set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
+                p = cell.paragraphs[0]
+                p.paragraph_format.space_before = Pt(0)
+                p.paragraph_format.space_after = Pt(0)
+                p.paragraph_format.line_spacing = 1.15
+                run = p.add_run('\n'.join(code_lines))
+                run.font.name = "Consolas"
+                run.font.size = Pt(8.5)
+                run.font.color.rgb = RGBColor(241, 245, 249)
+                doc.add_paragraph().paragraph_format.space_after = Pt(4)
                 code_type = ""
             continue
 
@@ -424,15 +378,6 @@ def md_to_docx(md_path, docx_path, doc_title):
                 add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
 
     doc.save(docx_path)
-    
-    # Limpiar imágenes temporales generadas
-    for img_p in generated_images:
-        if img_p.exists():
-            try:
-                img_p.unlink()
-            except Exception:
-                pass
-                
     return docx_path
 
 def upload_styled_doc(file_path, folder_id=None, doc_title=None):
