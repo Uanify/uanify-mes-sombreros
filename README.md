@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.52.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.53.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.52.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.53.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.53.0] - 2026-10-09
+- **Implementación de Partición y Creación Manual de Lotes (Módulo 1 MVP):**
+  - **Modal Interactivo de Loteo:** Habilitado el botón `+ Nueva Orden de Producción` con captura de Folio O.P., Pedido ERP, Cliente, Modelo de Sombrero y Fecha Compromiso.
+  - **Cálculo de Loteo en Tiempo Real:** Entrada numérica de piezas totales que calcula y visualiza automáticamente el número de lotes madre (60 pzas) y el número resultante de sublotes para Rampa (15 pzas).
+  - **Generación Automática de Tarjetas QR:** Al crear la orden, se generan las tarjetas viajeras en el Centro de Impresión y se actualiza la cartera de producción con navegación directa a la vista de impresión en hoja carta.
 
 ### [2.52.0] - 2026-10-09
 - **Corrección de Diseño de Tarjetas KPI en Programación & Lotes (Módulo 1):**

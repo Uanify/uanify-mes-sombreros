@@ -2715,6 +2715,114 @@ function enrichStationWithDefaults(st, idx) {
       });
     }
 
+    // Modal de Partición y Creación Manual de Lotes (Módulo 1 MVP)
+    const btnNewOrder = document.getElementById('btnOpenNewOrderModal');
+    const modalNewOrder = document.getElementById('modalNewProductionOrder');
+    const btnCloseOrder = document.getElementById('btnCloseOrderModal');
+    const btnCancelOrder = document.getElementById('btnCancelOrderModal');
+    const btnSaveOrder = document.getElementById('btnSaveAndGenerateLots');
+    const inputPieces = document.getElementById('orderModalPieces');
+    const labelLotsCalc = document.getElementById('orderModalLotsCalc');
+    const labelSublotsCalc = document.getElementById('orderModalSublotsCalc');
+
+    function updateLotCalculations() {
+      if (!inputPieces || !labelLotsCalc || !labelSublotsCalc) return;
+      const totalPieces = parseInt(inputPieces.value || '60', 10);
+      const motherCount = Math.max(1, Math.ceil(totalPieces / 60));
+      const sublotsCount = motherCount * 4;
+      labelLotsCalc.textContent = `${motherCount} Lote${motherCount > 1 ? 's' : ''} Madre (60 pzas c/u)`;
+      labelSublotsCalc.textContent = `${sublotsCount} Sublotes (4 por lote madre)`;
+    }
+
+    if (inputPieces && !inputPieces.dataset.bound) {
+      inputPieces.dataset.bound = 'true';
+      inputPieces.addEventListener('input', updateLotCalculations);
+    }
+
+    if (btnNewOrder && !btnNewOrder.dataset.bound) {
+      btnNewOrder.dataset.bound = 'true';
+      btnNewOrder.addEventListener('click', () => {
+        if (modalNewOrder) {
+          updateLotCalculations();
+          modalNewOrder.classList.add('active');
+        }
+      });
+    }
+
+    const closeNewOrderModal = () => {
+      if (modalNewOrder) modalNewOrder.classList.remove('active');
+    };
+
+    if (btnCloseOrder && !btnCloseOrder.dataset.bound) {
+      btnCloseOrder.dataset.bound = 'true';
+      btnCloseOrder.addEventListener('click', closeNewOrderModal);
+    }
+
+    if (btnCancelOrder && !btnCancelOrder.dataset.bound) {
+      btnCancelOrder.dataset.bound = 'true';
+      btnCancelOrder.addEventListener('click', closeNewOrderModal);
+    }
+
+    if (btnSaveOrder && !btnSaveOrder.dataset.bound) {
+      btnSaveOrder.dataset.bound = 'true';
+      btnSaveOrder.addEventListener('click', () => {
+        const folio = (document.getElementById('orderModalFolio')?.value || 'OP-15080').trim();
+        const pedido = (document.getElementById('orderModalPedido')?.value || 'PED-9450').trim();
+        const cliente = (document.getElementById('orderModalCliente')?.value || 'Distribuidora').trim();
+        const modelSelect = document.getElementById('orderModalModel');
+        const modelName = modelSelect ? modelSelect.value : '1000X Master Telar Denver';
+        const modelSku = modelSelect ? (modelSelect.selectedOptions[0]?.dataset.sku || 'TB-1000X-DNV-58') : 'TB-1000X-DNV-58';
+        const promiseDate = document.getElementById('orderModalPromiseDate')?.value || '2026-10-25';
+        const pieces = parseInt(inputPieces?.value || '300', 10);
+        const motherCount = Math.max(1, Math.ceil(pieces / 60));
+
+        // Generar folios secuenciales para las tarjetas viajeras
+        const startNum = 50000 + Math.floor(Math.random() * 500);
+        const lotIds = [];
+        for (let i = 0; i < motherCount; i++) {
+          const numStr = (startNum + i).toLocaleString();
+          lotIds.push(numStr);
+        }
+
+        const newOrderObj = {
+          folio: folio,
+          pedidoContpaqi: pedido,
+          cliente: cliente,
+          model: modelName,
+          sku: modelSku,
+          pieces: pieces,
+          promiseDate: promiseDate,
+          statusSemaforo: 'green',
+          statusLabel: 'En Tiempo (Nueva)',
+          lotsMotherCount: motherCount,
+          lotIds: lotIds,
+          notes: `Loteo manual: ${motherCount} lotes madre de 60 pzas con partición en rampa a 4 sublotes de 15 pzas.`
+        };
+
+        UanifyState.productionOrders.unshift(newOrderObj);
+        closeNewOrderModal();
+        renderOrdersSection();
+
+        // Actualizar contador del KPI
+        const kpiOrders = document.getElementById('kpiOrdersTotal');
+        const kpiLots = document.getElementById('kpiLotsMotherTotal');
+        if (kpiOrders) kpiOrders.textContent = `${UanifyState.productionOrders.length} Órdenes`;
+        if (kpiLots) {
+          const totalLots = UanifyState.productionOrders.reduce((acc, o) => acc + o.lotsMotherCount, 0);
+          kpiLots.textContent = `${totalLots} Lotes`;
+        }
+
+        window.UanifyUI.toast(
+          `Orden ${folio} creada exitosamente con ${motherCount} lotes madre y ${motherCount * 4} sublotes calculados.`,
+          'success',
+          'Lotes Generados'
+        );
+
+        // Abrir inmediatamente el Centro de Impresión para la nueva orden
+        window.previewOrderLots(folio);
+      });
+    }
+
     const btnBatchPrint = document.getElementById('btnPrintTravelerSheetBatch');
     if (btnBatchPrint && !btnBatchPrint.dataset.bound) {
       btnBatchPrint.dataset.bound = 'true';
