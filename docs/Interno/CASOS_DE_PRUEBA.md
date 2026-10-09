@@ -1,4 +1,4 @@
-﻿# Catálogo Maestro de Casos de Prueba (QA) · Alcance Oficial MVP
+# Catálogo Maestro de Casos de Prueba (QA) · Alcance Oficial MVP
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Matriz de Pruebas de Calidad, Validación de Piso y Criterios de Aceptación.*
 
@@ -13,8 +13,8 @@
 | ID | Caso de Prueba | Tipo | Entrada / Pasos | Resultado Esperado | Estatus |
 |---|---|---|---|---|---|
 | **TC-M1-01** | Lectura de pedidos desde SQL Server local | Integración | Sincronizar catálogo desde vista `vw_PedidosPendientes`. | Se despliegan órdenes con folio, modelo, cliente y piezas sin errores de red. | Pasa |
-| **TC-M1-02** | Creación de lote madre de 60 piezas | Funcional | Seleccionar O.P. de 120 pzas y generar lotes. | Genera exactamente 2 lotes madre de 60 pzas con folios secuenciales. | Pasa |
-| **TC-M1-03** | Lote remanente menor a 60 piezas | Borde | O.P. de 85 pzas. | Genera 1 lote de 60 pzas y 1 lote de 25 pzas debidamente rotulado. | Pasa |
+| **TC-M1-02** | Segmentación manual de lotes y sublotes | Funcional | Seleccionar O.P. y definir tamaño de lote y sublotes. | Genera los lotes y sublotes configurados con folios secuenciales y cuadre exacto de piezas. | Pasa |
+| **TC-M1-03** | Bloqueo de impresión sin segmentar | Validación | Intentar imprimir tarjetas QR en orden no segmentada. | Botón permanece inactivo; sistema exige confirmar segmentación previa. | Pasa |
 | **TC-M1-04** | Registro de fecha compromiso de entrega | Validación | Capturar fecha compromiso menor a fecha actual. | Sistema previene captura o emite advertencia de fecha extemporánea. | Pasa |
 | **TC-M1-05** | Impresión de tarjetas viajeras en hoja carta | Físico / Print | Clic en "Imprimir Tarjetas QR". | Formato imprimible en hoja carta con QR nítido, datos legibles y márgenes de corte. | Pasa |
 

@@ -26,13 +26,13 @@
 ## 1. Fraccionamiento en Rampa y Movimiento Físico de Lotes (D-05)
 
 * **Nacimiento de las tarjetas de sublote:**  
-  * *Respuesta de Carlos:* Las tarjetas se imprimen en **Ingeniería**, tanto la tarjeta madre como las tarjetas de sublotes. El supervisor se encarga de ir a Ingeniería a recoger las tarjetas y realizar el cambio físico de tarjeta de lote madre a tarjetas de lote-sublote.
-* **Destino de la tarjeta del Lote Madre:**  
+  * *Respuesta de Carlos:* Las tarjetas se imprimen en **Ingeniería**, tanto la tarjeta viajera del lote como las tarjetas de sublotes. El supervisor se encarga de ir a Ingeniería a recoger las tarjetas y realizar el cambio físico de tarjeta viajera del lote a tarjetas de sublote.
+* **Destino de la tarjeta del Lote:**  
   * *Respuesta de Carlos:* Se **archiva en la mesa de rampa como control** histórico y trazabilidad.
 * **Momento exacto del escaneo por el supervisor:**  
   * *Respuesta de Carlos:* Se escanea **AL SALIR del departamento**. El supervisor o auxiliar de producción del departamento que concluye el lote registra el avance y marca el lote como listo en el almacén intermedio.
 * **Traslado físico en pasillos (Recolectores):**  
-  * *Respuesta de Carlos:* Los operadores colocan el sombrero terminado del carrito en pilas de 60 pzas (torres), y una **persona dedicada (auxiliar/recolector)** los recolecta físicamente y los traslada al siguiente proceso.
+  * *Respuesta de Carlos:* Los operadores colocan el sombrero terminado en torres, y una **persona dedicada (auxiliar/recolector)** los recolecta físicamente y los traslada al siguiente proceso.
 
 ---
 

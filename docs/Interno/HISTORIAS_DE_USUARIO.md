@@ -1,4 +1,4 @@
-﻿# Historias de Usuario (User Stories) · Alcance Oficial MVP
+# Historias de Usuario (User Stories) · Alcance Oficial MVP
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Documento Interno de Ingeniería y QA · Alineado al Diagrama de Flujo y Catálogo Oficial del MVP.*
 
@@ -18,21 +18,21 @@
   - Tabla de órdenes leídas con estado, modelo, piezas totales y cliente.
   - Sincronización local directa sin costos de licencias SDK.
 
-### US-M1-02: Captura de Fecha Compromiso y Creación de Lotes Madre (60 Pzas)
+### US-M1-02: Captura de Fecha Compromiso y Segmentación de Lotes y Sublotes
 - **Como:** Ingeniero de Producción.
-- **Quiero:** Registrar la fecha compromiso pactada con el cliente y fraccionar la orden en lotes madre estándar de 60 piezas.
+- **Quiero:** Registrar la fecha compromiso pactada con el cliente y segmentar la orden en lotes y sublotes según la planeación semanal.
 - **Para:** Establecer el punto de partida de la trazabilidad y calcular el semáforo de entrega en piso.
 - **Criterios de Aceptación:**
   - Asignación automática de folio de lote: `LOT-{AÑO}-{ORDEN}-{SECUENCIA}` (ej. `LOT-2026-0842-A`).
-  - Cálculo automático de sublotes de 15 piezas que se activarán posteriormente en Rampa/Alineado (T4).
+  - Definición de sublotes que se activarán posteriormente en Rampa/Alineado (T4).
 
 ### US-M1-03: Impresión de Tarjetas Viajeras con Código QR
 - **Como:** Ingeniero de Producción.
 - **Quiero:** Generar e imprimir hojas carta de oficina con las tarjetas viajeras y sus códigos QR listos para recortar.
-- **Para:** Introducirlas en las fundas plásticas protectoras cosidas que viajan físicamente con el lote en el carrito de producción.
+- **Para:** Introducirlas en las fundas plásticas protectoras cosidas que viajan físicamente con el lote en piso.
 - **Criterios de Aceptación:**
   - Hoja carta con QR legible, folio, modelo, talla, horma, fecha y tramo.
-  - Formato listo para impresión física sin depender de software de terceros.
+  - Bloqueo de impresión hasta que la segmentación de lotes sea confirmada.
 
 ---
 

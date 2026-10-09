@@ -55,14 +55,14 @@ graph TD
 
     %% Modulo 1: Programacion, Loteo e Impresion
     M1 --> M1_1["1.1 Ingesta de Pedidos SQL"]:::submod
-    M1 --> M1_2["1.2 Lotes Madre 60 pzas"]:::submod
+    M1 --> M1_2["1.2 Lotes y Sublotes Flexibles"]:::submod
     M1 --> M1_3["1.3 Impresión Tarjetas QR"]:::submod
     M1_1 --> M1_1_1["Lectura de pedidos CONTPAQi ($0 SDK)"]:::leaf
     M1_1 --> M1_1_2["Captura de fecha compromiso"]:::leaf
     M1_2 --> M1_2_1["Generación folio LOT-YYYY-XXXX"]:::leaf
-    M1_2 --> M1_2_2["Fraccionamiento precalculado a 15 pzas"]:::leaf
+    M1_2 --> M1_2_2["Segmentación definida por usuario"]:::leaf
     M1_3 --> M1_3_1["Impresión en hoja carta para recortar"]:::leaf
-    M1_3 --> M1_3_2["Micas plásticas cosidas con lona"]:::leaf
+    M1_3 --> M1_3_2["Fundas plásticas protectoras"]:::leaf
 
     %% Modulo 2: Monitoreo de Piso & 5 KPIs
     M2 --> M2_1["2.1 WIP en Vivo por Buffer"]:::submod
@@ -81,7 +81,7 @@ graph TD
     M3 --> M3_4["3.4 Paros de Máquina"]:::submod
     M3_1 --> M3_1_1["Cámara integrada o lector 2D HID"]:::leaf
     M3_2 --> M3_2_1["Confirmación táctil de depósito"]:::leaf
-    M3_3 --> M3_3_1["Archivado madre 60 y activación 4x15"]:::leaf
+    M3_3 --> M3_3_1["Desactivación lote y activación sublotes"]:::leaf
     M3_4 --> M3_4_1["Catálogo: horma, vapor, material, mecánico"]:::leaf
 
     %% Modulo 4: Puntos de Calidad (Filtros C1-C5)

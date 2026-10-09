@@ -1,4 +1,4 @@
-﻿# Reglas de Negocio y Operación de Planta · Alcance Oficial MVP
+# Reglas de Negocio y Operación de Planta · Alcance Oficial MVP
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Directrices Operativas, Restricciones y Reglas de Negocio Validadas en Piso.*
 
@@ -19,9 +19,9 @@
 
 ## 2. Unidades de Manejo y Trazabilidad
 
-1. **Lote Madre de 60 Piezas:** Nace en **T1 Prensas** tras la unión de copa y falda. Toda la fase húmeda y de pintura transita en lotes de 60 piezas.
-2. **Fraccionamiento a Sublotes de 15 Piezas:** Se realiza exclusivamente en **T4 Hidráulicas - Alineado / Rampa**. 15 piezas es la capacidad ergonómica de las mesas de pre-adorno y adorno.
-3. **Identificación Física:** Cada lote o sublote viaja con una **Tarjeta Viajera con Código QR** impresa en hoja carta dentro de una mica plástica transparente cosida con lona.
+1. **Lote Principal:** Nace en **T1 Prensas** tras la unión de copa y falda. Toda la fase húmeda y de pintura transita en lotes definidos por el usuario según la orden.
+2. **Fraccionamiento a Sublotes:** Se realiza en **T4 Hidráulicas - Alineado / Rampa** dividiéndose en sublotes según la planeación del usuario para el secado y mesas de pre-adorno y adorno.
+3. **Identificación Física:** Cada lote o sublote viaja con una **Tarjeta Viajera con Código QR** impresa en hoja carta dentro de una funda plástica transparente cosida.
 4. **Cero Login para Operadores:** Los operadores no acceden al software. Su trabajo es registrado por el Supervisor de su área mediante escaneo QR y captura de destajo.
 
 ---
