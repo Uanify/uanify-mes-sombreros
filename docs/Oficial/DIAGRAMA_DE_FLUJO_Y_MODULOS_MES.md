@@ -2,7 +2,7 @@
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Documento Ejecutivo para Cliente y Planta: Cómo Funciona el Sistema MES y su Empate con la Producción Real.*
 
-> **Versión:** `v2.57.0`  
+> **Versión:** `v2.58.0`  
 > **Fecha:** 9 de Octubre de 2026  
 > **Estado:** Documento Oficial de Especificación de Procesos y Software  
 > **Cliente:** Tombstone Hats (Edmundo González / Ing. Carlos Ortiz)  
@@ -117,33 +117,15 @@ flowchart TD
 
 ---
 
-## 3. ¿Cómo se Empata la Fábrica con el Sistema MES? (Matriz Clara por Etapa)
+## 3. Funcionalidades Alternas y de Soporte del Sistema MES
 
-| Etapa de la Fábrica | Lo que Ocurre en la Fábrica Física | Lo que Hace el Sistema MES Digital | Herramientas y Flujos Alternos Disponibles |
-| :--- | :--- | :--- | :--- |
-| **1. Programación de Pedidos** | Ventas cierra el pedido con el cliente y lo captura en CONTPAQi Comercial en oficina. | **Lee la orden directo de CONTPAQi** por SQL, registra la fecha de entrega y calcula el semáforo de tiempo. | **Segmentación Manual:** El usuario decide cuántos lotes de 60 piezas y sublotes de 15 se crearán. **Bloqueo Inteligente:** No permite imprimir tarjetas viajeras hasta que la orden esté segmentada. |
-| **2. Emisión de Tarjetas Viajeras** | Se imprimen las tarjetas en papel bond carta, se recortan y se insertan en fundas plásticas cosidas (micas). | **Genera plantilla en PDF con Códigos QR:** Códigos únicos de alta densidad con modelo, horma, talla y folio oficial. | **Reimpresión de Tarjetas:** Si una mica se daña o se ensucia en piso, se puede reimprimir el QR manteniendo el mismo folio histórico. |
-| **3. Nacimiento del Lote (Prensas)** | El operador monta la horma de aluminio en la prensa caliente y une copa con falda. Se monta la torre de 60 piezas en el carrito con su mica. | **Activa el Lote Madre:** El supervisor escanea el QR con la tablet. El sistema valida que la horma montada coincida con la del modelo, arranca el conteo de piezas y suma al WIP de Prensas. | **Bitácora de Paros de Máquina:** Si la prensa se detiene por falta de vapor, falla mecánica o cambio de molde, el operador/supervisor abre la bitácora táctil e inicia un paro con cronómetro en vivo. |
-| **4. Flujo Inicial (Alambrado, Endopado, Pintura)** | Los operadores trabajan en sus máquinas fijas y el recolector traslada las torres de 60 piezas de un área a otra. | **Registro de Salida por Área:** Al salir de cada departamento se escanea el lote; el sistema descuenta el inventario del almacén anterior y lo suma al siguiente en tiempo real. | **Captura de Mermas Rápidas:** Si en el camino se detecta un sombrero roto o manchado, se aparta físicamente y en la pantalla se captura la pieza retirada y su causa raíz sin frenar el resto del lote. |
-| **5. Fraccionamiento en Rampa (D-05)** | En la mesa de rampa, la torre de 60 piezas se divide en 4 carritos de 15 piezas para permitir secado rápido y moldeo hidráulico. Se archiva la tarjeta madre. | **Modo Rampa Digital:** Al escanear la tarjeta madre de 60 piezas, el sistema la desactiva y **activa automáticamente los 4 Sublotes de 15 piezas**, asignando un QR independiente a cada carrito. | **Trazabilidad Independiente:** Si un carrito de 15 se retrasa en secado, los otros 3 carritos pueden avanzar sin esperarlo. |
-| **6. Hidráulicas y Pre-adorno** | Los operadores moldean el ala y la copa en prensas hidráulicas y perforan ventilación en carritos de 15 piezas. | **Seguimiento por Sublote:** Cada escaneo actualiza el estatus del sublote de 15 piezas y acredita las piezas al preconteo del operador de la máquina. | **Control de Reprocesos:** Si una prensa hidráulica deja el ala chueca, el inspector regresa ese carrito a alineado sin afectar la producción de los demás. |
-| **7. Ensamble en Adorno** | Operadores cosen tafiletes, toquillas, parches y herrajes al sombrero según el catálogo autorizado. | **Control de Estación de Adorno:** Registra las piezas concluidas por operario para el pago a destajo semanal. | **Semáforo de Subensambles:** Pantalla que muestra el stock disponible de tafiletes y toquillas. Muestra semáforo VERDE si hay insumos suficientes o ROJO si faltan piezas para evitar paros.<br>**Ficha Técnica con Fotos:** Galería táctil con fotos de la muestra oficial en alta resolución (frente, perfil, doblado, herraje) para comparar la pieza física. |
-| **8. Control de Calidad (C1 a C5)** | Los 6 inspectores exclusivos de calidad revisan visualmente el sombrero en puntos estratégicos de la nave. | **Terminal de Filtros de Calidad:** Inspector presiona "Aprobado" (avanza a siguiente área) o "Rechazado" (abre flujo de no conformidad). | **Resolución de No Conformidades:** Supervisor e Ingeniero dictaminan el destino:<br>1. *Reproceso:* Regresa a la estación causante del defecto.<br>2. *Segunda:* Envío a remate registrando causa raíz.<br>3. *Merma:* Desecho con afectación a costos. |
-| **9. Empaque y Embarque** | Los 4 sublotes de 15 piezas aprobados se vuelven a juntar en una caja de cartón de 60 piezas, se embalan y se cargan al camión. | **Liberación y Vale de Salida:** El sistema liquida la orden en piso, da de baja los sublotes y **emite el Vale de Salida Digital con código QR** para entrega al transportista. | **Auditoría de Pedido Completo:** El sistema valida que los 4 sublotes estén aprobados antes de permitir la emisión del Vale de Salida. |
-| **10. Nómina a Destajo (Viernes)** | Recursos Humanos y Producción calculan el pago semanal de los 108 operadores por piezas producidas. | **Módulo Pre-Nómina de Destajo:** Multiplica automáticamente las piezas buenas concluidas por cada operador por la tarifa en pesos ($/pza) de su área. | **Exportación a Excel en 1 Clic:** Descarga el corte semanal sin fórmulas complejas, listo para dispersión bancaria sin recapturas manuales. |
-| **11. Cierre en CONTPAQi Comercial** | Administración revisa facturación y costo de inventario final en oficina. | **Conector SQL Local ($0 USD):** Inserta la entrada de producto terminado en CONTPAQi con el folio del lote MES en observaciones y da salida a la materia prima consumida. | **Cero Licencias Adicionales:** Funciona directo con la base de datos SQL Server de CONTPAQi existente en la planta. |
-
----
-
-## 4. Funcionalidades Alternas y de Soporte del Sistema MES
-
-Además del camino feliz de producción, el sistema cuenta con módulos diseñados para resolver contingencias en la fábrica:
+Además del camino estándar de avance de lotes, el sistema cuenta con módulos diseñados para resolver contingencias operativas en la fábrica:
 
 ### 1. Bitácora Táctil de Paros de Máquina
-* **Dónde opera:** En terminales de Prensas y estaciones críticas.
+* **Dónde opera:** En terminales de Prensas y estaciones críticas de planta.
 * **Propósito:** Registrar tiempos muertos de inicio a fin cuando una máquina se detiene.
 * **Catálogo de Motivos Táctil:** *Cambio de horma/molde, Falla mecánica de prensa, Falta de vapor en caldera, Falta de lienzo/material, Mantenimiento eléctrico*.
-* **Impacto:** Alimenta el KPI de Tiempos Muertos en el Tablero Andon para que el Jefe de Mantenimiento identifique máquinas problemáticas.
+* **Impacto:** Alimenta el KPI de Tiempos Muertos en el Tablero Andon para que Mantenimiento y Dirección identifiquen máquinas problemáticas.
 
 ### 2. Semáforo de Buffer de Subensambles (Tafiletes y Toquillas)
 * **Dónde opera:** En el área de Adorno y estaciones de costura de accesorios.
@@ -156,7 +138,7 @@ Además del camino feliz de producción, el sistema cuenta con módulos diseñad
 ### 3. Ficha Técnica Multiperspectiva con Fotos Oficiales
 * **Dónde opera:** En Adorno e Inspección Final de Calidad.
 * **Propósito:** Garantizar que el armado de adornos, herrajes y doblado de toquillas sea idéntico a la muestra física que aprobó el cliente.
-* **Visualización:** Despliega en pantalla fotos oficiales en alta resolución tomadas desde 4 ángulos (vista frontal, lateral, detalle de herraje y detalle de doblado).
+* **Visualización:** Despliega en pantalla fotos oficiales en alta resolución tomadas desde múltiples ángulos (vista frontal, lateral, detalle de herraje y detalle de doblado).
 
 ### 4. Flujo de Segundas y Mermas sin Detener la Línea
 * **Dónde opera:** En todos los puntos de inspección y terminales de salida.
@@ -170,12 +152,44 @@ Además del camino feliz de producción, el sistema cuenta con módulos diseñad
 
 ---
 
-## 5. Catálogo Resumido de los 7 Módulos del Sistema MES
+## 4. Catálogo Detallado de los 7 Módulos del Sistema MES (MVP)
 
-1. **Módulo 1: Programación, Loteo e Impresión:** Conexión SQL CONTPAQi, segmentación de lotes (60 y 15 pzas) y generación de tarjetas viajeras en PDF con código QR.
-2. **Módulo 2: Monitoreo Andon & Tablero Ejecutivo:** Tablero visual en tiempo real de WIP por almacén, avance de órdenes y 5 KPIs rectores de planta.
-3. **Módulo 3: Terminal Táctil de Piso:** Interfaz ergonómica para escaneo QR, confirmación de depósitos intermedios, Modo Rampa y bitácora de paros de máquina.
-4. **Módulo 4: Control de Calidad y No Conformidades:** Inspección en 5 filtros con dictamen de Aprobado, Reproceso (con retorno a estación causante), Segunda y Merma.
-5. **Módulo 5: Subensambles y Fichas Técnicas:** Semáforo de buffer para tafiletes/toquillas y visor de fotos oficiales autorizadas en alta definición.
-6. **Módulo 6: Pre-Nómina de Destajo y Reportes:** Conteo automático de piezas concluidas por operario, cálculo de nómina semanal y descarga nativa a Microsoft Excel.
-7. **Módulo 7: Conector Local CONTPAQi Comercial SQL:** Sincronización transparente de pedidos, materias primas y entrada de producto terminado a costo $0 USD en licencias SDK.
+### Módulo 1: Programación, Loteo e Impresión (Ingeniería Admin)
+* **Lectura SQL de Pedidos:** Consulta automática de pedidos autorizados en CONTPAQi sin recapturas.
+* **Captura de Fecha Compromiso:** Establece la fecha meta para proyectar el semáforo de entrega.
+* **Segmentación Manual Obligatoria:** Permite al Ingeniero definir el número de lotes madre (60 pzas) y sublotes (15 pzas) según la orden. El sistema bloquea la impresión de códigos QR hasta que la segmentación es confirmada.
+* **Generador de Tarjetas Viajeras en PDF Carta:** Exporta la plantilla de tarjetas con códigos QR de alta densidad, especificación de horma, modelo y talla listas para imprimir en impresora láser de oficina y recortar.
+
+### Módulo 2: Monitoreo Andon & Tablero Ejecutivo (Piso de Planta)
+* **WIP en Tiempo Real:** Visualización gráfica de piezas acumuladas en cada almacén intermedio entre departamentos.
+* **Tablero de 5 KPIs Rectores:**
+  1. *Avance Real vs. Programado por Orden*.
+  2. *WIP Activo y Piezas Producidas por Área*.
+  3. *Costo de Materiales vs. BOM*.
+  4. *Mapeo de Reprocesos con Causa Raíz*.
+  5. *Tiempo de Entrega vs. Fecha Compromiso*.
+* **Semáforos Visuales:** Alertas inmediatas en pantalla sin ruidos ni bocinas molestas.
+
+### Módulo 3: Terminal Táctil de Piso (Tablets T1 a T6)
+* **Diseño Ergonómico Tablet-First:** Botones e inputs de más de 42px diseñados para operarse con guantes o dedos con polvo.
+* **Lector QR de Pantalla Completa:** Lectura instantánea utilizando la cámara trasera de la tablet o escáner 2D USB/Bluetooth en modo emulación teclado.
+* **Modo Rampa (Fraccionamiento):** Asistente paso a paso para desactivar el lote madre de 60 piezas y dar de alta los 4 sublotes de 15 piezas con un solo toque.
+* **Bitácora Táctil de Paros de Máquina:** Cronómetro táctil para registrar detenciones en Prensas indicando número de máquina, operador y motivo (cambio de horma, falla mecánica, falta de vapor o falta de material).
+
+### Módulo 4: Filtros de Calidad y No Conformidades (C1 a C5)
+* **Terminal de Aprobación Rápida:** Botones de "Aprobar" y "Rechazar" para inspectores de calidad exclusivos.
+* **Dictamen de Rechazo:** Modal exclusivo para Supervisor o Ingeniero de Calidad para definir:
+  * *Reproceso:* Retorno digital a la estación causante (flechas de retorno en diagrama).
+  * *Segunda:* Desvío a almacén de remate registrando causa raíz para KPIs.
+  * *Merma:* Desecho definitivo de piezas con afectación a costos.
+
+### Módulo 5: Subensambles y Fichas Técnicas Multiperspectiva
+* **Semáforo de Suministro para Adorno:** Monitoreo visual de stock de tafiletes y toquillas para garantizar que Adorno no inicie un lote si faltan componentes.
+* **Ficha Técnica Visual con Fotos Oficiales:** Visor de imágenes en alta resolución mostrando la muestra física aprobada desde múltiples perspectivas (armado, doblado, costura y herraje).
+
+### Módulo 6: Pre-Nómina de Destajo y Reportes Administrativos
+* **Cálculo Automático por Operador:** Multiplica piezas concluidas por la tarifa fija ($/pza) de cada área.
+* **Exportación Directa a Excel:** Generación del reporte de corte semanal de los viernes en formato `.xlsx` limpio y sin macros para RH y Nóminas.
+
+### Módulo 7: Conector Puente CONTPAQi Comercial SQL Server
+* **Integración Nativa ($0 USD Licencias SDK):** Lee pedidos y materias primas mediante vistas SQL y registra la entrada de producto terminado escribiendo el folio del lote MES en las observaciones de CONTPAQi.
