@@ -3,6 +3,7 @@ import json
 import argparse
 from pathlib import Path
 import re
+import subprocess
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -21,7 +22,6 @@ SCOPES = [
 
 CLIENT_SECRET_FILE = Path(__file__).parent / 'client_secret.json'
 TOKEN_FILE = Path(__file__).parent / 'token.json'
-UANIFY_LOGO_PATH = Path(__file__).parent / 'assets' / 'uanify_brand_logo.png'
 
 # --- PALETA CORPORATIVA OFICIAL UANIFY (Estilo Capturas) ---
 COLOR_PRIMARY_DARK = RGBColor(15, 23, 42)    # #0F172A Slate 900 (Títulos principales H1, H2)
@@ -33,11 +33,12 @@ COLOR_LINE_BORDER  = "CBD5E1"                # Slate 300 para separadores horizo
 COLOR_BG_CARD      = "F8FAFC"                # Slate 50 para fondos de notas / filas alternadas
 COLOR_TH_BG        = "F1F5F9"                # Slate 100 para encabezados de tabla
 
+FONT_NAME = "Inter"
+
 def clean_emojis(text: str) -> str:
     """Elimina emojis y símbolos pictográficos para garantizar una apariencia ejecutiva 100% limpia."""
     if not text:
         return ""
-    # Rango de emojis y caracteres decorativos Unicode
     emoji_pattern = re.compile(
         "[\U00010000-\U0010ffff"
         "\u2600-\u26ff"
@@ -51,7 +52,6 @@ def clean_emojis(text: str) -> str:
         flags=re.UNICODE
     )
     cleaned = emoji_pattern.sub('', text)
-    # Limpiar dobles espacios residuales tras remover emojis
     return re.sub(r' {2,}', ' ', cleaned).strip()
 
 def get_credentials():
@@ -121,7 +121,7 @@ def add_horizontal_divider(doc, space_after=10):
     pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:space="8" w:color="{COLOR_LINE_BORDER}"/></w:pBdr>')
     p._p.get_or_add_pPr().append(pBdr)
 
-def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, default_font="Arial", default_bold=False):
+def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME, default_bold=False):
     """Parsea markdown inline (**negrita**, *cursiva* y `codigo`) dentro de cualquier parrafo o celda, sin emojis."""
     clean_text = clean_emojis(text)
     parts = re.split(r'(\*\*.*?\*\*|\*.*?\*|`.*?`)', clean_text)
@@ -154,36 +154,47 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
             r.font.size = Pt(default_size)
             r.font.color.rgb = default_color
 
+def render_mermaid_to_image(mermaid_code: str, output_png_path: Path) -> bool:
+    """Renderiza código de diagrama Mermaid a una imagen PNG de alta resolución usando mermaid-cli."""
+    temp_mmd = output_png_path.parent / f"{output_png_path.stem}.mmd"
+    try:
+        temp_mmd.write_text(mermaid_code, encoding='utf-8')
+        cmd = ['npx.cmd', '-y', '@mermaid-js/mermaid-cli@12.0.0', '-i', str(temp_mmd), '-o', str(output_png_path), '-b', 'white', '-s', '2']
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=40)
+        return output_png_path.exists() and output_png_path.stat().st_size > 0
+    except Exception as e:
+        print(f"Error renderizando diagrama Mermaid: {e}")
+        return False
+    finally:
+        if temp_mmd.exists():
+            try:
+                temp_mmd.unlink()
+            except Exception:
+                pass
+
 def md_to_docx(md_path, docx_path, doc_title):
     doc = docx.Document()
+    generated_images = []
     
-    # 1. Configuración de Márgenes Ejecutivos y Encabezados
+    # 1. Configuración de Márgenes Ejecutivos (Sin logo en header)
     for section in doc.sections:
         section.top_margin = Inches(0.85)
         section.bottom_margin = Inches(0.85)
         section.left_margin = Inches(0.9)
         section.right_margin = Inches(0.9)
         
-        # Encabezado Oficial con Logotipo Uanify alineado a la derecha
+        # Header vacío (para que el usuario agregue el membrete o logo cuando desee)
         header = section.header
-        header_p = header.paragraphs[0]
-        header_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        if UANIFY_LOGO_PATH.exists():
-            h_run = header_p.add_run()
-            h_run.add_picture(str(UANIFY_LOGO_PATH), width=Inches(1.2))
-        else:
-            h_run = header_p.add_run("uanify")
-            h_run.font.name = "Arial"
-            h_run.font.size = Pt(13)
-            h_run.bold = True
-            h_run.font.color.rgb = COLOR_PRIMARY_DARK
+        header.is_linked_to_previous = False
+        for hp in header.paragraphs:
+            hp.text = ""
             
-        # Pie de página oficial
+        # Pie de página oficial en tipografía Inter
         footer = section.footer
         f_p = footer.paragraphs[0]
         f_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         f_run = f_p.add_run(f"Tombstone Hats MES · Uanify Software Industrial  |  {doc_title}")
-        f_run.font.name = "Arial"
+        f_run.font.name = FONT_NAME
         f_run.font.size = Pt(8.5)
         f_run.font.color.rgb = COLOR_MUTED
 
@@ -195,34 +206,63 @@ def md_to_docx(md_path, docx_path, doc_title):
     in_table = False
     table_rows = []
     in_code = False
+    code_type = ""
     code_lines = []
-    is_first_h1 = True
 
     for line in lines:
         raw = line.rstrip('\r\n')
         stripped = raw.strip()
 
-        # Bloques de Código
+        # Bloques de Código o Diagramas Mermaid
         if stripped.startswith('```'):
             if not in_code:
                 in_code = True
+                code_type = stripped[3:].strip().lower()
                 code_lines = []
             else:
                 in_code = False
-                tbl = doc.add_table(rows=1, cols=1)
-                tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-                cell = tbl.cell(0, 0)
-                set_cell_background(cell, "0F172A")
-                set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
-                p = cell.paragraphs[0]
-                p.paragraph_format.space_before = Pt(0)
-                p.paragraph_format.space_after = Pt(0)
-                p.paragraph_format.line_spacing = 1.15
-                run = p.add_run('\n'.join(code_lines))
-                run.font.name = "Consolas"
-                run.font.size = Pt(8.5)
-                run.font.color.rgb = RGBColor(241, 245, 249)
-                doc.add_paragraph().paragraph_format.space_after = Pt(4)
+                if code_type == 'mermaid':
+                    # RENDERIZAR MERMAID COMO IMAGEN
+                    mermaid_code = '\n'.join(code_lines).strip()
+                    png_name = f"mermaid_{len(generated_images) + 1}.png"
+                    png_path = Path(docx_path).parent / png_name
+                    success = render_mermaid_to_image(mermaid_code, png_path)
+                    if success:
+                        generated_images.append(png_path)
+                        p_img = doc.add_paragraph()
+                        p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        p_img.paragraph_format.space_before = Pt(8)
+                        p_img.paragraph_format.space_after = Pt(12)
+                        p_img.add_run().add_picture(str(png_path), width=Inches(6.2))
+                    else:
+                        # Si fallara la imagen, fallback a bloque de texto limpio
+                        tbl = doc.add_table(rows=1, cols=1)
+                        tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+                        cell = tbl.cell(0, 0)
+                        set_cell_background(cell, "0F172A")
+                        set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
+                        p = cell.paragraphs[0]
+                        run = p.add_run(mermaid_code)
+                        run.font.name = "Consolas"
+                        run.font.size = Pt(8.5)
+                        run.font.color.rgb = RGBColor(241, 245, 249)
+                else:
+                    # Bloque de código estándar
+                    tbl = doc.add_table(rows=1, cols=1)
+                    tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+                    cell = tbl.cell(0, 0)
+                    set_cell_background(cell, "0F172A")
+                    set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
+                    p = cell.paragraphs[0]
+                    p.paragraph_format.space_before = Pt(0)
+                    p.paragraph_format.space_after = Pt(0)
+                    p.paragraph_format.line_spacing = 1.15
+                    run = p.add_run('\n'.join(code_lines))
+                    run.font.name = "Consolas"
+                    run.font.size = Pt(8.5)
+                    run.font.color.rgb = RGBColor(241, 245, 249)
+                    doc.add_paragraph().paragraph_format.space_after = Pt(4)
+                code_type = ""
             continue
 
         if in_code:
@@ -249,7 +289,7 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.line_spacing = 1.25
             
             for m_line in metadata_lines:
-                add_formatted_runs(p, m_line, default_color=COLOR_BODY, default_size=9.5)
+                add_formatted_runs(p, m_line, default_color=COLOR_BODY, default_size=9.5, default_font=FONT_NAME)
                 p.add_run('\n')
             if p.runs and p.runs[-1].text.endswith('\n'):
                 p.runs[-1].text = p.runs[-1].text[:-1]
@@ -263,11 +303,10 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.space_before = Pt(6)
             p.paragraph_format.space_after = Pt(4)
             r = p.add_run(t_text)
-            r.font.name = "Arial"
+            r.font.name = FONT_NAME
             r.font.size = Pt(23)
             r.bold = True
             r.font.color.rgb = COLOR_PRIMARY_DARK
-            is_first_h1 = False
             continue
 
         # H2 - SECCIÓN PRINCIPAL (ej. "1. Objetivo General", "2. Alcance...")
@@ -278,7 +317,7 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.space_after = Pt(4)
             p.paragraph_format.keep_with_next = True
             r = p.add_run(h_text)
-            r.font.name = "Arial"
+            r.font.name = FONT_NAME
             r.font.size = Pt(14)
             r.bold = True
             r.font.color.rgb = COLOR_PRIMARY_DARK
@@ -292,7 +331,7 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.space_after = Pt(3)
             p.paragraph_format.keep_with_next = True
             r = p.add_run(h_text)
-            r.font.name = "Arial"
+            r.font.name = FONT_NAME
             r.font.size = Pt(11.5)
             r.bold = True
             r.font.color.rgb = COLOR_BRAND_BLUE
@@ -306,7 +345,7 @@ def md_to_docx(md_path, docx_path, doc_title):
             p.paragraph_format.space_after = Pt(2)
             p.paragraph_format.keep_with_next = True
             r = p.add_run(h_text)
-            r.font.name = "Arial"
+            r.font.name = FONT_NAME
             r.font.size = Pt(10.5)
             r.bold = True
             r.font.color.rgb = COLOR_PRIMARY_DARK
@@ -341,11 +380,11 @@ def md_to_docx(md_path, docx_path, doc_title):
                         
                         if r_idx == 0:
                             set_cell_background(cell, COLOR_TH_BG)
-                            add_formatted_runs(cp, val, default_color=COLOR_PRIMARY_DARK, default_size=9.5, default_bold=True)
+                            add_formatted_runs(cp, val, default_color=COLOR_PRIMARY_DARK, default_size=9.5, default_font=FONT_NAME, default_bold=True)
                         else:
                             bg = COLOR_BG_CARD if r_idx % 2 == 0 else "FFFFFF"
                             set_cell_background(cell, bg)
-                            add_formatted_runs(cp, val, default_color=COLOR_BODY, default_size=9.0)
+                            add_formatted_runs(cp, val, default_color=COLOR_BODY, default_size=9.0, default_font=FONT_NAME)
                 doc.add_paragraph().paragraph_format.space_after = Pt(6)
             table_rows = []
 
@@ -370,21 +409,30 @@ def md_to_docx(md_path, docx_path, doc_title):
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(3)
                 p.paragraph_format.line_spacing = 1.25
-                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
             elif is_numbered:
                 p = doc.add_paragraph(style='List Number')
                 p.paragraph_format.space_before = Pt(1)
                 p.paragraph_format.space_after = Pt(3)
                 p.paragraph_format.line_spacing = 1.25
-                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
             else:
                 p = doc.add_paragraph()
                 p.paragraph_format.line_spacing = 1.25
                 p.paragraph_format.space_after = Pt(4)
                 p.paragraph_format.space_before = Pt(0)
-                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
+                add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
 
     doc.save(docx_path)
+    
+    # Limpiar imágenes temporales generadas
+    for img_p in generated_images:
+        if img_p.exists():
+            try:
+                img_p.unlink()
+            except Exception:
+                pass
+                
     return docx_path
 
 def upload_styled_doc(file_path, folder_id=None, doc_title=None):

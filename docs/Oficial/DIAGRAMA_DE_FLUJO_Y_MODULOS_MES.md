@@ -1,4 +1,4 @@
-﻿# Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)
+# Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
 *Documento Oficial de Procesos, Flujo por Rol y Arquitectura Modular.*
 
@@ -50,7 +50,7 @@ graph TD
     C2{"C2 · Calidad Refuerzo"}:::qual
     D06_REF --> C2
     C2 -->|Pasa| D07_REP["T1 · Prensas - Replanchado\nReplanchado con alambre"]:::t1
-    C2 -.->|No pasa (Reproceso)| D06_REF
+    C2 -.->|No pasa - Reproceso| D06_REF
 
     D06_PIN["T3 · Pintura\nPintura del sombrero"]:::t3
     D07_REP --> D06_PIN
@@ -58,7 +58,7 @@ graph TD
     C3{"C3 · Calidad Pintura"}:::qual
     D06_PIN --> C3
     C3 -->|Pasa| D06_BRI["T3 · Pintura - Brillo\nAcabado de brillo"]:::t3
-    C3 -.->|No pasa (Reproceso)| D06_PIN
+    C3 -.->|No pasa - Reproceso| D06_PIN
 
     D07_ALI["T4 · Hidráulicas - Alineado\nSe divide en sublotes de 15 piezas"]:::t4
     D06_BRI --> D07_ALI
@@ -66,7 +66,7 @@ graph TD
     C4{"C4 · Calidad Hidráulicas"}:::qual
     D07_ALI --> C4
     C4 -->|Pasa| D08["T1 · Prensas - Refaldeo\nFigura final de la falda"]:::t1
-    C4 -.->|No pasa (Reproceso)| D07_ALI
+    C4 -.->|No pasa - Reproceso| D07_ALI
 
     D09["T4 · Pre-adorno\nPerforado y pegado de tafilete"]:::t4
     D08 --> D09
@@ -78,7 +78,7 @@ graph TD
 
     C5{"C5 · Calidad Final"}:::qual
     D10 --> C5
-    C5 -.->|No pasa (Reproceso)| D10
+    C5 -.->|No pasa - Reproceso| D10
 
     LIB["T6 · Producto Liberado y Entrega\nEmbarque registra la entrega al cliente"]:::t6
     C5 -->|Pasa| LIB
