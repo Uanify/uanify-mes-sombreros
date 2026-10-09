@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.48.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.49.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.48.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.49.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,11 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.48.0] - 2026-10-09
+### [2.49.0] - 2026-10-09
+- **Corrección de Jerarquía DOM y Despliegue de Sub-pestañas (`Layout Fix`):**
+  - **Causa Raíz Diagnosticada:** Existía una etiqueta de cierre huérfana `</div>` al final del contenedor de atención del lote escaneado, provocando que la sub-pestaña `subtab-terminal-scanner` se cerrara antes de tiempo. Esto causaba que los contenedores subsiguientes (`subtab-terminal-tracker` y `subtab-terminal-metrics`) quedaran expulsados del flujo del panel, generando pantalla vacía y empalme al hacer clic en las pestañas.
+  - **Validación Automatizada de Árbol DOM:** Auditoría matemática estricta de balance de etiquetas `<div>` (`net change = 0`) en las 7 secciones del sistema, asegurando que cada `.sub-tab-content` sea hijo directo y autónomo de su respectivo `.view-panel`.
+  - **Navegación Táctil Inmediata:** Restaurada la visualización fluida de *Mapa de Almacenes Intermedios* y *Métricas & Recuentos de Turno*.
 - **Erradicación del Selector Artificial de Hardware de Tablet:**
   - Se eliminó el selector manual de tablets (T1-T6) de la interfaz de la Terminal de Planta.
   - La terminal se rige **100% por la identidad del usuario autenticado (RBAC)** y su matriz de departamentos y almacenes asignados (ej. Roberto supervisa D-01 a D-04; Juan Manuel supervisa D-05 a D-08; Carlos y Edmundo auditan toda la planta).
