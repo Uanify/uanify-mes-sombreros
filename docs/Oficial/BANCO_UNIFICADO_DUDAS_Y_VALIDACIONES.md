@@ -30,15 +30,15 @@ Se escanea al salir del departamento. El supervisor o auxiliar del departamento 
 
 ### Pregunta 1.5: ¿Cómo se realiza el traslado físico entre departamentos?
 **Respuesta Confirmada:**
-Los operadores dejan el producto terminado en torres sobre carritos. Un auxiliar/recolector dedicado de planta acude al almacén de salida y traslada físicamente las piezas al almacén de entrada de la siguiente estación.
+Los operadores dejan el producto terminado en torres. Un auxiliar/recolector dedicado de planta acude al almacén de salida y traslada físicamente las piezas al almacén de entrada de la siguiente estación.
 
 ### Pregunta 1.6: ¿Dónde y en qué formato se imprimen las tarjetas viajeras?
 **Respuesta Confirmada:**
-Las tarjetas se imprimen exclusivamente en el área de Ingeniería en una impresora láser de oficina sobre papel bond tamaño carta estándar. Las tarjetas se recortan y se introducen en fundas plásticas cosidas (micas) que viajan con el lote físico.
+Las tarjetas se imprimen exclusivamente en el área de Ingeniería en una impresora láser de oficina sobre papel bond tamaño carta estándar. Las tarjetas se recortan y se introducen en fundas plásticas cosidas que viajan con el lote físico.
 
-### Pregunta 1.7: ¿El tamaño del lote madre es estrictamente fijo de 60 piezas?
+### Pregunta 1.7: ¿El tamaño del lote es fijo?
 **Respuesta Confirmada:**
-No es fijo. Si bien 60 piezas es el estándar de manejo en torres y carritos, el tamaño del lote madre es configurable por el Ingeniero de Producción según la orden (de 4 a 14 sublotes de 15 a 60 piezas).
+No es fijo. El tamaño del lote y de sus sublotes es totalmente flexible y configurable por el Ingeniero de Producción según la orden y planeación semanal.
 
 ### Pregunta 1.8: ¿Cómo se gestionan los operadores en el sistema?
 **Respuesta Confirmada:**
@@ -66,12 +66,12 @@ Tafiletes (9 personas) y Toquillas (7 personas) trabajan independientemente alim
 ### Pregunta 2.2: ¿Cuál es el viaje físico y proceso actual completo de las Tarjetas Viajeras (Lotes y Sublotes)?
 * **Contexto:** Se requiere mapear el ciclo de vida exacto de la tarjeta de papel desde que se emite hasta que se archiva.
 * **Cuestión Pendiente:**
-  * **Emisión inicial:** El Ingeniero segmenta la orden en Ingeniería e imprime la tarjeta del Lote Madre y las tarjetas de Sublote. ¿El supervisor recoge ambas tarjetas desde el día 1, o el lote madre viaja solo con su tarjeta madre durante las primeras estaciones (Corte, Prensas, Engomado)?
-  * **Fraccionamiento en Rampa (D-05 Almacén Intermedio):** Al llegar el lote madre de 60 piezas a la rampa y fraccionarse en 4 sublotes de 15 piezas:
-    * ¿Qué ocurre físicamente con la tarjeta madre original? (¿Se archiva de inmediato en una carpeta física en la mesa de rampa, o acompaña al primer sublote?).
-    * ¿Quién coloca las nuevas tarjetas de sublote en las micas de los carritos de 15 piezas?
-  * **Destino final de las tarjetas:** Cuando los 4 sublotes de 15 piezas superan Calidad Final y se empacan en cajas de 60 piezas para Embarque:
-    * ¿Las 4 tarjetas de sublote se introducen dentro de la caja de cartón con el producto para el cliente, se entregan al chofer con la remisión, o se retiran y se archivan en oficina de Producción/Embarques?
+  * **Emisión inicial:** El Ingeniero segmenta la orden en Ingeniería e imprime la tarjeta viajera del lote y las tarjetas de sublote definidas por el usuario. ¿El supervisor recoge ambas tarjetas desde el día 1, o el lote viaja solo con la tarjeta viajera del lote durante las primeras estaciones (Corte, Prensas, Engomado)?
+  * **Fraccionamiento en Rampa (D-05 Almacén Intermedio):** Al llegar el lote a la rampa y fraccionarse en sublotes:
+    * ¿Qué ocurre físicamente con la tarjeta viajera del lote original? (¿Se archiva de inmediato en una carpeta física en la mesa de rampa, o acompaña al primer sublote?).
+    * ¿Quién coloca las nuevas tarjetas de sublote en las fundas plásticas de los sublotes?
+  * **Destino final de las tarjetas:** Cuando los sublotes superan Calidad Final y se empacan en cajas para Embarque:
+    * ¿Las tarjetas de sublote se introducen dentro de la caja con el producto para el cliente, se entregan al chofer con la remisión, o se retiran y se archivan en oficina de Producción/Embarques?
 
 ### Pregunta 2.3: ¿Cuáles son las medidas exactas de las fundas plásticas (micas) para la impresión?
 * **Contexto:** Se generará una plantilla en PDF para impresión directa en hojas tamaño carta estándar de oficina.

@@ -349,32 +349,42 @@ def md_to_docx(md_path, docx_path, doc_title):
             is_numbered = False
             content_to_parse = clean_line
 
-            if clean_line.startswith('* ') or clean_line.startswith('- '):
+            # Detección de nivel de indentación basado en espacios iniciales
+            leading_spaces = len(raw) - len(raw.lstrip(' '))
+            indent_level = leading_spaces // 2  # Cada 2 espacios cuenta como 1 nivel de sangría
+
+            if clean_line.startswith('* ') or clean_line.startswith('- ') or clean_line.startswith('• '):
                 is_bullet = True
                 content_to_parse = clean_line[2:].strip()
-            elif re.match(r'^\d+\.\s', clean_line):
+            elif re.match(r'^\d+[\.\)]\s', clean_line):
                 is_numbered = True
-                m = re.match(r'^\d+\.\s', clean_line)
+                m = re.match(r'^\d+[\.\)]\s', clean_line)
                 num_prefix = m.group(0)
                 content_to_parse = clean_line[len(num_prefix):].strip()
 
             if is_bullet:
                 p = doc.add_paragraph(style='List Bullet')
                 p.paragraph_format.space_before = Pt(0)
-                p.paragraph_format.space_after = Pt(3)
+                p.paragraph_format.space_after = Pt(2.5)
                 p.paragraph_format.line_spacing = 1.25
+                if indent_level > 0:
+                    p.paragraph_format.left_indent = Inches(0.25 * (indent_level + 1))
                 add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
             elif is_numbered:
                 p = doc.add_paragraph(style='List Number')
                 p.paragraph_format.space_before = Pt(1)
-                p.paragraph_format.space_after = Pt(3)
+                p.paragraph_format.space_after = Pt(2.5)
                 p.paragraph_format.line_spacing = 1.25
+                if indent_level > 0:
+                    p.paragraph_format.left_indent = Inches(0.25 * (indent_level + 1))
                 add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
             else:
                 p = doc.add_paragraph()
                 p.paragraph_format.line_spacing = 1.25
                 p.paragraph_format.space_after = Pt(4)
                 p.paragraph_format.space_before = Pt(0)
+                if indent_level > 0:
+                    p.paragraph_format.left_indent = Inches(0.25 * indent_level)
                 add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10, default_font=FONT_NAME)
 
     doc.save(docx_path)
