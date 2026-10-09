@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.46.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.47.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.46.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.47.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,13 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.46.0] - 2026-10-09
+### [2.47.0] - 2026-10-09
+- **Ergonomía Tablet-First en Programación & Lotes (`REGLA 0.40`):**
+  - **Eliminación de Scroll Vertical Excesivo:** Estructuración de la vista en dos sub-pestañas táctiles inmediatas (`.sub-nav-tabs`):
+    1. *Cartera de Pedidos & Lotes Madre (60):* Tabla de órdenes CONTPAQi SQL Server con cálculo de días y semáforos, y acciones rápidas.
+    2. *Centro de Impresión de Tarjetas QR (Fundas):* Previsualización e impresión por lote en formato hoja carta para fundas plásticas cosidas.
+  - **Navegación Fluida Bidireccional:** El botón "Ver Lotes" y "Imprimir QR" conmuta automáticamente a la sub-pestaña de impresión; botón "Volver a Pedidos" regresa de inmediato a la lista sin scroll manual.
+  - **Regla Maestra 0.40 en AGENTS.md:** Prohibición formal de apilar paneles complejos verticalmente para preservar ergonomía tablet.
 - **Alineación Integral con el Alcance Oficial del Diagrama de Flujo & Catálogo de Módulos (MVP):**
   - **Módulo 1 (Programación, Loteo e Impresión):** Incorporado en el sidebar para perfiles Admin e Ingeniero. Tabla en vivo de pedidos de CONTPAQi SQL Server con cálculo de días y semáforos de entrega, detalle de lotes madre asociados (60 pzas) y Centro de Impresión de Tarjetas Viajeras oficiales con códigos QR en formato estándar carta para fundas plásticas cosidas.
   - **Módulo 2 (Tablero de los 5 KPIs Rectores):** Implementada sub-pestaña preferente en Andon con métricas exactas: (1) WIP en vivo por almacén/depto, (2) Piezas producidas por estación, (3) Consumo de materia prima vs. BOM estándar CONTPAQi, (4) Mapeo de reprocesos C1-C5 con causa raíz y estación causante, (5) Tiempo de entrega vs. fecha compromiso.

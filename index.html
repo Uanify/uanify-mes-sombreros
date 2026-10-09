@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.46.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.47.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -279,63 +279,88 @@
           </div>
         </div>
 
-        <!-- Tabla Maestra de Órdenes CONTPAQi SQL Server -->
-        <div class="card-glass" style="padding:22px; border-radius:14px; margin-bottom:24px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-            <div>
-              <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
-                Cartera de Órdenes de Producción & Fechas Compromiso
-              </h3>
-              <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
-                Sincronización directa vía Procedimiento Almacenado LAN con CONTPAQi Comercial ($0 SDK)
-              </p>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="table-badge-code" style="font-size:11.5px; padding:6px 10px; background:#F1F5F9;">LAN SQL Server: CONECTADO</span>
-            </div>
-          </div>
+        <!-- Sub-navegación por Pestañas de Programación & Lotes (Regla 0.40 Tablet-First sin scroll excesivo) -->
+        <div class="sub-nav-tabs" data-module="orders" style="margin-bottom:18px;">
+          <button class="sub-tab-btn active" data-subtab="subtab-orders-list" style="font-weight:800; color:var(--color-brand);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Cartera de Pedidos & Lotes Madre (60)
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-orders-print" style="font-weight:700;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Centro de Impresión de Tarjetas QR (Fundas)
+          </button>
+        </div>
 
-          <div class="table-responsive">
-            <table class="data-table" id="tableProductionOrders">
-              <thead>
-                <tr>
-                  <th>Folio OP</th>
-                  <th>Pedido CONTPAQi</th>
-                  <th>Cliente</th>
-                  <th>Modelo de Sombrero</th>
-                  <th>Total Pzas</th>
-                  <th>Fecha Compromiso</th>
-                  <th>Semáforo</th>
-                  <th>Lotes Madre (60)</th>
-                  <th style="text-align:right;">Acciones de Piso</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyProductionOrders">
-                <!-- Inyectado dinámicamente por app.js -->
-              </tbody>
-            </table>
+        <!-- Sub-pestaña 1: Cartera Maestra de Órdenes CONTPAQi SQL Server -->
+        <div class="sub-tab-content active" id="subtab-orders-list">
+          <div class="card-glass" style="padding:22px; border-radius:14px; margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+              <div>
+                <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
+                  Cartera de Órdenes de Producción & Fechas Compromiso
+                </h3>
+                <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
+                  Sincronización directa vía Procedimiento Almacenado LAN con CONTPAQi Comercial ($0 SDK)
+                </p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="table-badge-code" style="font-size:11.5px; padding:6px 10px; background:#F1F5F9;">LAN SQL Server: CONECTADO</span>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table" id="tableProductionOrders">
+                <thead>
+                  <tr>
+                    <th>Folio OP</th>
+                    <th>Pedido CONTPAQi</th>
+                    <th>Cliente</th>
+                    <th>Modelo de Sombrero</th>
+                    <th>Total Pzas</th>
+                    <th>Fecha Compromiso</th>
+                    <th>Semáforo</th>
+                    <th>Lotes Madre (60)</th>
+                    <th style="text-align:right;">Acciones de Piso</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyProductionOrders">
+                  <!-- Inyectado dinámicamente por app.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- Centro de Impresión de Tarjetas Viajeras Oficiales con QR para Fundas Plásticas -->
-        <div class="card-glass" style="padding:22px; border-radius:14px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
-            <div>
-              <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0 0 4px 0;">
-                Centro de Impresión de Tarjetas Viajeras Oficiales (Fundas Plásticas)
-              </h3>
-              <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
-                Formato hoja carta para recorte e introducción directa en fundas plásticas cosidas en torre de sombreros
-              </p>
+        <!-- Sub-pestaña 2: Centro de Impresión de Tarjetas Viajeras Oficiales con QR para Fundas Plásticas -->
+        <div class="sub-tab-content" id="subtab-orders-print" style="display:none;">
+          <div class="card-glass" style="padding:22px; border-radius:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+                  <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0;">
+                    Centro de Impresión de Tarjetas Viajeras Oficiales
+                  </h3>
+                  <span class="badge-subtle" style="font-weight:700; color:var(--color-brand);">Fundas Plásticas</span>
+                </div>
+                <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
+                  Formato estándar hoja carta para recorte e inserción en fundas plásticas cosidas en torre de 60 sombreros
+                </p>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="btn-secondary" id="btnBackToOrdersList" style="display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                  <span>Volver a Pedidos</span>
+                </button>
+                <button type="button" class="btn-primary" id="btnPrintTravelerSheetBatch" style="display:inline-flex; align-items:center; gap:8px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  <span>Imprimir Hoja de Tarjetas (Carta)</span>
+                </button>
+              </div>
             </div>
-            <button type="button" class="btn-primary" id="btnPrintTravelerSheetBatch" style="display:inline-flex; align-items:center; gap:8px;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span>Imprimir Hoja de Tarjetas (Carta)</span>
-            </button>
-          </div>
 
-          <div id="printSheetPreviewContainer" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:16px;">
-            <!-- Tarjetas viajeras renderizadas listas para imprimir -->
+            <div id="printSheetPreviewContainer" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:16px;">
+              <!-- Tarjetas viajeras renderizadas listas para imprimir -->
+            </div>
           </div>
         </div>
       </section>
@@ -4457,11 +4482,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.46.0"></script>
-  <script src="js/andon.js?v=2.46.0"></script>
-  <script src="js/terminal.js?v=2.46.0"></script>
-  <script src="js/engineer.js?v=2.46.0"></script>
-  <script src="js/executive.js?v=2.46.0"></script>
-  <script src="js/config.js?v=2.46.0"></script>
+  <script src="js/app.js?v=2.47.0"></script>
+  <script src="js/andon.js?v=2.47.0"></script>
+  <script src="js/terminal.js?v=2.47.0"></script>
+  <script src="js/engineer.js?v=2.47.0"></script>
+  <script src="js/executive.js?v=2.47.0"></script>
+  <script src="js/config.js?v=2.47.0"></script>
 </body>
 </html>

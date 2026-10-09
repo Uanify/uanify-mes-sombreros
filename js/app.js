@@ -2722,6 +2722,15 @@ function enrichStationWithDefaults(st, idx) {
         window.print();
       });
     }
+
+    const btnBackToOrders = document.getElementById('btnBackToOrdersList');
+    if (btnBackToOrders && !btnBackToOrders.dataset.bound) {
+      btnBackToOrders.dataset.bound = 'true';
+      btnBackToOrders.addEventListener('click', () => {
+        const btnTabList = document.querySelector('.sub-tab-btn[data-subtab="subtab-orders-list"]');
+        if (btnTabList) btnTabList.click();
+      });
+    }
   }
 
   function renderPrintCardsForOrder(orderFolio) {
@@ -2785,17 +2794,24 @@ function enrichStationWithDefaults(st, idx) {
     `).join('');
   }
 
+  function switchToOrdersPrintSubtab() {
+    const btnTabPrint = document.querySelector('.sub-tab-btn[data-subtab="subtab-orders-print"]');
+    if (btnTabPrint) btnTabPrint.click();
+  }
+
   window.previewOrderLots = function(folio) {
     renderPrintCardsForOrder(folio);
+    switchToOrdersPrintSubtab();
     window.UanifyUI.toast(`Visualizando tarjetas para orden ${folio}. Listas para recorte y funda plástica.`, 'info', 'Lotes Madre (60 pzas)');
   };
 
   window.printOrderCardsBatch = function(folio) {
     renderPrintCardsForOrder(folio);
+    switchToOrdersPrintSubtab();
     window.UanifyUI.toast(`Generando vista de impresión carta para los lotes de la orden ${folio}...`, 'info', 'Impresión QR');
     setTimeout(() => {
       window.print();
-    }, 300);
+    }, 400);
   };
 
   // ── 2. RENDER DE SECCIÓN ALMACÉN E INVENTARIO ────────────────────────────

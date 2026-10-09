@@ -646,3 +646,18 @@ Los usuarios de la plataforma (ingenieros de planta, supervisores y administrado
 3. **Despliegue Inmediato (`git push`):** Ejecutar `git push origin main` de forma autónoma y verificar que el repositorio remoto quede actualizado con el árbol de trabajo limpio.
 4. **Cero Retención de Cambios:** Queda estrictamente prohibido dar por finalizada una respuesta dejando commits o cambios pendientes de subida en local.
 
+---
+
+## REGLA 0.40: Ergonomía Tablet-First Sin Scroll Infinito Mediante Sub-Pestañas Obligatorias (MANDATORIA)
+
+**La experiencia en pantalla táctil / tablet es de máxima prioridad. En cualquier módulo o vista de la plataforma, queda estrictamente prohibido apilar múltiples secciones complejas, tablas extensas y paneles en cascada vertical generando scroll infinito.**
+
+1. **Partición Obligatoria en Sub-Pestañas (`.sub-nav-tabs`):** Toda vista que contenga más de un propósito operativo (ej. Cartera de Pedidos vs. Impresión de Tarjetas QR en Programación; o Almacenes vs. Catálogo de Hormas vs. Tafiletes) debe estructurarse mediante sub-pestañas horizontales limpias `.sub-nav-tabs` con botones `.sub-tab-btn`.
+2. **Prioridad Ergonómica Tablet:**
+   - La pantalla de una tablet de planta (768px a 1024px) debe permitir ver el contenido principal sin tener que desplazar la pantalla arriba y abajo para interactuar con botones o tablas.
+   - Cada sub-pestaña debe contener su bloque de trabajo visible de inmediato.
+   - Al alternar entre sub-pestañas, el sistema ejecuta de forma automática el scroll top suave a la cabecera.
+3. **Persistencia e Inicialización Limpia:**
+   - Cada `.sub-tab-btn` debe tener su respectivo `data-subtab` y su contenedor hermano `.sub-tab-content` en el DOM, activando la primera sub-pestaña por defecto con la clase `.active`.
+   - Queda prohibido dejar vistas monolíticas con scroll vertical excesivo.
+
