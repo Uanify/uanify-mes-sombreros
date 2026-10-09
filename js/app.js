@@ -4422,40 +4422,64 @@ function enrichStationWithDefaults(st, idx) {
       const btn = tip.querySelector('.info-tip-btn');
       if (!popup || !btn) return;
 
-      // Restablecer estilos antes de medir
-      tip.classList.remove('flip-down');
-      popup.style.left = '50%';
-      popup.style.transform = '';
-      popup.style.removeProperty('--tip-arrow');
-
-      const popRect = popup.getBoundingClientRect();
       const btnRect = btn.getBoundingClientRect();
       const vpW = window.innerWidth || document.documentElement.clientWidth;
+      const vpH = window.innerHeight || document.documentElement.clientHeight;
 
-      // 1. Verificar si cabe arriba; si choca contra el borde superior de la pantalla, voltear abajo
-      if (btnRect.top - popRect.height - 12 < 0) {
+      // Medir tamaño del popup (temporalmente visible fuera de pantalla si está oculto)
+      popup.style.visibility = 'hidden';
+      popup.style.display = 'block';
+      popup.style.left = '0px';
+      popup.style.top = '0px';
+      popup.style.bottom = 'auto';
+      popup.style.right = 'auto';
+      popup.style.transform = 'none';
+
+      const popRect = popup.getBoundingClientRect();
+      const popW = popRect.width;
+      const popH = popRect.height;
+      const margin = 12;
+
+      // 1. Determinar si cabe ARRIBA del botón o si debe ir ABAJO (flip-down)
+      const spaceAbove = btnRect.top;
+      const spaceBelow = vpH - btnRect.bottom;
+      let placeBelow = false;
+
+      if (spaceAbove < popH + 14 && spaceBelow > spaceAbove) {
+        placeBelow = true;
+      }
+
+      let top = 0;
+      if (placeBelow) {
         tip.classList.add('flip-down');
+        popup.classList.add('flip-down');
+        top = btnRect.bottom + 10;
+      } else {
+        tip.classList.remove('flip-down');
+        popup.classList.remove('flip-down');
+        top = btnRect.top - popH - 10;
       }
 
-      // 2. Controlar desbordamiento horizontal respecto a la pantalla
-      const updatedPopRect = popup.getBoundingClientRect();
-      let shiftX = 0;
-      const margin = 10;
+      // 2. Centrar horizontalmente respecto al botón
+      let left = btnRect.left + (btnRect.width / 2) - (popW / 2);
 
-      if (updatedPopRect.left < margin) {
-        shiftX = margin - updatedPopRect.left;
-      } else if (updatedPopRect.right > vpW - margin) {
-        shiftX = (vpW - margin) - updatedPopRect.right;
+      // Clamp horizontal para que quede dentro del viewport
+      if (left < margin) {
+        left = margin;
+      } else if (left + popW > vpW - margin) {
+        left = vpW - margin - popW;
       }
 
-      if (shiftX !== 0) {
-        // Desplazar el popup horizontalmente para mantenerlo dentro de la pantalla
-        popup.style.transform = `translateX(calc(-50% + ${shiftX}px))`;
-        // Centrar la flecha exactamente sobre el botón
-        const arrowX = (btnRect.left + btnRect.width / 2) - (updatedPopRect.left + shiftX);
-        const clampedArrow = Math.max(12, Math.min(arrowX, updatedPopRect.width - 12));
-        popup.style.setProperty('--tip-arrow', `${clampedArrow}px`);
-      }
+      // 3. Posicionar la flecha sobre el botón
+      const btnCenter = btnRect.left + (btnRect.width / 2);
+      const arrowX = Math.max(14, Math.min(btnCenter - left, popW - 14));
+      popup.style.setProperty('--tip-arrow', `${arrowX}px`);
+
+      // 4. Asignar estilos finales
+      popup.style.left = `${Math.round(left)}px`;
+      popup.style.top = `${Math.round(top)}px`;
+      popup.style.visibility = '';
+      popup.style.display = '';
     }
 
     // Hover: ajustar posición al entrar

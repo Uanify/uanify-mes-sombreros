@@ -4860,14 +4860,14 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
    SISTEMA UNIVERSAL DE PUNTOS DE INFORMACIÓN & TOOLTIPS (REGLA UX 0.36)
    Higiene visual: sustituye textos descriptivos extensos por micro-puntos (i)
    ========================================================================== */
-/* ═══════ INFO-TIP  — Ícono ⓘ con Tooltip Flotante ═══════ */
+/* ═══════ INFO-TIP — Botón ⓘ y Tooltip Flotante Azul Industrial ═══════ */
 .info-tip {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  cursor: pointer;
+  cursor: pointer !important;
   margin-left: 6px;
 }
 
@@ -4875,63 +4875,59 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  color: #FFFFFF !important;
-  background: linear-gradient(135deg, var(--color-brand, #8B5E3C), #A0714F);
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #0284C7 !important;
+  background: #E0F2FE;
+  border: 1.5px solid #BAE6FD;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
   padding: 0;
   font-family: inherit;
   line-height: 1;
-  box-shadow: 0 1px 4px rgba(139, 94, 60, 0.35), 0 0 0 2px rgba(139, 94, 60, 0.15);
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.12);
 }
 
 .info-tip-btn:hover,
 .info-tip-btn:focus,
 .info-tip.active .info-tip-btn {
-  background: linear-gradient(135deg, #A76E43, #724727);
+  background: #0284C7;
   color: #FFFFFF !important;
-  border-color: #FFFFFF;
-  transform: scale(1.15);
-  box-shadow: 0 3px 12px rgba(139, 94, 60, 0.55), 0 0 0 3px rgba(139, 94, 60, 0.25);
+  border-color: #0284C7;
+  transform: scale(1.12);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35), 0 0 0 3px rgba(14, 165, 233, 0.2);
   outline: none;
 }
 
 .info-tip-btn svg {
-  width: 12px;
-  height: 12px;
-  stroke: #FFFFFF !important;
-  stroke-width: 2.6;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+  width: 14px;
+  height: 14px;
+  stroke: currentColor !important;
+  stroke-width: 2.3;
 }
 
 /* En modales oscuros (como la Consola DevTools) */
 .uanify-superadmin-box .info-tip-btn {
-  color: #FFFFFF !important;
-  background: linear-gradient(135deg, #0284C7, #38BDF8);
-  border-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.35), 0 0 0 2px rgba(56, 189, 248, 0.15);
+  color: #38BDF8 !important;
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.2);
 }
 
 .uanify-superadmin-box .info-tip-btn:hover,
 .uanify-superadmin-box .info-tip-btn:focus,
 .uanify-superadmin-box .info-tip.active .info-tip-btn {
-  background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+  background: #0284C7;
   color: #FFFFFF !important;
-  border-color: #FFFFFF;
-  box-shadow: 0 2px 12px rgba(2, 132, 199, 0.5), 0 0 0 3px rgba(56, 189, 248, 0.2);
+  border-color: #38BDF8;
+  box-shadow: 0 2px 12px rgba(2, 132, 199, 0.5), 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
 
-/* ─── Popup flotante anclado al ícono ─── */
+/* ─── Popup flotante desacoplado (Fixed en Viewport) ─── */
 .info-tip-popup {
-  position: absolute;
-  bottom: calc(100% + 9px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  position: fixed;
   background: #0F172A;
   color: #F8FAFC;
   padding: 10px 14px;
@@ -4947,7 +4943,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-  z-index: 999999;
+  z-index: 9999999;
   text-align: left;
   white-space: normal;
 }
@@ -4962,14 +4958,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   border-top-color: #0F172A;
 }
 
-/* Si el popup se posiciona abajo por falta de espacio superior */
-.info-tip.flip-down .info-tip-popup {
-  bottom: auto;
-  top: calc(100% + 9px);
-  transform: translateX(-50%) translateY(-4px);
-}
-
-.info-tip.flip-down .info-tip-popup::after {
+.info-tip.flip-down .info-tip-popup::after,
+.info-tip-popup.flip-down::after {
   top: auto;
   bottom: 100%;
   border-top-color: transparent;
@@ -4981,7 +4971,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .info-tip.active .info-tip-popup {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
 }
 
 /* Corrección de contraste para la Consola DevTools SuperAdmin */
