@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.41.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.46.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -10,37 +10,40 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 - **Web Oficial del Cliente:** [Tombstone Hats](https://tombstone.mx/)
 - **Demostración en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 - **Organización:** [Uanify](https://github.com/Uanify)
-- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
-- **Cuestionario y Acuerdos de Operación con Carlos Ortiz:** [docs/cuestionario_operativo_ingenieria_planta.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/cuestionario_operativo_ingenieria_planta.md)
-- **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
-- **Requerimientos del Sistema (PRD):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
-- **Diagramas de Flujos Principales por Actor / Usuario:** [docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md)
-- **Historias de Usuario (45 US):** [docs/HISTORIAS_DE_USUARIO.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/HISTORIAS_DE_USUARIO.md)
-- **Casos de Prueba (97 TC):** [docs/CASOS_DE_PRUEBA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/CASOS_DE_PRUEBA.md)
-- **Glosario y Diccionario de Términos de Planta:** [docs/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md)
-- **Banco de Dudas y Validaciones con Cliente:** [docs/DUDAS_Y_VALIDACIONES_CLIENTE.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DUDAS_Y_VALIDACIONES_CLIENTE.md)
+- **Diagrama de Flujo y Catálogo de Módulos (MVP Oficial):** [docs/Oficial/DIAGRAMA_DE_FLUJO_Y_MODULOS_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/DIAGRAMA_DE_FLUJO_Y_MODULOS_MES.md)
+- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/Oficial/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
+- **Banco Unificado de Dudas y Validaciones Técnicas:** [docs/Oficial/BANCO_UNIFICADO_DUDAS_Y_VALIDACIONES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/BANCO_UNIFICADO_DUDAS_Y_VALIDACIONES.md)
+- **Documento Maestro de Arquitectura y Reglas:** [SISTEMA_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/SISTEMA_TOMBSTONE_MES.md)
+- **Requerimientos del Sistema (PRD / SRS):** [docs/Interno/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/REQUERIMIENTOS_DEL_SISTEMA.md)
 
 ---
 
-## Arquitectura Funcional Tombstone Hats (v2.43.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.46.0)
 
-El sistema MES está estructurado en 6 módulos especializados con autenticación visual por roles (RBAC), estilo industrial tradicional moderno, filtrado multi-criterio e **Higiene Visual Universal con Puntos de Información / Tooltips Interactivos (`.info-tip`)** y **Componente Propio Universal de Dropdowns Desplegables (`UanifySelect`)**:
+Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
-| Módulo | Usuario Objetivo | Funcionalidad Clave |
+| Módulo | Usuario Objetivo | Funcionalidad Clave del Alcance Oficial |
 |---|---|---|
-| **0.  Pantalla de Login RBAC** | Todos los Perfiles | Selector interactivo de usuario de planta (Edmundo - Admin, Carlos - Ingeniero, Juan Manuel / Roberto - Supervisores) con persistencia de sesión y logout seguro. |
-| **1.  Terminal de Supervisor** | Supervisores y Operación | **3 Acciones Heroicas en Tablet**: (1) Escáner QR de Tarjeta Viajera en Pantalla Completa, (2) Modo Rampa (Fraccionamiento Multi-QR en D-04/D-05), y (3) Reportar Paro de Máquina. Flujo inmersivo de atención a lote escaneado, verificación de tarjeta física, captura de mermas a Kárdex ALM-05 y panel de calidad. |
-| **2.  Tablero Andon (Piso)** | Supervisores, Dirección y Planta (Web / Tablet) | Monitoreo visual de avance de estaciones en tiempo real con alto contraste, Takt Time (42s), 4 filtros de calidad destacados y bitácora viva de tiempos muertos. |
-| **3.  Almacenes & Hormas** | Almacenistas, Supervisores e Ingeniería | **Catálogo de Sombreros Fabricados**, **Catálogo de Hormas y Moldes Maquinados**, inventario ergonómico de tafiletes por talla (54-60) y Kárdex general. |
-| **4. Padrón de Operadores** | Ingenieros y Supervisores | Directorio integral de 108 operadores fijos en planta con máquina asignada, piezas procesadas hoy, turno y filtros estandarizados. |
-| **5.  Analítica & KPIs de Planta** | Administradores e Ingenieros | **Módulo Único Centralizado de Inteligencia de Planta**: OEE desagregado, valorización financiera de producción, bitácora de paros SMED y matriz BOM con cambio de proveedor. |
-| **6.  Configuración & Catálogos** | Admin & Ingeniero | CRUD de Departamentos y Almacenes Intermedios, Rutas por Modelo con Drag & Drop, Filtros de Calidad C-XX, Usuarios RBAC, Horario de Turno e integración silenciosa CONTPAQi SQL Server. |
+| **Módulo 1: Programación, Loteo e Impresión** | Ingeniería Admin | Ingesta de pedidos CONTPAQi SQL Server, captura de fecha compromiso con semáforo, partición en lotes madre (60 pzas) y Centro de Impresión de Tarjetas Viajeras oficiales con QR en hoja carta para fundas plásticas. |
+| **Módulo 2: Monitoreo de Piso, WIP y Tablero 5 KPIs** | Supervisores, Dirección y Planta | (1) WIP en vivo por departamento, (2) Piezas producidas por área, (3) Consumo materiales vs. BOM, (4) Mapeo de reprocesos C1-C5 con causa raíz y depto causante, (5) Tiempo de entrega vs. fecha compromiso. |
+| **Módulo 3: Terminal Táctil de Piso (Tablets T1 a T6)** | Supervisores y Operadores | Selector táctil de Tablets T1 a T6 (Xiaomi Redmi Pad SE) con tramos de planta, escáner QR de tarjeta viajera, registro de depósito en almacén intermedio, división en sublotes de 15 pzas en T4 y captura ágil de paros. |
+| **Módulo 4: Puntos de Control e Inspección (C1 a C5)** | Calidad y Supervisores | Aprobación/Rechazo en filtros C1 a C5 con retornos de reproceso específicos (C1 descuenta en corte, C2 retorna a D06 Refuerzo, C3 retorna a D06 Pintura, C4 retorna a D07 Hidráulicas Alineado, C5 retorna a D10 Adorno). |
+| **Módulo 5: Subensambles (T5) & Ficha Técnica Multiperspectiva** | Operación y Calidad Final | Semáforo de buffer en Adorno (tafiletes por talla 55-60) y visualización de fotografías oficiales autorizadas de muestra en múltiples perspectivas (Frente, Hendidura de copa, Toquilla/herraje, Tafilete interior, Ángulo 3/4) para cotejo físico. |
+| **Módulo 6: Pre-Nómina de Destajo y Reportes** | Recursos Humanos e Ingeniería | Acumulado semanal de piezas concluidas por operador con base en tarifa fija ($/pza) y exportación administrativa en 1 clic a Microsoft Excel / CSV. |
+| **Módulo 7: Microservicio Puente CONTPAQi SQL Server** | TI e Integración LAN | Vistas y SPs en red local ($0 licencias SDK) para sincronización de pedidos, salida de materia prima y entrada de producto terminado con folio de lote MES en observaciones. |
 
 ---
 
 ## Historial de Versiones (Changelog)
 
-### [2.43.0] - 2026-10-05
+### [2.46.0] - 2026-10-09
+- **Alineación Integral con el Alcance Oficial del Diagrama de Flujo & Catálogo de Módulos (MVP):**
+  - **Módulo 1 (Programación, Loteo e Impresión):** Incorporado en el sidebar para perfiles Admin e Ingeniero. Tabla en vivo de pedidos de CONTPAQi SQL Server con cálculo de días y semáforos de entrega, detalle de lotes madre asociados (60 pzas) y Centro de Impresión de Tarjetas Viajeras oficiales con códigos QR en formato estándar carta para fundas plásticas cosidas.
+  - **Módulo 2 (Tablero de los 5 KPIs Rectores):** Implementada sub-pestaña preferente en Andon con métricas exactas: (1) WIP en vivo por almacén/depto, (2) Piezas producidas por estación, (3) Consumo de materia prima vs. BOM estándar CONTPAQi, (4) Mapeo de reprocesos C1-C5 con causa raíz y estación causante, (5) Tiempo de entrega vs. fecha compromiso.
+  - **Módulo 3 (Terminal Táctil con Selector T1 a T6):** Banner táctil en Terminal de Planta con selector directo de Tablets T1 a T6 (T1 Prensas D02/D05/D07/D08, T2 Patio Endopado D03, T3 Pintura y Refuerzo D06/C2/C3, T4 Hidráulicas Alineado D07/C4/D09, T5 Toquilla y Tafilete Subensambles, T6 Calidad Final D10/C5/Embarque).
+  - **Módulo 4 (Control de Inspección y Retornos C1 a C5):** Rebobinado automático de lotes rechazados a sus estaciones específicas (C1 descuenta material en corte; C2 a Refuerzo D06; C3 a Pintura D06; C4 a Hidráulicas Alineado D07; C5 a Adorno D10).
+  - **Módulo 5 (Ficha Técnica Multiperspectiva y Muestras Oficiales AWS S3):** Selector de ángulos de cotejo físico en la ficha técnica del sombrero (Frente, Hendidura de copa, Toquilla/herraje, Tafilete interior, Ángulo 3/4) y semáforo de buffer de tafiletes por talla en subensambles.
+  - **Módulo 6 y 7:** Pre-nómina de destajo exportable a Excel y panel de sincronización con CONTPAQi Comercial LAN.
 - **Módulo Aislado e Inmersivo de Lote Escaneado (`RF-89`):**
   - El escaneo QR abre el visor en pantalla completa y transiciona directamente a la confirmación de coincidencia de tarjeta viajera física (`#modalVerifyScannedCard`).
   - Al confirmar, el lote se gestiona en un módulo inmersivo dedicado que no expulsa al usuario al sistema principal.

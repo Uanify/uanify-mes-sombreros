@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.43.0',
+  version: '2.46.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -516,7 +516,7 @@ const UanifyState = {
       roleName: 'Ingeniero / Administrador General',
       pin: '1111',
       payrollNumber: '101',
-      permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
+      permissions: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
       badge: 'Ingeniero (Admin)'
     },
@@ -528,7 +528,7 @@ const UanifyState = {
       roleName: 'Ingeniero de Procesos y Calidad',
       pin: '2222',
       payrollNumber: '102',
-      permissions: ['terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
+      permissions: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
       assignedDepartments: ['*'],
       badge: 'Ingeniero (Admin)'
     },
@@ -1734,6 +1734,94 @@ const UanifyState = {
     note: 'Verificar tipo de licencia COMPAC para determinar viabilidad de integración API.'
   },
 
+  // ─── MÓDULO 1 (MVP): ÓRDENES DE PRODUCCIÓN CONTPAQi SQL & LOTES MADRE (60 PZAS) ─
+  productionOrders: [
+    {
+      folio: 'OP-15071',
+      pedidoContpaqi: 'PED-9420',
+      cliente: 'Distribuidora Western de Monterrey S.A. de C.V.',
+      model: '1000X Master Telar El Viejonón',
+      sku: 'TB-1000X-VJN-55',
+      pieces: 900,
+      promiseDate: '2026-10-12',
+      statusSemaforo: 'warning', // green | warning | danger
+      statusLabel: 'Próximo a Vencer (48h)',
+      lotsMotherCount: 15, // 900 / 60 = 15 lotes madre
+      lotIds: ['49,633', '49,634', '49,635', '49,636', '49,637'],
+      notes: 'Lotes madre de 60 piezas con partición en rampa a 4 sublotes de 15 pzas.'
+    },
+    {
+      folio: 'OP-15068',
+      pedidoContpaqi: 'PED-9418',
+      cliente: 'Sombrerería El Ranchero Guadalajara',
+      model: '1000X Master Telar Chaparral',
+      sku: 'TB-1000X-CHP-56',
+      pieces: 600,
+      promiseDate: '2026-10-18',
+      statusSemaforo: 'green',
+      statusLabel: 'En Tiempo (+9 días)',
+      lotsMotherCount: 10,
+      lotIds: ['49,386', '49,387', '49,388'],
+      notes: 'Horma Chaparral con falda 9.0 cm curvada hacia abajo.'
+    },
+    {
+      folio: 'OP-15377',
+      pedidoContpaqi: 'PED-9425',
+      cliente: 'Tombstone Retail San Francisco del Rincón',
+      model: '1000X Master Telar Denver',
+      sku: 'TB-1000X-DNV-58',
+      pieces: 720,
+      promiseDate: '2026-10-22',
+      statusSemaforo: 'green',
+      statusLabel: 'En Tiempo (+13 días)',
+      lotsMotherCount: 12,
+      lotIds: ['49,842', '49,843', '49,844'],
+      notes: 'Horma Denver Roper 4 1/4" con toquilla badana con hebilla níquel.'
+    },
+    {
+      folio: 'OP-15402',
+      pedidoContpaqi: 'PED-9430',
+      cliente: 'Western Outfitters Texas (Exportación B2B)',
+      model: 'Laqueado Especial Sonora Blanco',
+      sku: 'TB-LQ-SNR',
+      pieces: 480,
+      promiseDate: '2026-10-25',
+      statusSemaforo: 'green',
+      statusLabel: 'En Tiempo (+16 días)',
+      lotsMotherCount: 8,
+      lotIds: ['49,901', '49,902'],
+      notes: 'Triple laqueado blanco espejo con curado en túnel infrarrojo.'
+    },
+    {
+      folio: 'OP-15410',
+      pedidoContpaqi: 'PED-9432',
+      cliente: 'Charros y Tradición Morelia',
+      model: '1000X Master Telar Frontier F9',
+      sku: 'TB-1000X-FRN',
+      pieces: 360,
+      promiseDate: '2026-10-29',
+      statusSemaforo: 'green',
+      statusLabel: 'En Tiempo (+20 días)',
+      lotsMotherCount: 6,
+      lotIds: ['49,950', '49,951'],
+      notes: 'Copa gota alta 4 3/4" con refuerzo térmico a pistola.'
+    },
+    {
+      folio: 'OP-15420',
+      pedidoContpaqi: 'PED-9440',
+      cliente: 'Distribuidora del Bajío León',
+      model: 'Campana Fieltro Magnum 500X',
+      sku: 'TB-500X-MGN',
+      pieces: 180,
+      promiseDate: '2026-11-05',
+      statusSemaforo: 'green',
+      statusLabel: 'En Tiempo (+27 días)',
+      lotsMotherCount: 3,
+      lotIds: ['50,010'],
+      notes: 'Lana fina sin corte de cuadros (proceso corto campana preformada).'
+    }
+  ],
+
   // ─── MÉTODOS DE TRAZABILIDAD DE LOTES Y MAPA DE PROCESO ────────────────────
   getLotRoute(lotId) {
     const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
@@ -1795,11 +1883,35 @@ const UanifyState = {
     return this.moveLotToStep(lotId, nextIdx);
   },
 
-  rewindLot(lotId) {
+  rewindLot(lotId, overrideStationCode = null) {
     const lot = this.activeLots.find(l => l.lotId === lotId || l.lotId.replace(/,/g, '') === String(lotId).replace(/,/g, ''));
     if (!lot) return null;
-    const prevIdx = (typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0) - 1;
-    return this.moveLotToStep(lotId, prevIdx);
+    const route = this.getLotRoute(lotId);
+    if (!route || !route.steps) return null;
+
+    // Si se especifica una estación de retorno específica según filtro de calidad C1-C5
+    let targetIdx = -1;
+    if (overrideStationCode) {
+      targetIdx = route.steps.findIndex(s => s.code === overrideStationCode);
+    } else {
+      // Regla de retorno estándar C1 a C5
+      const currentCode = lot.currentStationCode;
+      if (currentCode === 'C2' || currentCode === 'C-02') {
+        targetIdx = route.steps.findIndex(s => s.code === 'D-06' || s.code === 'D06_REF'); // Regresa a D06 Refuerzo
+      } else if (currentCode === 'C3' || currentCode === 'C-03') {
+        targetIdx = route.steps.findIndex(s => s.code === 'D-06' || s.code === 'D06_PIN'); // Regresa a D06 Pintura
+      } else if (currentCode === 'C4' || currentCode === 'C-04') {
+        targetIdx = route.steps.findIndex(s => s.code === 'D-07' || s.code === 'D07_ALI'); // Regresa a D07 Hidráulicas Alineado
+      } else if (currentCode === 'C5' || currentCode === 'C-05') {
+        targetIdx = route.steps.findIndex(s => s.code === 'D-10'); // Regresa a D10 Adorno
+      }
+    }
+
+    if (targetIdx === -1) {
+      targetIdx = (typeof lot.currentStepIndex === 'number' ? lot.currentStepIndex : 0) - 1;
+    }
+
+    return this.moveLotToStep(lotId, targetIdx);
   },
 
   // ── INICIO DE TURNO DINÁMICO AL PRIMER QR ESCANEADO (US-17) ───────────────
@@ -1902,16 +2014,17 @@ function getCurrentUser() {
   return UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
 }
 
-// Nombres descriptivos de los 7 módulos de planta
+// Nombres descriptivos de los 7 módulos de planta (MVP)
 const ModuleNames = {
-  terminal: 'Terminal de Supervisor & Lotes',
-  andon: 'Tablero Andon (Piso)',
-  inventory: 'Catálogos & Almacenes',
-  operators: 'Padrón de Operadores',
+  orders: 'Programación, Loteo & Impresión QR',
+  terminal: 'Terminal de Supervisor & Lotes (Tablets T1-T6)',
+  andon: 'Tablero Andon & Monitoreo 5 KPIs',
+  inventory: 'Almacén & Inventarios',
+  operators: 'Padrón de Operadores & Pre-Nómina Destajo',
   analytics: 'Analítica & KPIs de Planta',
   engineer: 'Analítica & KPIs de Planta',
   executive: 'Analítica & KPIs de Planta',
-  config: 'Configuración de Planta & Usuarios'
+  config: 'Configuración & Catálogos Maestros'
 };
 
 // Actualizar visualmente la barra lateral según los permisos del usuario activo
@@ -2063,6 +2176,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const appContent = document.querySelector('.app-content');
       if (appContent) appContent.scrollTop = 0;
       EventBus.emit('tab-changed', targetTab);
+      if (targetTab === 'orders' && typeof renderOrdersSection === 'function') {
+        renderOrdersSection();
+      }
     });
   });
 
@@ -2537,6 +2653,150 @@ function enrichStationWithDefaults(st, idx) {
       appLayout.style.display = 'flex';
     }
   }
+
+  // ── MÓDULO 1 (MVP): PROGRAMACIÓN, LOTEO & IMPRESIÓN DE TARJETAS QR ──────
+  function renderOrdersSection() {
+    const tbody = document.getElementById('tbodyProductionOrders');
+    const printContainer = document.getElementById('printSheetPreviewContainer');
+    if (!tbody || !UanifyState.productionOrders) return;
+
+    tbody.innerHTML = UanifyState.productionOrders.map(order => {
+      const semClass = order.statusSemaforo === 'green' ? 'status-active' : (order.statusSemaforo === 'warning' ? 'status-warning' : 'status-danger');
+      const badgeStyle = order.statusSemaforo === 'green'
+        ? 'background:#ECFDF5; color:#047857; border:1px solid #A7F3D0;'
+        : 'background:#FFFBEB; color:#B45309; border:1px solid #FDE68A;';
+
+      return `
+        <tr>
+          <td><strong style="color:var(--color-brand); font-family:var(--font-mono); font-size:13px;">${order.folio}</strong></td>
+          <td><span class="badge-subtle" style="font-family:var(--font-mono); font-weight:700;">${order.pedidoContpaqi}</span></td>
+          <td>
+            <div style="font-weight:700; color:var(--text-primary); font-size:13px;">${order.cliente}</div>
+            <small style="color:var(--text-muted); font-size:11px;">${order.notes || ''}</small>
+          </td>
+          <td><strong>${order.model}</strong><div style="font-size:11px; color:var(--text-muted);">${order.sku}</div></td>
+          <td><strong style="font-size:13.5px;">${order.pieces} pzas</strong></td>
+          <td><span style="font-family:var(--font-mono); font-size:12px;">${order.promiseDate}</span></td>
+          <td>
+            <span class="badge-status" style="${badgeStyle} font-size:11px; font-weight:800; padding:4px 8px;">
+              ${order.statusLabel}
+            </span>
+          </td>
+          <td>
+            <span class="badge-subtle" style="font-weight:800; color:var(--color-brand);">
+              ${order.lotsMotherCount} Lotes (60 pzas)
+            </span>
+          </td>
+          <td style="text-align:right;">
+            <div style="display:flex; justify-content:flex-end; gap:6px;">
+              <button type="button" class="btn-secondary" onclick="window.previewOrderLots('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Ver Lotes y Códigos QR">
+                Ver Lotes (${order.lotsMotherCount})
+              </button>
+              <button type="button" class="btn-primary" onclick="window.printOrderCardsBatch('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Imprimir Tarjetas Viajeras para Fundas">
+                Imprimir QR
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Render inicial del Centro de Impresión con tarjetas del primer pedido
+    if (printContainer) {
+      renderPrintCardsForOrder(UanifyState.productionOrders[0].folio);
+    }
+
+    // Botones de sincronización y nueva orden
+    const btnSync = document.getElementById('btnSyncContpaqiOrders');
+    if (btnSync && !btnSync.dataset.bound) {
+      btnSync.dataset.bound = 'true';
+      btnSync.addEventListener('click', () => {
+        window.UanifyUI.toast('Lectura directa completada: 6 pedidos sincronizados desde CONTPAQi SQL Server en red LAN ($0 SDK).', 'success', 'Sincronización CONTPAQi SQL');
+      });
+    }
+
+    const btnBatchPrint = document.getElementById('btnPrintTravelerSheetBatch');
+    if (btnBatchPrint && !btnBatchPrint.dataset.bound) {
+      btnBatchPrint.dataset.bound = 'true';
+      btnBatchPrint.addEventListener('click', () => {
+        window.print();
+      });
+    }
+  }
+
+  function renderPrintCardsForOrder(orderFolio) {
+    const printContainer = document.getElementById('printSheetPreviewContainer');
+    if (!printContainer) return;
+    const order = (UanifyState.productionOrders || []).find(o => o.folio === orderFolio) || UanifyState.productionOrders[0];
+    if (!order) return;
+
+    printContainer.innerHTML = order.lotIds.map((lotNum, idx) => `
+      <div style="border:2px dashed var(--color-brand); border-radius:12px; padding:16px; background:#FFFFFF; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; border-bottom:1.5px solid #E2E8F0; padding-bottom:8px;">
+          <div>
+            <span style="font-size:9.5px; font-weight:800; color:var(--color-brand); text-transform:uppercase; letter-spacing:0.5px; display:block;">TARJETA VIAJERA OFICIAL · FUNDA PLÁSTICA</span>
+            <strong style="font-size:17px; color:var(--text-primary); font-family:var(--font-mono);">LOTE #${lotNum}</strong>
+            <span style="font-size:11px; color:var(--text-muted); display:block;">Lote Madre (60 pzas) · ${idx + 1} de ${order.lotsMotherCount}</span>
+          </div>
+          <div style="text-align:right;">
+            <span class="badge-subtle" style="font-family:var(--font-mono); font-size:10.5px; font-weight:800;">${order.folio}</span>
+            <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${order.pedidoContpaqi}</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 100px; gap:12px; align-items:center;">
+          <div style="font-size:11.5px; line-height:1.4;">
+            <div><strong>Modelo:</strong> ${order.model}</div>
+            <div><strong>Cliente:</strong> ${order.cliente}</div>
+            <div><strong>Fecha Límite:</strong> ${order.promiseDate}</div>
+            <div><strong>Tramo:</strong> Nacimiento en Prensas D-02 → C5</div>
+            <div style="margin-top:6px; font-size:10px; color:#64748B; background:#F8FAFC; padding:4px 6px; border-radius:4px;">
+              ✂️ Fraccionar en T4 Hidráulicas a 4 sublotes de 15 pzas.
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:88px; height:88px; margin:0 auto; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:4px;">
+              <svg viewBox="0 0 100 100" width="80" height="80">
+                <rect width="100" height="100" fill="#FFFFFF"/>
+                <!-- Patrón QR Simulado de Alto Contraste -->
+                <rect x="10" y="10" width="25" height="25" fill="#0F172A"/>
+                <rect x="15" y="15" width="15" height="15" fill="#FFFFFF"/>
+                <rect x="18" y="18" width="9" height="9" fill="#0F172A"/>
+                <rect x="65" y="10" width="25" height="25" fill="#0F172A"/>
+                <rect x="70" y="15" width="15" height="15" fill="#FFFFFF"/>
+                <rect x="73" y="18" width="9" height="9" fill="#0F172A"/>
+                <rect x="10" y="65" width="25" height="25" fill="#0F172A"/>
+                <rect x="15" y="70" width="15" height="15" fill="#FFFFFF"/>
+                <rect x="18" y="73" width="9" height="9" fill="#0F172A"/>
+                <rect x="42" y="12" width="12" height="6" fill="#0F172A"/>
+                <rect x="45" y="24" width="8" height="14" fill="#0F172A"/>
+                <rect x="65" y="45" width="10" height="10" fill="#0F172A"/>
+                <rect x="45" y="65" width="12" height="12" fill="#0F172A"/>
+                <rect x="75" y="75" width="14" height="14" fill="#0F172A"/>
+                <rect x="25" y="45" width="10" height="12" fill="#0F172A"/>
+              </svg>
+            </div>
+            <span style="font-family:var(--font-mono); font-size:10px; font-weight:800; color:var(--text-secondary); display:block; margin-top:2px;">
+              LOTE-${lotNum.replace(',', '')}
+            </span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.previewOrderLots = function(folio) {
+    renderPrintCardsForOrder(folio);
+    window.UanifyUI.toast(`Visualizando tarjetas para orden ${folio}. Listas para recorte y funda plástica.`, 'info', 'Lotes Madre (60 pzas)');
+  };
+
+  window.printOrderCardsBatch = function(folio) {
+    renderPrintCardsForOrder(folio);
+    window.UanifyUI.toast(`Generando vista de impresión carta para los lotes de la orden ${folio}...`, 'info', 'Impresión QR');
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
 
   // ── 2. RENDER DE SECCIÓN ALMACÉN E INVENTARIO ────────────────────────────
   function renderInventorySection() {
@@ -3581,6 +3841,40 @@ function enrichStationWithDefaults(st, idx) {
 
     if (sizesCont) {
       sizesCont.innerHTML = (hat.sizes || []).map(s => `<span class="hat-size-chip">${s}</span>`).join('');
+    }
+
+    // Configurar Visor de Múltiples Perspectivas (Módulo 5 MVP - Muestra Autorizada)
+    const galleryThumbs = document.querySelectorAll('.hat-thumb-btn');
+    galleryThumbs.forEach(btn => {
+      btn.classList.remove('active');
+      btn.onclick = () => {
+        galleryThumbs.forEach(b => {
+          b.classList.remove('active');
+          b.style.background = '';
+          b.style.color = '';
+        });
+        btn.classList.add('active');
+        btn.style.background = 'var(--color-brand)';
+        btn.style.color = '#FFFFFF';
+
+        const angle = btn.getAttribute('data-angle');
+        if (img) {
+          // Si el modelo tiene fotos específicas por ángulo o renderizado
+          if (hat.photos && hat.photos[angle]) {
+            img.src = hat.photos[angle];
+          } else {
+            img.src = hat.photo || '';
+          }
+        }
+        window.UanifyUI.toast(`Mostrando perspectiva oficial: ${btn.textContent.trim()} (Cotejo Adorno & Calidad)`, 'info', 'Muestra Autorizada');
+      };
+    });
+
+    const defaultThumb = document.querySelector('.hat-thumb-btn[data-angle="front"]');
+    if (defaultThumb) {
+      defaultThumb.classList.add('active');
+      defaultThumb.style.background = 'var(--color-brand)';
+      defaultThumb.style.color = '#FFFFFF';
     }
 
     modal.style.display = 'flex';

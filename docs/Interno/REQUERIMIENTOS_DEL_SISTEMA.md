@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.42.0` | **Versión:** `v2.42.0`  
-> **Fecha de Emisión / Última Actualización:** 4 de Octubre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.46.0` | **Versión:** `v2.46.0`  
+> **Fecha de Emisión / Última Actualización:** 9 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)

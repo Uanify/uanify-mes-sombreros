@@ -881,6 +881,22 @@ window.initTerminalView = function() {
         if (qualityCheckTitle) {
           qualityCheckTitle.textContent = `Filtro de Inspección: ${lot.currentStationCode || 'C-01'} · ${lot.currentStationName || 'Control de Calidad'}`;
         }
+        // Configurar texto dinámico de retorno según filtro de calidad C1-C5
+        const reworkBtn = document.getElementById('btnQualitySendRework');
+        if (reworkBtn) {
+          const code = lot.currentStationCode || '';
+          if (code.includes('C2') || code === 'C-02') {
+            reworkBtn.textContent = '🔄 Reproceso a D06 Refuerzo (C2)';
+          } else if (code.includes('C3') || code === 'C-03') {
+            reworkBtn.textContent = '🔄 Reproceso a D06 Pintura (C3)';
+          } else if (code.includes('C4') || code === 'C-04') {
+            reworkBtn.textContent = '🔄 Reproceso a D07 Hidráulicas Alineado (C4)';
+          } else if (code.includes('C5') || code === 'C-05') {
+            reworkBtn.textContent = '🔄 Reproceso a D10 Adorno (C5)';
+          } else {
+            reworkBtn.textContent = '🔄 Enviar a Reproceso Prioritario';
+          }
+        }
       } else {
         qualityActionsContainer.style.display = 'none';
       }
@@ -2528,35 +2544,74 @@ window.initTerminalView = function() {
     renderPlantDepartmentsGrid();
   });
 
-  // ── 15. SELECTOR DE 6 ESTACIONES DE PLANTA & PANELES CONTEXTUALES (RF-78, RF-79, RF-81) ──
-  const plantStationSelect = document.getElementById('plantStationSelect');
-  const activePlantStationLabel = document.getElementById('activePlantStationLabel');
-  const stationPrensasContextPanel = document.getElementById('stationPrensasContextPanel');
-  const stationAdornoContextPanel = document.getElementById('stationAdornoContextPanel');
+  // ── 15. SELECTOR DE TABLETS T1 A T6 (MÓDULO 3 MVP · XIAOMI REDMI PAD SE) ──
+  const tabletSelectBtns = document.querySelectorAll('.tablet-select-btn');
+  const activeTabletDescEl = document.getElementById('activeTabletDescription');
+  const terminalDeptsCountBadge = document.getElementById('terminalDeptsCountBadge');
+  const terminalSupervisorBanner = document.getElementById('terminalSupervisorBanner');
 
-  if (plantStationSelect) {
-    plantStationSelect.addEventListener('change', () => {
-      const val = plantStationSelect.value;
-      if (stationPrensasContextPanel) stationPrensasContextPanel.style.display = 'none';
-      if (stationAdornoContextPanel) stationAdornoContextPanel.style.display = 'none';
+  const TabletConfigs = {
+    T1: {
+      name: 'T1 · Prensas',
+      desc: 'T1 · Prensas (Pegado copa-falda, Nacimiento lote 60, Alambrado, Replanchado y Refaldeo)',
+      deptsBadge: 'Tramo: D02, D05, D07, D08',
+      allowedCodes: ['D-02', 'D-05', 'D-07', 'D-08', 'C-01']
+    },
+    T2: {
+      name: 'T2 · Patio Endopado',
+      desc: 'T2 · Patio Endopado (Baño con alambre y secado en camas de esquina)',
+      deptsBadge: 'Tramo: D03 Patio Endopado',
+      allowedCodes: ['D-03']
+    },
+    T3: {
+      name: 'T3 · Calidad Refuerzo & Pintura',
+      desc: 'T3 · Cabinas (Refuerzo a pistola, C2 Calidad, Pintura, C3 Calidad y Brillo final)',
+      deptsBadge: 'Tramo: D06_REF, C2, D06_PIN, C3, D06_BRI',
+      allowedCodes: ['D-06', 'D-07', 'D-08', 'C-02']
+    },
+    T4: {
+      name: 'T4 · Hidráulicas (15 piezas)',
+      desc: 'T4 · Hidráulicas Alineado (División en 4 sublotes de 15 pzas, C4 Calidad y Pre-adorno)',
+      deptsBadge: 'Tramo: D07_ALI (Fraccionamiento), C4, D09',
+      allowedCodes: ['D-05', 'D-09', 'C-02', 'C-03']
+    },
+    T5: {
+      name: 'T5 · Subensambles (Tafiletes & Toquillas)',
+      desc: 'T5 · Mesa de Subensambles (Semáforo de buffer por talla 55-60 hacia Adorno)',
+      deptsBadge: 'Tramo: T5 Buffer Tafilete y Toquilla',
+      allowedCodes: ['D-10']
+    },
+    T6: {
+      name: 'T6 · Calidad Final & Embarque',
+      desc: 'T6 · Confección & Despacho (D10 Adorno, C5 Calidad Final, Liberación e Ingesta CONTPAQi)',
+      deptsBadge: 'Tramo: D10, C5 Calidad Final, Embarque',
+      allowedCodes: ['D-10', 'C-03', 'D-11']
+    }
+  };
 
-      if (val === 'station-1') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 1: D-02 Prensas (Control de Hormas & Paros)';
-        if (stationPrensasContextPanel) stationPrensasContextPanel.style.display = 'block';
-      } else if (val === 'station-2') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 2: C-01 Calidad Refuerzo/Pintura (Filtro 1)';
-      } else if (val === 'station-3') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 3: D-03 Patio Endopado / Recortes';
-      } else if (val === 'station-4') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 4: C-02 Calidad Hidráulicas (Filtro 2)';
-      } else if (val === 'station-5') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 5: D-10 Toquilla y Adorno (Buffer Tafiletes)';
-        if (stationAdornoContextPanel) stationAdornoContextPanel.style.display = 'block';
-      } else if (val === 'station-6') {
-        if (activePlantStationLabel) activePlantStationLabel.textContent = 'Estación 6: C-03/D-11 Calidad Final y Embarque (Filtro 3 & Despacho)';
-      }
+  tabletSelectBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabletSelectBtns.forEach(b => {
+        b.classList.remove('active');
+        b.style.borderColor = '';
+        b.style.background = '';
+        b.style.color = '';
+      });
+      btn.classList.add('active');
+      btn.style.borderColor = 'var(--color-brand)';
+      btn.style.background = 'var(--color-brand-light)';
+      btn.style.color = 'var(--color-brand)';
+
+      const tabletKey = btn.getAttribute('data-tablet') || 'T1';
+      const config = TabletConfigs[tabletKey] || TabletConfigs.T1;
+
+      if (terminalSupervisorBanner) terminalSupervisorBanner.textContent = `Tablet Activa: ${config.name}`;
+      if (activeTabletDescEl) activeTabletDescEl.textContent = config.desc;
+      if (terminalDeptsCountBadge) terminalDeptsCountBadge.textContent = config.deptsBadge;
+
+      window.UanifyUI.toast(`Consola configurada en ${config.name} (${config.deptsBadge}). Hardware optimizado.`, 'info', 'Tablet de Piso');
     });
-  }
+  });
 
   // Modal de Reporte de Paro de Línea (Botón Heroico en Terminal y Prensas)
   const modalStop = document.getElementById('modalStop');

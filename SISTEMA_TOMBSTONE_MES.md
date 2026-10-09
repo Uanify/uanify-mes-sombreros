@@ -1,21 +1,23 @@
 # SISTEMA TOMBSTONE MES · DOCUMENTO MAESTRO DE ARQUITECTURA Y PROYECTO
 
 > **Fuente Única de Verdad (Single Source of Truth) para el Desarrollo, Reglas de Negocio y Operación de Planta**  
-> **Versión Actual:** `v2.42.0` | **Fecha de Actualización:** 4 de Octubre de 2026  
+> **Versión Actual:** `v2.46.0` | **Fecha de Actualización:** 9 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (San Francisco del Rincón, Guanajuato) | **Desarrollador:** [Uanify](https://github.com/Uanify)  
 > **Demostración en Producción:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
 
 ### Suite de Documentación Viva del Proyecto:
 
-- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
-- **Cuestionario y Acuerdos de Operación con Ingeniería (Ing. Carlos Ortiz):** [docs/cuestionario_operativo_ingenieria_planta.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/cuestionario_operativo_ingenieria_planta.md)
-- **Reglas de Negocio y Operación Actual de Planta:** [docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
-- **Requerimientos del Sistema (PRD / SRS):** [docs/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/REQUERIMIENTOS_DEL_SISTEMA.md)
-- **Diagramas de Flujos Principales por Actor / Usuario:** [docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DIAGRAMAS_DE_FLUJO_USUARIOS.md)
-- **Historias de Usuario (45 US):** [docs/HISTORIAS_DE_USUARIO.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/HISTORIAS_DE_USUARIO.md)
-- **Matriz de Casos de Prueba (97 TC):** [docs/CASOS_DE_PRUEBA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/CASOS_DE_PRUEBA.md)
-- **Glosario y Diccionario de Términos de Planta:** [docs/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md)
-- **Banco Oficial de Dudas Técnicas para Reunión:** [docs/DUDAS_Y_VALIDACIONES_CLIENTE.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/DUDAS_Y_VALIDACIONES_CLIENTE.md)
+- **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP Oficial):** [docs/Oficial/DIAGRAMA_DE_FLUJO_Y_MODULOS_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/DIAGRAMA_DE_FLUJO_Y_MODULOS_MES.md)
+- **Propuesta Técnica y Arquitectura Operativa MVP:** [docs/Oficial/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/PROPUESTA_TECNICA_MVP_TOMBSTONE_MES.md)
+- **Banco Unificado de Dudas y Validaciones Técnicas:** [docs/Oficial/BANCO_UNIFICADO_DUDAS_Y_VALIDACIONES.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Oficial/BANCO_UNIFICADO_DUDAS_Y_VALIDACIONES.md)
+- **Requerimientos del Sistema (PRD / SRS):** [docs/Interno/REQUERIMIENTOS_DEL_SISTEMA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/REQUERIMIENTOS_DEL_SISTEMA.md)
+- **Cuestionario y Acuerdos de Operación con Ingeniería (Ing. Carlos Ortiz):** [docs/Interno/cuestionario_operativo_ingenieria_planta.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/cuestionario_operativo_ingenieria_planta.md)
+- **Reglas de Negocio y Operación Actual de Planta:** [docs/Interno/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/REGLAS_DE_NEGOCIO_Y_OPERACION_ACTUAL.md)
+- **Diagramas de Flujos Principales por Actor / Usuario:** [docs/Interno/DIAGRAMAS_DE_FLUJO_USUARIOS.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/DIAGRAMAS_DE_FLUJO_USUARIOS.md)
+- **Historias de Usuario (45 US):** [docs/Interno/HISTORIAS_DE_USUARIO.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/HISTORIAS_DE_USUARIO.md)
+- **Matriz de Casos de Prueba (97 TC):** [docs/Interno/CASOS_DE_PRUEBA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/CASOS_DE_PRUEBA.md)
+- **Glosario y Diccionario de Términos de Planta:** [docs/Interno/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/GLOSARIO_Y_TERMINOLOGIA_PLANTA.md)
+- **Banco Oficial de Dudas Técnicas para Reunión:** [docs/Interno/DUDAS_Y_VALIDACIONES_CLIENTE.md](file:///c:/Users/andre/.gemini/antigravity-ide/scratch/uanify-mes-sombreros/docs/Interno/DUDAS_Y_VALIDACIONES_CLIENTE.md)
 
 ---
 
