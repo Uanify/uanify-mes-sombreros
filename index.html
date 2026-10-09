@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.53.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.54.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -322,8 +322,8 @@
                     <th>Total Pzas</th>
                     <th>Fecha Compromiso</th>
                     <th>Semáforo</th>
-                    <th>Lotes Madre (60)</th>
-                    <th style="text-align:right;">Acciones de Piso</th>
+                    <th>Loteo & Partición</th>
+                    <th style="text-align:right;">Acciones de Ingeniería</th>
                   </tr>
                 </thead>
                 <tbody id="tbodyProductionOrders">
@@ -4424,19 +4424,21 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: PARTICIÃ“N Y CREACIÃ“N MANUAL DE LOTES & ORDEN (MÃ“DULO 1 MVP)
+       MODAL: SEGMENTACIÓN, PARTICIÓN Y LOTEO DE ÓRDENES (MÓDULO 1 MVP)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalNewProductionOrder">
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0;">Partición y Creación Manual de Lotes</h3>
-          <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0 0;">Definición de lote madre (60 pzas) y sublotes según planeación semanal de planta</p>
+          <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0;" id="orderModalTitle">Segmentación & Partición de Lotes</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0 0;">Definición manual de lotes madre (60 pzas) y sublotes de rampa previo a impresión de tarjetas QR</p>
         </div>
         <button type="button" class="modal-close" id="btnCloseOrderModal" aria-label="Cerrar">&times;</button>
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction:column; gap:16px; padding:20px;">
+        <input type="hidden" id="orderModalTargetFolio" value="">
+
         <div class="form-group" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div>
             <label class="field-label">Folio O.P. (CONTPAQi)</label>
@@ -4474,30 +4476,34 @@
         <!-- Panel de Loteo Dinámico -->
         <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:16px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <strong style="font-size:13px; color:var(--text-primary);">Configuración y Partición de Piezas</strong>
-            <span class="badge-subtle" style="font-weight:700;">Estándar de Oro San Pancho</span>
+            <strong style="font-size:13px; color:var(--text-primary);">Configuración y Partición Manual de Lotes</strong>
+            <span class="badge-subtle" style="font-weight:700;">Planeación Semanal</span>
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
             <div>
-              <label class="field-label">Total de Piezas de la Orden</label>
+              <label class="field-label">Total de Piezas a Producir</label>
               <input type="number" id="orderModalPieces" class="form-input" value="300" min="15" step="15">
             </div>
             <div>
-              <label class="field-label">Piezas por Lote Madre</label>
-              <input type="number" id="orderModalLotSize" class="form-input" value="60" min="15" step="15" readonly style="background:#F1F5F9; color:#475569;">
+              <label class="field-label">Tamaño Estándar Lote Madre</label>
+              <select id="orderModalLotSize" class="custom-select">
+                <option value="60" selected>60 pzas (Estándar Nave Prensas)</option>
+                <option value="30">30 pzas (Lote Corto / Especial)</option>
+                <option value="15">15 pzas (Sin fraccionamiento en Rampa)</option>
+              </select>
             </div>
           </div>
 
           <!-- Resumen de Cálculo Automático -->
-          <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <span style="font-size:11px; color:var(--text-muted); display:block;">Partición calculada:</span>
-              <strong id="orderModalLotsCalc" style="font-size:15px; color:var(--color-brand); font-family:var(--font-mono);">5 Lotes Madre (60 pzas c/u)</strong>
+              <span style="font-size:11px; color:var(--text-muted); display:block; text-transform:uppercase; font-weight:700;">Partición Definida:</span>
+              <strong id="orderModalLotsCalc" style="font-size:16px; color:var(--color-brand); font-family:var(--font-mono);">5 Lotes Madre (60 pzas c/u)</strong>
             </div>
             <div style="text-align:right;">
-              <span style="font-size:11px; color:var(--text-muted); display:block;">Sublotes en rampa (15 pzas):</span>
-              <strong id="orderModalSublotsCalc" style="font-size:15px; color:#1E293B; font-family:var(--font-mono);">20 Sublotes (4 por lote)</strong>
+              <span style="font-size:11px; color:var(--text-muted); display:block; text-transform:uppercase; font-weight:700;">Sublotes Rampa (15 pzas):</span>
+              <strong id="orderModalSublotsCalc" style="font-size:16px; color:#1E293B; font-family:var(--font-mono);">20 Sublotes (4 por lote)</strong>
             </div>
           </div>
         </div>
@@ -4506,7 +4512,7 @@
       <div class="modal-footer" style="padding:16px 20px; display:flex; justify-content:flex-end; gap:10px;">
         <button type="button" class="btn-secondary" id="btnCancelOrderModal">Cancelar</button>
         <button type="button" class="btn-primary" id="btnSaveAndGenerateLots">
-          <span>Crear Orden y Generar Tarjetas QR</span>
+          <span>Confirmar Partición y Habilitar Impresión</span>
         </button>
       </div>
     </div>
@@ -4535,11 +4541,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.53.0"></script>
-  <script src="js/andon.js?v=2.53.0"></script>
-  <script src="js/terminal.js?v=2.53.0"></script>
-  <script src="js/engineer.js?v=2.53.0"></script>
-  <script src="js/executive.js?v=2.53.0"></script>
-  <script src="js/config.js?v=2.53.0"></script>
+  <script src="js/app.js?v=2.54.0"></script>
+  <script src="js/andon.js?v=2.54.0"></script>
+  <script src="js/terminal.js?v=2.54.0"></script>
+  <script src="js/engineer.js?v=2.54.0"></script>
+  <script src="js/executive.js?v=2.54.0"></script>
+  <script src="js/config.js?v=2.54.0"></script>
 </body>
 </html>

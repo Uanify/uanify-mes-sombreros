@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.53.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.54.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.53.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.54.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,13 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.54.0] - 2026-10-09
+- **Flujo Oficial de Segmentación Manual Previa a Impresión (Módulo 1 MVP):**
+  - **Ingesta Diaria de Pedidos desde ERP:** Botón `Sincronizar Pedidos SQL` que descarga las órdenes más recientes desde CONTPAQi SQL en red local.
+  - **Estado "Pendiente de Segmentar":** Las órdenes recién llegadas ingresan bloqueadas para impresión, mostrando el botón prominente `Segmentar Lotes`.
+  - **Proceso de Segmentación de Lotes y Sublotes:** El usuario define manualmente el tamaño de lote madre (60 pzas estándar) y el número de sublotes de rampa (15 pzas).
+  - **Habilitación Condicional de Impresión:** Una vez confirmada la segmentación por Ingeniería, la fila se actualiza a color verde activo, desbloqueando `Ver Lotes` e `Imprimir QR`.
 
 ### [2.53.0] - 2026-10-09
 - **Implementación de Partición y Creación Manual de Lotes (Módulo 1 MVP):**

@@ -1746,7 +1746,10 @@ const UanifyState = {
       promiseDate: '2026-10-12',
       statusSemaforo: 'warning', // green | warning | danger
       statusLabel: 'Próximo a Vencer (48h)',
+      isSegmented: true,
+      lotMotherSize: 60,
       lotsMotherCount: 15, // 900 / 60 = 15 lotes madre
+      sublotsCount: 60,   // 15 * 4 = 60 sublotes de 15 pzas
       lotIds: ['49,633', '49,634', '49,635', '49,636', '49,637'],
       notes: 'Lotes madre de 60 piezas con partición en rampa a 4 sublotes de 15 pzas.'
     },
@@ -1760,7 +1763,10 @@ const UanifyState = {
       promiseDate: '2026-10-18',
       statusSemaforo: 'green',
       statusLabel: 'En Tiempo (+9 días)',
+      isSegmented: true,
+      lotMotherSize: 60,
       lotsMotherCount: 10,
+      sublotsCount: 40,
       lotIds: ['49,386', '49,387', '49,388'],
       notes: 'Horma Chaparral con falda 9.0 cm curvada hacia abajo.'
     },
@@ -1774,7 +1780,10 @@ const UanifyState = {
       promiseDate: '2026-10-22',
       statusSemaforo: 'green',
       statusLabel: 'En Tiempo (+13 días)',
+      isSegmented: true,
+      lotMotherSize: 60,
       lotsMotherCount: 12,
+      sublotsCount: 48,
       lotIds: ['49,842', '49,843', '49,844'],
       notes: 'Horma Denver Roper 4 1/4" con toquilla badana con hebilla níquel.'
     },
@@ -1788,9 +1797,12 @@ const UanifyState = {
       promiseDate: '2026-10-25',
       statusSemaforo: 'green',
       statusLabel: 'En Tiempo (+16 días)',
-      lotsMotherCount: 8,
-      lotIds: ['49,901', '49,902'],
-      notes: 'Triple laqueado blanco espejo con curado en túnel infrarrojo.'
+      isSegmented: false, // Llega de CONTPAQi pendiente de segmentar manualmente por el usuario
+      lotMotherSize: 60,
+      lotsMotherCount: 0,
+      sublotsCount: 0,
+      lotIds: [],
+      notes: 'Pendiente de segmentación semanal en Prensas y Rampa.'
     },
     {
       folio: 'OP-15410',
@@ -1802,8 +1814,11 @@ const UanifyState = {
       promiseDate: '2026-10-29',
       statusSemaforo: 'green',
       statusLabel: 'En Tiempo (+20 días)',
-      lotsMotherCount: 6,
-      lotIds: ['49,950', '49,951'],
+      isSegmented: false, // Pendiente de segmentar
+      lotMotherSize: 60,
+      lotsMotherCount: 0,
+      sublotsCount: 0,
+      lotIds: [],
       notes: 'Copa gota alta 4 3/4" con refuerzo térmico a pistola.'
     },
     {
@@ -1816,8 +1831,11 @@ const UanifyState = {
       promiseDate: '2026-11-05',
       statusSemaforo: 'green',
       statusLabel: 'En Tiempo (+27 días)',
-      lotsMotherCount: 3,
-      lotIds: ['50,010'],
+      isSegmented: false, // Pendiente de segmentar
+      lotMotherSize: 60,
+      lotsMotherCount: 0,
+      sublotsCount: 0,
+      lotIds: [],
       notes: 'Lana fina sin corte de cuadros (proceso corto campana preformada).'
     }
   ],
@@ -2666,8 +2684,36 @@ function enrichStationWithDefaults(st, idx) {
         ? 'background:#ECFDF5; color:#047857; border:1px solid #A7F3D0;'
         : 'background:#FFFBEB; color:#B45309; border:1px solid #FDE68A;';
 
+      // Badge de estado de segmentación
+      const segmentBadge = order.isSegmented
+        ? `<div style="display:flex; flex-direction:column; gap:2px;">
+             <span class="badge-status" style="background:#ECFDF5; color:#047857; font-size:11px; font-weight:800; padding:3px 8px;">
+               ${order.lotsMotherCount} Lotes Madre (${order.lotMotherSize || 60} pzas)
+             </span>
+             <small style="color:var(--text-muted); font-size:10.5px;">${order.sublotsCount || order.lotsMotherCount * 4} sublotes en rampa (15 pzas)</small>
+           </div>`
+        : `<span class="badge-status" style="background:#FEF2F2; color:#B91C1C; font-size:11px; font-weight:800; padding:4px 8px; border:1px solid #FECACA;">
+             Pendiente de Segmentar
+           </span>`;
+
+      // Botones de acción condicionales según si está segmentada o no
+      const actionButtons = order.isSegmented
+        ? `<div style="display:flex; justify-content:flex-end; gap:6px;">
+             <button type="button" class="btn-secondary" onclick="window.previewOrderLots('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Ver Lotes y Códigos QR">
+               Ver Lotes (${order.lotsMotherCount})
+             </button>
+             <button type="button" class="btn-primary" onclick="window.printOrderCardsBatch('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Imprimir Tarjetas Viajeras para Fundas">
+               Imprimir QR
+             </button>
+           </div>`
+        : `<div style="display:flex; justify-content:flex-end; gap:6px;">
+             <button type="button" class="btn-primary" onclick="window.openSegmentModalForOrder('${order.folio}')" style="font-size:11.5px; padding:6px 12px; font-weight:800; background:#8B5E3C; color:#FFFFFF;" title="Definir lotes madre y sublotes para habilitar impresión">
+               Segmentar Lotes
+             </button>
+           </div>`;
+
       return `
-        <tr>
+        <tr style="${!order.isSegmented ? 'background:rgba(254, 242, 242, 0.25);' : ''}">
           <td><strong style="color:var(--color-brand); font-family:var(--font-mono); font-size:13px;">${order.folio}</strong></td>
           <td><span class="badge-subtle" style="font-family:var(--font-mono); font-weight:700;">${order.pedidoContpaqi}</span></td>
           <td>
@@ -2683,27 +2729,21 @@ function enrichStationWithDefaults(st, idx) {
             </span>
           </td>
           <td>
-            <span class="badge-subtle" style="font-weight:800; color:var(--color-brand);">
-              ${order.lotsMotherCount} Lotes (60 pzas)
-            </span>
+            ${segmentBadge}
           </td>
           <td style="text-align:right;">
-            <div style="display:flex; justify-content:flex-end; gap:6px;">
-              <button type="button" class="btn-secondary" onclick="window.previewOrderLots('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Ver Lotes y Códigos QR">
-                Ver Lotes (${order.lotsMotherCount})
-              </button>
-              <button type="button" class="btn-primary" onclick="window.printOrderCardsBatch('${order.folio}')" style="font-size:11.5px; padding:6px 10px; font-weight:700;" title="Imprimir Tarjetas Viajeras para Fundas">
-                Imprimir QR
-              </button>
-            </div>
+            ${actionButtons}
           </td>
         </tr>
       `;
     }).join('');
 
-    // Render inicial del Centro de Impresión con tarjetas del primer pedido
+    // Render inicial del Centro de Impresión con tarjetas del primer pedido segmentado
     if (printContainer) {
-      renderPrintCardsForOrder(UanifyState.productionOrders[0].folio);
+      const firstSegmented = UanifyState.productionOrders.find(o => o.isSegmented) || UanifyState.productionOrders[0];
+      if (firstSegmented && firstSegmented.lotIds && firstSegmented.lotIds.length > 0) {
+        renderPrintCardsForOrder(firstSegmented.folio);
+      }
     }
 
     // Botones de sincronización y nueva orden
@@ -2711,7 +2751,34 @@ function enrichStationWithDefaults(st, idx) {
     if (btnSync && !btnSync.dataset.bound) {
       btnSync.dataset.bound = 'true';
       btnSync.addEventListener('click', () => {
-        window.UanifyUI.toast('Lectura directa completada: 6 pedidos sincronizados desde CONTPAQi SQL Server en red LAN ($0 SDK).', 'success', 'Sincronización CONTPAQi SQL');
+        // Traer nuevas órdenes desde CONTPAQi SQL Server
+        const newOrdersBatch = [
+          {
+            folio: `OP-${Math.floor(15500 + Math.random() * 200)}`,
+            pedidoContpaqi: `PED-${Math.floor(9500 + Math.random() * 100)}`,
+            cliente: 'Sombreros Finos de San Juan del Río Qro.',
+            model: '1000X Master Telar Denver',
+            sku: 'TB-1000X-DNV-58',
+            pieces: 420,
+            promiseDate: '2026-11-10',
+            statusSemaforo: 'green',
+            statusLabel: 'En Tiempo (+32 días)',
+            isSegmented: false,
+            lotMotherSize: 60,
+            lotsMotherCount: 0,
+            sublotsCount: 0,
+            lotIds: [],
+            notes: 'Recién ingresada de CONTPAQi Comercial SQL ($0 SDK). Pendiente de segmentar.'
+          }
+        ];
+        UanifyState.productionOrders.unshift(...newOrdersBatch);
+        renderOrdersSection();
+        updateKpiCounters();
+        window.UanifyUI.toast(
+          `Sincronización directa exitosa: Nueva orden ${newOrdersBatch[0].folio} descargada desde CONTPAQi SQL Server. Haz clic en 'Segmentar Lotes' para definir sus lotes madre y sublotes.`,
+          'success',
+          'Sincronización CONTPAQi'
+        );
       });
     }
 
@@ -2722,32 +2789,68 @@ function enrichStationWithDefaults(st, idx) {
     const btnCancelOrder = document.getElementById('btnCancelOrderModal');
     const btnSaveOrder = document.getElementById('btnSaveAndGenerateLots');
     const inputPieces = document.getElementById('orderModalPieces');
+    const selectLotSize = document.getElementById('orderModalLotSize');
     const labelLotsCalc = document.getElementById('orderModalLotsCalc');
     const labelSublotsCalc = document.getElementById('orderModalSublotsCalc');
+    const targetFolioInput = document.getElementById('orderModalTargetFolio');
+    const modalTitleEl = document.getElementById('orderModalTitle');
 
     function updateLotCalculations() {
       if (!inputPieces || !labelLotsCalc || !labelSublotsCalc) return;
       const totalPieces = parseInt(inputPieces.value || '60', 10);
-      const motherCount = Math.max(1, Math.ceil(totalPieces / 60));
-      const sublotsCount = motherCount * 4;
-      labelLotsCalc.textContent = `${motherCount} Lote${motherCount > 1 ? 's' : ''} Madre (60 pzas c/u)`;
-      labelSublotsCalc.textContent = `${sublotsCount} Sublotes (4 por lote madre)`;
+      const lotSize = parseInt(selectLotSize ? selectLotSize.value : '60', 10);
+      const motherCount = Math.max(1, Math.ceil(totalPieces / lotSize));
+      const sublotsCount = Math.ceil(totalPieces / 15);
+      labelLotsCalc.textContent = `${motherCount} Lote${motherCount > 1 ? 's' : ''} Madre (${lotSize} pzas c/u)`;
+      labelSublotsCalc.textContent = `${sublotsCount} Sublotes (${Math.round(lotSize / 15)} por lote madre)`;
     }
 
     if (inputPieces && !inputPieces.dataset.bound) {
       inputPieces.dataset.bound = 'true';
       inputPieces.addEventListener('input', updateLotCalculations);
     }
+    if (selectLotSize && !selectLotSize.dataset.bound) {
+      selectLotSize.dataset.bound = 'true';
+      selectLotSize.addEventListener('change', updateLotCalculations);
+    }
 
     if (btnNewOrder && !btnNewOrder.dataset.bound) {
       btnNewOrder.dataset.bound = 'true';
       btnNewOrder.addEventListener('click', () => {
         if (modalNewOrder) {
+          if (targetFolioInput) targetFolioInput.value = '';
+          if (modalTitleEl) modalTitleEl.textContent = 'Partición y Creación Manual de Lotes';
+          const folioInput = document.getElementById('orderModalFolio');
+          if (folioInput) folioInput.value = `OP-${Math.floor(15450 + Math.random() * 50)}`;
           updateLotCalculations();
           modalNewOrder.classList.add('active');
         }
       });
     }
+
+    window.openSegmentModalForOrder = function(folio) {
+      const order = (UanifyState.productionOrders || []).find(o => o.folio === folio);
+      if (!order || !modalNewOrder) return;
+
+      if (targetFolioInput) targetFolioInput.value = order.folio;
+      if (modalTitleEl) modalTitleEl.textContent = `Segmentación & Loteo: ${order.folio}`;
+      const folioInput = document.getElementById('orderModalFolio');
+      const pedidoInput = document.getElementById('orderModalPedido');
+      const clienteInput = document.getElementById('orderModalCliente');
+      const piecesInput = document.getElementById('orderModalPieces');
+      const promiseInput = document.getElementById('orderModalPromiseDate');
+      const modelSelect = document.getElementById('orderModalModel');
+
+      if (folioInput) folioInput.value = order.folio;
+      if (pedidoInput) pedidoInput.value = order.pedidoContpaqi;
+      if (clienteInput) clienteInput.value = order.cliente;
+      if (piecesInput) piecesInput.value = order.pieces;
+      if (promiseInput) promiseInput.value = order.promiseDate;
+      if (modelSelect) modelSelect.value = order.model;
+
+      updateLotCalculations();
+      modalNewOrder.classList.add('active');
+    };
 
     const closeNewOrderModal = () => {
       if (modalNewOrder) modalNewOrder.classList.remove('active');
@@ -2763,9 +2866,20 @@ function enrichStationWithDefaults(st, idx) {
       btnCancelOrder.addEventListener('click', closeNewOrderModal);
     }
 
+    function updateKpiCounters() {
+      const kpiOrders = document.getElementById('kpiOrdersTotal');
+      const kpiLots = document.getElementById('kpiLotsMotherTotal');
+      if (kpiOrders) kpiOrders.textContent = `${UanifyState.productionOrders.length} Órdenes`;
+      if (kpiLots) {
+        const totalLots = UanifyState.productionOrders.filter(o => o.isSegmented).reduce((acc, o) => acc + o.lotsMotherCount, 0);
+        kpiLots.textContent = `${totalLots} Lotes`;
+      }
+    }
+
     if (btnSaveOrder && !btnSaveOrder.dataset.bound) {
       btnSaveOrder.dataset.bound = 'true';
       btnSaveOrder.addEventListener('click', () => {
+        const targetFolio = targetFolioInput ? targetFolioInput.value.trim() : '';
         const folio = (document.getElementById('orderModalFolio')?.value || 'OP-15080').trim();
         const pedido = (document.getElementById('orderModalPedido')?.value || 'PED-9450').trim();
         const cliente = (document.getElementById('orderModalCliente')?.value || 'Distribuidora').trim();
@@ -2774,7 +2888,9 @@ function enrichStationWithDefaults(st, idx) {
         const modelSku = modelSelect ? (modelSelect.selectedOptions[0]?.dataset.sku || 'TB-1000X-DNV-58') : 'TB-1000X-DNV-58';
         const promiseDate = document.getElementById('orderModalPromiseDate')?.value || '2026-10-25';
         const pieces = parseInt(inputPieces?.value || '300', 10);
-        const motherCount = Math.max(1, Math.ceil(pieces / 60));
+        const lotSize = parseInt(selectLotSize ? selectLotSize.value : '60', 10);
+        const motherCount = Math.max(1, Math.ceil(pieces / lotSize));
+        const sublotsCount = Math.ceil(pieces / 15);
 
         // Generar folios secuenciales para las tarjetas viajeras
         const startNum = 50000 + Math.floor(Math.random() * 500);
@@ -2784,41 +2900,54 @@ function enrichStationWithDefaults(st, idx) {
           lotIds.push(numStr);
         }
 
-        const newOrderObj = {
-          folio: folio,
-          pedidoContpaqi: pedido,
-          cliente: cliente,
-          model: modelName,
-          sku: modelSku,
-          pieces: pieces,
-          promiseDate: promiseDate,
-          statusSemaforo: 'green',
-          statusLabel: 'En Tiempo (Nueva)',
-          lotsMotherCount: motherCount,
-          lotIds: lotIds,
-          notes: `Loteo manual: ${motherCount} lotes madre de 60 pzas con partición en rampa a 4 sublotes de 15 pzas.`
-        };
-
-        UanifyState.productionOrders.unshift(newOrderObj);
-        closeNewOrderModal();
-        renderOrdersSection();
-
-        // Actualizar contador del KPI
-        const kpiOrders = document.getElementById('kpiOrdersTotal');
-        const kpiLots = document.getElementById('kpiLotsMotherTotal');
-        if (kpiOrders) kpiOrders.textContent = `${UanifyState.productionOrders.length} Órdenes`;
-        if (kpiLots) {
-          const totalLots = UanifyState.productionOrders.reduce((acc, o) => acc + o.lotsMotherCount, 0);
-          kpiLots.textContent = `${totalLots} Lotes`;
+        if (targetFolio) {
+          // Actualizar orden existente que estaba pendiente de segmentar
+          const existingOrder = UanifyState.productionOrders.find(o => o.folio === targetFolio);
+          if (existingOrder) {
+            existingOrder.isSegmented = true;
+            existingOrder.lotMotherSize = lotSize;
+            existingOrder.lotsMotherCount = motherCount;
+            existingOrder.sublotsCount = sublotsCount;
+            existingOrder.lotIds = lotIds;
+            existingOrder.pieces = pieces;
+            existingOrder.promiseDate = promiseDate;
+            existingOrder.model = modelName;
+            existingOrder.sku = modelSku;
+            existingOrder.notes = `Segmentación definida: ${motherCount} lotes madre de ${lotSize} pzas con partición en rampa a ${sublotsCount} sublotes de 15 pzas.`;
+          }
+        } else {
+          // Nueva orden manual
+          const newOrderObj = {
+            folio: folio,
+            pedidoContpaqi: pedido,
+            cliente: cliente,
+            model: modelName,
+            sku: modelSku,
+            pieces: pieces,
+            promiseDate: promiseDate,
+            statusSemaforo: 'green',
+            statusLabel: 'En Tiempo (Nueva)',
+            isSegmented: true,
+            lotMotherSize: lotSize,
+            lotsMotherCount: motherCount,
+            sublotsCount: sublotsCount,
+            lotIds: lotIds,
+            notes: `Loteo manual: ${motherCount} lotes madre de ${lotSize} pzas con partición en rampa a ${sublotsCount} sublotes de 15 pzas.`
+          };
+          UanifyState.productionOrders.unshift(newOrderObj);
         }
 
+        closeNewOrderModal();
+        renderOrdersSection();
+        updateKpiCounters();
+
         window.UanifyUI.toast(
-          `Orden ${folio} creada exitosamente con ${motherCount} lotes madre y ${motherCount * 4} sublotes calculados.`,
+          `Orden ${folio} segmentada exitosamente: ${motherCount} lotes madre (${lotSize} pzas) y ${sublotsCount} sublotes de rampa definidos. Tarjetas QR listas para impresión.`,
           'success',
-          'Lotes Generados'
+          'Lotes Habilitados'
         );
 
-        // Abrir inmediatamente el Centro de Impresión para la nueva orden
+        // Habilitar y abrir Centro de Impresión inmediatamente
         window.previewOrderLots(folio);
       });
     }
