@@ -102,7 +102,7 @@
     </div>
   </div>
 
-  <div class="app-layout sidebar-collapsed">
+  <div class="app-layout">
     
     <!-- LEFT VERTICAL SIDEBAR -->
     <aside class="app-sidebar" id="appSidebar">
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.51.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.52.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -243,39 +243,42 @@
           </div>
         </div>
 
-        <!-- 4 Stat Cards de Programación -->
-        <div class="dashboard-kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom:20px;">
-          <div class="kpi-card card-glass">
-            <div class="kpi-card-header">
-              <span class="kpi-label">Órdenes Programadas</span>
+        <!-- 4 Stat Cards de Programación (Módulo 1 MVP) -->
+        <div class="exec-kpi-grid" style="margin-bottom:20px;">
+          <div class="exec-card card-glass">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="exec-label">ÓRDENES PROGRAMADAS</span>
               <span class="badge-subtle">CONTPAQi SQL</span>
             </div>
-            <div class="kpi-value" id="kpiOrdersTotal">6 Órdenes</div>
-            <div class="kpi-subtext" style="color:var(--text-muted); font-size:12px;">3,240 sombreros en cartera activa</div>
+            <div class="exec-metric color-brand" id="kpiOrdersTotal">6 Órdenes</div>
+            <span class="exec-trend">3,240 sombreros en cartera activa</span>
           </div>
-          <div class="kpi-card card-glass">
-            <div class="kpi-card-header">
-              <span class="kpi-label">Lotes Madre Emitidos</span>
+
+          <div class="exec-card card-glass">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="exec-label">LOTES MADRE EMITIDOS</span>
               <span class="badge-subtle">60 pzas c/u</span>
             </div>
-            <div class="kpi-value" style="color:var(--color-brand);" id="kpiLotsMotherTotal">54 Lotes</div>
-            <div class="kpi-subtext" style="color:var(--text-muted); font-size:12px;">Con código QR asignado para piso</div>
+            <div class="exec-metric color-brand" id="kpiLotsMotherTotal">54 Lotes</div>
+            <span class="exec-trend">Con código QR asignado para piso</span>
           </div>
-          <div class="kpi-card card-glass">
-            <div class="kpi-card-header">
-              <span class="kpi-label">Compromisos a Tiempo</span>
+
+          <div class="exec-card card-glass">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="exec-label">COMPROMISOS A TIEMPO</span>
               <span class="badge-status" style="background:#ECFDF5; color:#047857;">Semáforo Verde</span>
             </div>
-            <div class="kpi-value" style="color:#16A34A;" id="kpiOrdersOnTime">5 / 6</div>
-            <div class="kpi-subtext" style="color:var(--text-muted); font-size:12px;">83.3% cumplimiento de entrega</div>
+            <div class="exec-metric color-green" id="kpiOrdersOnTime">5 / 6</div>
+            <span class="exec-trend">83.3% cumplimiento de entrega</span>
           </div>
-          <div class="kpi-card card-glass">
-            <div class="kpi-card-header">
-              <span class="kpi-label">Compromiso Próximo</span>
+
+          <div class="exec-card card-glass">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="exec-label">COMPROMISO PRÓXIMO</span>
               <span class="badge-status" style="background:#FFFBEB; color:#B45309;">Semáforo Ámbar</span>
             </div>
-            <div class="kpi-value" style="color:#D97706;" id="kpiOrdersWarning">1 Orden</div>
-            <div class="kpi-subtext" style="color:var(--text-muted); font-size:12px;">OP-15071 · Vence en 48 hrs</div>
+            <div class="exec-metric color-amber" id="kpiOrdersWarning">1 Orden</div>
+            <span class="exec-trend">OP-15071 · Vence en 48 hrs</span>
           </div>
         </div>
 
@@ -4443,11 +4446,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.51.0"></script>
-  <script src="js/andon.js?v=2.51.0"></script>
-  <script src="js/terminal.js?v=2.51.0"></script>
-  <script src="js/engineer.js?v=2.51.0"></script>
-  <script src="js/executive.js?v=2.51.0"></script>
-  <script src="js/config.js?v=2.51.0"></script>
+  <script src="js/app.js?v=2.52.0"></script>
+  <script src="js/andon.js?v=2.52.0"></script>
+  <script src="js/terminal.js?v=2.52.0"></script>
+  <script src="js/engineer.js?v=2.52.0"></script>
+  <script src="js/executive.js?v=2.52.0"></script>
+  <script src="js/config.js?v=2.52.0"></script>
 </body>
 </html>

@@ -2364,14 +2364,14 @@ function enrichStationWithDefaults(st, idx) {
   // Restaurar estado previo o colapsar automáticamente por default
   const savedSidebar = localStorage.getItem('uanify_sidebar_collapsed');
   if (savedSidebar !== null) {
-    if (savedSidebar === 'false') {
-      appLayout.classList.remove('sidebar-collapsed');
-    } else {
+    if (savedSidebar === 'true') {
       appLayout.classList.add('sidebar-collapsed');
+    } else {
+      appLayout.classList.remove('sidebar-collapsed');
     }
   } else {
-    // Por defecto siempre cerrado / plegado al inicio
-    appLayout.classList.add('sidebar-collapsed');
+    // Por defecto expandido para visualización completa y legible de módulos
+    appLayout.classList.remove('sidebar-collapsed');
   }
 
   if (btnToggleSidebar) {
