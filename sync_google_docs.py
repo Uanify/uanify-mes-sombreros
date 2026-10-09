@@ -21,13 +21,38 @@ SCOPES = [
 
 CLIENT_SECRET_FILE = Path(__file__).parent / 'client_secret.json'
 TOKEN_FILE = Path(__file__).parent / 'token.json'
+UANIFY_LOGO_PATH = Path(__file__).parent / 'assets' / 'uanify_brand_logo.png'
 
-COLOR_BRAND = RGBColor(139, 94, 60)      # #8B5E3C Cuero Artesanal
-COLOR_DARK = RGBColor(15, 23, 42)        # #0F172A Pizarra Oscuro
-COLOR_BODY = RGBColor(30, 41, 59)        # #1E293B Texto Principal
-COLOR_MUTED = RGBColor(100, 116, 139)    # #64748B Gris Secundario
-COLOR_BG_CARD = "F8FAFC"
-COLOR_TH_BG = "F1F5F9"
+# --- PALETA CORPORATIVA OFICIAL UANIFY (Estilo Capturas) ---
+COLOR_PRIMARY_DARK = RGBColor(15, 23, 42)    # #0F172A Slate 900 (Títulos principales H1, H2)
+COLOR_BRAND_BLUE   = RGBColor(37, 99, 235)   # #2563EB Blue 600 (Subtítulos, H3, Acentos de Marca)
+COLOR_BODY         = RGBColor(51, 65, 85)    # #334155 Slate 700 (Texto corrido claro y legible)
+COLOR_MUTED        = RGBColor(100, 116, 139) # #64748B Slate 500 (Metadatos, pie de página)
+COLOR_CARD_BORDER  = "2563EB"                # Azul Uanify para borde lateral de notas/callouts
+COLOR_LINE_BORDER  = "CBD5E1"                # Slate 300 para separadores horizontales de sección
+COLOR_BG_CARD      = "F8FAFC"                # Slate 50 para fondos de notas / filas alternadas
+COLOR_TH_BG        = "F1F5F9"                # Slate 100 para encabezados de tabla
+
+def clean_emojis(text: str) -> str:
+    """Elimina emojis y símbolos pictográficos para garantizar una apariencia ejecutiva 100% limpia."""
+    if not text:
+        return ""
+    # Rango de emojis y caracteres decorativos Unicode
+    emoji_pattern = re.compile(
+        "[\U00010000-\U0010ffff"
+        "\u2600-\u26ff"
+        "\u2700-\u27bf"
+        "\ufe0f"
+        "\u200d"
+        "\u2300-\u23ff"
+        "\u2b50-\u2b55"
+        "\u203c-\u2049"
+        "\u25aa-\u25fe]",
+        flags=re.UNICODE
+    )
+    cleaned = emoji_pattern.sub('', text)
+    # Limpiar dobles espacios residuales tras remover emojis
+    return re.sub(r' {2,}', ' ', cleaned).strip()
 
 def get_credentials():
     if not TOKEN_FILE.exists():
@@ -76,7 +101,7 @@ def set_cell_margins(cell, top=120, bottom=120, left=180, right=180):
         tcMar.append(node)
     tcPr.append(tcMar)
 
-def set_card_borders(cell, border_color="8B5E3C"):
+def set_card_borders(cell, border_color="2563EB"):
     tcPr = cell._tc.get_or_add_tcPr()
     tcBorders = parse_xml(f'''
         <w:tcBorders {nsdecls("w")}>
@@ -88,9 +113,18 @@ def set_card_borders(cell, border_color="8B5E3C"):
     ''')
     tcPr.append(tcBorders)
 
+def add_horizontal_divider(doc, space_after=10):
+    """Agrega una línea divisoria horizontal sutil como en las plantillas oficiales de Uanify."""
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(4)
+    p.paragraph_format.space_after = Pt(space_after)
+    pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:space="8" w:color="{COLOR_LINE_BORDER}"/></w:pBdr>')
+    p._p.get_or_add_pPr().append(pBdr)
+
 def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, default_font="Arial", default_bold=False):
-    """Parsea markdown inline (**negrita**, *cursiva* y `codigo`) dentro de cualquier parrafo o celda."""
-    parts = re.split(r'(\*\*.*?\*\*|\*.*?\*|`.*?`)', text)
+    """Parsea markdown inline (**negrita**, *cursiva* y `codigo`) dentro de cualquier parrafo o celda, sin emojis."""
+    clean_text = clean_emojis(text)
+    parts = re.split(r'(\*\*.*?\*\*|\*.*?\*|`.*?`)', clean_text)
     for part in parts:
         if not part:
             continue
@@ -99,7 +133,7 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
             r.bold = True
             r.font.name = default_font
             r.font.size = Pt(default_size)
-            r.font.color.rgb = COLOR_DARK
+            r.font.color.rgb = COLOR_PRIMARY_DARK
         elif part.startswith('*') and part.endswith('*') and len(part) >= 2:
             r = p.add_run(part[1:-1])
             r.italic = True
@@ -112,7 +146,7 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
             r.bold = True
             r.font.name = "Consolas"
             r.font.size = Pt(default_size - 0.5)
-            r.font.color.rgb = COLOR_BRAND
+            r.font.color.rgb = COLOR_BRAND_BLUE
         else:
             r = p.add_run(part)
             r.bold = default_bold
@@ -123,12 +157,28 @@ def add_formatted_runs(p, text, default_color=COLOR_BODY, default_size=10, defau
 def md_to_docx(md_path, docx_path, doc_title):
     doc = docx.Document()
     
+    # 1. Configuración de Márgenes Ejecutivos y Encabezados
     for section in doc.sections:
-        section.top_margin = Inches(1.0)
-        section.bottom_margin = Inches(1.0)
-        section.left_margin = Inches(1.0)
-        section.right_margin = Inches(1.0)
+        section.top_margin = Inches(0.85)
+        section.bottom_margin = Inches(0.85)
+        section.left_margin = Inches(0.9)
+        section.right_margin = Inches(0.9)
         
+        # Encabezado Oficial con Logotipo Uanify alineado a la derecha
+        header = section.header
+        header_p = header.paragraphs[0]
+        header_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        if UANIFY_LOGO_PATH.exists():
+            h_run = header_p.add_run()
+            h_run.add_picture(str(UANIFY_LOGO_PATH), width=Inches(1.2))
+        else:
+            h_run = header_p.add_run("uanify")
+            h_run.font.name = "Arial"
+            h_run.font.size = Pt(13)
+            h_run.bold = True
+            h_run.font.color.rgb = COLOR_PRIMARY_DARK
+            
+        # Pie de página oficial
         footer = section.footer
         f_p = footer.paragraphs[0]
         f_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -146,11 +196,13 @@ def md_to_docx(md_path, docx_path, doc_title):
     table_rows = []
     in_code = False
     code_lines = []
+    is_first_h1 = True
 
     for line in lines:
         raw = line.rstrip('\r\n')
         stripped = raw.strip()
 
+        # Bloques de Código
         if stripped.startswith('```'):
             if not in_code:
                 in_code = True
@@ -161,7 +213,7 @@ def md_to_docx(md_path, docx_path, doc_title):
                 tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
                 cell = tbl.cell(0, 0)
                 set_cell_background(cell, "0F172A")
-                set_cell_margins(cell, top=140, bottom=140, left=200, right=200)
+                set_cell_margins(cell, top=130, bottom=130, left=180, right=180)
                 p = cell.paragraphs[0]
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(0)
@@ -177,6 +229,7 @@ def md_to_docx(md_path, docx_path, doc_title):
             code_lines.append(raw)
             continue
 
+        # Cajas de Notas / Callouts (> NOTE ...)
         if stripped.startswith('>'):
             in_metadata_card = True
             metadata_lines.append(stripped.lstrip('>').strip())
@@ -187,8 +240,8 @@ def md_to_docx(md_path, docx_path, doc_title):
             tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
             cell = tbl.cell(0, 0)
             set_cell_background(cell, COLOR_BG_CARD)
-            set_cell_margins(cell, top=140, bottom=140, left=220, right=220)
-            set_card_borders(cell, "8B5E3C")
+            set_cell_margins(cell, top=130, bottom=130, left=200, right=200)
+            set_card_borders(cell, COLOR_CARD_BORDER)
             
             p = cell.paragraphs[0]
             p.paragraph_format.space_before = Pt(2)
@@ -203,20 +256,23 @@ def md_to_docx(md_path, docx_path, doc_title):
             doc.add_paragraph().paragraph_format.space_after = Pt(6)
             metadata_lines = []
 
+        # H1 - TÍTULO PRINCIPAL DEL DOCUMENTO
         if stripped.startswith('# '):
-            t_text = stripped[2:].strip()
+            t_text = clean_emojis(stripped[2:].strip())
             p = doc.add_paragraph()
-            p.paragraph_format.space_before = Pt(12)
+            p.paragraph_format.space_before = Pt(6)
             p.paragraph_format.space_after = Pt(4)
             r = p.add_run(t_text)
             r.font.name = "Arial"
-            r.font.size = Pt(22)
+            r.font.size = Pt(23)
             r.bold = True
-            r.font.color.rgb = COLOR_BRAND
+            r.font.color.rgb = COLOR_PRIMARY_DARK
+            is_first_h1 = False
             continue
 
+        # H2 - SECCIÓN PRINCIPAL (ej. "1. Objetivo General", "2. Alcance...")
         if stripped.startswith('## '):
-            h_text = stripped[3:].strip()
+            h_text = clean_emojis(stripped[3:].strip())
             p = doc.add_paragraph()
             p.paragraph_format.space_before = Pt(16)
             p.paragraph_format.space_after = Pt(4)
@@ -225,11 +281,12 @@ def md_to_docx(md_path, docx_path, doc_title):
             r.font.name = "Arial"
             r.font.size = Pt(14)
             r.bold = True
-            r.font.color.rgb = COLOR_DARK
+            r.font.color.rgb = COLOR_PRIMARY_DARK
             continue
 
+        # H3 - SUBSECCIÓN CON COLOR AZUL UANIFY (#2563EB)
         if stripped.startswith('### '):
-            h_text = stripped[4:].strip()
+            h_text = clean_emojis(stripped[4:].strip())
             p = doc.add_paragraph()
             p.paragraph_format.space_before = Pt(12)
             p.paragraph_format.space_after = Pt(3)
@@ -238,25 +295,29 @@ def md_to_docx(md_path, docx_path, doc_title):
             r.font.name = "Arial"
             r.font.size = Pt(11.5)
             r.bold = True
-            r.font.color.rgb = COLOR_BRAND
+            r.font.color.rgb = COLOR_BRAND_BLUE
             continue
 
+        # H4 - NIVEL 4 EN SLATE OSCURO
         if stripped.startswith('#### '):
-            h_text = stripped[5:].strip()
+            h_text = clean_emojis(stripped[5:].strip())
             p = doc.add_paragraph()
-            p.paragraph_format.space_before = Pt(10)
+            p.paragraph_format.space_before = Pt(9)
             p.paragraph_format.space_after = Pt(2)
             p.paragraph_format.keep_with_next = True
             r = p.add_run(h_text)
             r.font.name = "Arial"
             r.font.size = Pt(10.5)
             r.bold = True
-            r.font.color.rgb = COLOR_DARK
+            r.font.color.rgb = COLOR_PRIMARY_DARK
             continue
 
+        # LÍNEAS DIVISORIAS MARCADAS EN MARKDOWN
         if stripped in ['---', '***', '___']:
+            add_horizontal_divider(doc, space_after=8)
             continue
 
+        # TABLAS DE DATOS
         if stripped.startswith('|') and stripped.endswith('|'):
             if '---' in stripped:
                 continue
@@ -280,7 +341,7 @@ def md_to_docx(md_path, docx_path, doc_title):
                         
                         if r_idx == 0:
                             set_cell_background(cell, COLOR_TH_BG)
-                            add_formatted_runs(cp, val, default_color=COLOR_DARK, default_size=9.5, default_bold=True)
+                            add_formatted_runs(cp, val, default_color=COLOR_PRIMARY_DARK, default_size=9.5, default_bold=True)
                         else:
                             bg = COLOR_BG_CARD if r_idx % 2 == 0 else "FFFFFF"
                             set_cell_background(cell, bg)
@@ -288,29 +349,29 @@ def md_to_docx(md_path, docx_path, doc_title):
                 doc.add_paragraph().paragraph_format.space_after = Pt(6)
             table_rows = []
 
+        # LISTAS Y PÁRRAFOS
         if stripped:
-            content_to_parse = stripped
+            clean_line = clean_emojis(stripped)
             is_bullet = False
             is_numbered = False
+            content_to_parse = clean_line
 
-            if stripped.startswith('* ') or stripped.startswith('- '):
+            if clean_line.startswith('* ') or clean_line.startswith('- '):
                 is_bullet = True
-                content_to_parse = stripped[2:].strip()
-            elif re.match(r'^\d+\.\s', stripped):
+                content_to_parse = clean_line[2:].strip()
+            elif re.match(r'^\d+\.\s', clean_line):
                 is_numbered = True
-                m = re.match(r'^\d+\.\s', stripped)
+                m = re.match(r'^\d+\.\s', clean_line)
                 num_prefix = m.group(0)
-                content_to_parse = stripped[len(num_prefix):].strip()
+                content_to_parse = clean_line[len(num_prefix):].strip()
 
             if is_bullet:
-                # Estilo Nativo de Vineta de Word/Docs
                 p = doc.add_paragraph(style='List Bullet')
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(3)
                 p.paragraph_format.line_spacing = 1.25
                 add_formatted_runs(p, content_to_parse, default_color=COLOR_BODY, default_size=10)
             elif is_numbered:
-                # Estilo Nativo de Lista Numerada de Word/Docs
                 p = doc.add_paragraph(style='List Number')
                 p.paragraph_format.space_before = Pt(1)
                 p.paragraph_format.space_after = Pt(3)
