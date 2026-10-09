@@ -1,85 +1,96 @@
-﻿# Banco Unificado de Dudas y Validaciones Técnicas
+# Banco Unificado de Dudas y Validaciones Técnicas
 **Tombstone Hats MES · Control de Planta & Trazabilidad**  
-*Documento Unificado Oficial de Preguntas Clave y Acuerdos Técnicos con el Cliente.*
+*Documento Unificado Oficial de Preguntas y Respuestas Técnicas (Cerradas y Pendientes de Definición con el Cliente).*
 
-> **Versión:** `v2.44.0`  
-> **Fecha:** 7 de Octubre de 2026  
-> **Estado:** Oficial para Validación Técnica  
+> **Versión:** `v2.55.0`  
+> **Fecha:** 9 de Octubre de 2026  
+> **Estado:** Documento Oficial de Preguntas y Respuestas  
 > **Cliente:** Tombstone Hats (Edmundo González / Ing. Carlos Ortiz)  
 > **Proveedor:** Uanify (Andrés Villanueva)
 
 ---
 
-## 1. Mermas y Piezas de Segunda
+## 1. Dudas Ya Respondidas y Acordadas con el Cliente
 
-### Hecho Confirmado en Planta:
-El lote principal no se detiene cuando se detectan piezas de segunda o defectos menores en línea; las piezas defectuosas se apartan físicamente y el resto de la pila continúa su avance normal por los departamentos.
+### Pregunta 1.1: ¿Cómo se manejan las piezas de segunda o mermas durante el avance de un lote?
+**Respuesta Confirmada:**
+El lote principal no se detiene cuando se apartan piezas defectuosas; las piezas aptas continúan su avance. El sistema registra las piezas retiradas, su clasificación (Segunda o Merma) y la causa raíz del defecto. Físicamente, las piezas de segunda se almacenan para venta directa con descuento y no frenan el flujo de la orden.
 
-### Definición Técnica para MVP:
-El sistema incluye la captura de la cantidad de piezas retiradas, el tipo de afectación (Segunda o Merma), la causa raíz de la falla (poro en lienzo, mancha de acabado, quemadura de vapor, deformación de ala) y la estación donde se detectó. Esta información se almacena como **histórico para consulta y cálculo de KPIs de calidad**.
+### Pregunta 1.2: ¿Cuántos filtros de inspección de calidad existen y quién decide el destino de un lote rechazado?
+**Respuesta Confirmada:**
+Existen 4 puntos de inspección en línea atendidos por 6 inspectores exclusivos de calidad. Cuando se detecta una desviación grave, el Inspector no aprueba el lote y el Supervisor del área o el Ingeniero de Calidad determinan formalmente si se envía a Reproceso, Segunda o Merma.
 
-### Puntos por Validar con el Cliente:
-* ¿El registro histórico y conteo para KPIs cubre al 100% la necesidad actual de planta, o requieren que estas piezas descuenten inventario de alguna forma específica en el sistema administrativo más adelante?
+### Pregunta 1.3: En caso de Reproceso, ¿hacia dónde regresa el lote?
+**Respuesta Confirmada:**
+El lote no regresa por defecto al departamento inmediato anterior; se redirige específicamente a la estación donde se originó el defecto (por ejemplo, si en Inspección Final se detecta falla de costura, regresa a Adorno o Ribeteado).
 
----
+### Pregunta 1.4: ¿En qué momento exacto del flujo se realiza el escaneo del lote?
+**Respuesta Confirmada:**
+Se escanea al salir del departamento. El supervisor o auxiliar del departamento saliente registra el lote y lo deposita en el almacén intermedio correspondiente.
 
-## 2. Puntos de Control de Calidad y Derivación de Rechazos
+### Pregunta 1.5: ¿Cómo se realiza el traslado físico entre departamentos?
+**Respuesta Confirmada:**
+Los operadores dejan el producto terminado en torres sobre carritos. Un auxiliar/recolector dedicado de planta acude al almacén de salida y traslada físicamente las piezas al almacén de entrada de la siguiente estación.
 
-### Hecho Confirmado en Planta:
-Existen 4 filtros de inspección en línea atendidos por 6 inspectores exclusivos de calidad.
+### Pregunta 1.6: ¿Dónde y en qué formato se imprimen las tarjetas viajeras?
+**Respuesta Confirmada:**
+Las tarjetas se imprimen exclusivamente en el área de Ingeniería en una impresora láser de oficina sobre papel bond tamaño carta estándar. Las tarjetas se recortan y se introducen en fundas plásticas cosidas (micas) que viajan con el lote físico.
 
-### Definición Técnica para MVP:
-En las terminales de los filtros de calidad, el **Inspector de Calidad** revisa el lote físico y tiene únicamente dos acciones directas: **Aprobar** (el lote avanza al almacén siguiente) o **Rechazar** (se abre el flujo de resolución de no conformidad).
+### Pregunta 1.7: ¿El tamaño del lote madre es estrictamente fijo de 60 piezas?
+**Respuesta Confirmada:**
+No es fijo. Si bien 60 piezas es el estándar de manejo en torres y carritos, el tamaño del lote madre es configurable por el Ingeniero de Producción según la orden (de 4 a 14 sublotes de 15 a 60 piezas).
 
-### Puntos por Validar con el Cliente:
-* Cuando un inspector rechaza un lote, ¿quién debe tener la facultad en la aplicación para dictaminar hacia dónde se dirige (Reproceso a estación anterior seleccionada, Segunda o Merma)?
-  * Opción 1: Exclusivamente el **Supervisor del área**.
-  * Opción 2: El **Ingeniero Admin / Ingeniero de Calidad**.
-  * Opción 3: Cualquiera de los dos (indistintamente quien se encuentre en piso).
-* En el caso de **Reprocesos**: ¿El sistema debe permitir seleccionar libremente cualquier departamento anterior de la ruta, o solo el departamento inmediatamente previo? *(Recomendación: permitir seleccionar libremente el departamento que causó el defecto).*
+### Pregunta 1.8: ¿Cómo se gestionan los operadores en el sistema?
+**Respuesta Confirmada:**
+Los 108 operadores de planta están 100% fijos en sus estaciones y no tienen usuario ni contraseña en el sistema. Los supervisores e ingenieros son quienes operan las terminales de planta y asignan el trabajo por número de nómina.
 
----
+### Pregunta 1.9: ¿Qué control se requiere sobre las hormas de aluminio en Prensas?
+**Respuesta Confirmada:**
+Para el MVP únicamente se requiere saber qué horma está montada en qué número de máquina para la planeación del día. No se requiere contador de ciclos ni mantenimiento predictivo de molde por el momento.
 
-## 3. Bitácora de Paros Productivos de Máquina
-
-### Hecho Confirmado en Planta:
-Actualmente los paros no se digitalizan; cuando ocurre una falla se avisa verbalmente al mecánico de mantenimiento. En Prensas (cuello de botella) se requiere registrar los paros de inicio a fin.
-
-### Definición Técnica para MVP:
-La terminal de piso contará con un módulo táctil rápido para registrar eventos improductivos indicando: Estación/Máquina, Operador en turno, Hora de inicio, Hora de fin y Motivo de detención.
-
-### Puntos por Validar con el Cliente:
-* **Umbral mínimo de tiempo:** ¿A partir de cuántos minutos de detención se debe exigir el registro de un paro (ej. eventos mayores a 5 minutos, o registrar cualquier pausa)?
-* **Catálogo de causas:** Se propone un catálogo base táctil con: *Cambio de horma / molde, Falla mecánica de prensa, Falta de vapor en caldera, Falta de material / lienzos, Mantenimiento eléctrico*. ¿Desean agregar o acotar motivos específicos para su nave?
-
----
-
-## 4. Ingesta de Órdenes e Impresión de Tarjetas Viajeras
-
-### Hecho Confirmado en Planta:
-Las órdenes provienen de CONTPAQi Comercial. La partición de lotes y las tarjetas viajeras hoy se gestionan con formatos en hoja carta de oficina que se recortan e insertan en fundas plásticas cosidas.
-
-### Definición Técnica para MVP:
-El Ingeniero Admin consulta las órdenes directamente en el MES desde la base de datos SQL Server de CONTPAQi. Define manualmente la partición de lotes madre (base 60 piezas) y sublotes (15 piezas), y **desde la misma pantalla manda a imprimir las tarjetas viajeras oficiales con sus códigos QR** en hojas tamaño carta estándar para recortar.
-
-### Puntos por Validar con el Cliente:
-* **Medidas exactas de micas:** ¿Cuáles son las dimensiones físicas en centímetros de las fundas plásticas que utilizan actualmente en planta para calibrar los márgenes de impresión y que encajen sin problema?
-* **Datos impresos en la tarjeta:** Se propone imprimir: Folio de Lote / Sublote, Código QR de alta densidad, Modelo de sombrero, Talla, Horma asignada, Orden de producción y Fecha. ¿Requieren algún dato adicional visible en la mica?
+### Pregunta 1.10: ¿Cómo se coordina el subensamble de tafiletes y toquillas con Adorno?
+**Respuesta Confirmada:**
+Tafiletes (9 personas) y Toquillas (7 personas) trabajan independientemente alimentando a Adorno (11 personas). El sistema debe mostrar un semáforo visual de disponibilidad de stock por modelo y talla en la estación de Adorno para saber si ya se cuenta con insumos completos antes de iniciar el ensamble.
 
 ---
 
-## 5. Método de Acceso y Autenticación en Terminales de Piso
+## 2. Dudas y Cuestiones Pendientes por Definir con el Cliente
 
-### Hecho Confirmado en Planta:
-Las 6 terminales táctiles estarán ubicadas en puntos fijos de la nave y serán compartidas entre supervisores e inspectores que rotan por las áreas de trabajo.
+### Pregunta 2.1: ¿Cuál es el criterio operativo para marcar un Paro de Producción (a nivel proceso, máquina o departamento)?
+* **Contexto:** En planta ocurren detenciones por cambio de horma, fallas mecánicas, falta de vapor o falta de material.
+* **Cuestión Pendiente:**
+  * ¿El paro se marca **a nivel de Máquina individual** (afectando únicamente a una prensa específica mientras las demás 18 prensas siguen trabajando), **a nivel de Departamento completo** (se detiene toda el área de Prensas), o **a nivel de Proceso/Línea**?
+  * ¿A partir de cuántos minutos de detención se debe exigir el registro obligatorio del evento en la terminal (ej. cualquier pausa mayor a 3 minutos, 5 minutos, o solo paros mayores a 15 minutos)?
+  * ¿Quién debe cerrar o levantar el paro: el operador notificando verbalmente al supervisor, o el mecánico de mantenimiento que acudió a reparar?
 
-### Definición Técnica para MVP:
-El sistema cuenta con 3 perfiles de acceso bien diferenciados:
-1. **Ingeniero Admin** (Acceso total a catálogos, enlace CONTPAQi, creación de lotes e impresión).
-2. **Supervisor de Planta** (Consulta de WIP de sus almacenes, depósito de lotes, Modo Rampa y paros).
-3. **Inspector de Calidad** (Validación de filtros de calidad).
+### Pregunta 2.2: ¿Cuál es el viaje físico y proceso actual completo de las Tarjetas Viajeras (Lotes y Sublotes)?
+* **Contexto:** Se requiere mapear el ciclo de vida exacto de la tarjeta de papel desde que se emite hasta que se archiva.
+* **Cuestión Pendiente:**
+  * **Emisión inicial:** El Ingeniero segmenta la orden en Ingeniería e imprime la tarjeta del Lote Madre y las tarjetas de Sublote. ¿El supervisor recoge ambas tarjetas desde el día 1, o el lote madre viaja solo con su tarjeta madre durante las primeras estaciones (Corte, Prensas, Engomado)?
+  * **Fraccionamiento en Rampa (D-05 Almacén Intermedio):** Al llegar el lote madre de 60 piezas a la rampa y fraccionarse en 4 sublotes de 15 piezas:
+    * ¿Qué ocurre físicamente con la tarjeta madre original? (¿Se archiva de inmediato en una carpeta física en la mesa de rampa, o acompaña al primer sublote?).
+    * ¿Quién coloca las nuevas tarjetas de sublote en las micas de los carritos de 15 piezas?
+  * **Destino final de las tarjetas:** Cuando los 4 sublotes de 15 piezas superan Calidad Final y se empacan en cajas de 60 piezas para Embarque:
+    * ¿Las 4 tarjetas de sublote se introducen dentro de la caja de cartón con el producto para el cliente, se entregan al chofer con la remisión, o se retiran y se archivan en oficina de Producción/Embarques?
 
-### Puntos por Validar con el Cliente:
-* Para garantizar rapidez y ergonomía en las pantallas táctiles compartidas, ¿prefieren:
-  * **PIN numérico de 4 dígitos** por usuario con teclado táctil en pantalla (sin necesidad de escribir contraseñas largas con guantes o dedos ocupados)?
-  * O **Usuario y contraseña tradicional** alfanumérica?
+### Pregunta 2.3: ¿Cuáles son las medidas exactas de las fundas plásticas (micas) para la impresión?
+* **Contexto:** Se generará una plantilla en PDF para impresión directa en hojas tamaño carta estándar de oficina.
+* **Cuestión Pendiente:**
+  * ¿Cuáles son las medidas en centímetros de ancho y alto de la ventana visible de la funda de plástico cosida?
+  * ¿Cuántas tarjetas caben idealmente en una hoja tamaño carta (4 por hoja en formato 10x13 cm, o 6 por hoja en formato 9x10 cm)?
+
+### Pregunta 2.4: ¿Qué método de autenticación prefieren para los Supervisores en las terminales de planta?
+* **Contexto:** Las 6 terminales táctiles estarán en puntos fijos de la nave y serán compartidas entre supervisores e inspectores que usan guantes o tienen manos con adhesivo y polvo de sombreros.
+* **Cuestión Pendiente:**
+  * ¿Prefieren inicio de sesión rápido mediante **PIN numérico de 4 dígitos** en teclado táctil grande en pantalla?
+  * ¿O prefieren el esquema clásico de **Usuario y contraseña** alfanumérica?
+
+### Pregunta 2.5: En los filtros de Calidad, ¿el Inspector puede dictaminar directamente el destino o requiere firma/aprobación del Supervisor?
+* **Contexto:** Actualmente 6 inspectores revisan los lotes en 4 estaciones de calidad.
+* **Cuestión Pendiente:**
+  * Si el Inspector marca "Rechazado", ¿el mismo inspector elige si se va a Reproceso a Pintura / Adorno en la pantalla, o el sistema debe requerir que el **Supervisor de Área** ingrese su PIN para autorizar a qué departamento regresa el lote?
+
+### Pregunta 2.6: En el reporte de Destajo, ¿se requiere capturar mermas por culpa del operador para descontar de su pago semanal?
+* **Contexto:** El sistema generará el preconteo semanal de destajo (piezas producidas x tarifa $/pza) los viernes con exportación a Excel.
+* **Cuestión Pendiente:**
+  * ¿El pago a destajo se calcula estrictamente sobre piezas buenas que salieron de su máquina, o existen penalizaciones/descuentos sobre el pago de nómina si una pieza fue dañada por negligencia del operador en esa máquina?
