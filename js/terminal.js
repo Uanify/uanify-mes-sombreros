@@ -2538,79 +2538,20 @@ window.initTerminalView = function() {
   EventBus.on('user-switched', () => {
     const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const banner = document.getElementById('terminalSupervisorBanner');
+    const badge = document.getElementById('terminalDeptsCountBadge');
     if (banner) {
       banner.textContent = `Supervisor Activo: ${user.name} (${user.roleName})`;
     }
-    renderPlantDepartmentsGrid();
-  });
-
-  // ── 15. SELECTOR DE TABLETS T1 A T6 (MÓDULO 3 MVP · XIAOMI REDMI PAD SE) ──
-  const tabletSelectBtns = document.querySelectorAll('.tablet-select-btn');
-  const activeTabletDescEl = document.getElementById('activeTabletDescription');
-  const terminalDeptsCountBadge = document.getElementById('terminalDeptsCountBadge');
-  const terminalSupervisorBanner = document.getElementById('terminalSupervisorBanner');
-
-  const TabletConfigs = {
-    T1: {
-      name: 'T1 · Prensas',
-      desc: 'T1 · Prensas (Pegado copa-falda, Nacimiento lote 60, Alambrado, Replanchado y Refaldeo)',
-      deptsBadge: 'Tramo: D02, D05, D07, D08',
-      allowedCodes: ['D-02', 'D-05', 'D-07', 'D-08', 'C-01']
-    },
-    T2: {
-      name: 'T2 · Patio Endopado',
-      desc: 'T2 · Patio Endopado (Baño con alambre y secado en camas de esquina)',
-      deptsBadge: 'Tramo: D03 Patio Endopado',
-      allowedCodes: ['D-03']
-    },
-    T3: {
-      name: 'T3 · Calidad Refuerzo & Pintura',
-      desc: 'T3 · Cabinas (Refuerzo a pistola, C2 Calidad, Pintura, C3 Calidad y Brillo final)',
-      deptsBadge: 'Tramo: D06_REF, C2, D06_PIN, C3, D06_BRI',
-      allowedCodes: ['D-06', 'D-07', 'D-08', 'C-02']
-    },
-    T4: {
-      name: 'T4 · Hidráulicas (15 piezas)',
-      desc: 'T4 · Hidráulicas Alineado (División en 4 sublotes de 15 pzas, C4 Calidad y Pre-adorno)',
-      deptsBadge: 'Tramo: D07_ALI (Fraccionamiento), C4, D09',
-      allowedCodes: ['D-05', 'D-09', 'C-02', 'C-03']
-    },
-    T5: {
-      name: 'T5 · Subensambles (Tafiletes & Toquillas)',
-      desc: 'T5 · Mesa de Subensambles (Semáforo de buffer por talla 55-60 hacia Adorno)',
-      deptsBadge: 'Tramo: T5 Buffer Tafilete y Toquilla',
-      allowedCodes: ['D-10']
-    },
-    T6: {
-      name: 'T6 · Calidad Final & Embarque',
-      desc: 'T6 · Confección & Despacho (D10 Adorno, C5 Calidad Final, Liberación e Ingesta CONTPAQi)',
-      deptsBadge: 'Tramo: D10, C5 Calidad Final, Embarque',
-      allowedCodes: ['D-10', 'C-03', 'D-11']
+    if (badge) {
+      if (user.role === 'admin' || user.role === 'ingeniero') {
+        badge.textContent = 'Áreas Asignadas: Toda la Planta (Auditor)';
+      } else if (user.assignedDepartments && user.assignedDepartments.length > 0) {
+        badge.textContent = `Áreas Asignadas: ${user.assignedDepartments.join(', ')}`;
+      } else {
+        badge.textContent = 'Áreas Asignadas: Línea Principal';
+      }
     }
-  };
-
-  tabletSelectBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabletSelectBtns.forEach(b => {
-        b.classList.remove('active');
-        b.style.borderColor = '';
-        b.style.background = '';
-        b.style.color = '';
-      });
-      btn.classList.add('active');
-      btn.style.borderColor = 'var(--color-brand)';
-      btn.style.background = 'var(--color-brand-light)';
-      btn.style.color = 'var(--color-brand)';
-
-      const tabletKey = btn.getAttribute('data-tablet') || 'T1';
-      const config = TabletConfigs[tabletKey] || TabletConfigs.T1;
-
-      if (terminalSupervisorBanner) terminalSupervisorBanner.textContent = `Tablet Activa: ${config.name}`;
-      if (activeTabletDescEl) activeTabletDescEl.textContent = config.desc;
-      if (terminalDeptsCountBadge) terminalDeptsCountBadge.textContent = config.deptsBadge;
-
-      window.UanifyUI.toast(`Consola configurada en ${config.name} (${config.deptsBadge}). Hardware optimizado.`, 'info', 'Tablet de Piso');
-    });
+    renderPlantDepartmentsGrid();
   });
 
   // Modal de Reporte de Paro de Línea (Botón Heroico en Terminal y Prensas)

@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.47.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.48.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -686,51 +686,14 @@
         <div class="view-hero-bar">
           <div>
             <h1 class="view-title">Terminal de Planta · Lotes, Máquinas & Almacenes</h1>
-            <p class="view-subtitle">Consola táctil de piso (Tablets T1 a T6 Xiaomi Redmi Pad SE): escaneo QR, depósito en almacenes y división en sublotes</p>
+            <p class="view-subtitle">Consola táctil de piso: escaneo QR de tarjetas viajeras, depósito en almacenes y división en sublotes</p>
           </div>
           <div class="station-status-banner">
             <div class="station-status-banner-left">
-              <span class="station-status-badge">TABLET DE PISO</span>
-              <span class="station-status-banner-title" id="terminalSupervisorBanner">Tablet Activa: T1 · Prensas</span>
+              <span class="station-status-badge">TERMINAL DE PISO</span>
+              <span class="station-status-banner-title" id="terminalSupervisorBanner">Supervisor Activo: Edmundo González (Admin)</span>
             </div>
-            <span class="badge-subtle" style="font-weight:700;" id="terminalDeptsCountBadge">Tramo: D02, D05, D07, D08</span>
-          </div>
-        </div>
-
-        <!-- SELECTOR DE TABLET ACTIVA T1 A T6 (MÓDULO 3 MVP) -->
-        <div class="card-glass" style="padding:14px 18px; margin-bottom:16px; border-radius:14px; background:#FFFFFF; border:1.5px solid var(--border-medium);">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">
-                Selector de Tablet Activa de Planta:
-              </span>
-              <span id="activeTabletDescription" style="font-size:12px; color:var(--text-secondary); font-weight:600;">
-                T1 · Prensas (Pegado copa-falda, Nacimiento lote 60, Alambrado, Replanchado y Refaldeo)
-              </span>
-            </div>
-            <span class="badge-status" id="tabletHardwarePill" style="background:#F1F5F9; color:var(--text-secondary); font-size:11px; font-weight:700;">
-              Hardware: Xiaomi Redmi Pad SE (Cámara activa)
-            </span>
-          </div>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:8px;" id="tabletSelectorGroup">
-            <button type="button" class="btn-secondary tablet-select-btn active" data-tablet="T1" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center; border-color:var(--color-brand); background:var(--color-brand-light); color:var(--color-brand);">
-              T1 · Prensas
-            </button>
-            <button type="button" class="btn-secondary tablet-select-btn" data-tablet="T2" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center;">
-              T2 · Endopado
-            </button>
-            <button type="button" class="btn-secondary tablet-select-btn" data-tablet="T3" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center;">
-              T3 · Pintura & Brillo
-            </button>
-            <button type="button" class="btn-secondary tablet-select-btn" data-tablet="T4" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center;">
-              T4 · Hidráulicas (15p)
-            </button>
-            <button type="button" class="btn-secondary tablet-select-btn" data-tablet="T5" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center;">
-              T5 · Subensambles
-            </button>
-            <button type="button" class="btn-secondary tablet-select-btn" data-tablet="T6" style="font-size:12.5px; font-weight:800; padding:10px 8px; justify-content:center;">
-              T6 · Calidad & Emb.
-            </button>
+            <span class="badge-subtle" style="font-weight:700;" id="terminalDeptsCountBadge">Áreas Asignadas: Toda la Planta</span>
           </div>
         </div>
 
@@ -4482,11 +4445,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.47.0"></script>
-  <script src="js/andon.js?v=2.47.0"></script>
-  <script src="js/terminal.js?v=2.47.0"></script>
-  <script src="js/engineer.js?v=2.47.0"></script>
-  <script src="js/executive.js?v=2.47.0"></script>
-  <script src="js/config.js?v=2.47.0"></script>
+  <script src="js/app.js?v=2.48.0"></script>
+  <script src="js/andon.js?v=2.48.0"></script>
+  <script src="js/terminal.js?v=2.48.0"></script>
+  <script src="js/engineer.js?v=2.48.0"></script>
+  <script src="js/executive.js?v=2.48.0"></script>
+  <script src="js/config.js?v=2.48.0"></script>
 </body>
 </html>
