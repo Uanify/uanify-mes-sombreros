@@ -2336,11 +2336,11 @@ input.is-valid {
    ========================================================================== */
 .uanify-toast-container {
   position: fixed;
-  top: 24px;
+  bottom: 24px;
   right: 24px;
-  z-index: 99999;
+  z-index: 99998;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 12px;
   pointer-events: none;
   max-width: calc(100vw - 32px);
@@ -2372,7 +2372,7 @@ input.is-valid {
 .uanify-toast.toast-hiding,
 .uanify-toast.removing {
   opacity: 0;
-  transform: translateY(-10px) scale(0.96);
+  transform: translateY(10px) scale(0.96);
   pointer-events: none;
 }
 
@@ -2543,7 +2543,7 @@ input.is-valid {
 }
 
 @keyframes toastSlideIn {
-  from { opacity: 0; transform: translateY(-16px) scale(0.95); }
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
