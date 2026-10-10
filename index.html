@@ -228,8 +228,16 @@
       <section class="view-panel" id="view-orders">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Programación de Producción, Loteo & Centro de Impresión</h1>
-            <p class="view-subtitle">Ingesta directa de pedidos CONTPAQi SQL, semáforo de entrega, segmentación de lotes y emisión de tarjetas viajeras con QR</p>
+            <h1 class="view-title">
+              Programación de Producción, Loteo & Impresión
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Ingesta de pedidos CONTPAQi SQL, semáforo de entrega, segmentación de lotes e impresión de tarjetas viajeras con QR.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Ingesta CONTPAQi SQL, lotes y tarjetas viajeras QR</p>
           </div>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <button type="button" class="btn-secondary" id="btnSyncContpaqiOrders" style="display:inline-flex; align-items:center; gap:8px;">
@@ -299,12 +307,15 @@
           <div class="card-glass" style="padding:22px; border-radius:14px; margin-bottom:24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
               <div>
-                <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
-                  Cartera de Órdenes de Producción & Fechas Compromiso
+                <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0; display:flex; align-items:center; gap:6px;">
+                  Cartera de Órdenes & Fechas Compromiso
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Sincronización directa vía Procedimiento Almacenado LAN con CONTPAQi Comercial ($0 SDK).</span>
+                  </span>
                 </h3>
-                <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
-                  Sincronización directa vía Procedimiento Almacenado LAN con CONTPAQi Comercial ($0 SDK)
-                </p>
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
                 <span class="table-badge-code" style="font-size:11.5px; padding:6px 10px; background:#F1F5F9;">LAN SQL Server: CONECTADO</span>
@@ -340,14 +351,17 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
               <div>
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-                  <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0;">
-                    Centro de Impresión de Tarjetas Viajeras Oficiales
+                  <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0; display:flex; align-items:center; gap:6px;">
+                    Centro de Impresión de Tarjetas Viajeras
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Formato oficial hoja carta para corte e inserción en fundas plásticas en torre de sombreros.</span>
+                    </span>
                   </h3>
                   <span class="badge-subtle" style="font-weight:700; color:var(--color-brand);">Fundas Plásticas</span>
                 </div>
-                <p style="font-size:12.5px; color:var(--text-secondary); margin:0;">
-                  Formato estándar hoja carta para recorte e inserción en fundas plásticas cosidas en torre de 60 sombreros
-                </p>
               </div>
               <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                 <button type="button" class="btn-secondary" id="btnBackToOrdersList" style="display:inline-flex; align-items:center; gap:6px;">
@@ -374,8 +388,16 @@
       <section class="view-panel" id="view-andon">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Tablero Andon Digital · Nave Central Tombstone</h1>
-            <p class="view-subtitle">Monitoreo de almacenes intermedios (WIP) y avance de fracciones en tiempo real</p>
+            <h1 class="view-title">
+              Tablero Andon Digital
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Semáforos de estación, cuellos de botella en almacenes intermedios (WIP) y avance en tiempo real.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Monitoreo WIP y avance de fracciones en tiempo real</p>
           </div>
           <div class="kpi-banner">
             <div class="banner-stat">
@@ -688,8 +710,16 @@
       <section class="view-panel active" id="view-terminal">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Terminal de Planta · Lotes, Máquinas & Almacenes</h1>
-            <p class="view-subtitle">Consola táctil de piso: escaneo QR de tarjetas viajeras, depósito en almacenes y división en sublotes</p>
+            <h1 class="view-title">
+              Terminal de Planta
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Operación de piso táctil: escaneo QR de tarjetas viajeras, fraccionamiento en rampa y reporte de paros.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Escaneo QR de tarjetas, almacenes y fraccionamiento</p>
           </div>
           <div class="station-status-banner">
             <div class="station-status-banner-left">
@@ -712,70 +742,88 @@
 
           <!-- ESTADO 1: PANTALLA PRINCIPAL DE SUPERVISOR (3 ACCIONES CLAVE TABLET-FIRST) -->
           <div id="terminalScannerEmptyState" class="card-glass" style="padding:32px 24px; text-align:center; max-width:960px; margin:0 auto 20px auto; border-radius:18px;">
-            <div style="margin-bottom:24px;">
-              <h2 style="font-size:24px; font-weight:800; color:var(--text-primary); margin:0 0 6px 0;">
-                Consola Táctil de Piso · Operación en Almacenes
+            <div style="margin-bottom:20px;">
+              <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
+                Consola Táctil de Piso
+                <span class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <span class="info-tip-popup">Acciones de piso: escaneo QR de tarjetas viajeras, fraccionamiento en rampa y reporte ágil de paros de máquina.</span>
+                </span>
               </h2>
-              <p style="font-size:13.5px; color:var(--text-secondary); margin:0;">
-                Selecciona la acción a ejecutar en tu tramo departamental. El escaneo QR detecta automáticamente la estación y valida tus permisos.
-              </p>
             </div>
 
             <!-- 3 ACCIONES RECTORAS DEL SUPERVISOR EN TABLET -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom:28px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom:20px;">
               
               <!-- Tarjeta 1: Escanear Lote QR (Principal) -->
-              <div class="card-glass" style="padding:24px; border:2px solid var(--color-brand); background:linear-gradient(180deg, #FFFFFF 0%, var(--color-brand-light) 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; box-shadow:0 6px 18px rgba(139, 94, 60, 0.15);">
+              <div class="card-glass" style="padding:22px; border:2px solid var(--color-brand); background:linear-gradient(180deg, #FFFFFF 0%, var(--color-brand-light) 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; box-shadow:0 6px 18px rgba(139, 94, 60, 0.15);">
                 <div>
-                  <div style="width:52px; height:52px; border-radius:14px; background:var(--color-brand); color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <div style="width:48px; height:48px; border-radius:12px; background:var(--color-brand); color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                     </svg>
                   </div>
-                  <h3 style="font-size:17px; font-weight:800; color:var(--text-primary); margin:0 0 6px 0;">
-                    1. Escanear Código QR
-                  </h3>
-                  <p style="font-size:12.5px; color:var(--text-secondary); margin:0 0 16px 0; line-height:1.4;">
-                    Apertura de escáner en pantalla completa. Detección automática de lote, coincidencia física de tarjeta viajera y acciones disponibles.
-                  </p>
+                  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin:0;">
+                      1. Escanear QR
+                    </h3>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Abre cámara en pantalla completa para lectura de tarjeta viajera y confirmación de avance.</span>
+                    </span>
+                  </div>
                 </div>
-                <button type="button" class="btn-primary btn-touch-hero" id="btnLaunchFullscreenScanner" style="width:100%; font-size:15px; font-weight:800; justify-content:center; gap:8px;">
+                <button type="button" class="btn-primary btn-touch-hero" id="btnLaunchFullscreenScanner" style="width:100%; font-size:14.5px; font-weight:800; justify-content:center; gap:8px;">
                   <span>Abrir Escáner QR</span> 📷
                 </button>
               </div>
 
               <!-- Tarjeta 2: Modo Fraccionamiento en Rampa (D-05) -->
-              <div class="card-glass" style="padding:24px; border:1.5px solid #0284C7; background:linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left;">
+              <div class="card-glass" style="padding:22px; border:1.5px solid #0284C7; background:linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left;">
                 <div>
-                  <div style="width:52px; height:52px; border-radius:14px; background:#0284C7; color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                    <span style="font-size:26px;">✂️</span>
+                  <div style="width:48px; height:48px; border-radius:12px; background:#0284C7; color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                    <span style="font-size:22px;">✂️</span>
                   </div>
-                  <h3 style="font-size:17px; font-weight:800; color:#0369A1; margin:0 0 6px 0;">
-                    2. Fraccionamiento en Rampa
-                  </h3>
-                  <p style="font-size:12.5px; color:var(--text-secondary); margin:0 0 16px 0; line-height:1.4;">
-                    División de Lote Madre (60 pzas) a Sublotes (15 pzas). Escaneo múltiple de tarjetas, archivo de tarjeta madre y emisión física.
-                  </p>
+                  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <h3 style="font-size:16px; font-weight:800; color:#0369A1; margin:0;">
+                      2. Fraccionamiento Rampa
+                    </h3>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Archiva tarjeta del lote y activa las tarjetas de sublote para trazabilidad independiente.</span>
+                    </span>
+                  </div>
                 </div>
-                <button type="button" class="btn-secondary btn-touch-hero" id="btnHeroActivateRampa" style="width:100%; font-size:14.5px; font-weight:800; justify-content:center; border-color:#0284C7; color:#0284C7;">
+                <button type="button" class="btn-secondary btn-touch-hero" id="btnHeroActivateRampa" style="width:100%; font-size:14px; font-weight:800; justify-content:center; border-color:#0284C7; color:#0284C7;">
                   <span>Abrir Modo Rampa</span> ⚙️
                 </button>
               </div>
 
               <!-- Tarjeta 3: Bitácora de Paros de Línea -->
-              <div class="card-glass" style="padding:24px; border:1.5px solid #FCA5A5; background:linear-gradient(180deg, #FFFFFF 0%, #FEF2F2 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left;">
+              <div class="card-glass" style="padding:22px; border:1.5px solid #FCA5A5; background:linear-gradient(180deg, #FFFFFF 0%, #FEF2F2 100%); border-radius:16px; display:flex; flex-direction:column; justify-content:space-between; text-align:left;">
                 <div>
-                  <div style="width:52px; height:52px; border-radius:14px; background:#DC2626; color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                    <span style="font-size:26px;">🛑</span>
+                  <div style="width:48px; height:48px; border-radius:12px; background:#DC2626; color:#FFFFFF; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                    <span style="font-size:22px;">🛑</span>
                   </div>
-                  <h3 style="font-size:17px; font-weight:800; color:#B91C1C; margin:0 0 6px 0;">
-                    3. Reportar Paro de Máquina
-                  </h3>
-                  <p style="font-size:12.5px; color:var(--text-secondary); margin:0 0 16px 0; line-height:1.4;">
-                    Registro de tiempo muerto de inicio a fin en Prensas y estaciones (Cambio de horma, falla mecánica, falta de vapor o material).
-                  </p>
+                  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <h3 style="font-size:16px; font-weight:800; color:#B91C1C; margin:0;">
+                      3. Reportar Paro
+                    </h3>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Registro de tiempo muerto con cronómetro en Prensas: falta de vapor, falla mecánica o cambio de molde.</span>
+                    </span>
+                  </div>
                 </div>
-                <button type="button" class="btn-secondary btn-touch-hero" id="btnReportStop" style="width:100%; font-size:14.5px; font-weight:800; justify-content:center; border-color:#DC2626; color:#DC2626; background:#FFFFFF;">
+                <button type="button" class="btn-secondary btn-touch-hero" id="btnReportStop" style="width:100%; font-size:14px; font-weight:800; justify-content:center; border-color:#DC2626; color:#DC2626; background:#FFFFFF;">
                   <span>Registrar Paro</span> 🛑
                 </button>
               </div>
@@ -1012,14 +1060,17 @@
               <!-- Panel Lateral del Kiosko: Selección Rápida de Variaciones de Prueba -->
               <div class="kiosk-sidebar-pane">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                  <h4 style="font-size:14px; font-weight:800; color:#FFFFFF; margin:0; text-transform:uppercase; letter-spacing:0.5px;">
+                  <h4 style="font-size:14px; font-weight:800; color:#FFFFFF; margin:0; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
                     Variaciones de Lotes
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Selecciona una variación para simular lectura QR y probar opciones del lote en piso.</span>
+                    </span>
                   </h4>
                   <span class="badge-subtle" style="font-size:10.5px; background:rgba(255,255,255,0.1); color:#E2E8F0;">Catálogo Planta</span>
                 </div>
-                <p style="font-size:12px; color:#94A3B8; margin-bottom:14px; line-height:1.4;">
-                  Selecciona una variación para disparar la lectura QR simulada y activar en la terminal las opciones exclusivas de ese lote:
-                </p>
 
                 <div style="display:flex; flex-direction:column; gap:9px; max-height:calc(100vh - 190px); overflow-y:auto; padding-right:4px;">
                   <button type="button" class="btn-secondary" id="kioskSimRandom" style="text-align:left; padding:12px 14px; border-color:#F59E0B; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(139,94,60,0.3) 100%); color:#FFFFFF; height:auto;">
@@ -1077,9 +1128,6 @@
                     </div>
                   </div>
                 </div>
-                <p style="font-size:12.5px; color:var(--text-secondary); margin:4px 0 0 0;">
-                  Centrado en ubicaciones físicas de depósito: Bodegas centrales, Rampa WIP, Pulmón Pre-Prensas, Producto Terminado y Mermas.
-                </p>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="btn-secondary btn-touch-lg active" id="btnFilterPlantAllDepts">
@@ -1103,12 +1151,15 @@
           <div class="card-glass" style="padding:24px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
               <div>
-                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0;">
-                  Recuentos y Balance de Producción de Turno
+                <h3 style="font-size:18px; font-weight:800; color:var(--text-primary); margin:0 0 4px 0; display:flex; align-items:center; gap:6px;">
+                  Balance de Turno
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Auditoría detallada de piezas procesadas, calidad, segundas y mermas por departamento.</span>
+                  </span>
                 </h3>
-                <p style="font-size:13px; color:var(--text-secondary); margin:0;">
-                  Auditoría detallada de piezas procesadas, segregación de calidad, segundas y mermas por departamento.
-                </p>
               </div>
               <span class="badge-subtle" id="supervisorDeptsBadgeMetrics" style="font-weight:700;">Departamentos Asignados: Prensas de Hormado</span>
             </div>
@@ -1141,8 +1192,16 @@
       <section class="view-panel" id="view-inventory">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Almacén & Control de Inventarios</h1>
-            <p class="view-subtitle">Control integral de almacenes físicos de nave, inventario WIP en tránsito, materias primas, catálogo maestro de hormas y subensambles</p>
+            <h1 class="view-title">
+              Almacén & Inventarios
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Catálogo maestro de sombreros, control de hormas de aluminio maquinadas e inventario WIP por almacén.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Catálogo de sombreros, hormas y stock en piso</p>
           </div>
         </div>
 
@@ -1175,12 +1234,15 @@
           <div class="card-glass" style="padding:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
               <div>
-                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0;">
-                  Catálogo Maestro de Sombreros & Variaciones
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                  Catálogo de Sombreros & Fichas Técnicas
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Modelos de producción, especificaciones de falda, copa, tallas, toquillas y fotos.</span>
+                  </span>
                 </h3>
-                <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
-                  Modelos de producción, especificaciones de falda, copa, tallas, toquillas y fichas técnicas oficiales
-                </p>
               </div>
               <button class="btn-primary" id="btnOpenRegisterHatModal" style="display:flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; font-weight:700;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1315,12 +1377,15 @@
           <div class="card-glass" style="padding:22px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div>
-                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px;">
-                  Catálogo Maestro de Hormas & Moldes Maquinados (Prensas de Vapor)
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-primary); margin-bottom:2px; display:flex; align-items:center; gap:6px;">
+                  Hormas & Moldes Maquinados (Prensas de Vapor)
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas.</span>
+                  </span>
                 </h3>
-                <p class="section-desc" style="margin-bottom:0;">
-                  Moldes maquinados en fundición de aluminio según especificaciones de copa, falda y curvas de San Francisco del Rincón.
-                </p>
               </div>
               <button class="btn-primary" id="btnOpenRegisterMoldModal" onclick="document.getElementById('modalRegisterMold').classList.add('active')" style="display:flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; font-weight:700;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1498,8 +1563,16 @@
       <section class="view-panel" id="view-operators">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Padrón de Operadores de Planta · Mano de Obra</h1>
-            <p class="view-subtitle">Directorio oficial de personal de piso, máquinas asignadas, piezas procesadas en el turno único y estatus operativo</p>
+            <h1 class="view-title">
+              Padrón de Operadores
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Directorio de personal de piso, máquinas asignadas, piezas procesadas por turno y exportación para destajo.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Personal de piso, puestos, máquinas y piezas</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" class="btn-secondary" id="btnExportDestajoExcel" style="font-weight:700; display:inline-flex; align-items:center; gap:6px;">
@@ -1617,8 +1690,16 @@
       <section class="view-panel" id="view-analytics">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Analítica & Rendimiento de Planta</h1>
-            <p class="view-subtitle">Consola unificada de KPIs, OEE matemático, valorización de producción, balanceo de líneas y auditoría de paros</p>
+            <h1 class="view-title">
+              Analítica & Rendimiento
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">OEE matemático, piezas por turno, balanceo de líneas y auditoría de paros de máquina.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">OEE matemático, KPIs de turno y auditoría de paros</p>
           </div>
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
             <div style="display:flex; align-items:center; gap:8px;">
@@ -1786,18 +1867,18 @@
               <div class="tier-pill-box">
                 <div class="tier-item">
                   <span class="tier-badge">FASE 1 · CONTROL DE PISO</span>
-                  <strong>MES de Piso + QR en Tarjetas Viajeras + Prensas</strong>
-                  <p>Escaneo de lotes de 60 pzas, fraccionamiento a 15 pzas en rampa, pantallas Andon y tiempos de ciclo.</p>
+                  <strong>MES de Piso + Tarjetas QR</strong>
+                  <p>Escaneo QR, fraccionamiento en rampa, Andon y tiempos de ciclo.</p>
                 </div>
                 <div class="tier-item highlight">
                   <span class="tier-badge">FASE 2 · CONTROL INTEGRAL</span>
-                  <strong>Control de Subensambles (Tafiletes) + Inventarios</strong>
-                  <p>Balanceo de stock de tafiletes por talla y descuento automático de telares y químicos.</p>
+                  <strong>Subensambles & Inventarios</strong>
+                  <p>Stock de tafiletes por talla y consumos de materias primas.</p>
                 </div>
                 <div class="tier-item">
                   <span class="tier-badge">FASE 3 · ECOSISTEMA B2B</span>
-                  <strong>Enlace Directo con COMPAC + Portal Mayoristas</strong>
-                  <p>Sincronización de pedidos B2B, facturación automática y vales de camioneta digitales.</p>
+                  <strong>CONTPAQi LAN & Embarques</strong>
+                  <p>Sincronización comercial, facturación y vales de camioneta.</p>
                 </div>
               </div>
             </div>
@@ -2038,8 +2119,16 @@
       <section class="view-panel" id="view-config">
         <div class="view-hero-bar">
           <div>
-            <h1 class="view-title">Configuración de Planta & Catálogos Maestros</h1>
-            <p class="view-subtitle">CRUD integral de departamentos y almacenes intermedios, rutas de fabricación por modelo, parámetros de turno y control de acceso RBAC</p>
+            <h1 class="view-title">
+              Configuración de Planta
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <span class="info-tip-popup">Gestión de departamentos, almacenes intermedios, rutas de fabricación y parámetros del turno.</span>
+              </span>
+            </h1>
+            <p class="view-subtitle">Departamentos, almacenes, rutas y parámetros de turno</p>
           </div>
           <button class="btn-primary" id="btnSaveConfig">Guardar Configuración</button>
         </div>
@@ -2622,9 +2711,9 @@
                 <div style="width:52px; height:52px; margin:0 auto 14px auto; border-radius:12px; background:rgba(139, 94, 60, 0.08); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><polyline points="10 8 13 11 16 8"></polyline><line x1="13" y1="11" x2="13" y2="16"></line></svg>
                 </div>
-                <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Ningún Modelo de Sombrero Seleccionado</h4>
-                <p style="font-size:13px; color:var(--text-secondary); max-width:520px; margin:0 auto;">
-                  Selecciona un modelo de sombrero en el menú superior para cargar su secuencia de manufactura, consultar los tiempos de ciclo y personalizar sus paradas de calidad mediante Drag &amp; Drop.
+                <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Ningún Modelo Seleccionado</h4>
+                <p style="font-size:13px; color:var(--text-secondary); max-width:420px; margin:0 auto;">
+                  Selecciona un modelo en el menú superior para ver o editar su secuencia y paradas de calidad.
                 </p>
               </div>
 
@@ -2715,24 +2804,35 @@
                   <line x1="6" y1="18" x2="6.01" y2="18"></line>
                 </svg>
               </div>
-              <h3 style="font-size:17px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
-                Módulo Pendiente de Parametrización Técnica
+              <h3 style="font-size:17px; font-weight:800; color:var(--text-primary); margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                Módulo Pendiente de Parametrización
+                <span class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                  <span class="info-tip-popup">La arquitectura con CONTPAQi Comercial (servidor ODBC / Gateway local) se activará tras sesión técnica con planta.</span>
+                </span>
               </h3>
-              <p style="font-size:13px; color:var(--text-secondary); max-width:640px; margin:0 auto 24px auto; line-height:1.5;">
-                Este módulo se encuentra en estado limpio, sin configuración vinculada. La arquitectura de comunicación con CONTPAQi Comercial (servidor ODBC / Gateway local, base de datos de empresa, homologación de almacenes y reglas de emisión de vales) se definirá y activará tras la sesión de revisión técnica con Edmundo González y el equipo de sistemas.
+              <p style="font-size:13px; color:var(--text-secondary); max-width:540px; margin:0 auto 24px auto;">
+                Sin configuración vinculada. Pendiente de definición de red local con el equipo de sistemas.
               </p>
 
               <!-- Cuadrícula de Puntos de Definición Técnica (Checklist para Revisión con Edmundo) -->
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px; text-align:left; max-width:960px; margin:0 auto;">
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; text-align:left; max-width:960px; margin:0 auto;">
                 <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">1. Conectividad Local</span>
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">1. Conexión</span>
                     <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
                   </div>
-                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Protocolo de Enlace</h4>
-                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
-                    Definición del método de conexión: ODBC nativo en red LAN, API REST Gateway local o servicio en segundo plano.
-                  </p>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                    Protocolo de Enlace
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">ODBC nativo en red LAN, API REST Gateway local o servicio background.</span>
+                    </span>
+                  </h4>
                 </div>
 
                 <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
@@ -2740,21 +2840,31 @@
                     <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">2. Base de Datos</span>
                     <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
                   </div>
-                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Empresa &amp; Credenciales</h4>
-                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
-                    Nombre de la base de datos en CONTPAQi Comercial y configuración de privilegios de lectura/escritura de movimientos.
-                  </p>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                    Empresa & Credenciales
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Nombre de la base de datos y privilegios de lectura/escritura de movimientos.</span>
+                    </span>
+                  </h4>
                 </div>
 
                 <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">3. Homologación</span>
+                    <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">3. Mapeo</span>
                     <span class="badge-subtle" style="font-size:10.5px;">0 Vinculados</span>
                   </div>
-                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Mapeo de Almacenes</h4>
-                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
-                    Correspondencia 1:1 entre los almacenes de piso del MES (MP, Rampa, PT, Segundas) y las bodegas fiscales del ERP.
-                  </p>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                    Mapeo de Almacenes
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Correspondencia 1:1 entre almacenes del MES y bodegas fiscales del ERP.</span>
+                    </span>
+                  </h4>
                 </div>
 
                 <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:16px;">
@@ -2762,10 +2872,15 @@
                     <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--color-brand); letter-spacing:0.5px;">4. Salidas B2B</span>
                     <span class="badge-subtle" style="font-size:10.5px;">Por Definir</span>
                   </div>
-                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Vales de Camioneta</h4>
-                  <p style="font-size:12px; color:var(--text-muted); margin:0; line-height:1.4;">
-                    Flujo de emisión y timbrado/remisión de pedidos mayoristas al momento de embarcar la producción a clientes.
-                  </p>
+                  <h4 style="font-size:13.5px; font-weight:700; color:var(--text-primary); margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                    Vales de Camioneta
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Flujo de timbrado y remisión de pedidos mayoristas al embarcar mercancía.</span>
+                    </span>
+                  </h4>
                 </div>
               </div>
             </div>
@@ -2817,8 +2932,15 @@
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3>Registro de Merma / Producto No Conforme</h3>
-          <p class="modal-header-sub">Clasificación técnica para trazabilidad de calidad e inventario de mermas</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Registro de Merma / Segunda
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Clasificación técnica para trazabilidad de calidad e inventario de mermas.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseScrapModal">&times;</button>
       </div>
@@ -2879,13 +3001,20 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3>Registrar Paro de Línea · Tombstone</h3>
-          <p class="modal-header-sub">Notificación inmediata al Tablero Andon y registro de cronómetro</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Registrar Paro de Línea
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Notificación inmediata al Tablero Andon y registro de cronómetro.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseStopModal">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size:13px; color:var(--text-secondary);">Indica la causa para notificar al Tablero Andon y registrar el tiempo de paro:</p>
+        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:12px;">Selecciona la causa de paro:</p>
         <div class="stop-options">
           <button class="stop-opt-btn" data-stop="Cambio de horma / molde (Denver, Viejonón, Laredo, Roper SMED)">
             Cambio de horma / molde (SMED)
@@ -2914,8 +3043,15 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3>Crear Nuevo Usuario de Planta</h3>
-          <p class="modal-header-sub">Alta de supervisores, ingenieros o administradores de sistema</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Crear Usuario de Planta
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Alta de supervisores, ingenieros y administradores con roles RBAC.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseCreateUserModal" type="button">&times;</button>
       </div>
@@ -3086,8 +3222,15 @@
     <div class="modal-box card-glass" style="max-width: 640px;">
       <div class="modal-header">
         <div>
-          <h3 id="modalRegisterMoldTitle">Registrar Horma / Molde de Sombrero</h3>
-          <p class="modal-header-sub">Catálogo de moldes maquinados en fundición de aluminio para prensas térmicas</p>
+          <h3 id="modalRegisterMoldTitle" style="display:flex; align-items:center; gap:6px;">
+            Registrar Horma / Molde
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Catálogo de moldes en fundición de aluminio para prensas térmicas de hormado.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseRegisterMoldModal">&times;</button>
       </div>
@@ -3342,8 +3485,15 @@
     <div class="modal-box card-glass" style="max-width: 720px;">
       <div class="modal-header">
         <div>
-          <h3 id="modalRegisterHatTitle">Registrar Modelo de Sombrero</h3>
-          <p class="modal-header-sub">Catálogo maestro de sombreros, materiales, tallas, toquillas y foto de muestra</p>
+          <h3 id="modalRegisterHatTitle" style="display:flex; align-items:center; gap:6px;">
+            Registrar Sombrero
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Catálogo maestro de sombreros, materiales, tallas, toquillas y foto de muestra.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseRegisterHatModal">&times;</button>
       </div>
@@ -3508,8 +3658,15 @@
     <div class="modal-box card-glass tech-sheet-modal-wrapper">
       <div class="modal-header">
         <div>
-          <h3 id="hatTechnicalSheetTitle">Ficha Técnica · 1000X Master Telar Denver</h3>
-          <p class="modal-header-sub">Documento oficial de ingeniería de producto, tolerancias y muestra de planta</p>
+          <h3 id="hatTechnicalSheetTitle" style="display:flex; align-items:center; gap:6px;">
+            Ficha Técnica Oficial
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Documento oficial de ingeniería de producto, tolerancias y muestra visual.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseHatSheetModal">&times;</button>
       </div>
@@ -3628,8 +3785,15 @@
     <div class="modal-box card-glass">
       <div class="modal-header">
         <div>
-          <h3 id="operatorModalTitle">Registrar Operador de Planta (Mano de Obra)</h3>
-          <p class="modal-header-sub" id="operatorModalSubtitle">Asignación de personal de piso a máquinas y estaciones</p>
+          <h3 id="operatorModalTitle" style="display:flex; align-items:center; gap:6px;">
+            Registrar Operador
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Asignación de personal de piso a máquinas, departamentos y número de nómina.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseRegisterOperatorModal" type="button">&times;</button>
       </div>
@@ -3708,8 +3872,15 @@
     <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
-          <h3 id="deptModalTitle">Dar de Alta Nuevo Departamento & Almacén Intermedio</h3>
-          <p class="modal-header-sub" id="deptModalSubtitle">Definición de estación de proceso, almacén intermedio WIP y asignación técnica</p>
+          <h3 id="deptModalTitle" style="display:flex; align-items:center; gap:6px;">
+            Departamento & Almacén
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Definición de estación de proceso, almacén intermedio WIP y asignación técnica.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseCreateDeptModal" type="button">&times;</button>
       </div>
@@ -3827,8 +3998,15 @@
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3 id="modalQualityTitle">Registrar Filtro de Control de Calidad</h3>
-          <p class="modal-header-sub" id="modalQualitySub">Estación técnica de inspección, tolerancias y certificación de lotes</p>
+          <h3 id="modalQualityTitle" style="display:flex; align-items:center; gap:6px;">
+            Filtro de Calidad
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Estación técnica de inspección, tolerancias y certificación de lotes.</span>
+            </span>
+          </h3>
         </div>
         <button class="modal-close" id="btnCloseCreateQualityModal">&times;</button>
       </div>
@@ -3899,15 +4077,19 @@
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
         <div>
-          <h3> Impresión Oficial de Tarjeta Viajera</h3>
-          <p class="modal-header-sub">Formato de planta listo para mica protectora y cordel</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Impresión de Tarjeta Viajera
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Vista previa 1:1 lista para imprimir en hoja carta o térmica para mica protectora.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnClosePrintModal">&times;</button>
       </div>
       <div class="modal-body" style="padding: 20px; text-align: center;">
-        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:14px;">
-          Esta vista previa proyecta la tarjeta en tamaño escala 1:1 lista para imprimir en hoja carta o térmica para su colocación en la mica protectora de piso.
-        </p>
         <div id="printCardPreviewArea" style="display:inline-block; margin:0 auto; background:#F1F5F9; padding:16px; border-radius:12px; border:1px dashed var(--border-medium);">
           <!-- Inyectado dinámicamente con la réplica -->
         </div>
@@ -4032,8 +4214,15 @@
     <div class="modal-box card-glass" style="max-width:760px;">
       <div class="modal-header">
         <div>
-          <h3>Verificación de Tarjeta Viajera Escaneada</h3>
-          <p class="modal-header-sub">Comprueba que la tarjeta física en la mica coincida con los datos leídos del código QR</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Verificación de Tarjeta QR
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Comprueba que la tarjeta física en la mica coincida con los datos leídos del QR.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseVerifyCardModal">&times;</button>
       </div>
@@ -4103,8 +4292,15 @@
     <div class="modal-box card-glass" style="max-width:540px;">
       <div class="modal-header">
         <div>
-          <h3>Tarjeta Viajera Oficial (Mica & Gafete de Piso)</h3>
-          <p class="modal-header-sub">Formato reglamentario de planta con sticker de operador y especificaciones físicas</p>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Tarjeta Viajera de Piso
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Formato oficial para mica de piso con QR, especificaciones físicas y trazabilidad.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseTravelerCardModal">&times;</button>
       </div>
@@ -4128,8 +4324,15 @@
     <div class="modal-box card-glass" style="max-width:920px;">
       <div class="modal-header">
         <div>
-          <h3 id="deptWarehouseModalTitle">Almacén Intermedio · Prensas de Hormado</h3>
-          <p class="modal-header-sub" id="deptWarehouseModalSub">Lotes en espera de procesamiento o listos para recolección en este departamento</p>
+          <h3 id="deptWarehouseModalTitle" style="display:flex; align-items:center; gap:6px;">
+            Almacén Intermedio
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Lotes en espera de procesamiento o listos para recolección en este departamento.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseDeptWarehouseModal">&times;</button>
       </div>
@@ -4199,11 +4402,18 @@
       <div class="modal-header">
         <div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">PUESTO DE RAMPA & ENSAMBLE</span>
-            <span class="badge-subtle" style="font-weight:700;">Modo Multi-Lote Especial</span>
+            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">PUESTO DE RAMPA</span>
+            <span class="badge-subtle" style="font-weight:700;">Multi-Lote</span>
           </div>
-          <h3 style="margin-top:4px;">Fraccionamiento en Rampa (Escaneo Múltiple de Lotes Madre)</h3>
-          <p class="modal-header-sub">Escanea uno o varios QR de lotes madre en el puesto de rampa; al confirmar la lista se ejecutan y generan sus sublotes</p>
+          <h3 style="margin-top:4px; display:flex; align-items:center; gap:6px;">
+            Fraccionamiento en Rampa
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Escaneo múltiple de lotes madre en rampa para generar sus tarjetas de sublote.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseRampaModal">&times;</button>
       </div>
@@ -4430,8 +4640,15 @@
     <div class="modal-box card-glass" style="max-width:580px;">
       <div class="modal-header">
         <div>
-          <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0;" id="orderModalTitle">Segmentación & Partición de Lotes</h3>
-          <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0 0;">Definición manual de lotes madre (60 pzas) y sublotes de rampa previo a impresión de tarjetas QR</p>
+          <h3 style="font-size:16px; font-weight:800; color:var(--color-brand); margin:0; display:flex; align-items:center; gap:6px;" id="orderModalTitle">
+            Segmentación de Lotes
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+              <span class="info-tip-popup">Partición de la orden en lotes madre y sublotes para emisión de tarjetas QR.</span>
+            </span>
+          </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseOrderModal" aria-label="Cerrar">&times;</button>
       </div>
