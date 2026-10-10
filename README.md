@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.54.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.60.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,23 +18,30 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.54.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.60.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
 | Módulo | Usuario Objetivo | Funcionalidad Clave del Alcance Oficial |
 |---|---|---|
-| **Módulo 1: Programación, Loteo e Impresión** | Ingeniería Admin | Ingesta de pedidos CONTPAQi SQL Server, captura de fecha compromiso con semáforo, partición en lotes madre (60 pzas) y Centro de Impresión de Tarjetas Viajeras oficiales con QR en hoja carta para fundas plásticas. |
+| **Módulo 1: Programación, Loteo e Impresión** | Ingeniería Admin | Ingesta de pedidos CONTPAQi SQL Server, captura de fecha compromiso con semáforo, segmentación manual flexible de lotes y sublotes, y Centro de Impresión de Tarjetas Viajeras oficiales con QR en hoja carta para fundas plásticas. |
 | **Módulo 2: Monitoreo de Piso, WIP y Tablero 5 KPIs** | Supervisores, Dirección y Planta | (1) WIP en vivo por departamento, (2) Piezas producidas por área, (3) Consumo materiales vs. BOM, (4) Mapeo de reprocesos C1-C5 con causa raíz y depto causante, (5) Tiempo de entrega vs. fecha compromiso. |
-| **Módulo 3: Terminal Táctil de Piso** | Supervisores y Operadores | Consola táctil de piso regida por el usuario activo (RBAC y departamentos asignados): escáner QR de tarjeta viajera, registro de depósito en almacén intermedio, división en sublotes de 15 pzas en D07/Rampa y captura ágil de paros. |
+| **Módulo 3: Terminal Táctil de Piso** | Supervisores y Operadores | Consola táctil de piso regida por el usuario activo (RBAC y departamentos asignados): escáner QR de tarjeta viajera, registro de depósito en almacén intermedio, división en sublotes en D07/Rampa y captura ágil de paros. |
 | **Módulo 4: Puntos de Control e Inspección (C1 a C5)** | Calidad y Supervisores | Aprobación/Rechazo en filtros C1 a C5 con retornos de reproceso específicos (C1 descuenta en corte, C2 retorna a D06 Refuerzo, C3 retorna a D06 Pintura, C4 retorna a D07 Hidráulicas Alineado, C5 retorna a D10 Adorno). |
-| **Módulo 5: Subensambles (T5) & Ficha Técnica Multiperspectiva** | Operación y Calidad Final | Semáforo de buffer en Adorno (tafiletes por talla 55-60) y visualización de fotografías oficiales autorizadas de muestra en múltiples perspectivas (Frente, Hendidura de copa, Toquilla/herraje, Tafilete interior, Ángulo 3/4) para cotejo físico. |
+| **Módulo 5: Subensambles (T5) & Ficha Técnica Multiperspectiva** | Operación y Calidad Final | Semáforo de buffer en Adorno (tafiletes por talla) y visualización de fotografías oficiales autorizadas de muestra en múltiples perspectivas (Frente, Hendidura de copa, Toquilla/herraje, Tafilete interior, Ángulo 3/4) para cotejo físico. |
 | **Módulo 6: Pre-Nómina de Destajo y Reportes** | Recursos Humanos e Ingeniería | Acumulado semanal de piezas concluidas por operador con base en tarifa fija ($/pza) y exportación administrativa en 1 clic a Microsoft Excel / CSV. |
 | **Módulo 7: Microservicio Puente CONTPAQi SQL Server** | TI e Integración LAN | Vistas y SPs en red local ($0 licencias SDK) para sincronización de pedidos, salida de materia prima y entrada de producto terminado con folio de lote MES en observaciones. |
 
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.60.0] - 2026-10-09
+- **Alineación Completa al Alcance Ejecutivo Oficial del Sistema (MVP):**
+  - **Saneamiento Terminológico:** Sustitución definitiva del término "tarjeta madre" por **"Tarjeta Viajera de Lote"**, y eliminación de referencias a "carritos".
+  - **Lotes y Sublotes Flexibles:** Eliminación de tamaños fijos rígidos; el sistema y la documentación formalizan que los tamaños de lotes y números de sublotes son definidos libremente por el usuario según la orden.
+  - **Funcionalidades Alternas Industriales:** Integración formal de la bitácora de paros de máquina, semáforo de buffer para tafiletes/toquillas, visor de fotos de fichas técnicas, desvío de segundas/mermas sin frenar línea y pre-nómina a destajo en Excel.
+  - **Sincronización Automatizada con Google Drive:** Documentos oficiales en Drive estructurados en carpetas `Oficial` e `Interno` con indentación jerárquica estandarizada.
 
 ### [2.54.0] - 2026-10-09
 - **Flujo Oficial de Segmentación Manual Previa a Impresión (Módulo 1 MVP):**
