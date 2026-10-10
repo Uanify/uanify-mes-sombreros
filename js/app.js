@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.61.0',
+  version: '2.62.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2264,6 +2264,23 @@ function enrichStationWithDefaults(st, idx) {
     else if (st.code === 'D-11' || (st.id && st.id.includes('embarque'))) st.type = 'logistica';
     else st.type = 'proceso';
   }
+  if (!st.processes) {
+    if (st.code === 'D-01') st.processes = 'PROC-01 Tendido de Telar (30s), PROC-02 Corte Circular (32s)';
+    else if (st.code === 'D-02') st.processes = 'PROC-03 Perfilado de Alambre (25s), PROC-04 Cosido Singer (38s)';
+    else if (st.code === 'D-03') st.processes = 'PROC-05 Inmersión en Tina Dope (20s), PROC-06 Secado en Camas (45s)';
+    else if (st.code === 'D-04') st.processes = 'PROC-07 Aplicación Brocha (28s), PROC-08 Refuerzo Aspersión (30s)';
+    else if (st.code === 'C-01') st.processes = 'C-01 Inspección Entrada Prensas (18s), Liberación Lote';
+    else if (st.code === 'D-05') st.processes = 'PROC-09 Prensado Vapor Copa (26s), PROC-10 Hormado Falda Hidráulica (24s)';
+    else if (st.code === 'D-06') st.processes = 'PROC-11 Corte Cuchilla Circular (28s), PROC-12 Perfilado de Ala (20s)';
+    else if (st.code === 'D-07') st.processes = 'PROC-13 Imprimación Taiwan (42s), PROC-14 Secado Flash (30s)';
+    else if (st.code === 'C-02') st.processes = 'C-02 Inspección de Pintura / Tono D65 (16s)';
+    else if (st.code === 'D-08') st.processes = 'PROC-15 Aspersión Barniz Brillo (22s), PROC-16 Curado Infrarrojo (35s)';
+    else if (st.code === 'D-09') st.processes = 'PROC-17 Horno Calor Seco (34s), PROC-18 Conformación Final (25s)';
+    else if (st.code === 'D-10') st.processes = 'PROC-19 Pegado Térmico Badana (40s), PROC-20 Colocación Toquilla (30s)';
+    else if (st.code === 'C-03') st.processes = 'C-03 Inspección 360° Producto Terminado (25s)';
+    else if (st.code === 'D-11') st.processes = 'PROC-21 Empaque & Enlace COMPAC (20s)';
+    else st.processes = `PROC-${st.code || idx+1} Proceso ${st.name} (${st.cycleTime || '35s'})`;
+  }
   if (!st.intermediateWarehouse) {
     if (st.code === 'D-01') st.intermediateWarehouse = 'Buffer Entrada Telar (ALM-INT-01)';
     else if (st.code === 'D-02') st.intermediateWarehouse = 'Pulmón Alambrado (ALM-INT-02)';
@@ -2290,17 +2307,25 @@ function enrichStationWithDefaults(st, idx) {
     else if (st.code === 'D-11') st.warehouseLocation = 'Andén de Carga Nave B';
     else st.warehouseLocation = 'Nave Central Tombstone';
   }
-  if (!st.machines) {
-    if (st.code === 'D-05') st.machines = 'Prensas de Vapor Michelagnoli P-01 a P-04, Prensa Hidráulica H-01';
-    else if (st.code === 'D-01') st.machines = 'Mesa de Tendido 12m, Cortadora Circular KM-01';
-    else if (st.code === 'D-02') st.machines = 'Máquinas de Coser Singer Heavy Duty S-01 a S-04';
-    else if (st.code === 'D-03') st.machines = 'Tinas de Inmersión Dope T-01, Camas de Secado 1 a 6';
-    else if (st.code === 'D-07') st.machines = 'Cabina de Pintura con Extracción, Pistolas Taiwan 1125';
-    else if (st.code === 'D-10') st.machines = 'Pegadoras Térmicas de Badana, Planchas de Toquilla';
-    else st.machines = 'Estación manual / Herramientas de mano';
+  if (!st.machines || st.machines.includes('manual')) {
+    if (st.code === 'D-05') st.machines = 'PRE-01 a PRE-04 Michelagnoli Vapor, HID-01 Prensa Hidráulica';
+    else if (st.code === 'D-01') st.machines = 'TEN-01 Mesa Tendido 12m, COR-01 Cortadora Circular KM';
+    else if (st.code === 'D-02') st.machines = 'COS-01 a COS-04 Singer Heavy Duty';
+    else if (st.code === 'D-03') st.machines = 'TIN-01 Tina Inmersión Dope, SEC-01 a SEC-06 Camas Secado';
+    else if (st.code === 'D-04') st.machines = 'COM-01 Compresor 15HP, PIS-01/02 Pistolas HVLP';
+    else if (st.code === 'C-01') st.machines = 'INS-01 Mesa Inspección 5000K, CAL-01 Calibrador Espesor';
+    else if (st.code === 'D-06') st.machines = 'REC-01 a REC-03 Mesas Circulares Refaldeador';
+    else if (st.code === 'D-07') st.machines = 'CAB-01 Cabina Pintura Extracción, PIS-03 Pistolas Taiwan';
+    else if (st.code === 'C-02') st.machines = 'LUZ-01 Cámara Luz D65 Inspección Tono';
+    else if (st.code === 'D-08') st.machines = 'TUN-01 Túnel Infrarrojo Curado Laca';
+    else if (st.code === 'D-09') st.machines = 'HOR-01/02 Hornos Calor Seco, CON-01 Conformadora Ala';
+    else if (st.code === 'D-10') st.machines = 'PEG-01/02 Pegadoras Badana, PLA-01 Planchas Toquilla';
+    else if (st.code === 'C-03') st.machines = 'REV-01 Mesa Revisión 360°, MED-01 Medidor Confort/Talla';
+    else if (st.code === 'D-11') st.machines = 'TER-01 Terminal COMPAC, BÁS-01 Báscula Andén';
+    else st.machines = `CEL-01 Celda de Trabajo ${st.code || 'Puesto'}`;
   }
   if (!st.wipCapacity) {
-    st.wipCapacity = st.target || 150;
+    st.wipCapacity = st.target || 180;
   }
   return st;
 }

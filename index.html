@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.61.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.62.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2123,9 +2123,8 @@
                 <span class="info-tip-popup">Gestión de departamentos, almacenes intermedios, rutas de fabricación y parámetros del turno.</span>
               </span>
             </h1>
-            <p class="view-subtitle">Departamentos, almacenes, rutas y parámetros de turno</p>
+            <p class="view-subtitle">Departamentos, procesos, almacenes, rutas y parámetros de turno</p>
           </div>
-          <button class="btn-primary" id="btnSaveConfig">Guardar Configuración</button>
         </div>
 
         <!-- Sub-navegación por Pestañas del Módulo Configuración -->
@@ -2523,24 +2522,24 @@
           </div>
         </div>
 
-        <!-- Pestaña: Departamentos & Almacenes Intermedios (CRUD Completo) -->
+        <!-- Pestaña: Departamentos, Procesos, Almacenes & Máquinas -->
         <div class="sub-tab-content active" id="subtab-config-depts">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <h3 style="margin:0;">Departamentos & Almacenes Intermedios (CRUD de Planta)</h3>
+                <h3 style="margin:0;">Departamentos, Procesos & Almacenes</h3>
                 <div class="info-tip">
                   <button type="button" class="info-tip-btn" aria-label="Información de departamentos">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
                   </button>
                   <div class="info-tip-popup">
-                    Gestión técnica de estaciones de manufactura, almacenes intermedios (WIP buffers), tiempos takt estándar y asignación de maquinaria.
+                    Catálogo integral de departamentos con procesos productivos y de calidad, almacenes buffer vinculados, maquinaria identificada y asignación de supervisores.
                   </div>
                 </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:48px; padding:0 20px; font-weight:700;">
-                  + Dar de Alta Departamento & Almacén
+                  + Nuevo Departamento
                 </button>
               </div>
             </div>
@@ -2552,24 +2551,22 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por código, departamento, supervisor, máquina..." autocomplete="off">
+                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por código, departamento, proceso, supervisor, máquina, almacén..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
+                  <select id="deptSupervisorFilter" class="custom-select" style="min-width:180px;">
+                    <option value="all">Todos los Supervisores</option>
+                  </select>
                   <select id="deptProcessFilter" class="custom-select" style="min-width:180px;">
                     <option value="all">Todos los Procesos</option>
-                    <option value="manufactura">Proceso Productivo</option>
+                    <option value="manufactura">Manufactura</option>
                     <option value="prensas">Prensas & Vapor</option>
-                    <option value="rampa">Rampa Fraccionamiento</option>
                     <option value="calidad">Control de Calidad</option>
-                    <option value="logistica">Almacén / Logística</option>
-                  </select>
-                  <select id="deptStatusFilter" class="custom-select" style="min-width:130px;">
-                    <option value="all">Todos los Estatus</option>
-                    <option value="active">Activos</option>
-                    <option value="inactive">Inactivos</option>
+                    <option value="rampa">Rampa / Fraccionamiento</option>
+                    <option value="logistica">Logística / PT</option>
                   </select>
                 </div>
-                <span class="filter-count-badge" id="deptFilteredCountBadge">14 departamentos</span>
+                <span class="filter-count-badge" id="deptFilteredCountBadge">Cargando...</span>
                 <button type="button" class="btn-reset-filters" id="btnResetDeptFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
@@ -2578,18 +2575,39 @@
               <table class="data-table" id="cfgDepartmentsDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="width:220px;">Departamento & Proceso</th>
-                    <th style="width:200px;">Almacén Intermedio (Buffer)</th>
-                    <th style="width:180px;">Takt Time & Capacidad</th>
-                    <th style="min-width:220px;">Supervisor & Maquinaria</th>
-                    <th class="col-status" style="width:120px; text-align:center;">Estatus</th>
-                    <th class="col-actions" style="width:100px; text-align:center;">Acciones</th>
+                    <th class="col-name" style="width:230px;">Departamento & Supervisión</th>
+                    <th style="min-width:240px;">Procesos & Calidad Asociados</th>
+                    <th style="min-width:240px;">Máquinas / Áreas de Trabajo (ID)</th>
+                    <th style="width:210px;">Almacenes Intermedios</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgDepartmentsTable">
                   <!-- Llenado dinámico en config.js -->
                 </tbody>
               </table>
+            </div>
+
+            <!-- Paginación Robusta Estandarizada -->
+            <div class="uanify-pagination-bar" id="deptPaginationBar" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); flex-wrap:wrap; gap:12px;">
+              <div style="font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                <span>Mostrando</span>
+                <strong id="deptPaginationRange" style="color:var(--text-primary);">1 - 8</strong>
+                <span>de</span>
+                <strong id="deptPaginationTotal" style="color:var(--text-primary);">14</strong>
+                <span>departamentos</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnDeptPrevPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Anterior
+                </button>
+                <span id="deptPageIndicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:var(--color-brand); font-family:var(--font-mono);">1 / 2</span>
+                <button type="button" class="btn-secondary btn-sm" id="btnDeptNextPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página siguiente">
+                  Siguiente
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -3861,19 +3879,19 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: DAR DE ALTA / EDITAR DEPARTAMENTO & ALMACÉN INTERMEDIO (CRUD)
+       MODAL: DAR DE ALTA / EDITAR DEPARTAMENTO (CON PROCESOS, MÁQUINAS Y ALMACENES)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateDepartment">
-    <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:90vh; overflow-y:auto;">
+    <div class="modal-box card-glass" style="max-width:680px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
           <h3 id="deptModalTitle" style="display:flex; align-items:center; gap:6px;">
-            Departamento & Almacén
+            Departamento & Procesos
             <span class="info-tip">
               <button type="button" class="info-tip-btn" aria-label="Información">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </button>
-              <span class="info-tip-popup">Definición de estación de proceso, almacén intermedio WIP y asignación técnica.</span>
+              <span class="info-tip-popup">Estructura departamental: procesos productivos y de calidad, almacenes buffer vinculados, maquinaria identificada y asignación de supervisores.</span>
             </span>
           </h3>
         </div>
@@ -3896,29 +3914,41 @@
             </div>
           </div>
 
-          <!-- Tipo y Takt Time -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="field-label">Tipo de Estación / Proceso:</label>
-              <select id="newDeptType" class="custom-select">
-                <option value="proceso">Proceso Productivo / Manufactura</option>
-                <option value="prensas">Prensas Térmicas & Vapor (Hormado)</option>
-                <option value="calidad">Control de Calidad / Inspección</option>
-                <option value="rampa">Rampa de Fraccionamiento (Sublotes 15 pzas)</option>
-                <option value="logistica">Almacén Intermedio / Logística WIP</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Takt Time Estándar:</label>
-              <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s" required>
-            </div>
+          <!-- Procesos & Puntos de Calidad dentro del Departamento -->
+          <div class="form-group">
+            <label class="field-label">
+              <span>Procesos y Puntos de Calidad del Departamento:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Procesos del departamento">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Un departamento puede tener 1 o varios procesos (ej. Manufactura, Prensas o Paradas de Calidad C-XX).</span>
+              </span>
+            </label>
+            <input type="text" id="newDeptProcesses" class="form-input" placeholder="Ej. PROC-01 Corte Copa (32s), PROC-02 Corte Falda (35s), C-01 Inspección MP (18s)" required>
+            <span class="field-hint">Puedes separar múltiples procesos por comas. Si incluye paradas C-XX se identifican como inspección de calidad.</span>
           </div>
 
-          <!-- Almacén Intermedio Asociado y Ubicación -->
+          <!-- Máquinas y Puestos de Trabajo con Identificador Único -->
+          <div class="form-group">
+            <label class="field-label">
+              <span>Máquinas / Áreas de Trabajo con Identificador (ID):</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Máquinas con ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Cada máquina o área de trabajo debe contar con su identificador único para trazabilidad y mantenimiento.</span>
+              </span>
+            </label>
+            <input type="text" id="newDeptMachines" class="form-input" placeholder="Ej. PRE-01 Michelagnoli Vapor, PRE-02 Michelagnoli Vapor, HID-01 Prensa Hidráulica" required>
+            <span class="field-hint">Ingresa las máquinas asignadas con sus siglas y número (ej. MAQ-01, PRE-01, COS-01).</span>
+          </div>
+
+          <!-- Almacenes Intermedios Asociados (1 o varios) -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Almacén Intermedio Asociado (Buffer):</label>
-              <input type="text" id="newDeptWarehouse" class="form-input" placeholder="Buffer Intermedio D-15" required>
+              <label class="field-label">Almacenes Intermedios (Buffers WIP):</label>
+              <input type="text" id="newDeptWarehouse" class="form-input" placeholder="Buffer Entrada (ALM-01), Buffer Salida (ALM-02)" required>
             </div>
             <div class="form-group">
               <label class="field-label">Ubicación Física en Nave:</label>
@@ -3926,33 +3956,25 @@
             </div>
           </div>
 
-          <!-- Capacidad Buffer WIP y Estado -->
+          <!-- Takt Time y Capacidad Buffer -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div class="form-group">
-              <label class="field-label">Capacidad Máxima Buffer WIP (piezas):</label>
-              <input type="number" id="newDeptCapacity" class="form-input" value="150" min="10" max="2500" required>
+              <label class="field-label">Takt Time / Ritmo Estándar:</label>
+              <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s" required>
             </div>
             <div class="form-group">
-              <label class="field-label">Estado Operativo:</label>
-              <select id="newDeptStatus" class="custom-select">
-                <option value="running">Activo en Operación</option>
-                <option value="stopped">Inactivo / Fuera de Línea</option>
-              </select>
+              <label class="field-label">Capacidad WIP Total (piezas):</label>
+              <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
             </div>
           </div>
 
-          <!-- Maquinaria / Equipos Asignados -->
-          <div class="form-group">
-            <label class="field-label">Maquinaria / Prensas / Equipos Asignados:</label>
-            <input type="text" id="newDeptMachines" class="form-input" placeholder="Ej. Prensa Vapor P-01, Hidráulica H-02, Mesa M-03">
-          </div>
-
-          <!-- Supervisor Responsable -->
+          <!-- Supervisores Responsables (Multi-Supervisor) -->
           <div class="form-group">
             <label class="field-label">Supervisor de Planta Responsable:</label>
             <select id="newDeptSupervisor" class="custom-select">
-              <!-- Llenado dinámicamente con supervisores y admins -->
+              <!-- Llenado dinámicamente con supervisores e ingenieros -->
             </select>
+            <span class="field-hint">Un supervisor puede estar a cargo de este y otros departamentos en simultáneo.</span>
           </div>
 
           <!-- Descripción Técnica -->
@@ -3974,7 +3996,7 @@
             <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
             <div style="display:flex; gap:8px;">
               <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre operador (ej. Gabriel Santos)">
-              <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / Puesto (ej. Bordadora 01)">
+              <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / ID (ej. PRE-03)">
             </div>
           </div>
         </div>
@@ -4753,11 +4775,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.61.0"></script>
-  <script src="js/andon.js?v=2.61.0"></script>
-  <script src="js/terminal.js?v=2.61.0"></script>
-  <script src="js/engineer.js?v=2.61.0"></script>
-  <script src="js/executive.js?v=2.61.0"></script>
-  <script src="js/config.js?v=2.61.0"></script>
+  <script src="js/app.js?v=2.62.0"></script>
+  <script src="js/andon.js?v=2.62.0"></script>
+  <script src="js/terminal.js?v=2.62.0"></script>
+  <script src="js/engineer.js?v=2.62.0"></script>
+  <script src="js/executive.js?v=2.62.0"></script>
+  <script src="js/config.js?v=2.62.0"></script>
 </body>
 </html>

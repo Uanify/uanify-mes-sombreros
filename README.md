@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.61.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.62.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.61.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.62.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,18 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.61.0] - 2026-10-09
+### [2.62.0] - 2026-10-09
+- **Modelo Relacional de Planta & Configuración Estandarizada:**
+  - **Eliminación del término "CRUD de Planta":** Reemplazado por interfaz industrial profesional *Departamentos, Procesos & Almacenes*.
+  - **Entidades Relacionadas de Planta:**
+    - Estructuración de que un departamento cuenta con 1 o varios **procesos** vinculados (manufactura, prensas o paradas de calidad).
+    - Un departamento puede disponer de 1 o múltiples **almacenes intermedios** (buffers WIP de entrada y salida).
+    - Un supervisor puede coordinar **más de un departamento** simultáneamente.
+    - Registro explícito de **máquinas / áreas de trabajo** por proceso con su **identificador único formal** (ej. `PRE-01`, `COR-01`, `COS-01`, etc.) para mantenimiento y trazabilidad.
+  - **Puntos de Calidad como Procesos:** Se formalizó que los puntos de control e inspección (`C-01` a `C-05`) son tratados como entidades de proceso de tipo calidad.
+  - **Supresión de Estatus Innecesario:** Eliminada la columna y el selector de estatus activo/inactivo para departamentos, reflejando que las áreas físicas de nave existen de manera permanente.
+  - **Filtrado Multi-Criterio Robusto & Paginación Industrial:** Implementada barra de filtros por búsqueda libre, supervisor y tipo de proceso, junto con paginación integrada (`.uanify-pagination-bar`) y botones de acción unificados (`.btn-table-action`).
+  - **Alineación de Botón "Guardar Configuración":** Retirado del encabezado global de la vista y reubicado exclusivamente dentro de la sub-pestaña de Parámetros & Turno donde surte efecto operativo real.
 - **Unificación Operativa del Mapa de Almacenes al Mismo Nivel:**
   - **Eliminación de Distinción Artificial:** Se suprimió la clasificación de "Almacenes Principales", reconociendo que **todos los almacenes y pulmones intermedios de planta operan al mismo nivel de relevancia industrial**.
   - **Homogeneización Visual:** Se eliminaron los botones divisores y se estructuraron todas las estaciones y almacenes con sus respectivos inventarios y lotes en tránsito en una cuadrícula única.
