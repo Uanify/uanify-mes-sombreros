@@ -2313,6 +2313,9 @@ const UanifyState = {
   }
 };
 
+// Exponer UanifyState en el objeto global window
+window.UanifyState = UanifyState;
+
 // Event bus
 const EventBus = {
   listeners: {},
@@ -2326,6 +2329,7 @@ const EventBus = {
     }
   }
 };
+window.EventBus = EventBus;
 
 // Sintetizador de audio industrial (Desactivado por especificación de planta)
 const IndustrialAudio = {
