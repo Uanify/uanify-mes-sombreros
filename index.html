@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.64.0">
-  <link rel="stylesheet" href="css/components.css?v=2.64.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.65.0">
+  <link rel="stylesheet" href="css/components.css?v=2.65.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.64.0</span>
+        <span class="system-version-pill login-version-pill">v2.65.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.64.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.65.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -4573,114 +4573,123 @@
        MODAL: MODO FRACCIONAMIENTO EN RAMPA (MULTI-QR BATCH & VALIDACIÓN DE PUESTO)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalRampaFraccionamiento" style="display:none;">
-    <div class="modal-box card-glass" style="max-width:820px;">
+    <div class="modal-box card-glass" style="max-width:760px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span class="badge-status" style="background:var(--color-brand); color:#FFFFFF; font-size:11px; font-weight:800;">PUESTO DE RAMPA</span>
-            <span class="badge-subtle" style="font-weight:700;">Multi-Lote</span>
-          </div>
-          <h3 style="margin-top:4px; display:flex; align-items:center; gap:6px;">
-            Fraccionamiento en Rampa
+          <h3 style="margin:0; display:flex; align-items:center; gap:6px;">
+            <span>Fraccionamiento en Rampa</span>
             <span class="info-tip">
               <button type="button" class="info-tip-btn" aria-label="Información">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </button>
-              <span class="info-tip-popup">Escaneo múltiple de lotes madre en rampa para generar sus tarjetas de sublote.</span>
+              <span class="info-tip-popup">Escaneo guiado de lotes madre en rampa. Escanea los lotes de la sesión y al finalizar confirma para cambiar las tarjetas viajeras a 4 sublotes de 15 piezas.</span>
             </span>
           </h3>
         </div>
         <button type="button" class="modal-close" id="btnCloseRampaModal">&times;</button>
       </div>
-      <div class="modal-body" style="padding:22px;">
-        
-        <!-- Validación de Puesto y Autorización -->
-        <div id="rampaAuthNotice" style="display:none; background:#FEF2F2; border:1.5px solid #FCA5A5; border-radius:10px; padding:12px 16px; margin-bottom:16px;">
-          <strong style="color:#B91C1C; font-size:12.5px;">⛔ Restricción de Puesto Operativo:</strong>
-          <p style="margin:2px 0 0 0; font-size:12px; color:#991B1B;" id="rampaAuthNoticeText">
-            Solo el personal asignado al puesto de Rampa (D-04 / D-05) puede procesar fraccionamientos.
-          </p>
-        </div>
 
-        <!-- Entrada / Escáner para Agregar Lotes a la Cola de Fraccionamiento -->
-        <div style="background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px; margin-bottom:18px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-            <div style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--text-primary);">
-              Escanear Lotes Madre para Cola de Fraccionamiento:
-            </div>
-            <span class="badge-subtle" style="font-weight:700;">Validación: Solo lotes en Rampa (D-04)</span>
+      <!-- Barra Stepper con el mismo estilo del sistema -->
+      <div style="padding:14px 20px 0 20px;">
+        <div class="stepper-header">
+          <div class="stepper-step active" id="rampaStepperStep1" onclick="window.goToRampaStep(1)">
+            <div class="stepper-circle">1</div>
+            <span class="stepper-label">Escanear Lotes</span>
           </div>
-          
-          <div style="display:grid; grid-template-columns: 1fr auto auto; gap:10px; align-items:center;">
-            <input type="text" id="rampaBatchQrInput" class="form-input" placeholder="Escanear QR o teclear lote (ej. 49386, 49633, 49842)..." style="min-height:48px; font-weight:700; font-family:var(--font-mono);">
-            <button type="button" class="btn-primary btn-touch-lg" id="btnAddLotToRampaBatch" style="min-height:48px; padding:0 18px; font-weight:800;">
-              + Agregar Lote
-            </button>
-            <button type="button" class="btn-secondary btn-touch-lg" id="btnRampaScanCamera" style="min-height:48px; padding:0 14px;" title="Abrir cámara">
-              📷
-            </button>
+          <div class="stepper-step" id="rampaStepperStep2" onclick="window.goToRampaStep(2)">
+            <div class="stepper-circle">2</div>
+            <span class="stepper-label">Resumen & Tarjetas</span>
           </div>
         </div>
+      </div>
 
-        <!-- Lista de Lotes Madre en la Cola de Fraccionamiento -->
-        <div style="margin-bottom:18px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">
-              Lotes Madre Listos para Fraccionar en este Loteo (<span id="rampaBatchCountText">1 lote</span>):
+      <div class="modal-body" style="padding:16px 20px;">
+
+        <!-- PASO 1: ESCANEAR LOTES EN LA SESIÓN -->
+        <div id="rampaStepContent1">
+          <!-- Entrada / Escáner para Agregar Lotes a la Cola -->
+          <div style="background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px; margin-bottom:16px;">
+            <div style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--text-primary); margin-bottom:10px;">
+              Escanear Lote Madre para Fraccionamiento:
             </div>
-            <span style="font-size:11.5px; color:var(--color-brand); font-weight:700;" id="rampaBatchTotalPiecesText">Total: 60 piezas</span>
+            
+            <div style="display:grid; grid-template-columns: 1fr auto auto; gap:10px; align-items:center;">
+              <input type="text" id="rampaBatchQrInput" class="form-input" placeholder="Escanear QR o teclear lote (ej. 49386, 49633, 49842)..." style="min-height:48px; font-weight:700; font-family:var(--font-mono);">
+              <button type="button" class="btn-primary btn-touch-lg" id="btnAddLotToRampaBatch" style="min-height:48px; padding:0 20px; font-weight:800;">
+                + Escanear Lote
+              </button>
+              <button type="button" class="btn-secondary btn-touch-lg" id="btnRampaScanCamera" style="min-height:48px; padding:0 14px;" title="Abrir cámara del dispositivo">
+                📷
+              </button>
+            </div>
           </div>
 
-          <div id="rampaBatchQueueContainer" style="display:flex; flex-direction:column; gap:8px; max-height:180px; overflow-y:auto; border:1px solid var(--border-subtle); padding:10px; border-radius:10px; background:#FAFAFA;">
-            <!-- Renderizado dinámico de lotes en cola con botón eliminar -->
-          </div>
-        </div>
-
-        <!-- Configuración de Torres y Sublotes -->
-        <div style="background:#F8FAFC; border:1.5px solid var(--border-medium); border-radius:12px; padding:16px; margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">
-              Parámetros de Fraccionamiento por Lote Madre:
-            </div>
-            <span class="badge-subtle">Regla San Francisco: 15 pzas por torre</span>
-          </div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1.2fr; gap:12px;">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label" style="font-size:11.5px;">Piezas por Lote Madre:</label>
-              <input type="number" id="rampaInputTotalPieces" class="form-input" value="60" min="10" max="500" style="min-height:44px; font-weight:700; font-family:var(--font-mono);">
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label" style="font-size:11.5px;">Piezas por Torre / Sublote:</label>
-              <input type="number" id="rampaInputPiecesPerSublot" class="form-input" value="15" min="5" max="100" style="min-height:44px; font-weight:700; font-family:var(--font-mono);">
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label" style="font-size:11.5px;">Torres por Lote:</label>
-              <div style="min-height:44px; display:flex; align-items:center; background:#FFFFFF; border:1px solid var(--border-medium); border-radius:8px; padding:0 12px; font-weight:800; color:var(--color-brand); font-family:var(--font-mono);" id="rampaCalculatedSublotsText">
-                4 Sublotes de 15 pzas
+          <!-- Lista de Lotes Escaneados en la Sesión -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">
+                Lotes Escaneados en esta Sesión (<span id="rampaBatchCountText">1 lote</span>):
               </div>
+              <span style="font-size:12px; color:var(--color-brand); font-weight:800;" id="rampaBatchTotalPiecesText">Total: 60 piezas</span>
+            </div>
+
+            <div id="rampaBatchQueueContainer" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; border:1px solid var(--border-subtle); padding:10px; border-radius:10px; background:#FAFAFA;">
+              <!-- Renderizado dinámico de lotes con opción de quitar -->
             </div>
           </div>
         </div>
 
-        <!-- Asignación de Operador Responsable -->
-        <div style="margin-bottom:16px;">
-          <label class="field-label" style="font-size:12px;">Operador Responsable de las Torres:</label>
-          <select id="rampaOperatorSelect" class="custom-select" style="min-height:48px;">
-            <option value="JORGE">Jorge Ramírez · Prensas y Rampa</option>
-            <option value="MELANY">Melany Gómez · Rampa Ensamble</option>
-            <option value="JUAN">Juan Pablo Torres · Prensas Secas</option>
-            <option value="CARLOS">Carlos Mendoza · Hormado</option>
-          </select>
+        <!-- PASO 2: RESUMEN Y FINALIZAR PARA CAMBIO DE TARJETAS -->
+        <div id="rampaStepContent2" style="display:none;">
+          <div style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:16px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="font-size:18px;">🏷️</span>
+              <strong style="color:#166534; font-size:13.5px;">Listo para Cambio de Tarjetas Viajeras</strong>
+            </div>
+            <p style="margin:0; font-size:12.5px; color:#14532D; line-height:1.5;">
+              Al confirmar y terminar la sesión, el sistema dividirá automáticamente cada lote madre escaneado en <strong>4 sublotes de 15 piezas</strong> cada uno, marcando las tarjetas listas para sustitución física e ingreso a Prensas.
+            </p>
+          </div>
+
+          <div style="background:#F8FAFC; border:1.5px solid var(--border-subtle); border-radius:12px; padding:16px; margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-secondary); margin-bottom:10px;">
+              Resumen de Sublotes a Generar:
+            </div>
+            <div id="rampaStep2SummaryList" style="display:flex; flex-direction:column; gap:8px; max-height:160px; overflow-y:auto;">
+              <!-- Lista resumida de lotes y sus 4 tarjetas calculadas -->
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">Operador Responsable en Rampa / Prensas:</label>
+            <select id="rampaOperatorSelect" class="custom-select" style="min-height:44px;">
+              <option value="JORGE">Jorge Ramírez · Prensas y Rampa</option>
+              <option value="MELANY">Melany Gómez · Rampa Ensamble</option>
+              <option value="JUAN">Juan Pablo Torres · Prensas Secas</option>
+              <option value="CARLOS">Carlos Mendoza · Hormado</option>
+            </select>
+          </div>
         </div>
 
       </div>
-      <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-        <button type="button" class="btn-secondary btn-touch-lg" id="btnCancelRampaModal" style="flex:1;">
+
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+        <button type="button" class="btn-secondary" id="btnCancelRampaModal" style="font-weight:700;">
           Cancelar / Salir del Modo
         </button>
-        <button type="button" class="btn-primary btn-touch-hero" id="btnExecuteRampaFraccionamiento" style="flex:1.6; font-size:15px; font-weight:800;">
-          Confirmar y Fraccionar Lotes de la Cola
+        <button type="button" class="btn-secondary" id="btnRampaBackToStep1" style="display:none; font-weight:700;">
+          ← Volver a Escanear
         </button>
+        <div style="display:flex; gap:10px; margin-left:auto;">
+          <!-- Botón de Paso 1 -->
+          <button type="button" class="btn-primary" id="btnRampaFinishScanning" style="font-weight:800; min-height:44px; padding:0 22px;">
+            Terminar de Escanear →
+          </button>
+          <!-- Botón de Paso 2 -->
+          <button type="button" class="btn-primary" id="btnExecuteRampaFraccionamiento" style="display:none; font-weight:800; min-height:44px; padding:0 22px; background:#16A34A; border-color:#16A34A;">
+            🏷️ Confirmar y Cambiar Tarjetas
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -4933,11 +4942,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.64.0"></script>
-  <script src="js/andon.js?v=2.64.0"></script>
-  <script src="js/terminal.js?v=2.64.0"></script>
-  <script src="js/engineer.js?v=2.64.0"></script>
-  <script src="js/executive.js?v=2.64.0"></script>
-  <script src="js/config.js?v=2.64.0"></script>
+  <script src="js/app.js?v=2.65.0"></script>
+  <script src="js/andon.js?v=2.65.0"></script>
+  <script src="js/terminal.js?v=2.65.0"></script>
+  <script src="js/engineer.js?v=2.65.0"></script>
+  <script src="js/executive.js?v=2.65.0"></script>
+  <script src="js/config.js?v=2.65.0"></script>
 </body>
 </html>

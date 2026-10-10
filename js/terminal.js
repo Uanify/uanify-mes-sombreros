@@ -903,6 +903,10 @@ window.initTerminalView = function() {
       if (qualityDestinationPanel) qualityDestinationPanel.style.display = 'none';
     }
 
+    const isSublot = typeof lot.sublotNum === 'number' && lot.sublotNum > 0;
+    const isMotherLot = !isSublot || lot.sublotNum === 0 || (lot.pieces && lot.pieces >= 60);
+    const isFinalLot = lot.targetStationCode === 'PT' || lot.currentStationCode === 'D-10';
+
     // ── PANEL CONTEXTUAL DINÁMICO DE OPCIONES SEGÚN EL TIPO Y ESTADO DEL LOTE ──
     const dynamicLotOptionsContainer = document.getElementById('dynamicLotOptionsContainer');
     const dynamicLotTypeBadge        = document.getElementById('dynamicLotTypeBadge');
@@ -911,11 +915,8 @@ window.initTerminalView = function() {
     if (dynamicLotOptionsContainer && dynamicLotOptionsList) {
       dynamicLotOptionsContainer.style.display = 'block';
 
-      const isSublot = typeof lot.sublotNum === 'number' && lot.sublotNum > 0;
-      const isMotherLot = !isSublot || lot.sublotNum === 0 || (lot.pieces && lot.pieces >= 60);
       const isQualityFilter = (lot.currentStationCode && lot.currentStationCode.startsWith('C-')) ||
                               (lot.targetStationCode && lot.targetStationCode.startsWith('C-'));
-      const isFinalLot = lot.targetStationCode === 'PT' || lot.currentStationCode === 'D-10';
 
       if (dynamicLotTypeBadge) {
         if (lot.hasScrap) {
@@ -1922,11 +1923,13 @@ window.initTerminalView = function() {
     });
   }
 
-  // ── 11. MODO FRACCIONAMIENTO EN RAMPA (MULTI-QR BATCH & VALIDACIÓN DE PUESTO) ────
+  // ── 11. MODO FRACCIONAMIENTO EN RAMPA (STEPPER INDUSTRIAL & CAMBIO DE TARJETAS) ────
   const btnActivateRampaMode           = document.getElementById('btnActivateRampaMode');
   const modalRampaFraccionamiento      = document.getElementById('modalRampaFraccionamiento');
   const btnCloseRampaModal             = document.getElementById('btnCloseRampaModal');
   const btnCancelRampaModal            = document.getElementById('btnCancelRampaModal');
+  const btnRampaBackToStep1            = document.getElementById('btnRampaBackToStep1');
+  const btnRampaFinishScanning         = document.getElementById('btnRampaFinishScanning');
   const btnExecuteRampaFraccionamiento = document.getElementById('btnExecuteRampaFraccionamiento');
   const rampaBatchQrInput              = document.getElementById('rampaBatchQrInput');
   const btnAddLotToRampaBatch          = document.getElementById('btnAddLotToRampaBatch');
@@ -1934,12 +1937,16 @@ window.initTerminalView = function() {
   const rampaBatchQueueContainer       = document.getElementById('rampaBatchQueueContainer');
   const rampaBatchCountText            = document.getElementById('rampaBatchCountText');
   const rampaBatchTotalPiecesText      = document.getElementById('rampaBatchTotalPiecesText');
+  const rampaStep2SummaryList          = document.getElementById('rampaStep2SummaryList');
   const rampaOperatorSelect            = document.getElementById('rampaOperatorSelect');
-  const rampaInputTotalPieces          = document.getElementById('rampaInputTotalPieces');
-  const rampaInputPiecesPerSublot      = document.getElementById('rampaInputPiecesPerSublot');
-  const rampaCalculatedSublotsText     = document.getElementById('rampaCalculatedSublotsText');
-  const rampaAuthNotice                = document.getElementById('rampaAuthNotice');
-  const rampaAuthNoticeText            = document.getElementById('rampaAuthNoticeText');
+
+  // Elementos del Stepper de Rampa
+  const rampaStepperStep1              = document.getElementById('rampaStepperStep1');
+  const rampaStepperStep2              = document.getElementById('rampaStepperStep2');
+  const rampaStepContent1              = document.getElementById('rampaStepContent1');
+  const rampaStepContent2              = document.getElementById('rampaStepContent2');
+
+  let currentRampaStep = 1;
 
   // Cola de Lotes Madre Escaneados en Rampa
   let rampaMotherBatchQueue = [
@@ -1952,7 +1959,7 @@ window.initTerminalView = function() {
     if (rampaMotherBatchQueue.length === 0) {
       rampaBatchQueueContainer.innerHTML = `
         <div style="text-align:center; padding:18px; color:var(--text-muted); font-size:12.5px;">
-          No hay lotes en la cola. Escanea o teclea el QR del Lote Madre para agregarlo.
+          No hay lotes en la sesión. Escanea o ingresa el número de Lote Madre para agregarlo.
         </div>
       `;
       if (rampaBatchCountText) rampaBatchCountText.textContent = '0 lotes';
@@ -1969,9 +1976,9 @@ window.initTerminalView = function() {
     }
 
     rampaBatchQueueContainer.innerHTML = rampaMotherBatchQueue.map((lot, idx) => `
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:8px 12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px;">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--color-brand);">${lot.lotId}</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-weight:800; font-size:14px; color:var(--color-brand);">${lot.lotId}</span>
           <span class="badge-subtle" style="font-weight:700;">${lot.model}</span>
           <span style="font-size:12px; color:var(--text-secondary);">${lot.pieces} pzas (${lot.order || 'OP'})</span>
         </div>
@@ -1982,46 +1989,110 @@ window.initTerminalView = function() {
     `).join('');
   }
 
+  function renderRampaStep2Summary() {
+    if (!rampaStep2SummaryList) return;
+    if (rampaMotherBatchQueue.length === 0) {
+      rampaStep2SummaryList.innerHTML = `
+        <div style="text-align:center; padding:12px; color:var(--text-muted); font-size:12px;">
+          No hay lotes escaneados en esta sesión.
+        </div>
+      `;
+      return;
+    }
+
+    rampaStep2SummaryList.innerHTML = rampaMotherBatchQueue.map(m => `
+      <div style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--color-brand); font-size:13px;">Lote Madre: ${m.lotId}</span>
+          <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+            Modelo: <strong>${m.model}</strong> · ${m.order || 'OP-15068'}
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <span class="badge-subtle" style="background:#FEF3C7; color:#92400E; font-weight:800;">
+            4 Sublotes (15 pzas c/u)
+          </span>
+          <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-muted); margin-top:2px;">
+            ${m.lotId}-1, ${m.lotId}-2, ${m.lotId}-3, ${m.lotId}-4
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
   window.removeLotFromRampaBatch = function(index) {
     rampaMotherBatchQueue.splice(index, 1);
     renderRampaBatchQueue();
-    updateRampaCalculations();
   };
 
-  function updateRampaCalculations() {
-    const pzasPerMother = parseInt(rampaInputTotalPieces ? rampaInputTotalPieces.value : 60, 10) || 60;
-    const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
-    const numSublots = Math.max(1, Math.ceil(pzasPerMother / pzasPerSublot));
-    const totalSublotsProjected = numSublots * rampaMotherBatchQueue.length;
+  function goToRampaStep(stepNum) {
+    if (stepNum === 2 && rampaMotherBatchQueue.length === 0) {
+      window.UanifyUI.toast('Debes escanear al menos un lote madre en la sesión para continuar.', 'warning');
+      return;
+    }
 
-    if (rampaCalculatedSublotsText) {
-      rampaCalculatedSublotsText.textContent = `${numSublots} Sublotes de ${pzasPerSublot} pzas c/u (${totalSublotsProjected} torres totales)`;
+    currentRampaStep = stepNum;
+
+    // Actualizar estados visuales del Stepper
+    if (rampaStepperStep1) {
+      rampaStepperStep1.classList.remove('active', 'completed');
+      if (stepNum === 1) rampaStepperStep1.classList.add('active');
+      else rampaStepperStep1.classList.add('completed');
+    }
+    if (rampaStepperStep2) {
+      rampaStepperStep2.classList.remove('active', 'completed');
+      if (stepNum === 2) rampaStepperStep2.classList.add('active');
+    }
+
+    // Alternar paneles de contenido
+    if (rampaStepContent1) rampaStepContent1.style.display = (stepNum === 1) ? 'block' : 'none';
+    if (rampaStepContent2) rampaStepContent2.style.display = (stepNum === 2) ? 'block' : 'none';
+
+    // Manejar visibilidad de botones del footer
+    if (btnCancelRampaModal) btnCancelRampaModal.style.display = (stepNum === 1) ? 'inline-flex' : 'none';
+    if (btnRampaBackToStep1) btnRampaBackToStep1.style.display = (stepNum === 2) ? 'inline-flex' : 'none';
+    if (btnRampaFinishScanning) btnRampaFinishScanning.style.display = (stepNum === 1) ? 'inline-flex' : 'none';
+    if (btnExecuteRampaFraccionamiento) btnExecuteRampaFraccionamiento.style.display = (stepNum === 2) ? 'inline-flex' : 'none';
+
+    if (stepNum === 2) {
+      renderRampaStep2Summary();
     }
   }
+  window.goToRampaStep = goToRampaStep;
 
-  if (rampaInputTotalPieces) rampaInputTotalPieces.addEventListener('input', updateRampaCalculations);
-  if (rampaInputPiecesPerSublot) rampaInputPiecesPerSublot.addEventListener('input', updateRampaCalculations);
+  if (btnRampaFinishScanning) {
+    btnRampaFinishScanning.addEventListener('click', () => goToRampaStep(2));
+  }
+  if (btnRampaBackToStep1) {
+    btnRampaBackToStep1.addEventListener('click', () => goToRampaStep(1));
+  }
 
   function addLotToRampaBatchByQuery(query) {
     const cleanId = String(query).trim().replace(/^TB\|/i, '').split('|')[0] || query;
     if (!cleanId) return;
 
-    // Validación 1: Verificar si ya está en la cola
+    // Validación 1: Verificar si ya está en la sesión
     if (rampaMotherBatchQueue.some(l => l.lotId === cleanId)) {
-      window.UanifyUI.toast(`El lote ${cleanId} ya se encuentra agregado en la cola de fraccionamiento.`, 'info');
+      window.UanifyUI.toast(`El lote ${cleanId} ya fue escaneado en esta sesión.`, 'info');
       return;
     }
 
-    // Validación 2: Validar que sea un lote válido
+    // Validación 2: Buscar lote en el sistema
     const knownLot = (UanifyState.activeLots || []).find(l => l.lotId === cleanId || l.lotId.replace(/,/g, '') === cleanId.replace(/,/g, ''));
     
-    // Validación 3: Estación de Rampa (D-04 o D-05)
+    // Validación 3: Permisos del usuario actual sobre el departamento o lote
+    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
+    const isSuperUser = user.role === 'admin' || user.role === 'ingeniero';
+    const userDepts = user.assignedDepartments || [];
+    
     const lotStation = knownLot ? (knownLot.currentStationCode || 'D-04') : 'D-04';
-    if (knownLot && lotStation !== 'D-04' && lotStation !== 'D-05' && lotStation !== 'D-01' && lotStation !== 'D-02') {
+
+    // Si el usuario no tiene acceso al departamento de Rampa (D-04 / D-05) ni es admin/ingeniero, mostrar alerta clara
+    if (!isSuperUser && !userDepts.includes('*') && !userDepts.includes('D-04') && !userDepts.includes('D-05') && !userDepts.includes(lotStation)) {
       window.UanifyUI.toast(
-        `⛔ El lote ${cleanId} no está en Rampa. Se encuentra en ${knownLot.currentStationName || lotStation}. Solo se pueden fraccionar lotes arribados a Rampa.`,
-        'danger',
-        'Validación de Estación Rampa'
+        `⛔ No tienes permisos para operar en Rampa. Tu usuario (${user.name}) tiene asignadas las áreas: [${userDepts.join(', ') || 'Sin Asignar'}].`,
+        'error',
+        'Permiso Denegado'
       );
       return;
     }
@@ -2039,16 +2110,15 @@ window.initTerminalView = function() {
 
     if (rampaBatchQrInput) rampaBatchQrInput.value = '';
     renderRampaBatchQueue();
-    updateRampaCalculations();
 
-    window.UanifyUI.toast(`Lote Madre ${cleanId} agregado a la cola de fraccionamiento (${rampaMotherBatchQueue.length} listos).`, 'success');
+    window.UanifyUI.toast(`Lote Madre ${cleanId} escaneado correctamente (${rampaMotherBatchQueue.length} en la sesión).`, 'success');
   }
 
   if (btnAddLotToRampaBatch) {
     btnAddLotToRampaBatch.addEventListener('click', () => {
       const val = rampaBatchQrInput ? rampaBatchQrInput.value.trim() : '';
       if (!val) {
-        window.UanifyUI.toast('Ingresa o escanea un folio de lote madre para agregarlo.', 'warning');
+        window.UanifyUI.toast('Escanea o escribe el número de lote madre para agregarlo.', 'warning');
         return;
       }
       addLotToRampaBatchByQuery(val);
@@ -2074,37 +2144,20 @@ window.initTerminalView = function() {
     });
   }
 
-  function validateSupervisorRampaAuth() {
-    const user = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
-    const isSuperUser = user.role === 'admin' || user.role === 'ingeniero' || 
-                        (user.assignedDepartments && (user.assignedDepartments.includes('*') || user.assignedDepartments.includes('D-04') || user.assignedDepartments.includes('D-05')));
-    
-    if (rampaAuthNotice) {
-      if (!isSuperUser) {
-        rampaAuthNotice.style.display = 'block';
-        if (rampaAuthNoticeText) {
-          rampaAuthNoticeText.textContent = `Tu usuario (${user.name}) no tiene asignado el puesto de Rampa (D-04 / D-05). Operación en modo solo lectura.`;
-        }
-        if (btnExecuteRampaFraccionamiento) btnExecuteRampaFraccionamiento.disabled = true;
-      } else {
-        rampaAuthNotice.style.display = 'none';
-        if (btnExecuteRampaFraccionamiento) btnExecuteRampaFraccionamiento.disabled = false;
-      }
-    }
-  }
-
   window.openRampaFraccionamientoMode = function(optionalLotId) {
     if (optionalLotId) {
       if (!rampaMotherBatchQueue.some(l => l.lotId === optionalLotId)) {
         addLotToRampaBatchByQuery(optionalLotId);
       }
     }
-    validateSupervisorRampaAuth();
+    goToRampaStep(1);
     renderRampaBatchQueue();
-    updateRampaCalculations();
 
     if (modalRampaFraccionamiento) {
       modalRampaFraccionamiento.style.display = 'flex';
+      setTimeout(() => {
+        if (rampaBatchQrInput) rampaBatchQrInput.focus();
+      }, 100);
     }
   };
 
@@ -2130,16 +2183,16 @@ window.initTerminalView = function() {
   if (btnCloseRampaModal) btnCloseRampaModal.addEventListener('click', closeRampaModal);
   if (btnCancelRampaModal) btnCancelRampaModal.addEventListener('click', closeRampaModal);
 
-  // Ejecución masiva de fraccionamiento al confirmar la cola completa
+  // Ejecución masiva de cambio de tarjetas al finalizar la sesión
   if (btnExecuteRampaFraccionamiento) {
     btnExecuteRampaFraccionamiento.addEventListener('click', () => {
       if (rampaMotherBatchQueue.length === 0) {
-        window.UanifyUI.toast('Debes escanear al menos un lote madre en la cola para ejecutar el fraccionamiento.', 'warning');
+        window.UanifyUI.toast('Debes escanear al menos un lote madre en la sesión.', 'warning');
         return;
       }
 
       const selectedOp = rampaOperatorSelect ? rampaOperatorSelect.value : 'JORGE';
-      const pzasPerSublot = parseInt(rampaInputPiecesPerSublot ? rampaInputPiecesPerSublot.value : 15, 10) || 15;
+      const pzasPerSublot = 15;
       const countLots = rampaMotherBatchQueue.length;
       let totalNewSublots = 0;
 
@@ -2147,7 +2200,7 @@ window.initTerminalView = function() {
       rampaMotherBatchQueue.forEach(m => {
         const cleanId = m.lotId;
         const totalPzas = m.pieces || 60;
-        const numSublots = Math.max(1, Math.ceil(totalPzas / pzasPerSublot));
+        const numSublots = 4;
         totalNewSublots += numSublots;
 
         // Marcar en estado global si existe
@@ -2207,9 +2260,9 @@ window.initTerminalView = function() {
       renderActiveScannedLotCard(activeScannedLot);
 
       window.UanifyUI.toast(
-        `✅ Fraccionamiento en Rampa Completado: ${processedCount} lotes madre divididos exitosamente en ${totalNewSublots} torres de sublote (${pzasPerSublot} pzas c/u). Sublote ${activeScannedLot.lotId} cargado en la terminal.`,
+        `Tarjetas cambiadas con éxito: ${processedCount} lotes madre divididos en ${totalNewSublots} torres de 15 piezas. Listos para continuar a Prensas.`,
         'success',
-        'Lotes Fraccionados en Rampa'
+        'Cambio de Tarjetas Concluido'
       );
     });
   }
