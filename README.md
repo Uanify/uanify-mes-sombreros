@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.60.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.61.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.60.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.61.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,14 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.61.0] - 2026-10-09
+- **Unificación Operativa del Mapa de Almacenes al Mismo Nivel:**
+  - **Eliminación de Distinción Artificial:** Se suprimió la clasificación de "Almacenes Principales", reconociendo que **todos los almacenes y pulmones intermedios de planta operan al mismo nivel de relevancia industrial**.
+  - **Homogeneización Visual:** Se eliminaron los botones divisores y se estructuraron todas las estaciones y almacenes con sus respectivos inventarios y lotes en tránsito en una cuadrícula única.
+- **Sintetización Completa de Textos y Despliegue de Tooltips (.info-tip):**
+  - Condensación de títulos y subtítulos en toda la interfaz eliminando redundancias y párrafos extensos.
+  - Toda información descriptiva o de apoyo reside en micro-tooltips interactivos con icono ⓘ.
 
 ### [2.60.0] - 2026-10-09
 - **Alineación Completa al Alcance Ejecutivo Oficial del Sistema (MVP):**

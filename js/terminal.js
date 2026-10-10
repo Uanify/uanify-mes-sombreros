@@ -1470,99 +1470,49 @@ window.initTerminalView = function() {
     const myDepts = user.assignedDepartments || ['*'];
     const isSuperUser = myDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
 
-    if (currentPlantMapFilter === 'all') {
-      // 1. VISTA RECTORA: ALMACENES FÍSICOS PRINCIPALES DE PLANTA (ALM-01 A ALM-05)
-      const warehouses = UanifyState.warehouses || [
-        { code: 'ALM-01', name: 'Almacén 1: Materia Prima (Rollos de Telar)', type: 'Materia Prima', location: 'Nave A - Acceso Proveedores', capPercent: 82, stock: '1,850 m²' },
-        { code: 'ALM-02', name: 'Almacén 2: Rampa WIP & Pulmón Fraccionamiento', type: 'WIP Intermedio', location: 'Rampa Central (Paso a Prensas)', capPercent: 65, stock: '240 sombreros' },
-        { code: 'ALM-03', name: 'Almacén 3: Pulmón Pre-Prensas & Vapor', type: 'Pulmón de Proceso', location: 'Batería Prensas Michelagnoli', capPercent: 50, stock: '75 sombreros' },
-        { code: 'ALM-04', name: 'Almacén 4: Producto Terminado & Embarque', type: 'Producto Terminado', location: 'Nave B - Andén de Carga', capPercent: 70, stock: '520 sombreros' },
-        { code: 'ALM-05', name: 'Almacén 5: Merma & Segundas (Venta Viernes)', type: 'Saldos y Merma', location: 'Área Segregación Almacén 5', capPercent: 26, stock: '26 sombreros' }
-      ];
+    // VISTA UNIFICADA: TODOS LOS ALMACENES Y PULMONES INTERMEDIOS DE PLANTA AL MISMO NIVEL
+    const stations = UanifyState.stations || [];
+    plantDepartmentsGrid.innerHTML = stations.map(st => {
+      const isAssigned = isSuperUser || myDepts.includes(st.code);
+      const lotCount = countLotsAtStation(st.code);
+      const scrapWarningCount = countScrapLotsAtStation(st.code);
+      const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
 
-      plantDepartmentsGrid.innerHTML = warehouses.map(wh => {
-        const whLots = getLotsInWarehouse(wh.code);
-        const scrapCount = whLots.filter(l => l.hasScrap).length;
-
-        return `
-          <div class="dept-plant-card is-assigned-to-me" onclick="window.openPhysicalWarehouseModal('${wh.code}')" style="cursor:pointer;" title="Toca para ver lotes depositados en ${wh.name}">
-            <div class="dept-card-header">
-              <div>
-                <span class="dept-code-tag" style="background:#0F172A; color:#FFFFFF;">${wh.code} · ${wh.type}</span>
-                <h4 class="dept-name-heading" style="margin-top:4px;">${wh.name}</h4>
-                <span style="font-size:11px; color:var(--text-muted); display:block; margin-top:2px;">📍 ${wh.location}</span>
-              </div>
-              <span class="badge-status" style="background:var(--color-brand-light); color:var(--color-brand); font-weight:800; font-size:11px;">Almacén Físico</span>
+      return `
+        <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}" onclick="window.openDeptWarehouseModal('${st.code}')" style="cursor:pointer;" title="Toca para auditar almacén de ${st.name}">
+          <div class="dept-card-header">
+            <div>
+              <span class="dept-code-tag">${st.code || 'ALM'} · ${isQuality ? 'Calidad' : 'Almacén WIP'}</span>
+              <h4 class="dept-name-heading">${st.name}</h4>
+              <span style="font-size:11px; color:var(--text-muted); display:block; margin-top:2px;">📍 ${st.intermediateWarehouse || 'Área de Proceso'}</span>
             </div>
+            ${isAssigned ? `<span class="dept-assigned-badge">Mi Asignación</span>` : ''}
+          </div>
 
-            <div class="dept-card-stats">
-              <div class="dept-card-stat-item">
-                <span class="dept-card-stat-val">${whLots.length}</span>
-                <span class="dept-card-stat-lbl">Lotes Físicos</span>
-              </div>
-              <div class="dept-card-stat-item">
-                <span class="dept-card-stat-val">${whLots.reduce((acc, l) => acc + (l.pieces || 15), 0)} pzas</span>
-                <span class="dept-card-stat-lbl">WIP Acumulado</span>
-              </div>
+          <div class="dept-card-stats">
+            <div class="dept-card-stat-item">
+              <span class="dept-card-stat-val">${lotCount.lots}</span>
+              <span class="dept-card-stat-lbl">Lotes en Stock</span>
             </div>
-
-            ${scrapCount > 0 ? `
-              <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
-                ⚠️ ${scrapCount} lote(s) con pieza de merma en segregación
-              </div>
-            ` : ''}
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-              <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Ocupación: ${wh.capPercent || 60}%</span>
-              <span style="font-size:12px; font-weight:800; color:var(--color-brand);">Auditar Almacén ↗</span>
+            <div class="dept-card-stat-item">
+              <span class="dept-card-stat-val">${lotCount.pieces} pzas</span>
+              <span class="dept-card-stat-lbl">Piezas en Tránsito</span>
             </div>
           </div>
-        `;
-      }).join('');
 
-    } else {
-      // 2. VISTA DE TODOS LOS PULMONES INTERMEDIOS DE ESTACIÓN
-      const stations = UanifyState.stations || [];
-      plantDepartmentsGrid.innerHTML = stations.map(st => {
-        const isAssigned = isSuperUser || myDepts.includes(st.code);
-        const lotCount = countLotsAtStation(st.code);
-        const scrapWarningCount = countScrapLotsAtStation(st.code);
-        const isQuality = st.type === 'calidad' || (st.code && st.code.startsWith('C-'));
-
-        return `
-          <div class="dept-plant-card ${isAssigned ? 'is-assigned-to-me' : ''}" onclick="window.openDeptWarehouseModal('${st.code}')" style="cursor:pointer;" title="Toca para ver pulmón intermedio de ${st.name}">
-            <div class="dept-card-header">
-              <div>
-                <span class="dept-code-tag">${isQuality ? 'Pulmón de Calidad' : 'Pulmón de Proceso'}</span>
-                <h4 class="dept-name-heading">${st.name}</h4>
-              </div>
-              ${isAssigned ? `<span class="dept-assigned-badge">Mi Asignación</span>` : ''}
+          ${scrapWarningCount > 0 ? `
+            <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
+              ⚠️ ${scrapWarningCount} lote(s) con merma
             </div>
+          ` : ''}
 
-            <div class="dept-card-stats">
-              <div class="dept-card-stat-item">
-                <span class="dept-card-stat-val">${lotCount.lots}</span>
-                <span class="dept-card-stat-lbl">Lotes en Buffer</span>
-              </div>
-              <div class="dept-card-stat-item">
-                <span class="dept-card-stat-val">${lotCount.pieces} pzas</span>
-                <span class="dept-card-stat-lbl">En Espera</span>
-              </div>
-            </div>
-
-            ${scrapWarningCount > 0 ? `
-              <div style="font-size:11px; color:#B91C1C; background:#FEF2F2; padding:4px 8px; border-radius:6px; margin-bottom:8px; font-weight:700;">
-                ⚠️ ${scrapWarningCount} lote(s) con merma
-              </div>
-            ` : ''}
-
-            <div style="font-size:11.5px; font-weight:700; color:var(--color-brand); text-align:right; margin-top:4px;">
-              Ver Lotes ↗
-            </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+            <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Capacidad: ${st.wipCapacity || 150} pzas</span>
+            <span style="font-size:12px; font-weight:800; color:var(--color-brand);">Auditar Almacén ↗</span>
           </div>
-        `;
-      }).join('');
-    }
+        </div>
+      `;
+    }).join('');
   }
 
   function getLotsInWarehouse(whCode) {
@@ -1647,24 +1597,6 @@ window.initTerminalView = function() {
       }
     });
     return scrapLots;
-  }
-
-  if (btnFilterPlantAll) {
-    btnFilterPlantAll.addEventListener('click', () => {
-      currentPlantMapFilter = 'all';
-      btnFilterPlantAll.classList.add('active');
-      if (btnFilterPlantMyDepts) btnFilterPlantMyDepts.classList.remove('active');
-      renderPlantDepartmentsGrid();
-    });
-  }
-
-  if (btnFilterPlantMyDepts) {
-    btnFilterPlantMyDepts.addEventListener('click', () => {
-      currentPlantMapFilter = 'my-depts';
-      btnFilterPlantMyDepts.classList.add('active');
-      if (btnFilterPlantAll) btnFilterPlantAll.classList.remove('active');
-      renderPlantDepartmentsGrid();
-    });
   }
 
   // ── 9. MODAL DE ALMACÉN INTERMEDIO POR DEPARTAMENTO ───────────────────────
