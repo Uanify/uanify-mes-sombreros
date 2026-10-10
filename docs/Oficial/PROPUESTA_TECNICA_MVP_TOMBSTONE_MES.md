@@ -1,4 +1,4 @@
-﻿# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
+# Propuesta Técnica y Arquitectura Operativa · MES Tombstone Hats
 **Estrategia de Digitalización y Control de Manufactura · Uanify**  
 *Documento de Especificación de Alcance, Procesos de Piso y Modelo Operativo.*
 
@@ -35,9 +35,9 @@ El objetivo central es que Dirección e Ingeniería visualicen en tiempo real lo
 * **Inicio del Seguimiento:**  
   El lote nace formalmente en el MES cuando copa y falda se unen en **Prensas (T1)**. El proceso previo (Corte, Endopado y Entallado de lienzos) no se rastrea con lote individual en piso, pero sí se carga su consumo de materia prima a la orden de producción.
 * **Emisión de Tarjetas Directa en Planta:**  
-  El Ingeniero Admin consulta en el MES la orden proveniente de CONTPAQi Comercial. Asigna manualmente la cantidad de lotes madre (base 60 pzas) y sublotes (15 pzas) conforme a la programación. Desde la misma pantalla genera e imprime las tarjetas viajeras oficiales con sus códigos QR en hojas tamaño carta estándar de oficina para recortar e introducirlas en fundas plásticas cosidas.
+  El Ingeniero Admin consulta en el MES la orden proveniente de CONTPAQi Comercial. Asigna manualmente la cantidad de lotes y sublotes conforme a la programación de la orden. Desde la misma pantalla genera e imprime las tarjetas viajeras oficiales con sus códigos QR en hojas tamaño carta estándar de oficina para recortar e introducirlas en fundas plásticas cosidas.
 * **División en Sublotes en Hidráulicas (T4):**  
-  El lote viaja como lote madre de 60 piezas desde Prensas hasta Alineado en Hidráulicas (T4), donde se divide formalmente en sublotes de 15 piezas mediante escaneo para transitar por acabados hasta Producto Liberado. El número de sublotes es configurable por orden.
+  El lote viaja como lote principal desde Prensas hasta Alineado en Hidráulicas (T4), donde se divide formalmente en sublotes definidos por el usuario mediante escaneo para transitar por acabados hasta Producto Liberado. El número de sublotes y tamaño es configurable por orden.
 * **Momento del Escaneo:**  
   Se realiza al salir del departamento por el usuario/supervisor que concluye el proceso al depositar el lote en el almacén intermedio para el siguiente proceso. Con ello, el lote sale del WIP de un departamento e ingresa al inventario del siguiente.
 
