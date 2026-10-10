@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.62.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.63.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.62.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.63.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,20 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.63.0] - 2026-10-09
+- **Modelo Relacional de Base de Datos y Entidades Estructuradas:**
+  - **Relación Departamento → Procesos (1:N) & Almacenes (1:N) & Supervisores (M:N):**
+    - Se estructura formalmente la colección relacional `UanifyState.processes` vinculada mediante clave foránea `deptCode`.
+    - Un departamento agrupa uno o varios procesos de manufactura o paradas de inspección de calidad (donde los puntos de calidad `C-01` a `C-05` son tratados formalmente como entidades de proceso de tipo `calidad`).
+    - Un departamento tiene asignados formalmente sus almacenes intermedios (buffers WIP de entrada y salida).
+    - Un supervisor puede ser asignado a coordinar más de un departamento simultáneamente (`user.assignedDepartments`).
+  - **Entidad Proceso → Máquinas y Áreas de Trabajo con ID Formal (1:N):**
+    - Dentro de cada proceso se modela y gestiona una colección estructurada de máquinas y puestos de trabajo con su identificador único industrial (`PRE-01`, `PRE-02`, `HID-01`, `COR-01`, `COS-01`, etc.).
+    - Nuevo gestor interactivo en el modal de departamento para agregar, remover y editar dinámicamente procesos y sus máquinas con ID asignado.
+    - Persistencia automática de `uanify_processes` en `localStorage` sincronizada con `uanify_custom_stations`.
+  - **Filtrado Multi-Criterio y Paginación Industrial:**
+    - Filtro simultáneo por texto, supervisor y tipo de proceso con selector de página estandarizado y botonera unificada.
 
 ### [2.62.0] - 2026-10-09
 - **Modelo Relacional de Planta & Configuración Estandarizada:**

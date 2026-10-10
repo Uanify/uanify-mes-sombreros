@@ -821,3 +821,4 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-86** | Modo Rampa Multi-QR Batch con Validación de Estación         | Rampa / Terminal             | `v2.42.0`           | OK En Producción |
 | **RF-87** | Mapa de Planta Centrado en Almacenes Físicos (ALM-01 a ALM-05)| Terminal / Almacenes         | `v2.42.0`           | OK En Producción |
 | **RF-88** | Flujo Integral de Merma con Registro Kárdex y Depósito       | Calidad / Inventarios        | `v2.42.0`           | OK En Producción |
+| **RF-91** | Modelo Relacional: Depto → Procesos (C-XX) → Máquinas con ID | Configuración de Planta      | `v2.63.0`           | OK En Producción |

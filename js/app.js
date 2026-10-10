@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.62.0',
+  version: '2.63.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -1468,6 +1468,313 @@ const UanifyState = {
     { id: 'frontier',  name: 'Frontier',  color: 'Gris',   prensa: 'Sin asignar',      status: 'Bodega'       }
   ],
 
+  // ─── COLECCIÓN RELACIONAL DE PROCESOS Y CALIDAD (ENTIDAD FORMAL) ───────────
+  // Un departamento contiene 1 o varios procesos.
+  // Cada proceso tiene máquinas y áreas de trabajo identificadas con su ID único (PRE-01, HID-01, etc.).
+  // Los puntos de calidad (C-01 a C-04) son entidades formales de proceso de tipo 'calidad'.
+  processes: [
+    {
+      id: 'PROC-D01-1',
+      code: 'PROC-01',
+      name: 'Tendido de Rollos y Trazo',
+      deptCode: 'D-01',
+      type: 'manufactura',
+      cycleTime: '15s',
+      machines: [
+        { id: 'TEN-01', name: 'Mesa de Tendido 12m Alumínio', type: 'mesa_trabajo', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D01-2',
+      code: 'PROC-02',
+      name: 'Corte de Cuadros (Copa y Falda)',
+      deptCode: 'D-01',
+      type: 'manufactura',
+      cycleTime: '17s',
+      machines: [
+        { id: 'COR-01', name: 'Cortadora Circular KM-01', type: 'cortadora', status: 'operativa' },
+        { id: 'COR-02', name: 'Cortadora Vertical Textil KM-02', type: 'cortadora', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D02-1',
+      code: 'PROC-03',
+      name: 'Inserción de Alambre Perimetral',
+      deptCode: 'D-02',
+      type: 'manufactura',
+      cycleTime: '20s',
+      machines: [
+        { id: 'ALM-EST-01', name: 'Estación de Conformado de Alambre Cal. 19', type: 'area_trabajo', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D02-2',
+      code: 'PROC-04',
+      name: 'Costura Perimetral de Ala',
+      deptCode: 'D-02',
+      type: 'manufactura',
+      cycleTime: '18s',
+      machines: [
+        { id: 'COS-01', name: 'Máquina de Coser Singer Heavy Duty S-01', type: 'costura', status: 'operativa' },
+        { id: 'COS-02', name: 'Máquina de Coser Singer Heavy Duty S-02', type: 'costura', status: 'operativa' },
+        { id: 'COS-03', name: 'Máquina de Coser Singer Heavy Duty S-03', type: 'costura', status: 'operativa' },
+        { id: 'COS-04', name: 'Máquina de Coser Singer Heavy Duty S-04', type: 'costura', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D03-1',
+      code: 'PROC-05',
+      name: 'Baño de Dope Químico (Inmersión)',
+      deptCode: 'D-03',
+      type: 'manufactura',
+      cycleTime: '20s',
+      machines: [
+        { id: 'TIN-01', name: 'Tina de Inmersión Dope Químico T-01', type: 'tina_quimica', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D03-2',
+      code: 'PROC-06',
+      name: 'Tendido en Camas y Secado',
+      deptCode: 'D-03',
+      type: 'manufactura',
+      cycleTime: '25s',
+      machines: [
+        { id: 'SEC-01', name: 'Cama de Secado Dope #1', type: 'cama_secado', status: 'operativa' },
+        { id: 'SEC-02', name: 'Cama de Secado Dope #2', type: 'cama_secado', status: 'operativa' },
+        { id: 'SEC-03', name: 'Cama de Secado Dope #3', type: 'cama_secado', status: 'operativa' },
+        { id: 'SEC-04', name: 'Cama de Secado Dope #4', type: 'cama_secado', status: 'operativa' },
+        { id: 'SEC-05', name: 'Cama de Secado Dope #5', type: 'cama_secado', status: 'operativa' },
+        { id: 'SEC-06', name: 'Cama de Secado Dope #6', type: 'cama_secado', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D04-1',
+      code: 'PROC-07',
+      name: 'Sellado con Brocha',
+      deptCode: 'D-04',
+      type: 'manufactura',
+      cycleTime: '15s',
+      machines: [
+        { id: 'BRO-01', name: 'Mesa de Brocheado Manual Techada', type: 'area_trabajo', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D04-2',
+      code: 'PROC-08',
+      name: 'Refuerzo de Corona con Pintola',
+      deptCode: 'D-04',
+      type: 'manufactura',
+      cycleTime: '15s',
+      machines: [
+        { id: 'COM-01', name: 'Compresor Industrial 15HP', type: 'compresor', status: 'operativa' },
+        { id: 'PIS-01', name: 'Pistola HVLP Sellado 01', type: 'pistola_aspersor', status: 'operativa' },
+        { id: 'PIS-02', name: 'Pistola HVLP Sellado 02', type: 'pistola_aspersor', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-C01',
+      code: 'C-01',
+      name: 'Calidad 1 (Post-Dope / Refuerzos)',
+      deptCode: 'C-01',
+      type: 'calidad',
+      cycleTime: '18s',
+      machines: [
+        { id: 'INS-01', name: 'Mesa de Inspección Iluminada 5000K', type: 'mesa_inspeccion', status: 'operativa' },
+        { id: 'CAL-01', name: 'Calibrador de Espesor y Rigidez', type: 'instrumento_medicion', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D05-1',
+      code: 'PROC-09',
+      name: 'Hormado Térmico de Copa (Vapor)',
+      deptCode: 'D-05',
+      type: 'prensas',
+      cycleTime: '13s',
+      machines: [
+        { id: 'PRE-01', name: 'Prensa Michelagnoli Vapor 01', type: 'prensa_vapor', status: 'operativa' },
+        { id: 'PRE-02', name: 'Prensa Michelagnoli Vapor 02', type: 'prensa_vapor', status: 'operativa' },
+        { id: 'PRE-03', name: 'Prensa Michelagnoli Vapor 03', type: 'prensa_vapor', status: 'operativa' },
+        { id: 'PRE-04', name: 'Prensa Michelagnoli Vapor 04', type: 'prensa_vapor', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D05-2',
+      code: 'PROC-10',
+      name: 'Planchado Hidráulico de Falda',
+      deptCode: 'D-05',
+      type: 'prensas',
+      cycleTime: '13s',
+      machines: [
+        { id: 'HID-01', name: 'Prensa Hidráulica H-01 Alta Presión', type: 'prensa_hidraulica', status: 'operativa' },
+        { id: 'HID-02', name: 'Prensa Hidráulica H-02 Alta Presión', type: 'prensa_hidraulica', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D06-1',
+      code: 'PROC-11',
+      name: 'Recorte Perimetral de Falda',
+      deptCode: 'D-06',
+      type: 'manufactura',
+      cycleTime: '14s',
+      machines: [
+        { id: 'REC-01', name: 'Mesa Circular de Corte Refaldeador 01', type: 'refaldeador', status: 'operativa' },
+        { id: 'REC-02', name: 'Mesa Circular de Corte Refaldeador 02', type: 'refaldeador', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D06-2',
+      code: 'PROC-12',
+      name: 'Lijado y Refaldeado de Orilla',
+      deptCode: 'D-06',
+      type: 'manufactura',
+      cycleTime: '14s',
+      machines: [
+        { id: 'REC-03', name: 'Perfiladora de Orilla R-03', type: 'perfiladora', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D07-1',
+      code: 'PROC-13',
+      name: 'Preparación y Mezcla de Pintura',
+      deptCode: 'D-07',
+      type: 'manufactura',
+      cycleTime: '12s',
+      machines: [
+        { id: 'MEZ-01', name: 'Agitador Neumático Mezcla Pinturas', type: 'mezclador', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D07-2',
+      code: 'PROC-14',
+      name: 'Aspersión de Pintura y Matizado',
+      deptCode: 'D-07',
+      type: 'manufactura',
+      cycleTime: '30s',
+      machines: [
+        { id: 'CAB-01', name: 'Cabina de Pintura con Cortina y Extracción C-01', type: 'cabina_pintura', status: 'operativa' },
+        { id: 'PIS-03', name: 'Pistola Taiwan 1125 Boquilla Fina', type: 'pistola_pintura', status: 'operativa' },
+        { id: 'PIS-04', name: 'Pistola Taiwan 1125 Boquilla Regular', type: 'pistola_pintura', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-C02',
+      code: 'C-02',
+      name: 'Calidad 2 (Post-Pintura)',
+      deptCode: 'C-02',
+      type: 'calidad',
+      cycleTime: '16s',
+      machines: [
+        { id: 'LUZ-01', name: 'Cámara de Luz D65 Inspección de Tono', type: 'cabina_luz', status: 'operativa' },
+        { id: 'ESP-01', name: 'Espectrofotómetro Portátil Tono', type: 'medidor_color', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D08-1',
+      code: 'PROC-15',
+      name: 'Aplicación de Brillo / Laca Espejo',
+      deptCode: 'D-08',
+      type: 'manufactura',
+      cycleTime: '10s',
+      machines: [
+        { id: 'PIS-05', name: 'Pistola Barniz Alto Sólidos', type: 'pistola_laca', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D08-2',
+      code: 'PROC-16',
+      name: 'Curado Térmico Infrarrojo',
+      deptCode: 'D-08',
+      type: 'manufactura',
+      cycleTime: '12s',
+      machines: [
+        { id: 'TUN-01', name: 'Túnel Infrarrojo de Curado Laca T-01', type: 'tunel_infrarrojo', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D09-1',
+      code: 'PROC-17',
+      name: 'Temperado en Horno Seco',
+      deptCode: 'D-09',
+      type: 'manufactura',
+      cycleTime: '18s',
+      machines: [
+        { id: 'HOR-01', name: 'Horno de Calor Seco #1', type: 'horno_temperado', status: 'operativa' },
+        { id: 'HOR-02', name: 'Horno de Calor Seco #2', type: 'horno_temperado', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D09-2',
+      code: 'PROC-18',
+      name: 'Refaldeado y Curvatura de Ala',
+      deptCode: 'D-09',
+      type: 'manufactura',
+      cycleTime: '16s',
+      machines: [
+        { id: 'CON-01', name: 'Conformadora Neumática de Ala', type: 'conformadora', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D10-1',
+      code: 'PROC-19',
+      name: 'Ribeteado y Pegado de Tafilete',
+      deptCode: 'D-10',
+      type: 'manufactura',
+      cycleTime: '22s',
+      machines: [
+        { id: 'PEG-01', name: 'Pegadora Térmica de Badana 01', type: 'pegadora_badana', status: 'operativa' },
+        { id: 'PEG-02', name: 'Pegadora Térmica de Badana 02', type: 'pegadora_badana', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D10-2',
+      code: 'PROC-20',
+      name: 'Montaje de Toquilla y Herrajes',
+      deptCode: 'D-10',
+      type: 'manufactura',
+      cycleTime: '18s',
+      machines: [
+        { id: 'PLA-01', name: 'Plancha de Asiento de Toquilla', type: 'plancha_adorno', status: 'operativa' },
+        { id: 'REM-01', name: 'Remachadora de Herrajes y Pins', type: 'remachadora', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-C03',
+      code: 'C-03',
+      name: 'Calidad 3 (Auditoría Final)',
+      deptCode: 'C-03',
+      type: 'calidad',
+      cycleTime: '25s',
+      machines: [
+        { id: 'REV-01', name: 'Mesa de Revisión 360° con Espejos', type: 'mesa_auditoria', status: 'operativa' },
+        { id: 'MED-01', name: 'Medidor Analógico de Confort y Talla (55-60)', type: 'medidor_tallas', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-C04',
+      code: 'C-04',
+      name: 'Calidad 4 (Post-Laqueado Especial)',
+      deptCode: 'C-04',
+      type: 'calidad',
+      cycleTime: '20s',
+      machines: [
+        { id: 'BRI-01', name: 'Medidor de Brillo Espejo 60°/85°', type: 'brillometro', status: 'operativa' }
+      ]
+    },
+    {
+      id: 'PROC-D11-1',
+      code: 'PROC-21',
+      name: 'Etiquetado, Empaque y Vale COMPAC',
+      deptCode: 'D-11',
+      type: 'logistica',
+      cycleTime: '20s',
+      machines: [
+        { id: 'TER-01', name: 'Terminal Digital de Salida CONTPAQi', type: 'terminal_pos', status: 'operativa' },
+        { id: 'BAS-01', name: 'Báscula Digital de Andén 150kg', type: 'bascula', status: 'operativa' }
+      ]
+    }
+  ],
+
   // ─── DEPARTAMENTOS REALES (validados en audio) ─────────────────────────────
   // FLUJO REAL (Audio Carlos): Corte de cuadros → [Inspección MP] → Alambrado
   //   → Englopado/Dope (camas) → Refuerzos (pintola/brocha) → [Calidad 1]
@@ -2372,6 +2679,19 @@ function enrichStationWithDefaults(st, idx) {
     }
   } catch (e) {
     console.warn('Error al restaurar áreas de calidad:', e);
+  }
+
+  // Restaurar procesos y máquinas relacionales personalizados si existen
+  try {
+    const savedProcesses = localStorage.getItem('uanify_processes');
+    if (savedProcesses) {
+      const parsedProc = JSON.parse(savedProcesses);
+      if (Array.isArray(parsedProc) && parsedProc.length > 0) {
+        UanifyState.processes = parsedProc;
+      }
+    }
+  } catch (e) {
+    console.warn('Error al restaurar procesos relacionales:', e);
   }
 
   // Restaurar rutas y secuencias por modelo si existen
