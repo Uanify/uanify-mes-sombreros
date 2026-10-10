@@ -2486,13 +2486,344 @@ window.initTerminalView = function() {
     renderPlantDepartmentsGrid();
   });
 
-  // Modal de Reporte de Paro de Línea (Botón Heroico en Terminal y Prensas)
+  // ── SISTEMA INTEGRAL DE PARO DE LÍNEA: STEPPER, CRONÓMETRO Y WIDGET FLOTANTE (RF-92) ──
   const modalStop = document.getElementById('modalStop');
   const btnCloseStopModal = document.getElementById('btnCloseStopModal');
   const stopOptBtns = document.querySelectorAll('.stop-opt-btn');
 
+  // Elementos del Stepper
+  const stepperStep1 = document.getElementById('stepperStep1');
+  const stepperStep2 = document.getElementById('stepperStep2');
+  const stepperStep3 = document.getElementById('stepperStep3');
+  const stopStepContent1 = document.getElementById('stopStepContent1');
+  const stopStepContent2 = document.getElementById('stopStepContent2');
+  const stopStepContent3 = document.getElementById('stopStepContent3');
+
+  // Selectores y campos
+  const stopDeptSelect = document.getElementById('stopDeptSelect');
+  const stopMachineSelect = document.getElementById('stopMachineSelect');
+  const stopNotesInput = document.getElementById('stopNotesInput');
+  const stopImpactSelect = document.getElementById('stopImpactSelect');
+  const stopConfirmDeptText = document.getElementById('stopConfirmDeptText');
+  const stopConfirmMachText = document.getElementById('stopConfirmMachText');
+  const stopConfirmCauseText = document.getElementById('stopConfirmCauseText');
+
+  // Botones de acción del modal
+  const btnStopBackStep = document.getElementById('btnStopBackStep');
+  const btnStopNextToStep2 = document.getElementById('btnStopNextToStep2');
+  const btnStartDowntimeTimer = document.getElementById('btnStartDowntimeTimer');
+  const btnMinimizeStopModal = document.getElementById('btnMinimizeStopModal');
+  const btnFinishDowntimeStop = document.getElementById('btnFinishDowntimeStop');
+
+  // Display de cronómetro y detalles
+  const modalStopTimerDisplay = document.getElementById('modalStopTimerDisplay');
+  const modalStopStartTime = document.getElementById('modalStopStartTime');
+  const modalStopStation = document.getElementById('modalStopStation');
+  const modalStopCause = document.getElementById('modalStopCause');
+  const modalStopUser = document.getElementById('modalStopUser');
+
+  // Widget flotante global
+  const globalActiveDowntimeWidget = document.getElementById('globalActiveDowntimeWidget');
+  const floatingDowntimeTime = document.getElementById('floatingDowntimeTime');
+  const floatingDowntimeMeta = document.getElementById('floatingDowntimeMeta');
+
+  let currentStopStep = 1;
+  let selectedStopCause = 'Cambio de horma / molde (SMED)';
+  let activeDowntimeTimerInterval = null;
+
+  // Poblar selectores de departamentos y máquinas
+  function populateStopDeptSelect() {
+    if (!stopDeptSelect || !window.UanifyState || !window.UanifyState.stations) return;
+    stopDeptSelect.innerHTML = window.UanifyState.stations.map(st => `
+      <option value="${st.code}">${st.code} - ${st.name}</option>
+    `).join('');
+
+    populateStopMachineSelect();
+  }
+
+  function populateStopMachineSelect() {
+    if (!stopMachineSelect || !stopDeptSelect) return;
+    const selectedDeptCode = stopDeptSelect.value;
+    const dept = (window.UanifyState.stations || []).find(s => s.code === selectedDeptCode);
+    
+    // Buscar en UanifyState.processes primero
+    const deptProcs = (window.UanifyState.processes || []).filter(p => p.deptCode === selectedDeptCode);
+    let machOptions = [];
+    deptProcs.forEach(p => {
+      (p.machines || []).forEach(m => {
+        if (m && m.id) machOptions.push(`${m.id} ${m.name}`);
+      });
+    });
+
+    if (machOptions.length === 0 && dept && dept.machines) {
+      machOptions = dept.machines.split(/[,;]/).map(m => m.trim()).filter(Boolean);
+    }
+    if (machOptions.length === 0) {
+      machOptions = [`MAQ-01 Celda de ${dept ? dept.name : 'Trabajo'}`];
+    }
+
+    stopMachineSelect.innerHTML = machOptions.map(m => `
+      <option value="${m}">${m}</option>
+    `).join('');
+  }
+
+  if (stopDeptSelect) {
+    stopDeptSelect.addEventListener('change', populateStopMachineSelect);
+  }
+
+  // Selección de motivo de paro en Paso 1
+  stopOptBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      stopOptBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedStopCause = btn.getAttribute('data-stop') || 'Ajuste operativo / Mantenimiento';
+      // Auto avanzar al Paso 2
+      goToStopStep(2);
+    });
+  });
+
+  function goToStopStep(stepNum) {
+    // Si hay un paro corriendo y se intenta retroceder, no permitir romper el cronómetro
+    if (window.UanifyState.activeDowntime && stepNum < 3) {
+      window.UanifyUI.toast('Hay un paro de máquina activo corriendo. Finalízalo o minimízalo.', 'info');
+      return;
+    }
+
+    currentStopStep = stepNum;
+
+    // Actualizar encabezados y contenido del stepper
+    [stepperStep1, stepperStep2, stepperStep3].forEach((el, idx) => {
+      if (!el) return;
+      el.classList.remove('active', 'completed');
+      if (idx + 1 === stepNum) el.classList.add('active');
+      else if (idx + 1 < stepNum) el.classList.add('completed');
+    });
+
+    if (stopStepContent1) stopStepContent1.style.display = (stepNum === 1) ? 'block' : 'none';
+    if (stopStepContent2) stopStepContent2.style.display = (stepNum === 2) ? 'block' : 'none';
+    if (stopStepContent3) stopStepContent3.style.display = (stepNum === 3) ? 'block' : 'none';
+
+    // Manejo de botones del footer según el paso
+    if (btnStopBackStep) btnStopBackStep.style.display = (stepNum === 2) ? 'inline-flex' : 'none';
+    if (btnStopNextToStep2) btnStopNextToStep2.style.display = (stepNum === 1) ? 'inline-flex' : 'none';
+    if (btnStartDowntimeTimer) btnStartDowntimeTimer.style.display = (stepNum === 2) ? 'inline-flex' : 'none';
+    if (btnMinimizeStopModal) btnMinimizeStopModal.style.display = (stepNum === 3) ? 'inline-flex' : 'none';
+    if (btnFinishDowntimeStop) btnFinishDowntimeStop.style.display = (stepNum === 3) ? 'inline-flex' : 'none';
+
+    if (stepNum === 2) {
+      const selectedDeptCode = stopDeptSelect ? stopDeptSelect.value : 'D-05';
+      const dept = (window.UanifyState.stations || []).find(s => s.code === selectedDeptCode);
+      if (stopConfirmDeptText) stopConfirmDeptText.textContent = dept ? `${dept.code} - ${dept.name}` : selectedDeptCode;
+      if (stopConfirmMachText) stopConfirmMachText.textContent = stopMachineSelect ? stopMachineSelect.value : 'MAQ-01';
+      if (stopConfirmCauseText) stopConfirmCauseText.textContent = selectedStopCause;
+    }
+  }
+  window.goToStopStep = goToStopStep;
+
+  if (btnStopNextToStep2) {
+    btnStopNextToStep2.addEventListener('click', () => goToStopStep(2));
+  }
+
+  if (btnStopBackStep) {
+    btnStopBackStep.addEventListener('click', () => goToStopStep(1));
+  }
+
+  // Formateador de segundos a HH:MM:SS
+  function formatSecondsToHMS(totalSecs) {
+    const hrs = Math.floor(totalSecs / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    const secs = totalSecs % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  // Función para arrancar o sincronizar cronómetro
+  function startDowntimeClockRunning() {
+    if (activeDowntimeTimerInterval) clearInterval(activeDowntimeTimerInterval);
+
+    const updateDisplays = () => {
+      if (!window.UanifyState.activeDowntime) return;
+      const startMs = window.UanifyState.activeDowntime.startTimestamp;
+      const nowMs = Date.now();
+      const elapsedSecs = Math.max(0, Math.floor((nowMs - startMs) / 1000));
+      const formattedHMS = formatSecondsToHMS(elapsedSecs);
+
+      if (modalStopTimerDisplay) modalStopTimerDisplay.textContent = formattedHMS;
+      if (floatingDowntimeTime) floatingDowntimeTime.textContent = formattedHMS;
+    };
+
+    updateDisplays();
+    activeDowntimeTimerInterval = setInterval(updateDisplays, 1000);
+
+    // Mostrar widget flotante global permanente
+    if (globalActiveDowntimeWidget) {
+      globalActiveDowntimeWidget.style.display = 'flex';
+      if (floatingDowntimeMeta && window.UanifyState.activeDowntime) {
+        floatingDowntimeMeta.textContent = `${window.UanifyState.activeDowntime.station} · ${window.UanifyState.activeDowntime.cause}`;
+      }
+    }
+  }
+
+  // Botón: Comenzar Paro & Correr Cronómetro (Paso 2 -> Paso 3)
+  if (btnStartDowntimeTimer) {
+    btnStartDowntimeTimer.addEventListener('click', () => {
+      const selectedDeptCode = stopDeptSelect ? stopDeptSelect.value : 'D-05';
+      const dept = (window.UanifyState.stations || []).find(s => s.code === selectedDeptCode);
+      const machine = stopMachineSelect ? stopMachineSelect.value : 'MAQ-01';
+      const notes = stopNotesInput ? stopNotesInput.value.trim() : '';
+      const impact = stopImpactSelect ? stopImpactSelect.value : 'Línea Detenida';
+      const user = window.UanifyState.users.find(u => u.id === window.UanifyState.currentUser) || { name: 'Supervisor de Turno' };
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      // Crear objeto de paro activo persistente
+      const activeDowntime = {
+        id: 'stop-' + Date.now(),
+        startTimestamp: now.getTime(),
+        time: timeStr,
+        deptCode: selectedDeptCode,
+        station: dept ? `${dept.code} (${machine.split(' ')[0]})` : machine,
+        fullStationName: dept ? `${dept.code} - ${dept.name} [${machine}]` : machine,
+        machine: machine,
+        cause: selectedStopCause,
+        notes: notes,
+        impact: impact,
+        reportedBy: user.name,
+        status: 'running'
+      };
+
+      window.UanifyState.activeDowntime = activeDowntime;
+      try {
+        localStorage.setItem('uanify_active_downtime', JSON.stringify(activeDowntime));
+      } catch (e) {
+        console.warn('Error saving active downtime:', e);
+      }
+
+      // Llenar datos en Paso 3
+      if (modalStopStartTime) modalStopStartTime.textContent = `${timeStr} hrs`;
+      if (modalStopStation) modalStopStation.textContent = activeDowntime.fullStationName;
+      if (modalStopCause) modalStopCause.textContent = activeDowntime.cause;
+      if (modalStopUser) modalStopUser.textContent = activeDowntime.reportedBy;
+
+      goToStopStep(3);
+      startDowntimeClockRunning();
+
+      window.UanifyUI.toast(
+        `Paro iniciado a las ${timeStr} en ${activeDowntime.station}. Cronómetro corriendo en vivo.`,
+        'warning',
+        'Cronómetro de Paro Activado'
+      );
+    });
+  }
+
+  // Minimizar modal para operar libremente mientras corre
+  if (btnMinimizeStopModal) {
+    btnMinimizeStopModal.addEventListener('click', () => {
+      closeStopModal();
+      window.UanifyUI.toast(
+        'El cronómetro sigue corriendo en segundo plano. Haz clic en el indicador flotante rojo para volver al paro.',
+        'info',
+        'Cronómetro en Segundo Plano'
+      );
+    });
+  }
+
+  // Parar Registro y Guardar en Bitácora
+  if (btnFinishDowntimeStop) {
+    btnFinishDowntimeStop.addEventListener('click', () => {
+      if (!window.UanifyState.activeDowntime) return;
+
+      const active = window.UanifyState.activeDowntime;
+      const endMs = Date.now();
+      const elapsedSecs = Math.max(1, Math.floor((endMs - active.startTimestamp) / 60000));
+      const durationStr = elapsedSecs >= 60 
+        ? `${Math.floor(elapsedSecs / 60)}h ${elapsedSecs % 60} min`
+        : `${elapsedSecs} min`;
+
+      const now = new Date();
+      const endTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      // Crear registro final para la bitácora
+      const finishedRecord = {
+        time: active.time,
+        endTime: endTimeStr,
+        station: active.station,
+        cause: active.cause + (active.notes ? ` (${active.notes})` : ''),
+        duration: durationStr,
+        impact: active.impact || 'Línea Detenida',
+        user: active.reportedBy
+      };
+
+      if (!window.UanifyState.downtimes) window.UanifyState.downtimes = [];
+      window.UanifyState.downtimes.unshift(finishedRecord);
+
+      // Limpiar estado activo
+      window.UanifyState.activeDowntime = null;
+      try {
+        localStorage.removeItem('uanify_active_downtime');
+      } catch (e) {}
+
+      if (activeDowntimeTimerInterval) {
+        clearInterval(activeDowntimeTimerInterval);
+        activeDowntimeTimerInterval = null;
+      }
+
+      if (globalActiveDowntimeWidget) {
+        globalActiveDowntimeWidget.style.display = 'none';
+      }
+
+      // Re-renderizar bitácora Andon y Consola de Ingeniería
+      if (typeof window.renderDowntimes === 'function') {
+        window.renderDowntimes();
+      }
+
+      closeStopModal();
+      goToStopStep(1);
+
+      window.UanifyUI.toast(
+        `Paro finalizado (${durationStr}). Registrado formalmente en la bitácora de planta y tablero Andon.`,
+        'success',
+        'Paro Guardado en Bitácora'
+      );
+    });
+  }
+
+  // Función global para re-abrir el modal con el cronómetro corriendo desde el widget flotante
+  window.openRunningDowntimeModal = function() {
+    if (modalStop) {
+      if (window.UanifyState.activeDowntime) {
+        const active = window.UanifyState.activeDowntime;
+        if (modalStopStartTime) modalStopStartTime.textContent = `${active.time} hrs`;
+        if (modalStopStation) modalStopStation.textContent = active.fullStationName || active.station;
+        if (modalStopCause) modalStopCause.textContent = active.cause;
+        if (modalStopUser) modalStopUser.textContent = active.reportedBy || 'Supervisor';
+        goToStopStep(3);
+      } else {
+        goToStopStep(1);
+      }
+      modalStop.classList.add('active');
+    }
+  };
+
+  // Restaurar paro activo desde localStorage si la página se recargó
+  try {
+    const savedActiveDowntime = localStorage.getItem('uanify_active_downtime');
+    if (savedActiveDowntime) {
+      window.UanifyState.activeDowntime = JSON.parse(savedActiveDowntime);
+      startDowntimeClockRunning();
+    }
+  } catch (e) {
+    console.warn('Error recovering active downtime:', e);
+  }
+
   function openStopModal() {
-    if (modalStop) modalStop.classList.add('active');
+    populateStopDeptSelect();
+    if (window.UanifyState.activeDowntime) {
+      window.openRunningDowntimeModal();
+    } else {
+      goToStopStep(1);
+      if (modalStop) modalStop.classList.add('active');
+    }
   }
 
   function closeStopModal() {
@@ -2513,53 +2844,11 @@ window.initTerminalView = function() {
     });
   }
 
-  stopOptBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cause = btn.getAttribute('data-stop') || 'Ajuste operativo / Mantenimiento';
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      
-      const newDowntime = {
-        time: timeStr,
-        station: 'D-02 Prensas Vapor #04',
-        cause: cause,
-        duration: 'En curso (0 min)',
-        impact: 'Línea Detenida'
-      };
-
-      if (window.UanifyState && window.UanifyState.downtimes) {
-        window.UanifyState.downtimes.unshift(newDowntime);
-      }
-
-      if (typeof window.renderDowntimes === 'function') {
-        window.renderDowntimes();
-      }
-
-      closeStopModal();
-
-      window.UanifyUI.toast(
-        `Paro de máquina registrado a las ${timeStr}: "${cause}". Notificación activa en Tablero Andon.`,
-        'warning',
-        'Paro de Línea Registrado'
-      );
-    });
-  });
-
-  // Bitácora de Paros de Prensa (RF-79)
+  // Bitácora de Paros de Prensa (RF-79 botón secundario en Terminal)
   const btnPrensasStops = document.querySelectorAll('.btn-prensas-stop');
-  const prensasStatusBadge = document.getElementById('prensasStatusBadge');
   btnPrensasStops.forEach(btn => {
     btn.addEventListener('click', () => {
-      const motivo = btn.getAttribute('data-stop');
-      if (prensasStatusBadge) {
-        prensasStatusBadge.textContent = `En Paro: ${motivo}`;
-        prensasStatusBadge.style.background = '#DC2626';
-      }
-      window.UanifyUI.toast(
-        `Paro de máquina registrado en Prensa #04: ${motivo}. Cronómetro de tiempo muerto activado en Andon de planta.`,
-        'warning',
-        'Paro de Prensa Registrado'
-      );
+      openStopModal();
     });
   });
 

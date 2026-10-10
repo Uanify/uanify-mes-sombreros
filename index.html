@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.63.0">
-  <link rel="stylesheet" href="css/components.css?v=2.63.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.64.0">
+  <link rel="stylesheet" href="css/components.css?v=2.64.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.63.0</span>
+        <span class="system-version-pill login-version-pill">v2.64.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.62.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.64.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -3008,44 +3008,197 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: REPORTAR PARO DE MÁQUINA
+       MODAL: REPORTAR PARO DE LÍNEA CON STEPPER & CRONÓMETRO INDUSTRIAL (RF-92)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalStop">
-    <div class="modal-box card-glass">
+    <div class="modal-box card-glass" style="max-width:620px; width:95%; max-height:90vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
           <h3 style="display:flex; align-items:center; gap:6px;">
-            Registrar Paro de Línea
+            <span id="modalStopHeaderTitle">Gestión de Paro de Línea</span>
             <span class="info-tip">
-              <button type="button" class="info-tip-btn" aria-label="Información">
+              <button type="button" class="info-tip-btn" aria-label="Información de Paro">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </button>
-              <span class="info-tip-popup">Notificación inmediata al Tablero Andon y registro de cronómetro.</span>
+              <span class="info-tip-popup">Flujo guiado por pasos (Stepper): Selecciona estación y causa, inicia el cronómetro y minimiza para seguir operando mientras se contabiliza el tiempo muerto.</span>
             </span>
           </h3>
         </div>
-        <button class="modal-close" id="btnCloseStopModal">&times;</button>
+        <button class="modal-close" id="btnCloseStopModal" type="button">&times;</button>
       </div>
-      <div class="modal-body">
-        <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:12px;">Selecciona la causa de paro:</p>
-        <div class="stop-options">
-          <button class="stop-opt-btn" data-stop="Cambio de horma / molde (Denver, Viejonón, Laredo, Roper SMED)">
-            Cambio de horma / molde (SMED)
+
+      <!-- Barra Stepper de 3 Pasos -->
+      <div style="padding:14px 20px 0 20px;">
+        <div class="stepper-header">
+          <div class="stepper-step active" id="stepperStep1" onclick="window.goToStopStep(1)">
+            <div class="stepper-circle">1</div>
+            <span class="stepper-label">Estación & Causa</span>
+          </div>
+          <div class="stepper-step" id="stepperStep2" onclick="window.goToStopStep(2)">
+            <div class="stepper-circle">2</div>
+            <span class="stepper-label">Confirmación</span>
+          </div>
+          <div class="stepper-step" id="stepperStep3">
+            <div class="stepper-circle">3</div>
+            <span class="stepper-label">Cronómetro Vivo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body" style="padding-top:10px;">
+        <!-- PASO 1: SELECCIÓN DE DEPARTAMENTO, MÁQUINA Y MOTIVO DEL PARO -->
+        <div id="stopStepContent1">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">Departamento / Área:</label>
+              <select id="stopDeptSelect" class="custom-select">
+                <!-- Poblado dinámicamente desde UanifyState.stations -->
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">Máquina o Puesto de Trabajo:</label>
+              <select id="stopMachineSelect" class="custom-select">
+                <!-- Poblado dinámicamente según el depto seleccionado -->
+              </select>
+            </div>
+          </div>
+
+          <p style="font-size:12.5px; font-weight:700; color:var(--text-secondary); margin:12px 0 8px 0;">Selecciona el motivo principal del paro:</p>
+          <div class="stop-options" style="display:flex; flex-direction:column; gap:8px;">
+            <button type="button" class="stop-opt-btn" data-stop="Cambio de horma / molde (SMED)">
+              <span>🔧 Cambio de horma / molde (Denver, Viejonón, Laredo SMED)</span>
+            </button>
+            <button type="button" class="stop-opt-btn" data-stop="Falta de presión de vapor / caldera baja">
+              <span>💨 Falta de presión de vapor en caldera matriz</span>
+            </button>
+            <button type="button" class="stop-opt-btn" data-stop="Falta de tafiletes o toquillas en estación">
+              <span>🧵 Falta de tafiletes / subensambles en puesto</span>
+            </button>
+            <button type="button" class="stop-opt-btn" data-stop="Falla mecánica o eléctrica en equipo">
+              <span>⚡ Falla mecánica o eléctrica en prensa o troqueladora</span>
+            </button>
+            <button type="button" class="stop-opt-btn" data-stop="Descanso de personal / comida">
+              <span>🍱 Descanso de personal / comida programada</span>
+            </button>
+            <button type="button" class="stop-opt-btn" data-stop="Otro motivo operativo">
+              <span>📝 Otro motivo operativo o mantenimiento no programado</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 2: DETALLES ADICIONALES & INICIO DE CRONÓMETRO -->
+        <div id="stopStepContent2" style="display:none;">
+          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:8px;">
+              <div>
+                <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Área:</span>
+                <strong id="stopConfirmDeptText" style="display:block; font-size:13px; color:var(--text-primary);">—</strong>
+              </div>
+              <div>
+                <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Máquina:</span>
+                <strong id="stopConfirmMachText" style="display:block; font-size:13px; color:var(--color-brand);">—</strong>
+              </div>
+            </div>
+            <div>
+              <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Causa de Paro:</span>
+              <strong id="stopConfirmCauseText" style="display:block; font-size:13px; color:#DC2626;">—</strong>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">Descripción Detallada / Criterio de Resolución (Opcional):</label>
+            <input type="text" id="stopNotesInput" class="form-input" placeholder="Ej. Fuga en sello de prensa #04, personal de mtto atendiendo">
+            <span class="field-hint">Al presionar "Comenzar Paro & Correr Cronómetro", el sistema contabilizará el tiempo exacto segundo a segundo.</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">Impacto Estimado en Producción:</label>
+            <select id="stopImpactSelect" class="custom-select">
+              <option value="Línea Detenida">Línea Totalmente Detenida (-25 pzas/hr aprox)</option>
+              <option value="Ritmo Lento">Ritmo Lento / Estación Auxiliar Afectada</option>
+              <option value="Ajuste Preventivo">Ajuste Preventivo / Sin Paro Total de Nave</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PASO 3: CRONÓMETRO VIVO CORRIENDO (TIEMPO TRANSCURRIENDO) -->
+        <div id="stopStepContent3" style="display:none;">
+          <div class="downtime-timer-hero">
+            <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:800; color:#DC2626; text-transform:uppercase; letter-spacing:0.8px;">
+              <span class="pulse-dot" style="background:#EF4444; box-shadow:0 0 8px #EF4444;"></span>
+              PARO DE LÍNEA EN CURSO
+            </span>
+
+            <div class="downtime-clock-display" id="modalStopTimerDisplay">00:00:00</div>
+            <p style="font-size:12px; color:#7F1D1D; margin:0 0 10px 0;">
+              El cronómetro sigue corriendo aunque minimices o navegues a otros módulos.
+            </p>
+
+            <div class="downtime-info-grid">
+              <div class="downtime-info-item">
+                <span class="downtime-info-label">Hora Inicio:</span>
+                <span class="downtime-info-val" id="modalStopStartTime">—</span>
+              </div>
+              <div class="downtime-info-item">
+                <span class="downtime-info-label">Estación:</span>
+                <span class="downtime-info-val" id="modalStopStation">—</span>
+              </div>
+              <div class="downtime-info-item">
+                <span class="downtime-info-label">Causa:</span>
+                <span class="downtime-info-val" id="modalStopCause" style="color:#DC2626;">—</span>
+              </div>
+              <div class="downtime-info-item">
+                <span class="downtime-info-label">Reportó:</span>
+                <span class="downtime-info-val" id="modalStopUser">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:12px;">
+            <p style="font-size:12px; color:var(--text-secondary); margin:0;">
+              💡 <strong>¿Necesitas continuar operando?</strong> Puedes presionar <em>"Minimizar y Continuar"</em>. Aparecerá un badge con cronómetro flotante en todo el sistema para que regreses en cualquier momento a finalizar el paro.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+        <button type="button" class="btn-secondary" id="btnStopBackStep" style="display:none; font-weight:700;">
+          ← Volver
+        </button>
+        <div style="display:flex; gap:10px; margin-left:auto;">
+          <!-- Botón de Paso 1 -->
+          <button type="button" class="btn-primary" id="btnStopNextToStep2" style="font-weight:700; min-height:44px; padding:0 20px;">
+            Continuar a Confirmación →
           </button>
-          <button class="stop-opt-btn" data-stop="Falta de presión de vapor en caldera matriz">
-            Falta de vapor / caldera baja
+
+          <!-- Botones de Paso 2 -->
+          <button type="button" class="btn-primary" id="btnStartDowntimeTimer" style="display:none; font-weight:800; min-height:44px; padding:0 22px; background:#DC2626; border-color:#DC2626;">
+            ⏱️ Comenzar Paro & Correr Cronómetro
           </button>
-          <button class="stop-opt-btn" data-stop="Falta de tafiletes o toquillas en estación">
-            Falta de tafiletes / subensambles en puesto
+
+          <!-- Botones de Paso 3 (Cronómetro Activo) -->
+          <button type="button" class="btn-secondary" id="btnMinimizeStopModal" style="display:none; font-weight:700; min-height:44px; padding:0 18px;">
+            Minimizar y Continuar
           </button>
-          <button class="stop-opt-btn" data-stop="Falla mecánica en prensa o troqueladora">
-            Falla mecánica en prensa
-          </button>
-          <button class="stop-opt-btn" data-stop="Descanso de personal / comida (12:00 - 12:45)">
-            Descanso de personal / comida (12:00 - 12:45)
+          <button type="button" class="btn-primary" id="btnFinishDowntimeStop" style="display:none; font-weight:800; min-height:44px; padding:0 22px; background:#16A34A; border-color:#16A34A;">
+            ✅ Parar Registro & Guardar en Bitácora
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- WIDGET FLOTANTE GLOBAL DE PARO ACTIVO (VISIBLE EN TODAS LAS PANTALLAS SI EL CRONÓMETRO ESTÁ CORRIENDO) -->
+  <div id="globalActiveDowntimeWidget" class="active-downtime-floating-widget" style="display:none;" onclick="window.openRunningDowntimeModal()" title="Paro de línea en curso. Clic para abrir cronómetro y finalizar">
+    <div class="floating-widget-icon">⏱️</div>
+    <div class="floating-widget-content">
+      <span class="floating-widget-title">
+        <span class="pulse-dot" style="background:#EF4444; width:6px; height:6px;"></span>
+        PARO ACTIVO
+      </span>
+      <span class="floating-widget-time" id="floatingDowntimeTime">00:00:00</span>
+      <span class="floating-widget-meta" id="floatingDowntimeMeta">D-05 Prensas</span>
     </div>
   </div>
 
