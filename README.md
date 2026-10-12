@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.79.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.80.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.79.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.80.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,13 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.80.0] - 2026-10-12
+- **Gestión Jerárquica y Creación Independiente de Máquinas (Máquina ⊂ Proceso ⊂ Departamento):**
+  - **Botón y Modal `+ Nueva Máquina`:** Se implementó la capacidad de dar de alta máquinas y estaciones de trabajo de forma independiente, asignándolas de manera relacional al proceso específico al que pertenecen dentro de su respectivo departamento.
+  - **Cascada y Tarjeta de Contexto en Tiempo Real:** El modal cuenta con selección dinámica de departamento, filtrado de procesos existentes de dicho departamento y previsualización de la ruta jerárquica asignada (`Departamento → Proceso`).
+  - **Refactorización del Modal de Proceso:** Se enriqueció la descripción del campo de máquinas en `+ Nuevo Proceso` para clarificar que múltiples máquinas operan dentro de un mismo proceso.
+  - **Actualización del Visor de Departamento:** El visor de departamento muestra de forma explícita a qué proceso pertenece cada máquina instalada.
 
 ### [2.79.0] - 2026-10-12
 - **Consolidación Integral a 3 Roles Oficiales en todo el Sistema MES:**

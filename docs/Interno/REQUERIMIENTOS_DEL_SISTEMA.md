@@ -3,8 +3,8 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.50.0` | **Versión:** `v2.50.0`  
-> **Fecha de Emisión / Última Actualización:** 9 de Octubre de 2026  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.80.0` | **Versión:** `v2.80.0`  
+> **Fecha de Emisión / Última Actualización:** 12 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
 > **Entorno de Producción en Vivo:** [https://uanify.github.io/uanify-mes-sombreros/](https://uanify.github.io/uanify-mes-sombreros/)
@@ -522,6 +522,16 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
 - **`RF-83` Puente de Integración CONTPAQi SQL Server ($0 Licencias API):** Enlace directo de solo lectura/escritura a través de Stored Procedures y Vistas sobre la base de datos Microsoft SQL Server de CONTPAQi Comercial (versión 11.3.1) en red local corporativa, evitando cobros por licencias de software intermediario.
 - **`RF-84` Esquema Dual de Base de Datos (Interna vs Fiscal) y Trazabilidad Factura:** Desacoplamiento entre el control de producción real de planta (100% de lotes y piezas físicas procesadas) y la emisión selectiva de facturas/remisiones según requerimiento comercial y fiscal del cliente.
 - **`RF-85` Terminal Tablet-First Heroica (3 Acciones Principales en Vacío):** La terminal de piso presenta en estado inicial 3 acciones touch heroicas: (1) Escáner QR de Tarjeta Viajera, (2) Modo Rampa (Fraccionamiento en D-05), y (3) Reportar Paro de Máquina, eliminando selectores manuales innecesarios ya que el código QR define automáticamente la estación de trabajo y ruta.
+
+---
+
+### Bloque T: Jerarquía Relacional Departamental (Máquina ⊂ Proceso ⊂ Departamento) & Creación Independiente (v2.80.0)
+
+- **`RF-86` Creación y Asignación Independiente de Máquinas en Procesos de Departamento:**
+  - **Estructura Jerárquica Obligatoria:** Las máquinas y puestos de trabajo no se encuentran flotantes ni huérfanos; responden a la jerarquía formal: **Máquina / Puesto de Trabajo $\subset$ Proceso de Fabricación $\subset$ Departamento Responsable**. Múltiples máquinas pueden operar dentro de un mismo proceso productivo o etapa de inspección.
+  - **Botón y Modal `+ Nueva Máquina`:** En la cabecera de la sub-pestaña de Departamentos & Almacenes (`#btnOpenCreateMachineModal`), se habilita un modal interactivo (`#modalCreateMachineStandalone`) que permite dar de alta una máquina especificando su Nombre, seleccionando su Departamento responsable y vinculándola reactivamente al Proceso correspondiente mediante cascada dependiente.
+  - **Tarjeta de Contexto Visual en Tiempo Real:** El formulario proyecta en vivo la ruta jerárquica asignada (`[Departamento] → [Proceso]`) para garantizar la correcta ubicación física y contable del activo en planta.
+  - **Persistencia y Actualización del Catálogo:** La nueva máquina se almacena en `UanifyState.processes` y se sincroniza en `localStorage` (`uanify_processes`), reflejándose de inmediato en la tabla de departamentos, en el visor de detalles del departamento y en los selectores de asignación del Padrón de Operadores y reporte de paros.
 
 ---
 

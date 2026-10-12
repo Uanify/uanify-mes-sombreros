@@ -2233,10 +2233,152 @@ window.initConfigView = function() {
     modalDeptViewer.classList.add('active');
   }
 
-  if (btnCloseDeptViewer) btnCloseDeptViewer.addEventListener('click', () => modalDeptViewer.classList.remove('active'));
-  if (btnCloseDeptViewerBtn) btnCloseDeptViewerBtn.addEventListener('click', () => modalDeptViewer.classList.remove('active'));
+  // ── 5.3. CREACIÓN INDEPENDIENTE DE MÁQUINA / PUESTO (JERARQUÍA: MÁQUINA ⊂ PROCESO ⊂ DEPARTAMENTO) ──
+  const modalCreateMachStandalone = document.getElementById('modalCreateMachineStandalone');
+  const btnCloseMachStandalone = document.getElementById('btnCloseCreateMachineStandaloneModal');
+  const btnCancelMachStandalone = document.getElementById('btnCancelCreateMachineStandalone');
+  const formCreateMachStandalone = document.getElementById('formCreateMachineStandalone');
+  const machDeptSelect = document.getElementById('machStandaloneDept');
+  const machProcSelect = document.getElementById('machStandaloneProcess');
+  const machHierarchyPreview = document.getElementById('machStandaloneHierarchyPreview');
+
+  function updateMachineHierarchyPreview() {
+    if (!machHierarchyPreview) return;
+    const deptCode = machDeptSelect ? machDeptSelect.value : '';
+    const procIdOrName = machProcSelect ? machProcSelect.value : '';
+    const dept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+    const proc = (UanifyState.processes || []).find(p => p.id === procIdOrName || p.name === procIdOrName);
+
+    if (dept && proc) {
+      machHierarchyPreview.innerHTML = `<span style="color:var(--color-brand); font-weight:700;">${dept.name}</span> &rarr; <span style="color:var(--text-primary); font-weight:700;">${proc.name}</span>`;
+    } else if (dept) {
+      machHierarchyPreview.innerHTML = `<span style="color:var(--color-brand); font-weight:700;">${dept.name}</span> &rarr; <span style="color:var(--text-muted); font-style:italic;">(Selecciona proceso)</span>`;
+    } else {
+      machHierarchyPreview.innerHTML = `<span style="color:var(--text-muted); font-style:italic;">(Selecciona depto y proceso)</span>`;
+    }
+  }
+
+  function populateMachineDeptSelect(selectedDeptCode = '') {
+    if (!machDeptSelect || !UanifyState.stations) return;
+    machDeptSelect.innerHTML = '<option value="">Selecciona un departamento...</option>' + 
+      UanifyState.stations.map(st => `<option value="${st.code || st.id}" ${st.code === selectedDeptCode ? 'selected' : ''}>${st.name}</option>`).join('');
+    populateMachineProcessSelect(selectedDeptCode);
+  }
+
+  function populateMachineProcessSelect(deptCode = '') {
+    if (!machProcSelect) return;
+    if (!deptCode) {
+      machProcSelect.innerHTML = '<option value="">Selecciona primero un departamento...</option>';
+      updateMachineHierarchyPreview();
+      return;
+    }
+
+    const availableProcs = (UanifyState.processes || []).filter(p => p.deptCode === deptCode);
+    if (availableProcs.length === 0) {
+      machProcSelect.innerHTML = '<option value="">Este departamento no tiene procesos aún (crea un proceso primero)</option>';
+    } else {
+      machProcSelect.innerHTML = '<option value="">Selecciona el proceso de este departamento...</option>' +
+        availableProcs.map(p => `<option value="${p.id || p.name}">${p.name}</option>`).join('');
+    }
+    updateMachineHierarchyPreview();
+  }
+
+  if (machDeptSelect) {
+    machDeptSelect.addEventListener('change', () => {
+      populateMachineProcessSelect(machDeptSelect.value);
+    });
+  }
+  if (machProcSelect) {
+    machProcSelect.addEventListener('change', () => {
+      updateMachineHierarchyPreview();
+    });
+  }
+
+  function openCreateMachineModal(defaultDeptCode = '') {
+    if (!modalCreateMachStandalone) return;
+    const nameInp = document.getElementById('machStandaloneName');
+    if (nameInp) nameInp.value = '';
+
+    populateMachineDeptSelect(defaultDeptCode);
+    modalCreateMachStandalone.classList.add('active');
+  }
+
+  if (btnCloseMachStandalone) btnCloseMachStandalone.addEventListener('click', () => modalCreateMachStandalone.classList.remove('active'));
+  if (btnCancelMachStandalone) btnCancelMachStandalone.addEventListener('click', () => modalCreateMachStandalone.classList.remove('active'));
+
+  if (formCreateMachStandalone) {
+    formCreateMachStandalone.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const machName = document.getElementById('machStandaloneName')?.value.trim();
+      const deptCode = machDeptSelect?.value;
+      const procVal = machProcSelect?.value;
+
+      if (!machName) {
+        return window.UanifyUI.toast('Por favor ingresa el nombre de la máquina o puesto de trabajo.', 'warning', 'Campo Requerido');
+      }
+      if (!deptCode) {
+        return window.UanifyUI.toast('Selecciona el departamento al que pertenecerá la máquina.', 'warning', 'Departamento Requerido');
+      }
+      if (!procVal) {
+        return window.UanifyUI.toast('Selecciona el proceso en el que operará esta máquina.', 'warning', 'Proceso Requerido');
+      }
+
+      if (!UanifyState.processes) UanifyState.processes = [];
+      const targetProc = UanifyState.processes.find(p => (p.id === procVal || p.name === procVal) && p.deptCode === deptCode);
+
+      if (!targetProc) {
+        return window.UanifyUI.toast('El proceso seleccionado no existe o no corresponde a este departamento.', 'error', 'Error de Jerarquía');
+      }
+
+      if (!Array.isArray(targetProc.machines)) targetProc.machines = [];
+
+      // Validar si la máquina ya existe en este proceso
+      const exists = targetProc.machines.some(m => (m.name || '').toLowerCase() === machName.toLowerCase());
+      if (exists) {
+        return window.UanifyUI.toast(
+          `La máquina "${machName}" ya está registrada en el proceso "${targetProc.name}".`,
+          'warning',
+          'Máquina Duplicada'
+        );
+      }
+
+      const nextMachNum = targetProc.machines.length + 1;
+      targetProc.machines.push({
+        id: `M-${nextMachNum}`,
+        name: machName,
+        status: 'operativa'
+      });
+
+      // Actualizar también en el departamento correspondiente (stations) si aplica
+      const targetDept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+      if (targetDept) {
+        const currM = targetDept.machines ? targetDept.machines.split(/[,;]/).map(x => x.trim()) : [];
+        if (!currM.some(x => x.toLowerCase() === machName.toLowerCase())) {
+          currM.push(machName);
+          targetDept.machines = currM.join(', ');
+        }
+      }
+
+      try {
+        localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+      } catch (err) {
+        console.warn('Error saving machine:', err);
+      }
+
+      modalCreateMachStandalone.classList.remove('active');
+      renderDepartmentsConfig();
+
+      window.UanifyUI.toast(
+        `Máquina "${machName}" asignada con éxito al proceso "${targetProc.name}" (${targetDept ? targetDept.name : deptCode}).`,
+        'success',
+        'Máquina Registrada'
+      );
+    });
+  }
 
   window.openCreateProcessModal = openCreateProcessModal;
+  window.openCreateMachineModal = openCreateMachineModal;
   window.openCreateWarehouseModal = openCreateWarehouseModal;
   window.openDeptDetailViewer = openDeptDetailViewer;
 

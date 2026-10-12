@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.79.0">
-  <link rel="stylesheet" href="css/components.css?v=2.79.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.80.0">
+  <link rel="stylesheet" href="css/components.css?v=2.80.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.79.0</span>
+        <span class="system-version-pill login-version-pill">v2.80.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.79.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.80.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2458,6 +2458,10 @@
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                   + Nuevo Proceso
                 </button>
+                <button class="btn-secondary" id="btnOpenCreateMachineModal" onclick="window.openCreateMachineModal()" style="min-height:44px; padding:0 16px; font-weight:700; background:#FFFFFF; border:1.5px solid var(--border-medium); color:var(--text-primary);">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><circle cx="12" cy="7" r="1.5"/></svg>
+                  + Nueva Máquina
+                </button>
                 <button class="btn-secondary" id="btnOpenCreateWarehouseModal" onclick="window.openCreateWarehouseModal()" style="min-height:44px; padding:0 16px; font-weight:700; background:#FFFFFF; border:1.5px solid var(--border-medium); color:var(--text-primary);">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                   + Nuevo Almacén Buffer
@@ -4121,15 +4125,18 @@
 
           <div class="form-group" style="margin-bottom:0;">
             <label class="field-label">
-              <span>Máquinas / Puestos de Trabajo (Separados por coma):</span>
+              <span>Máquinas / Puestos de este Proceso (Separados por coma):</span>
               <span class="info-tip">
                 <button type="button" class="info-tip-btn" aria-label="Información">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
                 </button>
-                <span class="info-tip-popup">Nombres legibles de las máquinas o estaciones donde se procesa (ej. Prensas Hidráulicas Michelagnoli, Mesa de Coser Singer).</span>
+                <span class="info-tip-popup">Varias máquinas están dentro de este proceso. Puedes escribir una o varias separadas por coma, o registrarlas individualmente con el botón "+ Nueva Máquina".</span>
               </span>
             </label>
             <input type="text" id="procStandaloneMachines" class="form-input" placeholder="ej. Máquina de Coser Perimetral, Mesa de Corte Manual">
+            <span class="field-hint" style="font-size:11.5px; color:var(--text-muted); margin-top:4px; display:block;">
+              Varias máquinas pertenecen a este proceso. También podrás agregar más máquinas a este proceso posteriormente desde el botón <strong>"+ Nueva Máquina"</strong>.
+            </span>
           </div>
         </div>
         <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
@@ -4209,6 +4216,91 @@
         <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
           <button type="button" class="btn-secondary" id="btnCancelCreateWarehouseStandalone" style="min-height:46px; padding:0 20px; font-weight:700;">Cancelar</button>
           <button type="submit" class="btn-primary" style="min-height:46px; padding:0 24px; font-weight:700;">Guardar y Asignar Almacén</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: CREAR MÁQUINA / PUESTO DE TRABAJO (JERARQUÍA: MÁQUINA ⊂ PROCESO ⊂ DEPARTAMENTO)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalCreateMachineStandalone">
+    <div class="modal-box card-glass" style="max-width:580px; width:95%;">
+      <div class="modal-header">
+        <div>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Nueva Máquina o Puesto de Trabajo
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+              </button>
+              <span class="info-tip-popup">Registra una máquina o puesto de trabajo y asígnala al proceso de fabricación específico al que pertenece dentro de su departamento.</span>
+            </span>
+          </h3>
+          <p class="modal-header-sub">Jerarquía operativa: Máquina ⊂ Proceso ⊂ Departamento</p>
+        </div>
+        <button class="modal-close" id="btnCloseCreateMachineStandaloneModal" type="button">&times;</button>
+      </div>
+      <form id="formCreateMachineStandalone">
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; padding:20px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>Nombre de la Máquina / Puesto de Trabajo:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Nombre descriptivo de la máquina, mesa o estación de trabajo (ej. Prensa Michelagnoli P-03, Cortadora KM-03, Mesa de Ribeteado Singer).</span>
+              </span>
+            </label>
+            <input type="text" id="machStandaloneName" class="form-input" placeholder="ej. Prensa Hidráulica Michelagnoli P-03, Mesa de Ribeteado Singer" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>1. Departamento Responsable:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Selecciona el departamento en cuya nave física está instalada la máquina.</span>
+              </span>
+            </label>
+            <select id="machStandaloneDept" class="custom-select" required>
+              <option value="">Selecciona un departamento...</option>
+              <!-- Llenado dinámicamente -->
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>2. Proceso al que Pertenece la Máquina:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Varias máquinas están contenidas dentro de un proceso. Selecciona la etapa u operación específica del departamento.</span>
+              </span>
+            </label>
+            <select id="machStandaloneProcess" class="custom-select" required>
+              <option value="">Selecciona primero un departamento...</option>
+              <!-- Llenado dinámico según el departamento seleccionado -->
+            </select>
+          </div>
+
+          <!-- Tarjeta de Contexto de Jerarquía Visual en Tiempo Real -->
+          <div style="background:#F8FAFC; border:1.5px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; align-items:center; gap:10px;">
+            <div style="width:34px; height:34px; border-radius:8px; background:rgba(139, 94, 60, 0.12); display:flex; align-items:center; justify-content:center; color:var(--color-brand); flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
+            </div>
+            <div style="font-size:12px; line-height:1.4; color:var(--text-secondary);">
+              <strong>Jerarquía Asignada:</strong> <span id="machStandaloneHierarchyPreview" style="color:var(--text-primary); font-weight:600;">(Selecciona depto y proceso)</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+          <button type="button" class="btn-secondary" id="btnCancelCreateMachineStandalone" style="min-height:46px; padding:0 20px; font-weight:700;">Cancelar</button>
+          <button type="submit" class="btn-primary" style="min-height:46px; padding:0 24px; font-weight:700;">Crear y Asignar Máquina</button>
         </div>
       </form>
     </div>
@@ -5053,11 +5145,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.79.0"></script>
-  <script src="js/andon.js?v=2.79.0"></script>
-  <script src="js/terminal.js?v=2.79.0"></script>
-  <script src="js/engineer.js?v=2.79.0"></script>
-  <script src="js/executive.js?v=2.79.0"></script>
-  <script src="js/config.js?v=2.79.0"></script>
+  <script src="js/app.js?v=2.80.0"></script>
+  <script src="js/andon.js?v=2.80.0"></script>
+  <script src="js/terminal.js?v=2.80.0"></script>
+  <script src="js/engineer.js?v=2.80.0"></script>
+  <script src="js/executive.js?v=2.80.0"></script>
+  <script src="js/config.js?v=2.80.0"></script>
 </body>
 </html>
