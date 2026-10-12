@@ -4861,6 +4861,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
    Higiene visual: sustituye textos descriptivos extensos por micro-puntos (i)
    ========================================================================== */
 /* ═══════ INFO-TIP — Botón ⓘ y Tooltip Flotante Azul Industrial ═══════ */
+/* ═══════ INFO-TIP — Botón ⓘ y Tooltip Flotante Azul Industrial ═══════ */
 .info-tip {
   position: relative;
   display: inline-flex;
@@ -4925,9 +4926,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 2px 12px rgba(2, 132, 199, 0.5), 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
 
-/* ─── Popup flotante desacoplado (Fixed en Viewport) ─── */
+/* ─── Popup flotante contextual relativo al botón ⓘ ─── */
 .info-tip-popup {
-  position: fixed;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
   background: #0F172A;
   color: #F8FAFC;
   padding: 10px 14px;
@@ -4948,14 +4952,23 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   white-space: normal;
 }
 
+/* Flecha apuntando al botón (cuando está arriba) */
 .info-tip-popup::after {
   content: '';
   position: absolute;
   top: 100%;
-  left: var(--tip-arrow, 50%);
+  left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
   border-top-color: #0F172A;
+}
+
+/* Variante cuando se despliega hacia abajo (flip-down) */
+.info-tip.flip-down .info-tip-popup,
+.info-tip-popup.flip-down {
+  bottom: auto;
+  top: calc(100% + 10px);
+  transform: translateX(-50%) translateY(-4px);
 }
 
 .info-tip.flip-down .info-tip-popup::after,
@@ -4966,11 +4979,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   border-bottom-color: #0F172A;
 }
 
-/* Activación */
+/* Activación por hover o clic */
 .info-tip:hover .info-tip-popup,
 .info-tip.active .info-tip-popup {
   opacity: 1;
   visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Corrección de contraste para la Consola DevTools SuperAdmin */

@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.66.0',
+  version: '2.67.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -5003,75 +5003,22 @@ function enrichStationWithDefaults(st, idx) {
 
   // ── INICIALIZADOR DE PUNTOS DE INFORMACIÓN TÁCTILES / TOOLTIPS (REGLA 0.36) ──
   function initInfoTips() {
-    function adjustTooltipPosition(tip) {
-      const popup = tip.querySelector('.info-tip-popup');
+    function checkFlipDown(tip) {
       const btn = tip.querySelector('.info-tip-btn');
-      if (!popup || !btn) return;
-
+      if (!btn) return;
       const btnRect = btn.getBoundingClientRect();
-      const vpW = window.innerWidth || document.documentElement.clientWidth;
-      const vpH = window.innerHeight || document.documentElement.clientHeight;
-
-      // Medir tamaño del popup (temporalmente visible fuera de pantalla si está oculto)
-      popup.style.visibility = 'hidden';
-      popup.style.display = 'block';
-      popup.style.left = '0px';
-      popup.style.top = '0px';
-      popup.style.bottom = 'auto';
-      popup.style.right = 'auto';
-      popup.style.transform = 'none';
-
-      const popRect = popup.getBoundingClientRect();
-      const popW = popRect.width;
-      const popH = popRect.height;
-      const margin = 12;
-
-      // 1. Determinar si cabe ARRIBA del botón o si debe ir ABAJO (flip-down)
-      const spaceAbove = btnRect.top;
-      const spaceBelow = vpH - btnRect.bottom;
-      let placeBelow = false;
-
-      if (spaceAbove < popH + 14 && spaceBelow > spaceAbove) {
-        placeBelow = true;
-      }
-
-      let top = 0;
-      if (placeBelow) {
+      // Si el botón está muy cerca del borde superior del viewport (< 90px), voltear hacia abajo
+      if (btnRect.top < 90) {
         tip.classList.add('flip-down');
-        popup.classList.add('flip-down');
-        top = btnRect.bottom + 10;
       } else {
         tip.classList.remove('flip-down');
-        popup.classList.remove('flip-down');
-        top = btnRect.top - popH - 10;
       }
-
-      // 2. Centrar horizontalmente respecto al botón
-      let left = btnRect.left + (btnRect.width / 2) - (popW / 2);
-
-      // Clamp horizontal para que quede dentro del viewport
-      if (left < margin) {
-        left = margin;
-      } else if (left + popW > vpW - margin) {
-        left = vpW - margin - popW;
-      }
-
-      // 3. Posicionar la flecha sobre el botón
-      const btnCenter = btnRect.left + (btnRect.width / 2);
-      const arrowX = Math.max(14, Math.min(btnCenter - left, popW - 14));
-      popup.style.setProperty('--tip-arrow', `${arrowX}px`);
-
-      // 4. Asignar estilos finales
-      popup.style.left = `${Math.round(left)}px`;
-      popup.style.top = `${Math.round(top)}px`;
-      popup.style.visibility = '';
-      popup.style.display = '';
     }
 
-    // Hover: ajustar posición al entrar
+    // Hover: comprobar si necesita voltear hacia abajo
     document.addEventListener('mouseenter', (e) => {
       const tip = e.target.closest ? e.target.closest('.info-tip') : null;
-      if (tip) adjustTooltipPosition(tip);
+      if (tip) checkFlipDown(tip);
     }, true);
 
     // Salir del tooltip: limpiar clase activa
@@ -5084,7 +5031,7 @@ function enrichStationWithDefaults(st, idx) {
       }
     }, true);
 
-    // Click/tap: toggle active + ajustar posición
+    // Click/tap: toggle active
     document.addEventListener('click', (e) => {
       const tip = e.target.closest ? e.target.closest('.info-tip') : null;
       if (tip) {
@@ -5096,7 +5043,7 @@ function enrichStationWithDefaults(st, idx) {
         });
         if (!wasActive) {
           tip.classList.add('active');
-          adjustTooltipPosition(tip);
+          checkFlipDown(tip);
         }
         e.stopPropagation();
       } else {
@@ -5108,15 +5055,15 @@ function enrichStationWithDefaults(st, idx) {
       }
     });
 
-    // Reposicionar tooltip activo en scroll/resize
+    // Reposicionar en scroll/resize
     window.addEventListener('scroll', () => {
       const activeTip = document.querySelector('.info-tip.active');
-      if (activeTip) adjustTooltipPosition(activeTip);
+      if (activeTip) checkFlipDown(activeTip);
     }, { passive: true });
 
     window.addEventListener('resize', () => {
       const activeTip = document.querySelector('.info-tip.active');
-      if (activeTip) adjustTooltipPosition(activeTip);
+      if (activeTip) checkFlipDown(activeTip);
     }, { passive: true });
   }
 
