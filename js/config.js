@@ -1415,6 +1415,9 @@ window.initConfigView = function() {
       if (firstVisible && !options.find(o => o.selected && o.style.display !== 'none')) {
         firstVisible.selected = true;
       }
+      if (newDeptSupervisor._uanifySelect) {
+        newDeptSupervisor._uanifySelect.updateLabel();
+      }
     });
   }
 
@@ -1430,14 +1433,14 @@ window.initConfigView = function() {
     }
 
     deptProcessesContainer.innerHTML = currentModalProcesses.map((proc, pIdx) => {
-      const cleanProcName = (proc.name || '').replace(/^(PROC-\d+|C-\d+)\s*/i, '');
+      const cleanProcName = (proc.name || '').replace(/^(PROC-\d+|C-\d+)\s*[-·:]?\s*/i, '');
       const machinesListHtml = (proc.machines || []).map((m, mIdx) => {
-        const cleanMachName = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
+        const machVal = (m.name || m.id || '').trim();
         return `
-          <div style="display:grid; grid-template-columns: 1fr 34px; gap:6px; align-items:center; margin-bottom:6px;">
-            <input type="text" class="form-input form-input-sm proc-mach-name" data-pidx="${pIdx}" data-midx="${mIdx}" value="${cleanMachName}" placeholder="Nombre de máquina o puesto (ej. Prensas Hidráulicas Michelagnoli)" style="height:34px; font-size:12px;" required>
-            <button type="button" class="btn-table-action btn-action-delete" style="height:34px; width:34px;" onclick="window.removeMachineFromProcess(${pIdx}, ${mIdx})" title="Quitar máquina">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+            <input type="text" class="form-input form-input-sm proc-mach-name" data-pidx="${pIdx}" data-midx="${mIdx}" value="${machVal}" placeholder="Nombre de máquina o puesto (ej. Mesa de Tendido 12m Alumínio, Cortadora KM-01)" style="min-height:38px; font-size:13px; flex:1;" required>
+            <button type="button" class="btn-table-action btn-action-delete" style="min-height:38px; min-width:38px; width:38px; height:38px; flex-shrink:0;" onclick="window.removeMachineFromProcess(${pIdx}, ${mIdx})" title="Quitar máquina">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
         `;
@@ -1622,11 +1625,17 @@ window.initConfigView = function() {
     if (newDeptOperatorsList && UanifyState.operators) {
       newDeptOperatorsList.innerHTML = UanifyState.operators.map(op => `
         <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:3px 0;">
-          <input type="checkbox" class="dept-op-cb" value="${op.id}" style="cursor:pointer; accent-color:var(--color-brand);">
+          <input type="checkbox" class="dept-op-cb" value="${op.empId || op.id}" style="cursor:pointer; accent-color:var(--color-brand);">
           <span><strong>${op.name}</strong> · ${op.deptCode || 'Sin Depto'} (${op.machine || 'Puesto'})</span>
         </label>
       `).join('');
     }
+
+    // En acordeón ergonómico, abrir secciones 1 y 2 por defecto
+    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach((sec, idx) => {
+      if (idx === 0 || idx === 1) sec.classList.add('active');
+      else sec.classList.remove('active');
+    });
 
     modalCreateDept.classList.add('active');
   }
@@ -1664,12 +1673,14 @@ window.initConfigView = function() {
     let linkedProcesses = (UanifyState.processes || []).filter(p => p.deptCode === station.code);
     if (linkedProcesses.length === 0) {
       const procStrings = (station.processes ? station.processes.split(/[,;]/) : [station.name]).map(p => p.trim()).filter(Boolean);
-      const rawMachines = (station.machines ? station.machines.split(/[,;]/) : ['MAQ-01 Celda de Trabajo']).map(m => m.trim()).filter(Boolean);
-      const parsedMachines = rawMachines.map(raw => {
-        const parts = raw.split(' ');
-        const id = parts[0] || 'MAQ-01';
-        const name = parts.slice(1).join(' ') || id;
-        return { id, name, status: 'operativa' };
+      const parsedMachines = rawMachines.map((raw, rIdx) => {
+        // Limpiar prefijo tipo ID si existiese (ej. "MAQ-01 Celda...")
+        const cleanName = raw.replace(/^[A-Z0-9\-]+\s+/i, '').trim();
+        return {
+          id: `MAQ-${String(rIdx + 1).padStart(2, '0')}`,
+          name: cleanName || raw.trim(),
+          status: 'operativa'
+        };
       });
 
       linkedProcesses = procStrings.map((procName, pIdx) => {
@@ -1692,8 +1703,11 @@ window.initConfigView = function() {
     const supSearchInput = document.getElementById('newDeptSupervisorSearch');
     if (supSearchInput) supSearchInput.value = '';
 
-    // Asegurar que las secciones colapsables inicien abiertas para comodidad
-    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach(sec => sec.classList.add('active'));
+    // En acordeón ergonómico, abrir la primera sección por defecto para evitar colapsos visuales y scroll infinito
+    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach((sec, idx) => {
+      if (idx === 0 || idx === 1) sec.classList.add('active');
+      else sec.classList.remove('active');
+    });
 
     // Poblar supervisores
     if (newDeptSupervisor && UanifyState.users) {

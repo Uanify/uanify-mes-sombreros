@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.75.0">
-  <link rel="stylesheet" href="css/components.css?v=2.75.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.76.0">
+  <link rel="stylesheet" href="css/components.css?v=2.76.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.75.0</span>
+        <span class="system-version-pill login-version-pill">v2.76.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.75.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.76.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -3904,7 +3904,7 @@
        MODAL: DAR DE ALTA / EDITAR DEPARTAMENTO (CON ENTIDADES RELACIONALES)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateDepartment">
-    <div class="modal-box card-glass" style="max-width:760px; width:95%; max-height:92vh; overflow-y:auto;">
+    <div class="modal-box card-glass" style="max-width:760px; width:95%;">
       <div class="modal-header">
         <div>
           <h3 id="deptModalTitle" style="display:flex; align-items:center; gap:6px;">
@@ -3923,7 +3923,7 @@
         <input type="hidden" id="deptModalEditMode" value="create">
         <input type="hidden" id="deptModalOriginalCode" value="">
 
-        <div class="modal-body" style="display:flex; flex-direction:column; gap:12px; padding:18px;">
+        <div class="modal-body" style="gap:12px;">
           
           <!-- SECCIÓN 1: DATOS PRINCIPALES DEL DEPARTAMENTO (COLAPSABLE) -->
           <div class="modal-collapse-section active" id="secDeptDatos">
@@ -4073,9 +4073,9 @@
 
         </div>
 
-        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
-          <button type="button" class="btn-secondary" id="btnCancelCreateDept" style="min-height:46px; padding:0 20px; font-weight:700;">Cancelar</button>
-          <button type="submit" class="btn-primary" style="min-height:46px; padding:0 24px; font-weight:700;">Guardar Departamento</button>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelCreateDept">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Departamento</button>
         </div>
       </form>
     </div>
@@ -5068,11 +5068,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.75.0"></script>
-  <script src="js/andon.js?v=2.75.0"></script>
-  <script src="js/terminal.js?v=2.75.0"></script>
-  <script src="js/engineer.js?v=2.75.0"></script>
-  <script src="js/executive.js?v=2.75.0"></script>
-  <script src="js/config.js?v=2.75.0"></script>
+  <script src="js/app.js?v=2.76.0"></script>
+  <script src="js/andon.js?v=2.76.0"></script>
+  <script src="js/terminal.js?v=2.76.0"></script>
+  <script src="js/engineer.js?v=2.76.0"></script>
+  <script src="js/executive.js?v=2.76.0"></script>
+  <script src="js/config.js?v=2.76.0"></script>
 </body>
 </html>

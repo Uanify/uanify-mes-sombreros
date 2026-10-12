@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.75.0',
+  version: '2.76.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2691,6 +2691,16 @@ function enrichStationWithDefaults(st, idx) {
     if (savedProcesses) {
       const parsedProc = JSON.parse(savedProcesses);
       if (Array.isArray(parsedProc) && parsedProc.length > 0) {
+        // Reparar nombres truncados por regex anteriores
+        parsedProc.forEach(proc => {
+          if (Array.isArray(proc.machines)) {
+            proc.machines.forEach(m => {
+              if (m.name && m.name.startsWith('de Tendido')) {
+                m.name = 'Mesa de Tendido 12m Alumínio';
+              }
+            });
+          }
+        });
         UanifyState.processes = parsedProc;
       }
     }
