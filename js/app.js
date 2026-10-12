@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.82.0',
+  version: '2.83.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2446,11 +2446,17 @@ function initSubTabs() {
         e.preventDefault();
         const targetId = btn.getAttribute('data-subtab');
         const parentView = btn.closest('.view-panel');
-        if (!parentView) return;
+        if (!parentView || !targetId) return;
 
         // Desactivar botones hermanos
         buttons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+
+        // Sincronizar también con botones del sidebar si corresponden
+        document.querySelectorAll(`.nav-btn[data-subtab="${targetId}"]`).forEach(sb => {
+          document.querySelectorAll('.nav-btn[data-tab="config"]').forEach(nb => nb.classList.remove('active'));
+          sb.classList.add('active');
+        });
 
         // Ocultar todos los subtab contents del panel
         parentView.querySelectorAll('.sub-tab-content').forEach(content => {
@@ -2465,6 +2471,21 @@ function initSubTabs() {
           targetContent.classList.remove('d-none');
           targetContent.classList.add('active');
           targetContent.style.setProperty('display', 'block', 'important');
+        }
+
+        // Re-renderizado específico para vistas dinámicas si aplica
+        if (targetId === 'subtab-config-depts' && typeof renderDepartmentsConfig === 'function') {
+          renderDepartmentsConfig();
+        } else if (targetId === 'subtab-config-quality' && typeof renderQualityFiltersConfig === 'function') {
+          renderQualityFiltersConfig();
+        } else if (targetId === 'subtab-config-routes' && typeof renderRouteSequence === 'function') {
+          renderRouteSequence();
+        } else if (targetId === 'subtab-config-users' && typeof renderUsersTable === 'function') {
+          renderUsersTable();
+        }
+
+        if (typeof EventBus !== 'undefined') {
+          EventBus.emit('subtab-changed', { tabId: targetId, parent: parentView.id });
         }
 
         // Restablecer scroll al inicio del contenedor para ergonomía inmediata en tablet y desktop
@@ -2504,7 +2525,29 @@ document.addEventListener('DOMContentLoaded', () => {
       viewPanels.forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       const targetPanel = document.getElementById(`view-${targetTab}`);
-      if (targetPanel) targetPanel.classList.add('active');
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+
+        // Si el botón del sidebar especifica una sub-pestaña directa (ej: Configuración por entidad)
+        const targetSubtab = btn.getAttribute('data-subtab');
+        if (targetSubtab) {
+          const subTabBtn = targetPanel.querySelector(`.sub-nav-tabs .sub-tab-btn[data-subtab="${targetSubtab}"]`);
+          if (subTabBtn) {
+            subTabBtn.click();
+          } else {
+            // Activar directamente el contenedor si existe
+            targetPanel.querySelectorAll('.sub-tab-content').forEach(c => {
+              c.classList.remove('active');
+              c.style.setProperty('display', 'none', 'important');
+            });
+            const subContent = document.getElementById(targetSubtab);
+            if (subContent) {
+              subContent.classList.add('active');
+              subContent.style.setProperty('display', 'block', 'important');
+            }
+          }
+        }
+      }
       window.scrollTo({ top: 0, behavior: 'instant' });
       const appContent = document.querySelector('.app-content');
       if (appContent) appContent.scrollTop = 0;

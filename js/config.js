@@ -3338,53 +3338,8 @@ window.initConfigView = function() {
     });
   }
 
-  // ── 10. GESTOR DE SEGMENTACIÓN DE PESTAÑAS POR CATEGORÍAS INDUSTRIALES ──
-  function initConfigCategorySegmentation() {
-    const catPills = document.querySelectorAll('.cfg-cat-pill');
-    const subTabBtns = document.querySelectorAll('.sub-nav-tabs[data-module="config"] .sub-tab-btn');
-    if (catPills.length === 0 || subTabBtns.length === 0) return;
-
-    catPills.forEach(pill => {
-      pill.addEventListener('click', (e) => {
-        e.preventDefault();
-        const cat = pill.getAttribute('data-cfgcat');
-
-        // Alternar pills activas con estilo visual
-        catPills.forEach(p => {
-          p.classList.remove('active');
-          p.style.background = 'transparent';
-          p.style.color = 'var(--text-secondary)';
-          p.style.fontWeight = '600';
-          p.style.boxShadow = 'none';
-        });
-
-        pill.classList.add('active');
-        pill.style.background = 'var(--color-brand)';
-        pill.style.color = '#FFFFFF';
-        pill.style.fontWeight = '700';
-        pill.style.boxShadow = '0 1px 4px rgba(139,94,60,0.25)';
-
-        // Filtrar qué sub-tabs se muestran
-        let firstVisibleBtn = null;
-        subTabBtns.forEach(btn => {
-          const btnCat = btn.getAttribute('data-cfgcat');
-          if (btnCat === cat) {
-            btn.style.display = 'inline-flex';
-            if (!firstVisibleBtn) firstVisibleBtn = btn;
-          } else {
-            btn.style.display = 'none';
-          }
-        });
-
-        // Simular clic en el primer sub-tab de la categoría seleccionada
-        if (firstVisibleBtn) {
-          firstVisibleBtn.click();
-        }
-      });
-    });
-  }
-
-  initConfigCategorySegmentation();
+  // ── 10. SINCRONIZACIÓN DE PESTAÑAS DE CONFIGURACIÓN ──
+  // Las pestañas se gestionan directamente a través de initSubTabs() en app.js con soporte completo para navegación desde el sidebar y clics directos.
 
   // Actualizar si el usuario activo cambia en el sidebar
   EventBus.on('user-switched', () => {
