@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.81.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.82.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.81.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.82.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,20 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.82.0] - 2026-10-12
+- **Segmentación de Sub-Navegación en Configuración & Jerarquía Relacional Completa:**
+  - **Segmentación de Pestañas en 3 Categorías Industriales:** Para evitar ruido visual y saturación horizontal de pestañas en pantallas táctiles y escritorio, la navegación de Configuración se organizó en 3 grandes grupos con selectores tipo pill:
+    1. *Estructura & Calidad:* Departamentos, Procesos, Máquinas, Almacenes Intermedios y Filtros de Calidad (`C-XX`).
+    2. *Rutas & Parámetros:* Rutas & Secuencias de Fabricación por Modelo y Parámetros de Turno & Alertas WIP.
+    3. *Usuarios & ERP:* Usuarios & Privilegios RBAC e Integración CONTPAQi / ERP.
+  - **Jerarquía Relacional de Planta Estricta:**
+    - **Departamento:** Contiene múltiples procesos únicos, múltiples almacenes únicos y múltiples filtros de calidad únicos.
+    - **Proceso:** Contiene una o varias máquinas / estaciones de trabajo.
+    - **Máquina / Puesto:** Permite asignar uno o más operadores del padrón de planta (`modalCreateMachineStandalone`).
+    - **Filtro de Calidad (`C-XX`):** Requiere asignación obligatoria de **Departamento Responsable** (`modalCreateQualityArea`), reflejado en una nueva columna de la tabla maestra de calidad.
+  - **Visor Enriquecido de Departamento:** La ventana modal de detalle (`modalDeptDetailViewer`) ahora desglosa de manera integral: (1) Procesos de fabricación, (2) Filtros de calidad vinculados, (3) Máquinas con sus operadores asignados y (4) Almacenes intermedios buffer.
+  - **Sincronización en Tabla Maestra de Departamentos:** Los chips de procesos ahora incorporan los filtros de calidad correspondientes al departamento.
 
 ### [2.81.0] - 2026-10-12
 - **Consolidación a 1 Solo Padrón de Operadores en todo el Sistema MES:**

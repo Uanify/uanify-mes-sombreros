@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.81.0">
-  <link rel="stylesheet" href="css/components.css?v=2.81.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.82.0">
+  <link rel="stylesheet" href="css/components.css?v=2.82.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.81.0</span>
+        <span class="system-version-pill login-version-pill">v2.82.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.81.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.82.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2127,32 +2127,56 @@
           </div>
         </div>
 
-        <!-- Sub-navegación por Pestañas del Módulo Configuración -->
-        <div class="sub-nav-tabs" data-module="config">
-          <button class="sub-tab-btn active" data-subtab="subtab-config-depts">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
-            Departamentos & Almacenes
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-quality">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Filtros de Calidad
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-routes">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/></svg>
-            Rutas & Secuencias
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-params">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Parámetros & Turno
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-users">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            Usuarios (RBAC)
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-compac">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-            Integración COMPAC / ERP
-          </button>
+        <!-- Sub-navegación Segmentada por Grupos Industriales del Módulo Configuración -->
+        <div class="config-nav-segment-container" style="margin-top:14px; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+          <!-- Categorías Principales Segmentadas (Pills de Alto Nivel) -->
+          <div class="config-category-selector" style="display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; background:#F1F5F9; padding:5px 6px; border-radius:12px; border:1px solid var(--border-medium); width:fit-content; max-width:100%;">
+            <button type="button" class="cfg-cat-pill active" data-cfgcat="structure" style="display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:700; border:none; cursor:pointer !important; transition:all 0.15s ease; background:var(--color-brand); color:#FFFFFF; box-shadow:0 1px 4px rgba(139,94,60,0.25);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
+              1. Estructura & Calidad
+            </button>
+            <button type="button" class="cfg-cat-pill" data-cfgcat="routes-ops" style="display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; border:none; cursor:pointer !important; transition:all 0.15s ease; background:transparent; color:var(--text-secondary);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/></svg>
+              2. Rutas & Parámetros
+            </button>
+            <button type="button" class="cfg-cat-pill" data-cfgcat="admin-erp" style="display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; border:none; cursor:pointer !important; transition:all 0.15s ease; background:transparent; color:var(--text-secondary);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><rect x="18" y="8" width="5" height="5" rx="1"/></svg>
+              3. Usuarios & ERP
+            </button>
+          </div>
+
+          <!-- Pestañas Específicas por Categoría Activa -->
+          <div class="sub-nav-tabs" data-module="config" style="margin-top:0; margin-bottom:0;">
+            <!-- Grupo 1: Estructura & Calidad -->
+            <button class="sub-tab-btn active" data-subtab="subtab-config-depts" data-cfgcat="structure">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
+              Departamentos, Procesos & Almacenes
+            </button>
+            <button class="sub-tab-btn" data-subtab="subtab-config-quality" data-cfgcat="structure">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Filtros de Calidad (C-XX)
+            </button>
+
+            <!-- Grupo 2: Rutas & Parámetros -->
+            <button class="sub-tab-btn" data-subtab="subtab-config-routes" data-cfgcat="routes-ops" style="display:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/></svg>
+              Rutas & Secuencias por Modelo
+            </button>
+            <button class="sub-tab-btn" data-subtab="subtab-config-params" data-cfgcat="routes-ops" style="display:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Parámetros de Turno & Alertas WIP
+            </button>
+
+            <!-- Grupo 3: Usuarios & ERP -->
+            <button class="sub-tab-btn" data-subtab="subtab-config-users" data-cfgcat="admin-erp" style="display:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              Usuarios & Privilegios (RBAC)
+            </button>
+            <button class="sub-tab-btn" data-subtab="subtab-config-compac" data-cfgcat="admin-erp" style="display:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Integración CONTPAQi / ERP
+            </button>
+          </div>
         </div>
 
         <!-- Pestaña: Parámetros Generales & Horario de Turno -->
@@ -2522,8 +2546,9 @@
               <table class="data-table" id="cfgQualityDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:320px;">Filtro de Calidad</th>
-                    <th style="min-width:240px;">Inspector Responsable</th>
+                    <th class="col-name" style="min-width:280px;">Filtro de Calidad</th>
+                    <th style="min-width:220px;">Departamento Responsable</th>
+                    <th style="min-width:220px;">Inspector Responsable</th>
                     <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
@@ -4227,6 +4252,26 @@
             </select>
           </div>
 
+          <!-- 3. Operadores Asignados a la Máquina (Uno o Varios del Padrón) -->
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>3. Operador(es) de Planta Asignados a esta Máquina:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Una máquina o puesto de trabajo puede tener asignado uno o más operadores del padrón de planta. Puedes seleccionar varios.</span>
+              </span>
+            </label>
+            <div style="background:#F8FAFC; border:1px solid var(--border-medium); border-radius:10px; padding:10px; max-height:140px; overflow-y:auto;" id="machStandaloneOperatorsList">
+              <!-- Llenado dinámico con checkboxes de operadores -->
+              <span style="font-size:12px; color:var(--text-muted); font-style:italic;">Cargando padrón de operadores...</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">
+              Los operadores seleccionados quedarán asignados formalmente a esta máquina y a su departamento.
+            </div>
+          </div>
+
           <!-- Tarjeta de Contexto de Jerarquía Visual en Tiempo Real -->
           <div style="background:#F8FAFC; border:1.5px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; align-items:center; gap:10px;">
             <div style="width:34px; height:34px; border-radius:8px; background:rgba(139, 94, 60, 0.12); display:flex; align-items:center; justify-content:center; color:var(--color-brand); flex-shrink:0;">
@@ -4272,33 +4317,44 @@
           </div>
         </div>
 
-        <!-- Sección Procesos y Calidad -->
+        <!-- Sección 1: Procesos de Fabricación del Departamento -->
         <div>
           <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            Procesos & Filtros de Calidad
+            Procesos de Fabricación Asignados
           </h4>
           <div id="deptViewerProcessesList" style="display:flex; flex-direction:column; gap:6px;">
             <!-- Inyectado por JS -->
           </div>
         </div>
 
-        <!-- Sección Máquinas y Puestos -->
+        <!-- Sección 2: Filtros de Calidad Vinculados al Departamento -->
         <div>
-          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            Máquinas y Áreas de Trabajo
+          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:#D97706; display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Filtros de Calidad del Departamento (C-XX)
           </h4>
-          <div id="deptViewerMachinesList" style="display:flex; flex-wrap:wrap; gap:6px;">
+          <div id="deptViewerQualityList" style="display:flex; flex-direction:column; gap:6px;">
             <!-- Inyectado por JS -->
           </div>
         </div>
 
-        <!-- Sección Almacenes Intermedios -->
+        <!-- Sección 3: Máquinas / Áreas de Trabajo y Operadores Asignados -->
+        <div>
+          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            Máquinas, Puestos de Trabajo & Operadores Asignados
+          </h4>
+          <div id="deptViewerMachinesList" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Inyectado por JS -->
+          </div>
+        </div>
+
+        <!-- Sección 4: Almacenes Intermedios Asignados -->
         <div>
           <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-            Almacenes Intermedios Asignados
+            Almacenes Intermedios (Buffer de Salida / Entrada)
           </h4>
           <div id="deptViewerWarehousesList" style="display:flex; flex-direction:column; gap:6px;">
             <!-- Inyectado por JS -->
@@ -4365,6 +4421,22 @@
           <div class="form-group">
             <label class="field-label">Nombre del Filtro de Calidad: <span style="color:var(--color-danger); font-weight:700;">*</span></label>
             <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad 4 (Post-Laqueado Especial)" required style="min-height:48px;">
+          </div>
+
+          <div class="form-group" style="margin-top:14px;">
+            <label class="field-label">
+              <span>Departamento Responsable: <span style="color:var(--color-danger); font-weight:700;">*</span></span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Un departamento puede tener varios filtros de calidad únicos. Selecciona el departamento de planta al que pertenece esta parada técnica.</span>
+              </span>
+            </label>
+            <select id="newQualityDept" class="custom-select" required style="min-height:48px;">
+              <option value="">-- Seleccionar Departamento Responsable --</option>
+            </select>
+            <span class="field-hint" style="margin-top:4px; font-size:12px; color:var(--text-muted);">Vincula este punto de control al departamento que audita o donde se ubica físicamente.</span>
           </div>
 
           <div class="form-group" style="margin-top:14px;">
@@ -5084,11 +5156,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.81.0"></script>
-  <script src="js/andon.js?v=2.81.0"></script>
-  <script src="js/terminal.js?v=2.81.0"></script>
-  <script src="js/engineer.js?v=2.81.0"></script>
-  <script src="js/executive.js?v=2.81.0"></script>
-  <script src="js/config.js?v=2.81.0"></script>
+  <script src="js/app.js?v=2.82.0"></script>
+  <script src="js/andon.js?v=2.82.0"></script>
+  <script src="js/terminal.js?v=2.82.0"></script>
+  <script src="js/engineer.js?v=2.82.0"></script>
+  <script src="js/executive.js?v=2.82.0"></script>
+  <script src="js/config.js?v=2.82.0"></script>
 </body>
 </html>

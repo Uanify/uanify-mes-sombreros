@@ -149,9 +149,12 @@ window.initConfigView = function() {
           }).filter(p => p.name);
         }
 
-        // Renderizado limpio de procesos (SIN IDs técnicos invasivos, máx 2 visibles)
+        // Buscar filtros de calidad vinculados a este departamento
+        const deptQualities = (UanifyState.qualityAreas || []).filter(q => q.deptCode === st.code || q.deptCode === st.id);
+
+        // Renderizado limpio de procesos y calidad (SIN IDs técnicos invasivos)
         const visibleProcCount = 2;
-        const totalProcs = deptProcesses.length;
+        const totalProcs = deptProcesses.length + deptQualities.length;
         let processesHtml = '';
         if (totalProcs > 0) {
           const sliceProcs = deptProcesses.slice(0, visibleProcCount);
@@ -163,9 +166,14 @@ window.initConfigView = function() {
             return `<span class="${chipClass}" title="${cleanName}">${icon} ${cleanName}</span>`;
           }).join(' ');
 
+          // Mostrar al menos un filtro de calidad si el depto tiene uno y hay espacio
+          if (deptQualities.length > 0 && deptProcesses.length < 2) {
+            processesHtml += ` <span class="chip-clean chip-clean-quality" title="${deptQualities[0].name}">🔬 ${deptQualities[0].name}</span>`;
+          }
+
           if (totalProcs > visibleProcCount) {
             const remaining = totalProcs - visibleProcCount;
-            processesHtml += ` <button type="button" class="chip-clean-more" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver todos los procesos">+${remaining} más</button>`;
+            processesHtml += ` <button type="button" class="chip-clean-more" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver estructura completa">+${remaining} más</button>`;
           }
         } else {
           processesHtml = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">${st.name}</span>`;
@@ -2184,13 +2192,35 @@ window.initConfigView = function() {
       }
     }
 
-    // Máquinas
+    // 2. Filtros de Calidad vinculados al departamento
+    const qualListEl = document.getElementById('deptViewerQualityList');
+    const deptQualities = (UanifyState.qualityAreas || []).filter(q => q.deptCode === station.code || q.deptCode === station.id);
+    if (qualListEl) {
+      if (deptQualities.length > 0) {
+        qualListEl.innerHTML = deptQualities.map(q => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFBEB; border:1px solid #FDE68A; padding:8px 12px; border-radius:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="chip-clean chip-clean-quality" style="font-weight:700;">🔬 ${q.name}</span>
+              <span style="font-size:11.5px; color:#B45309; font-weight:600;">(${q.code})</span>
+            </div>
+            <div style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>${q.inspector || 'Inspector por asignar'}</span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        qualListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin filtros de calidad asignados a este departamento.</span>';
+      }
+    }
+
+    // 3. Máquinas y sus Operadores asignados
     let allMachines = [];
     deptProcesses.forEach(proc => {
       if (Array.isArray(proc.machines) && proc.machines.length > 0) {
         proc.machines.forEach(m => {
           if (m && m.name && !allMachines.some(existing => existing.name === m.name)) {
-            allMachines.push(m);
+            allMachines.push({ ...m, processName: proc.name });
           }
         });
       }
@@ -2199,7 +2229,7 @@ window.initConfigView = function() {
     if (allMachines.length === 0 && station.machines) {
       allMachines = station.machines.split(/[,;]/).map(m => {
         const clean = m.trim().replace(/^[A-Z0-9\-]+\s+/i, '');
-        return { name: clean || m.trim() };
+        return { name: clean || m.trim(), processName: station.name };
       }).filter(m => m.name);
     }
 
@@ -2207,14 +2237,37 @@ window.initConfigView = function() {
       if (allMachines.length > 0) {
         machListEl.innerHTML = allMachines.map(m => {
           const cleanM = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
-          return `<span class="chip-clean chip-clean-machine" style="font-size:12px; padding:6px 12px;">🏭 ${cleanM}</span>`;
+          // Buscar operadores asignados a esta máquina en el padrón
+          const assignedOps = (UanifyState.operators || []).filter(op => {
+            return (op.machine && op.machine.toLowerCase() === cleanM.toLowerCase()) ||
+                   (Array.isArray(m.operatorIds) && (m.operatorIds.includes(op.empId) || m.operatorIds.includes(op.id)));
+          });
+
+          const opsHtml = assignedOps.length > 0
+            ? assignedOps.map(op => `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; background:#EFF6FF; color:#1E40AF; padding:2px 8px; border-radius:6px; font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${op.name}</span>`).join(' ')
+            : `<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Sin operador fijo</span>`;
+
+          return `
+            <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                  <span class="chip-clean chip-clean-machine" style="font-size:12px; padding:4px 10px;">🏭 ${cleanM}</span>
+                  ${m.processName ? `<span style="font-size:11.5px; color:var(--text-muted);">· ${m.processName}</span>` : ''}
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Operador(es):</span>
+                ${opsHtml}
+              </div>
+            </div>
+          `;
         }).join('');
       } else {
         machListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin máquinas asignadas</span>';
       }
     }
 
-    // Almacenes
+    // 4. Almacenes
     const whList = (station.intermediateWarehouse ? station.intermediateWarehouse.split(/[,;]/) : ['Buffer de Espera']).map(w => w.trim().replace(/\s*\([A-Z0-9\-]+\)/gi, '')).filter(Boolean);
     if (whListEl) {
       if (whList.length > 0) {
@@ -2292,12 +2345,38 @@ window.initConfigView = function() {
     });
   }
 
+  function populateMachineOperatorsList(selectedDeptCode = '') {
+    const listContainer = document.getElementById('machStandaloneOperatorsList');
+    if (!listContainer) return;
+    const allOps = UanifyState.operators || [];
+    if (allOps.length === 0) {
+      listContainer.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">No hay operadores registrados en el padrón.</span>';
+      return;
+    }
+
+    // Ordenar operadores mostrando primero los que ya pertenecen a este departamento si aplica
+    listContainer.innerHTML = allOps.map(op => {
+      const isDeptMatch = selectedDeptCode && op.deptCode === selectedDeptCode;
+      const deptTag = op.deptCode ? `<span style="font-size:11px; color:var(--text-muted);">${op.deptCode}</span>` : '';
+      const currMach = op.machine ? `<span style="font-size:11px; color:var(--color-brand); font-weight:600;">[${op.machine}]</span>` : '';
+      return `
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:4px 0; border-bottom:1px solid #F1F5F9;">
+          <input type="checkbox" class="mach-standalone-op-cb" value="${op.empId || op.id}" ${isDeptMatch ? '' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <span style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <strong>${op.name}</strong> ${deptTag} ${currMach}
+          </span>
+        </label>
+      `;
+    }).join('');
+  }
+
   function openCreateMachineModal(defaultDeptCode = '') {
     if (!modalCreateMachStandalone) return;
     const nameInp = document.getElementById('machStandaloneName');
     if (nameInp) nameInp.value = '';
 
     populateMachineDeptSelect(defaultDeptCode);
+    populateMachineOperatorsList(defaultDeptCode);
     modalCreateMachStandalone.classList.add('active');
   }
 
@@ -2340,15 +2419,36 @@ window.initConfigView = function() {
         );
       }
 
+      // Obtener operadores seleccionados con checkbox
+      const selectedOpCbs = document.querySelectorAll('.mach-standalone-op-cb:checked');
+      const selectedOpIds = Array.from(selectedOpCbs).map(cb => cb.value);
+
       const nextMachNum = targetProc.machines.length + 1;
-      targetProc.machines.push({
+      const newMachineObj = {
         id: `M-${nextMachNum}`,
         name: machName,
-        status: 'operativa'
-      });
+        status: 'operativa',
+        operatorIds: selectedOpIds
+      };
+      targetProc.machines.push(newMachineObj);
+
+      const targetDept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+
+      // Asignar los operadores seleccionados a esta máquina y departamento en UanifyState.operators
+      if (selectedOpIds.length > 0 && Array.isArray(UanifyState.operators)) {
+        UanifyState.operators.forEach(op => {
+          if (selectedOpIds.includes(op.empId) || selectedOpIds.includes(op.id)) {
+            op.machine = machName;
+            op.deptCode = deptCode;
+            if (targetDept) {
+              op.deptName = targetDept.name;
+              op.department = targetDept.name;
+            }
+          }
+        });
+      }
 
       // Actualizar también en el departamento correspondiente (stations) si aplica
-      const targetDept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
       if (targetDept) {
         const currM = targetDept.machines ? targetDept.machines.split(/[,;]/).map(x => x.trim()) : [];
         if (!currM.some(x => x.toLowerCase() === machName.toLowerCase())) {
@@ -2360,15 +2460,18 @@ window.initConfigView = function() {
       try {
         localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
         localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+        localStorage.setItem('uanify_operators', JSON.stringify(UanifyState.operators));
       } catch (err) {
-        console.warn('Error saving machine:', err);
+        console.warn('Error saving machine and operators:', err);
       }
 
       modalCreateMachStandalone.classList.remove('active');
       renderDepartmentsConfig();
+      if (typeof window.renderOperatorsDirectory === 'function') window.renderOperatorsDirectory();
 
+      const opMsg = selectedOpIds.length > 0 ? ` con ${selectedOpIds.length} operador(es) asignado(s)` : '';
       window.UanifyUI.toast(
-        `Máquina "${machName}" asignada con éxito al proceso "${targetProc.name}" (${targetDept ? targetDept.name : deptCode}).`,
+        `Máquina "${machName}" asignada con éxito al proceso "${targetProc.name}" (${targetDept ? targetDept.name : deptCode})${opMsg}.`,
         'success',
         'Máquina Registrada'
       );
@@ -2448,10 +2551,19 @@ window.initConfigView = function() {
     const canManage = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
     cfgQualityTable.innerHTML = filtered.map(q => {
+      const dept = (UanifyState.stations || []).find(s => s.code === q.deptCode || s.id === q.deptCode);
+      const deptName = dept ? dept.name : (q.deptCode ? `Depto ${q.deptCode}` : 'Sin Depto asignado');
       return `
         <tr>
           <td class="col-name">
             <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${q.name}</div>
+            <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Código: <strong>${q.code}</strong></div>
+          </td>
+          <td>
+            <div style="font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
+              <span>${deptName}</span>
+            </div>
           </td>
           <td>
             <div style="font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
@@ -2494,6 +2606,19 @@ window.initConfigView = function() {
     }
   }
 
+  function populateQualityDeptSelect(selectedDeptCode = '') {
+    const deptEl = document.getElementById('newQualityDept');
+    if (!deptEl || !UanifyState.stations) return;
+    deptEl.innerHTML = `
+      <option value="">-- Seleccionar Departamento Responsable --</option>
+      ${UanifyState.stations.map(st => `
+        <option value="${st.code || st.id}" ${st.code === selectedDeptCode ? 'selected' : ''}>
+          ${st.name}
+        </option>
+      `).join('')}
+    `;
+  }
+
   function populateQualityInspectorsSelect(selectedInspector = '') {
     const inspectorEl = document.getElementById('newQualityInspector');
     if (!inspectorEl) return;
@@ -2521,7 +2646,7 @@ window.initConfigView = function() {
     }
   }
 
-  window.openCreateQualityModal = function() {
+  window.openCreateQualityModal = function(defaultDeptCode = '') {
     if (!modalCreateQuality) return;
     const existing = (UanifyState.qualityAreas || [])
       .map(q => parseInt((q.code || '').replace('C-', ''), 10))
@@ -2549,7 +2674,7 @@ window.initConfigView = function() {
     if (cycleEl) cycleEl.value = '18s';
     if (statusEl) statusEl.value = 'Activo';
 
-    // Sin inspector asignado por defecto
+    populateQualityDeptSelect(defaultDeptCode);
     populateQualityInspectorsSelect('');
 
     modalCreateQuality.classList.add('active');
@@ -2580,6 +2705,7 @@ window.initConfigView = function() {
     if (cycleEl) cycleEl.value = q.cycleTime || '18s';
     if (statusEl) statusEl.value = q.status || 'Activo';
 
+    populateQualityDeptSelect(q.deptCode || '');
     populateQualityInspectorsSelect(q.inspector || '');
 
     modalCreateQuality.classList.add('active');
@@ -2646,6 +2772,7 @@ window.initConfigView = function() {
       const origCode = document.getElementById('origQualityCode')?.value || '';
       const code = (document.getElementById('newQualityCode')?.value || 'C-04').trim().toUpperCase();
       const name = (document.getElementById('newQualityName')?.value || '').trim();
+      const deptCode = (document.getElementById('newQualityDept')?.value || '').trim();
       const location = (document.getElementById('newQualityLocation')?.value || '').trim();
       const inspector = (document.getElementById('newQualityInspector')?.value || '').trim();
       const cycleTime = document.getElementById('newQualityCycleTime')?.value || '18s';
@@ -2653,6 +2780,11 @@ window.initConfigView = function() {
 
       if (!name) {
         window.UanifyUI.toast('Ingresa el nombre del filtro de calidad.', 'warning');
+        return;
+      }
+
+      if (!deptCode) {
+        window.UanifyUI.toast('Debes seleccionar el Departamento Responsable al que pertenece este filtro.', 'warning');
         return;
       }
 
@@ -2664,20 +2796,22 @@ window.initConfigView = function() {
       if (!UanifyState.qualityAreas) UanifyState.qualityAreas = [];
       if (!UanifyState.stations) UanifyState.stations = [];
 
+      const targetDept = UanifyState.stations.find(s => s.code === deptCode || s.id === deptCode);
+      const computedLoc = location || (targetDept ? `Nave ${targetDept.name}` : 'Nave de Producción');
+
       if (mode === 'edit') {
         const qIndex = UanifyState.qualityAreas.findIndex(q => q.code === origCode || q.code === code);
         if (qIndex !== -1) {
           UanifyState.qualityAreas[qIndex] = {
-            code, name, location, desc, criteria: desc, inspector, cycleTime, status
+            code, name, deptCode, location: computedLoc, desc: `Filtro de inspección: ${name}`, criteria: `Inspección ${name}`, inspector, cycleTime, status
           };
         }
         const stIndex = UanifyState.stations.findIndex(s => s.code === origCode || s.code === code);
         if (stIndex !== -1) {
           const st = UanifyState.stations[stIndex];
           st.name = name;
-          st.desc = desc;
-          st.criteria = desc;
-          st.warehouseLocation = location;
+          st.deptCode = deptCode;
+          st.warehouseLocation = computedLoc;
           st.cycleTime = cycleTime;
           st.operator = inspector;
           st.status = status === 'Activo' ? 'running' : 'idle';
@@ -2685,17 +2819,18 @@ window.initConfigView = function() {
       } else {
         // Create mode
         const newQuality = {
-          code, name, location, desc, criteria: desc, inspector, cycleTime, status
+          code, name, deptCode, location: computedLoc, desc: `Filtro de inspección: ${name}`, criteria: `Inspección ${name}`, inspector, cycleTime, status
         };
         UanifyState.qualityAreas.push(newQuality);
 
         const newStation = {
           id: 'calidad-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
           code: code,
+          deptCode: deptCode,
           name: name,
-          desc: desc || `Filtro de calidad: ${name}`,
-          criteria: desc,
-          warehouseLocation: location || 'Nave de Producción',
+          desc: `Filtro de calidad: ${name}`,
+          criteria: `Inspección ${name}`,
+          warehouseLocation: computedLoc,
           target: 850,
           produced: 0,
           scrap: 0,
@@ -2705,7 +2840,7 @@ window.initConfigView = function() {
           operator: inspector,
           type: 'calidad',
           isQualityStop: true,
-          note: `Filtro de Calidad registrado. Auditor responsable: ${inspector}.`
+          note: `Filtro de Calidad asignado al departamento ${targetDept ? targetDept.name : deptCode}. Auditor: ${inspector}.`
         };
         UanifyState.stations.push(newStation);
       }
@@ -3202,6 +3337,54 @@ window.initConfigView = function() {
       }
     });
   }
+
+  // ── 10. GESTOR DE SEGMENTACIÓN DE PESTAÑAS POR CATEGORÍAS INDUSTRIALES ──
+  function initConfigCategorySegmentation() {
+    const catPills = document.querySelectorAll('.cfg-cat-pill');
+    const subTabBtns = document.querySelectorAll('.sub-nav-tabs[data-module="config"] .sub-tab-btn');
+    if (catPills.length === 0 || subTabBtns.length === 0) return;
+
+    catPills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = pill.getAttribute('data-cfgcat');
+
+        // Alternar pills activas con estilo visual
+        catPills.forEach(p => {
+          p.classList.remove('active');
+          p.style.background = 'transparent';
+          p.style.color = 'var(--text-secondary)';
+          p.style.fontWeight = '600';
+          p.style.boxShadow = 'none';
+        });
+
+        pill.classList.add('active');
+        pill.style.background = 'var(--color-brand)';
+        pill.style.color = '#FFFFFF';
+        pill.style.fontWeight = '700';
+        pill.style.boxShadow = '0 1px 4px rgba(139,94,60,0.25)';
+
+        // Filtrar qué sub-tabs se muestran
+        let firstVisibleBtn = null;
+        subTabBtns.forEach(btn => {
+          const btnCat = btn.getAttribute('data-cfgcat');
+          if (btnCat === cat) {
+            btn.style.display = 'inline-flex';
+            if (!firstVisibleBtn) firstVisibleBtn = btn;
+          } else {
+            btn.style.display = 'none';
+          }
+        });
+
+        // Simular clic en el primer sub-tab de la categoría seleccionada
+        if (firstVisibleBtn) {
+          firstVisibleBtn.click();
+        }
+      });
+    });
+  }
+
+  initConfigCategorySegmentation();
 
   // Actualizar si el usuario activo cambia en el sidebar
   EventBus.on('user-switched', () => {

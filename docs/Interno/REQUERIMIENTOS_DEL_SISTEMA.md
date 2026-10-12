@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.81.0` | **Versión:** `v2.81.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.82.0` | **Versión:** `v2.82.0`  
 > **Fecha de Emisión / Última Actualización:** 12 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -824,3 +824,5 @@ Para dotar al sistema de una identidad de producto formal que conserve el presti
 | **RF-91** | Modelo Relacional: Depto → Procesos (C-XX) → Máquinas con ID | Configuración de Planta      | `v2.63.0`           | OK En Producción |
 | **RF-92** | Paro de Línea con Stepper Guiado, Cronómetro Vivo y Widget Flotante | Terminal / Andon / Piso      | `v2.64.0`           | OK En Producción |
 | **RF-93** | Modo Rampa con Stepper Guiado, Escaneo Continuo y Cambio de Tarjetas | Terminal / Rampa / Piso      | `v2.65.0`           | OK En Producción |
+| **RF-94** | Segmentación Industrial de Pestañas en Módulo de Configuración | Configuración de Planta      | `v2.82.0`           | OK En Producción |
+| **RF-95** | Jerarquía Relacional Integral: Depto ➔ Proceso ➔ Máquina ➔ Operador(es) & Filtros C-XX | Configuración / Planta       | `v2.82.0`           | OK En Producción |

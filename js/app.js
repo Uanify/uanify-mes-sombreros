@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.81.0',
+  version: '2.82.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -1153,6 +1153,7 @@ const UanifyState = {
     {
       code: 'C-01',
       name: 'Calidad 1 (Post-Dope / Refuerzos)',
+      deptCode: 'D-04',
       location: 'Filtro Entrada a Prensas (Nave 1)',
       desc: '1er punto de inspección. Libera o rechaza el lote tras sellado y secado en camas.',
       criteria: 'Rigidez uniforme de telares, sin burbujas de dope, sellado perimetral.',
@@ -1163,6 +1164,7 @@ const UanifyState = {
     {
       code: 'C-02',
       name: 'Calidad 2 (Post-Pintura)',
+      deptCode: 'D-09',
       location: 'Salida Cabina de Pintura (Nave 2)',
       desc: '2do punto de inspección. Verifica uniformidad y tono de pintura antes de brillo.',
       criteria: 'Tono según muestra patrón, sin escurrimientos, recubrimiento parejo.',
@@ -1173,6 +1175,7 @@ const UanifyState = {
     {
       code: 'C-03',
       name: 'Calidad 3 (Producto Terminado)',
+      deptCode: 'D-13',
       location: 'Mezzanine de Empaque & Traspaso',
       desc: '3er punto de inspección previo a empaque y embarque final.',
       criteria: 'Alineación de copa y ala, costura de tafilete, toquilla y herrajes firmes.',
@@ -1183,6 +1186,7 @@ const UanifyState = {
     {
       code: 'C-04',
       name: 'Calidad 4 (Post-Laqueado Especial)',
+      deptCode: 'D-10',
       location: 'Túnel de Secado Infrarrojo (Nave 2)',
       desc: '4to punto de inspección para modelos de alto brillo y resistencia térmica.',
       criteria: 'Cero piel de naranja, adherencia clase 5B, brillo espejo uniforme.',
@@ -2678,6 +2682,16 @@ function enrichStationWithDefaults(st, idx) {
     if (savedQuality) {
       const parsed = JSON.parse(savedQuality);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Asegurar vinculación formal deptCode si venía ausente
+        parsed.forEach(q => {
+          if (!q.deptCode) {
+            if (q.code === 'C-01') q.deptCode = 'D-04';
+            else if (q.code === 'C-02') q.deptCode = 'D-09';
+            else if (q.code === 'C-03') q.deptCode = 'D-13';
+            else if (q.code === 'C-04') q.deptCode = 'D-10';
+            else q.deptCode = 'D-05';
+          }
+        });
         UanifyState.qualityAreas = parsed;
       }
     }
