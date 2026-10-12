@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.67.0',
+  version: '2.68.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {

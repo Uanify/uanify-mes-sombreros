@@ -2253,19 +2253,23 @@ input.is-valid {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  background: #F1F5F9;
+  background: rgba(248, 250, 252, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid #E2E8F0;
   border-radius: 12px;
   padding: 6px;
-  margin-top: 20px;
+  margin-top: 14px;
   margin-bottom: 24px;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
-  position: relative;
-  z-index: 10;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: 72px;
+  z-index: 95;
   width: fit-content;
   max-width: 100%;
   scrollbar-width: none; /* Firefox: oculta scroll horizontal tosco */
   -ms-overflow-style: none; /* IE/Edge */
+  transition: all 0.2s ease;
 }
 
 .sub-nav-tabs::-webkit-scrollbar {
@@ -4870,6 +4874,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   vertical-align: middle;
   cursor: pointer !important;
   margin-left: 6px;
+  z-index: 105;
+}
+
+.info-tip:hover,
+.info-tip.active,
+.info-tip:focus-within {
+  z-index: 999999 !important;
 }
 
 .info-tip-btn {
@@ -4947,7 +4958,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-  z-index: 9999999;
+  z-index: 99999999 !important;
   text-align: left;
   white-space: normal;
 }
@@ -5586,4 +5597,84 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   max-width: 170px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ═══════ CHIPS LIMPIOS PARA DEPARTAMENTOS, PROCESOS & MÁQUINAS (SIN IDS) ═══════ */
+.chip-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  line-height: 1.25;
+}
+
+.chip-clean-process {
+  background: rgba(139, 94, 60, 0.08);
+  color: #8B5E3C;
+  border: 1px solid rgba(139, 94, 60, 0.22);
+}
+
+.chip-clean-quality {
+  background: rgba(217, 119, 6, 0.1);
+  color: #B45309;
+  border: 1px solid rgba(217, 119, 6, 0.26);
+}
+
+.chip-clean-machine {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+}
+
+.chip-clean-wh {
+  background: #F8FAFC;
+  color: #1E293B;
+  border: 1px solid #E2E8F0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.chip-clean-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #BFDBFE;
+  cursor: pointer !important;
+  transition: all 0.18s ease;
+  text-decoration: none;
+}
+
+.chip-clean-more:hover {
+  background: #DBEAFE;
+  color: #1D4ED8;
+  border-color: #93C5FD;
+  transform: translateY(-1px);
+}
+
+.dept-supervisor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0F172A;
+  background: #F8FAFC;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
 }

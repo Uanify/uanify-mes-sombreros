@@ -120,7 +120,7 @@ window.initConfigView = function() {
     if (paginatedItems.length === 0) {
       tableBody.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="5">
+          <td colspan="6">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron departamentos coincidentes</span>
@@ -142,30 +142,41 @@ window.initConfigView = function() {
             return {
               id: `PROC-${st.code}-${i+1}`,
               code: `PROC-${String(i+1).padStart(2, '0')}`,
-              name: trimmed,
+              name: trimmed.replace(/^(PROC-\d+|C-\d+)\s*/i, ''),
               type: isQ ? 'calidad' : 'manufactura',
               machines: []
             };
           }).filter(p => p.name);
         }
 
-        const processesHtml = deptProcesses.length > 0 
-          ? deptProcesses.map(p => {
-              const isQ = p.type === 'calidad' || (p.code && p.code.startsWith('C-')) || p.name.toLowerCase().includes('calidad');
-              const bg = isQ ? 'rgba(217, 119, 6, 0.12)' : 'rgba(139, 94, 60, 0.09)';
-              const color = isQ ? '#B45309' : '#8B5E3C';
-              const border = isQ ? '1px solid rgba(217, 119, 6, 0.3)' : '1px solid rgba(139, 94, 60, 0.22)';
-              const icon = isQ ? '🔬' : '⚙️';
-              return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2.5px 8px; border-radius:6px; background:${bg}; color:${color}; border:${border}; margin:2px;" title="${p.code || ''}: ${p.name}">${icon} <strong>${p.code || ''}</strong> ${p.name}</span>`;
-            }).join(' ')
-          : `<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">${st.name}</span>`;
+        // Renderizado limpio de procesos (SIN IDs técnicos invasivos, máx 2 visibles)
+        const visibleProcCount = 2;
+        const totalProcs = deptProcesses.length;
+        let processesHtml = '';
+        if (totalProcs > 0) {
+          const sliceProcs = deptProcesses.slice(0, visibleProcCount);
+          processesHtml = sliceProcs.map(p => {
+            const cleanName = (p.name || '').replace(/^(PROC-\d+|C-\d+)\s*/i, '');
+            const isQ = p.type === 'calidad' || cleanName.toLowerCase().includes('calidad');
+            const chipClass = isQ ? 'chip-clean chip-clean-quality' : 'chip-clean chip-clean-process';
+            const icon = isQ ? '🔬' : '⚙️';
+            return `<span class="${chipClass}" title="${cleanName}">${icon} ${cleanName}</span>`;
+          }).join(' ');
 
-        // 2. Extraer máquinas / áreas de trabajo formales con identificador
+          if (totalProcs > visibleProcCount) {
+            const remaining = totalProcs - visibleProcCount;
+            processesHtml += ` <button type="button" class="chip-clean-more" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver todos los procesos">+${remaining} más</button>`;
+          }
+        } else {
+          processesHtml = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">${st.name}</span>`;
+        }
+
+        // 2. Extraer máquinas / áreas de trabajo formales (SIN IDs técnicos como TEN-01, solo nombres limpios)
         let allMachines = [];
         deptProcesses.forEach(proc => {
           if (Array.isArray(proc.machines) && proc.machines.length > 0) {
             proc.machines.forEach(m => {
-              if (m && m.id && !allMachines.some(existing => existing.id === m.id)) {
+              if (m && m.name && !allMachines.some(existing => existing.name === m.name)) {
                 allMachines.push(m);
               }
             });
@@ -176,24 +187,45 @@ window.initConfigView = function() {
         if (allMachines.length === 0 && st.machines) {
           const rawMachList = st.machines.split(/[,;]/).map(m => m.trim()).filter(Boolean);
           allMachines = rawMachList.map(raw => {
-            const parts = raw.split(' ');
-            const id = parts[0] || 'MAQ-01';
-            const name = parts.slice(1).join(' ') || id;
-            return { id, name };
+            // Quitar ID si viene al inicio (ej: TEN-01 Mesa -> Mesa)
+            const clean = raw.replace(/^[A-Z0-9\-]+\s+/i, '');
+            return { id: '', name: clean || raw };
           });
         }
 
-        const machinesHtml = allMachines.length > 0
-          ? allMachines.map(m => {
-              return `<span style="display:inline-flex; align-items:center; gap:5px; font-size:11px; font-family:var(--font-mono); font-weight:600; padding:2px 7px; border-radius:6px; background:#F1F5F9; color:#1E293B; border:1px solid #CBD5E1; margin:2px;" title="${m.name}"><span style="color:var(--color-brand); font-weight:800;">${m.id}</span> ${m.name}</span>`;
-            }).join(' ')
-          : `<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Sin máquinas registradas</span>`;
+        const visibleMachCount = 2;
+        const totalMachs = allMachines.length;
+        let machinesHtml = '';
+        if (totalMachs > 0) {
+          const sliceMachs = allMachines.slice(0, visibleMachCount);
+          machinesHtml = sliceMachs.map(m => {
+            const cleanMachName = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
+            return `<span class="chip-clean chip-clean-machine" title="${cleanMachName}">🏭 ${cleanMachName}</span>`;
+          }).join(' ');
 
-        // 3. Almacenes Intermedios asociados (1 o varios)
-        const whList = (st.intermediateWarehouse ? st.intermediateWarehouse.split(/[,;]/) : [`Buffer ${st.code} (ALM-01)`]).map(w => w.trim()).filter(Boolean);
-        const warehousesHtml = whList.map(w => {
-          return `<div style="margin-bottom:3px;"><strong style="font-size:12px; color:var(--text-primary); display:block;">📦 ${w}</strong></div>`;
-        }).join('');
+          if (totalMachs > visibleMachCount) {
+            const remainingM = totalMachs - visibleMachCount;
+            machinesHtml += ` <button type="button" class="chip-clean-more" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver todas las máquinas">+${remainingM} más</button>`;
+          }
+        } else {
+          machinesHtml = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin máquinas registradas</span>`;
+        }
+
+        // 3. Almacenes Intermedios asociados (pueden ser varios, SIN IDs como ALM-INT-01)
+        const rawWhList = (st.intermediateWarehouse ? st.intermediateWarehouse.split(/[,;]/) : [`Buffer Entrada`, `Buffer Salida`]).map(w => w.trim()).filter(Boolean);
+        const cleanWhList = rawWhList.map(w => w.replace(/\s*\([A-Z0-9\-]+\)/gi, '')); // Quita "(ALM-INT-01)"
+        
+        let warehousesHtml = '';
+        if (cleanWhList.length > 0) {
+          const firstWh = cleanWhList[0];
+          warehousesHtml = `<div class="chip-clean-wh" title="${firstWh}">📦 ${firstWh}</div>`;
+          if (cleanWhList.length > 1) {
+            const remWh = cleanWhList.length - 1;
+            warehousesHtml += `<div style="margin-top:4px;"><button type="button" class="chip-clean-more" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver todos los almacenes">+${remWh} almacén(es) más</button></div>`;
+          }
+        } else {
+          warehousesHtml = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Buffer central</span>`;
+        }
 
         const warehouseLoc = st.warehouseLocation || 'Nave Central';
         const supervisorName = st.operator || 'Supervisor Asignado';
@@ -201,32 +233,38 @@ window.initConfigView = function() {
         return `
           <tr>
             <td class="col-name">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-family:var(--font-mono); font-weight:800; font-size:12px; color:var(--color-brand); background:rgba(139, 94, 60, 0.1); padding:2px 6px; border-radius:4px;">${st.code || 'D-XX'}</span>
-                <strong style="font-size:13.5px; color:var(--text-primary);">${st.name}</strong>
+              <strong style="font-size:14px; color:var(--text-primary); display:block;">${st.name}</strong>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;">
+                Ritmo: <strong>${st.cycleTime || '35s'}</strong> · Capacidad: <strong>${st.wipCapacity || 180}</strong> pzas
               </div>
-              <div style="margin-top:4px; font-size:11.5px; color:var(--text-secondary); display:flex; align-items:center; gap:4px;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>${supervisorName}</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">Takt: ${st.cycleTime || '35s'} · Cap: ${st.wipCapacity || 180} pzas</div>
             </td>
             <td>
-              <div style="display:flex; flex-wrap:wrap; gap:2px;">
+              <div class="dept-supervisor-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>${supervisorName}</span>
+              </div>
+            </td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
                 ${processesHtml}
               </div>
             </td>
             <td>
-              <div style="display:flex; flex-wrap:wrap; gap:2px;">
+              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
                 ${machinesHtml}
               </div>
             </td>
             <td>
               ${warehousesHtml}
-              <span class="table-cell-subtext" style="font-size:11px;">📍 ${warehouseLoc}</span>
+              <div style="font-size:11px; color:var(--text-secondary); margin-top:4px; display:flex; align-items:center; gap:4px;">
+                <span>📍 ${warehouseLoc}</span>
+              </div>
             </td>
             <td class="col-actions" style="text-align:center;">
-              <div class="action-btns-cell" style="justify-content:center;">
+              <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                <button type="button" class="btn-table-action" onclick="window.openDeptDetailViewer('${st.code || st.id}')" title="Ver detalle completo de procesos, máquinas y almacenes" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditDepartmentModal('${st.code || st.id}')" title="Editar departamento, procesos y máquinas">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
@@ -1783,6 +1821,327 @@ window.initConfigView = function() {
       );
     });
   }
+
+  // ── 5.1. CREACIÓN INDEPENDIENTE DE PROCESOS (ASIGNACIÓN ÚNICA A DEPARTAMENTO) ──
+  const modalCreateProcStandalone = document.getElementById('modalCreateProcessStandalone');
+  const btnCloseProcStandalone = document.getElementById('btnCloseCreateProcessStandaloneModal');
+  const btnCancelProcStandalone = document.getElementById('btnCancelCreateProcessStandalone');
+  const formCreateProcStandalone = document.getElementById('formCreateProcessStandalone');
+
+  function openCreateProcessModal() {
+    if (!modalCreateProcStandalone) return;
+    const nameInp = document.getElementById('procStandaloneName');
+    const cycleInp = document.getElementById('procStandaloneCycle');
+    const machInp = document.getElementById('procStandaloneMachines');
+    const deptSelect = document.getElementById('procStandaloneDept');
+
+    if (nameInp) nameInp.value = '';
+    if (cycleInp) cycleInp.value = '35s';
+    if (machInp) machInp.value = '';
+
+    // Poblar selector de departamentos disponibles
+    if (deptSelect && UanifyState.stations) {
+      deptSelect.innerHTML = '<option value="">Selecciona un departamento...</option>' + 
+        UanifyState.stations.map(st => `<option value="${st.code || st.id}">${st.name}</option>`).join('');
+    }
+
+    modalCreateProcStandalone.classList.add('active');
+  }
+
+  if (btnCloseProcStandalone) btnCloseProcStandalone.addEventListener('click', () => modalCreateProcStandalone.classList.remove('active'));
+  if (btnCancelProcStandalone) btnCancelProcStandalone.addEventListener('click', () => modalCreateProcStandalone.classList.remove('active'));
+
+  if (formCreateProcStandalone) {
+    formCreateProcStandalone.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const procName = document.getElementById('procStandaloneName')?.value.trim();
+      const procType = document.getElementById('procStandaloneType')?.value || 'manufactura';
+      const procCycle = document.getElementById('procStandaloneCycle')?.value.trim() || '35s';
+      const targetDeptCode = document.getElementById('procStandaloneDept')?.value;
+      const machRaw = document.getElementById('procStandaloneMachines')?.value.trim() || '';
+
+      if (!procName) {
+        return window.UanifyUI.toast('Por favor ingresa el nombre del proceso.', 'warning', 'Campo Requerido');
+      }
+      if (!targetDeptCode) {
+        return window.UanifyUI.toast('Debes seleccionar un departamento responsable para este proceso.', 'warning', 'Departamento Requerido');
+      }
+
+      // Validar regla de unicidad: Verificar si el proceso con este nombre ya está asignado a otro departamento
+      if (!UanifyState.processes) UanifyState.processes = [];
+      const existingProc = UanifyState.processes.find(p => p.name.toLowerCase() === procName.toLowerCase());
+      if (existingProc && existingProc.deptCode && existingProc.deptCode !== targetDeptCode) {
+        const assignedDept = (UanifyState.stations || []).find(s => s.code === existingProc.deptCode);
+        const deptLabel = assignedDept ? assignedDept.name : existingProc.deptCode;
+        return window.UanifyUI.toast(
+          `El proceso "${procName}" ya está asignado exclusivamente al departamento "${deptLabel}". No puede asignarse a más de un departamento.`,
+          'error',
+          'Asignación Duplicada No Permitida'
+        );
+      }
+
+      // Convertir máquinas
+      const machinesList = machRaw ? machRaw.split(',').map((m, i) => {
+        const cleanM = m.trim();
+        return { id: `M-${i+1}`, name: cleanM, status: 'operativa' };
+      }).filter(m => m.name) : [];
+
+      const targetDept = (UanifyState.stations || []).find(s => s.code === targetDeptCode || s.id === targetDeptCode);
+      const newProcObj = {
+        id: `PROC-${targetDeptCode}-${Date.now().toString().slice(-4)}`,
+        code: `PROC-${String(UanifyState.processes.length + 1).padStart(2, '0')}`,
+        name: procName,
+        deptCode: targetDeptCode,
+        type: procType,
+        cycleTime: procCycle,
+        machines: machinesList
+      };
+
+      UanifyState.processes.push(newProcObj);
+
+      // Si el departamento en stations no tiene actualizado el string de procesos, agregar
+      if (targetDept) {
+        const curr = targetDept.processes ? targetDept.processes.split(/[,;]/).map(x => x.trim()) : [];
+        if (!curr.some(x => x.toLowerCase() === procName.toLowerCase())) {
+          curr.push(procName);
+          targetDept.processes = curr.join(', ');
+        }
+      }
+
+      try {
+        localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+      } catch (err) {
+        console.warn('Error saving process:', err);
+      }
+
+      modalCreateProcStandalone.classList.remove('active');
+      renderDepartmentsConfig();
+
+      window.UanifyUI.toast(
+        `Proceso "${procName}" creado y asignado exitosamente al departamento "${targetDept ? targetDept.name : targetDeptCode}".`,
+        'success',
+        'Proceso Registrado'
+      );
+    });
+  }
+
+  // ── 5.2. CREACIÓN INDEPENDIENTE DE ALMACÉN INTERMEDIO (ASIGNACIÓN ÚNICA A DEPARTAMENTO) ──
+  const modalCreateWhStandalone = document.getElementById('modalCreateWarehouseStandalone');
+  const btnCloseWhStandalone = document.getElementById('btnCloseCreateWarehouseStandaloneModal');
+  const btnCancelWhStandalone = document.getElementById('btnCancelCreateWarehouseStandalone');
+  const formCreateWhStandalone = document.getElementById('formCreateWarehouseStandalone');
+
+  function openCreateWarehouseModal() {
+    if (!modalCreateWhStandalone) return;
+    const nameInp = document.getElementById('whStandaloneName');
+    const capInp = document.getElementById('whStandaloneCap');
+    const locInp = document.getElementById('whStandaloneLocation');
+    const deptSelect = document.getElementById('whStandaloneDept');
+
+    if (nameInp) nameInp.value = '';
+    if (capInp) capInp.value = '180';
+    if (locInp) locInp.value = 'Nave Central - Pasillo de Traspaso';
+
+    // Poblar selector de departamentos
+    if (deptSelect && UanifyState.stations) {
+      deptSelect.innerHTML = '<option value="">Selecciona un departamento...</option>' + 
+        UanifyState.stations.map(st => `<option value="${st.code || st.id}">${st.name}</option>`).join('');
+    }
+
+    modalCreateWhStandalone.classList.add('active');
+  }
+
+  if (btnCloseWhStandalone) btnCloseWhStandalone.addEventListener('click', () => modalCreateWhStandalone.classList.remove('active'));
+  if (btnCancelWhStandalone) btnCancelWhStandalone.addEventListener('click', () => modalCreateWhStandalone.classList.remove('active'));
+
+  if (formCreateWhStandalone) {
+    formCreateWhStandalone.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const whName = document.getElementById('whStandaloneName')?.value.trim();
+      const whType = document.getElementById('whStandaloneType')?.value || 'Buffer de Salida';
+      const whCap = parseInt(document.getElementById('whStandaloneCap')?.value, 10) || 180;
+      const whLoc = document.getElementById('whStandaloneLocation')?.value.trim() || 'Nave Central';
+      const targetDeptCode = document.getElementById('whStandaloneDept')?.value;
+
+      if (!whName) {
+        return window.UanifyUI.toast('Por favor ingresa el nombre del almacén intermedio.', 'warning', 'Nombre Requerido');
+      }
+      if (!targetDeptCode) {
+        return window.UanifyUI.toast('Debes seleccionar el departamento al que pertenecerá este almacén.', 'warning', 'Departamento Requerido');
+      }
+
+      // Validar regla de unicidad: Verificar si este almacén ya está asignado a otro departamento
+      const stations = UanifyState.stations || [];
+      const alreadyAssignedStation = stations.find(s => {
+        if (!s.intermediateWarehouse) return false;
+        const list = s.intermediateWarehouse.split(/[,;]/).map(w => w.trim().toLowerCase());
+        return list.includes(whName.toLowerCase()) && (s.code !== targetDeptCode && s.id !== targetDeptCode);
+      });
+
+      if (alreadyAssignedStation) {
+        return window.UanifyUI.toast(
+          `El almacén "${whName}" ya está asignado exclusivamente al departamento "${alreadyAssignedStation.name}". Un almacén no puede asignarse a más de un departamento.`,
+          'error',
+          'Almacén ya Asignado'
+        );
+      }
+
+      // Asociar al departamento destino
+      const targetDept = stations.find(s => s.code === targetDeptCode || s.id === targetDeptCode);
+      if (targetDept) {
+        const curr = targetDept.intermediateWarehouse ? targetDept.intermediateWarehouse.split(/[,;]/).map(x => x.trim()) : [];
+        if (!curr.some(x => x.toLowerCase() === whName.toLowerCase())) {
+          curr.push(whName);
+          targetDept.intermediateWarehouse = curr.join(', ');
+        }
+        targetDept.warehouseLocation = whLoc;
+      }
+
+      // También registrar en UanifyState.warehouses si no existe
+      if (!UanifyState.warehouses) UanifyState.warehouses = [];
+      const existingWh = UanifyState.warehouses.find(w => w.name.toLowerCase() === whName.toLowerCase());
+      if (!existingWh) {
+        UanifyState.warehouses.push({
+          id: 'wh-int-' + Date.now().toString().slice(-4),
+          code: `ALM-INT-${String(UanifyState.warehouses.length + 1).padStart(2, '0')}`,
+          name: whName,
+          type: whType,
+          location: whLoc,
+          stock: '0 pzas',
+          items: `Pulmón intermedio exclusivo para ${targetDept ? targetDept.name : targetDeptCode}`,
+          capPercent: 0,
+          status: 'Operativo',
+          statusClass: 'badge-status-green',
+          assignedDeptCode: targetDeptCode
+        });
+      }
+
+      try {
+        localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+        localStorage.setItem('uanify_warehouses', JSON.stringify(UanifyState.warehouses));
+      } catch (err) {
+        console.warn('Error saving warehouse:', err);
+      }
+
+      modalCreateWhStandalone.classList.remove('active');
+      renderDepartmentsConfig();
+
+      window.UanifyUI.toast(
+        `Almacén intermedio "${whName}" asignado exclusivamente al departamento "${targetDept ? targetDept.name : targetDeptCode}".`,
+        'success',
+        'Almacén Registrado'
+      );
+    });
+  }
+
+  // ── 5.3. VISOR INTERACTIVO DE DETALLES DEL DEPARTAMENTO (SIN IDS TÉCNICOS) ──
+  const modalDeptViewer = document.getElementById('modalDeptDetailViewer');
+  const btnCloseDeptViewer = document.getElementById('btnCloseDeptViewerModal');
+  const btnCloseDeptViewerBtn = document.getElementById('btnCloseDeptViewerBtn');
+
+  function openDeptDetailViewer(deptCode) {
+    if (!modalDeptViewer || !UanifyState.stations) return;
+    const station = UanifyState.stations.find(s => s.code === deptCode || s.id === deptCode);
+    if (!station) return;
+
+    const titleEl = document.getElementById('deptViewerTitle');
+    const subEl = document.getElementById('deptViewerSubtitle');
+    const supEl = document.getElementById('deptViewerSupervisor');
+    const taktEl = document.getElementById('deptViewerTakt');
+    const capEl = document.getElementById('deptViewerCap');
+    const procListEl = document.getElementById('deptViewerProcessesList');
+    const machListEl = document.getElementById('deptViewerMachinesList');
+    const whListEl = document.getElementById('deptViewerWarehousesList');
+
+    if (titleEl) titleEl.textContent = station.name;
+    if (subEl) subEl.textContent = `Detalles de flujo operativo y estaciones para ${station.name}`;
+    if (supEl) supEl.textContent = station.operator || 'Supervisor Asignado';
+    if (taktEl) taktEl.textContent = `${station.cycleTime || '35s'}`;
+    if (capEl) capEl.textContent = `${station.wipCapacity || 180} piezas`;
+
+    // Procesos formales
+    let deptProcesses = (UanifyState.processes || []).filter(p => p.deptCode === station.code);
+    if (deptProcesses.length === 0 && station.processes) {
+      deptProcesses = station.processes.split(/[,;]/).map(p => ({
+        name: p.trim().replace(/^(PROC-\d+|C-\d+)\s*/i, ''),
+        type: p.toLowerCase().includes('calidad') ? 'calidad' : 'manufactura'
+      })).filter(p => p.name);
+    }
+
+    if (procListEl) {
+      if (deptProcesses.length > 0) {
+        procListEl.innerHTML = deptProcesses.map((p, idx) => {
+          const isQ = p.type === 'calidad' || (p.name && p.name.toLowerCase().includes('calidad'));
+          const cleanName = (p.name || '').replace(/^(PROC-\d+|C-\d+)\s*/i, '');
+          const badgeClass = isQ ? 'chip-clean chip-clean-quality' : 'chip-clean chip-clean-process';
+          const icon = isQ ? '🔬' : '⚙️';
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px;">
+              <span class="${badgeClass}">${icon} ${cleanName}</span>
+              <span style="font-size:12px; color:var(--text-secondary);">${isQ ? 'Punto de Calidad' : 'Etapa Productiva'}</span>
+            </div>
+          `;
+        }).join('');
+      } else {
+        procListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin procesos asignados</span>';
+      }
+    }
+
+    // Máquinas
+    let allMachines = [];
+    deptProcesses.forEach(proc => {
+      if (Array.isArray(proc.machines) && proc.machines.length > 0) {
+        proc.machines.forEach(m => {
+          if (m && m.name && !allMachines.some(existing => existing.name === m.name)) {
+            allMachines.push(m);
+          }
+        });
+      }
+    });
+
+    if (allMachines.length === 0 && station.machines) {
+      allMachines = station.machines.split(/[,;]/).map(m => {
+        const clean = m.trim().replace(/^[A-Z0-9\-]+\s+/i, '');
+        return { name: clean || m.trim() };
+      }).filter(m => m.name);
+    }
+
+    if (machListEl) {
+      if (allMachines.length > 0) {
+        machListEl.innerHTML = allMachines.map(m => {
+          const cleanM = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
+          return `<span class="chip-clean chip-clean-machine" style="font-size:12px; padding:6px 12px;">🏭 ${cleanM}</span>`;
+        }).join('');
+      } else {
+        machListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin máquinas asignadas</span>';
+      }
+    }
+
+    // Almacenes
+    const whList = (station.intermediateWarehouse ? station.intermediateWarehouse.split(/[,;]/) : ['Buffer de Espera']).map(w => w.trim().replace(/\s*\([A-Z0-9\-]+\)/gi, '')).filter(Boolean);
+    if (whListEl) {
+      if (whList.length > 0) {
+        whListEl.innerHTML = whList.map(w => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px;">
+            <span class="chip-clean-wh" style="font-size:12.5px;">📦 ${w}</span>
+            <span style="font-size:11.5px; color:var(--text-muted);">Ubicación: ${station.warehouseLocation || 'Nave Central'}</span>
+          </div>
+        `).join('');
+      } else {
+        whListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin almacenes asociados</span>';
+      }
+    }
+
+    modalDeptViewer.classList.add('active');
+  }
+
+  if (btnCloseDeptViewer) btnCloseDeptViewer.addEventListener('click', () => modalDeptViewer.classList.remove('active'));
+  if (btnCloseDeptViewerBtn) btnCloseDeptViewerBtn.addEventListener('click', () => modalDeptViewer.classList.remove('active'));
+
+  window.openCreateProcessModal = openCreateProcessModal;
+  window.openCreateWarehouseModal = openCreateWarehouseModal;
+  window.openDeptDetailViewer = openDeptDetailViewer;
 
   // ── 6. CRUD DE FILTROS DE CALIDAD & TOLERANCIAS (C-XX) ───────────────────
   const modalCreateQuality = document.getElementById('modalCreateQualityArea');

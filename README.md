@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.67.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.68.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.67.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.68.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,18 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.64.0] - 2026-10-09
+### [2.68.0] - 2026-10-12
+- **Sub-pestañas Sticky, Tooltips Prioritarios, Creación Dedicada de Procesos/Almacenes y Catálogo Limpio de Departamentos:**
+  - **Sub-navegación Sticky (.sub-nav-tabs):** Las pestañas internas de cada módulo ahora se mantienen fijas en la parte superior (`position: sticky; top: 72px; z-index: 95`) al hacer scroll vertical en pantalla, sin desaparecer ni quedar ocultas.
+  - **Prioridad Absoluta de Tooltips & Info-tips (.info-tip-popup):** Los tooltips ahora cuentan con elevación de capa máxima (`z-index: 99999999 !important`), garantizando que se desplieguen siempre por encima de pestañas fijas y cabeceras.
+  - **Creación Standalone de Procesos y Almacenes (Regla de Unicidad):**
+    - Modal `+ Nuevo Proceso`: Permite crear procesos de manufactura o calidad y asignarlos a un departamento específico. Valida que si un proceso ya está asignado no se pueda duplicar en otro.
+    - Modal `+ Nuevo Almacén Buffer`: Permite registrar almacenes intermedios WIP asignados de forma exclusiva a un departamento.
+  - **Catálogo Limpio de Departamentos (Sin IDs Técnicos Invasivos):**
+    - Se eliminaron los códigos crudos (`D-XX`, `PROC-XX`, `TEN-01`, `ALM-INT-01`) de la vista principal para centrarse en nombres legibles de planta.
+    - Columna independiente para el **Supervisor Asignado**.
+    - Procesos y Máquinas compactados con vista de los primeros 2 elementos y botón interactivo `+N más...` para consultar el desglose completo.
+    - Modal `Visor de Detalles del Departamento` para inspeccionar la estructura relacional completa sin saturar la tabla.
 - **Paro de Línea con Stepper Guiado, Cronómetro Vivo y Widget Flotante Global (RF-92):**
   - **Stepper de 3 Fases para Registro de Paros:**
     1. *Paso 1 (Estación & Motivo):* Selección de departamento, máquina o puesto de trabajo afectado y motivo principal de paro (SMED por cambio de molde, falta de vapor en caldera, falta de tafiletes/toquillas, falla mecánica/eléctrica o descanso/comida).
