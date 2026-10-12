@@ -349,7 +349,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       usersTableBody.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="7">
+          <td colspan="5">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron usuarios coincidentes</span>
@@ -364,6 +364,7 @@ window.initConfigView = function() {
         let roleBadgeClass = 'role-badge-supervisor';
         if (u.role === 'admin') roleBadgeClass = 'role-badge-admin';
         else if (u.role === 'ingeniero') roleBadgeClass = 'role-badge-ingeniero';
+        else if (u.role === 'calidad') roleBadgeClass = 'role-badge-calidad';
 
         // Sintetizar permisos modulares para evitar sobrecarga visual
         let permInfo = '';
@@ -382,51 +383,44 @@ window.initConfigView = function() {
           permInfo = `<div style="display:flex; flex-wrap:wrap; gap:3px; max-width:280px;">${permPills}</div>`;
         }
 
-        // Contar operadores en los departamentos asignados
+        // Departamentos asignados compactos con botón de ver detalle
         let deptsInfo = '';
         if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
-          const totalOps = (UanifyState.operators || []).length;
           deptsInfo = `
-            <span class="badge-subtle" style="font-weight:700; font-size:11px; padding:2px 8px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">Global (14 Áreas)</span>
-            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Supervisión total · ${totalOps} operadores</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-weight:700; font-size:11px; padding:3px 8px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">Supervisión Global (14 Áreas)</span>
+              <button type="button" class="btn-subtle" onclick="window.viewUserDepts('${u.id}')" style="font-size:11px; padding:2px 8px; height:24px; cursor:pointer;" title="Consultar todas las áreas asignadas">Ver Áreas</button>
+            </div>
           `;
         } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
-          const pills = u.assignedDepartments.map(d => {
-            const st = (UanifyState.stations || []).find(s => s.code === d);
-            const name = st ? st.name : d;
-            return `<span class="badge-subtle" style="font-weight:700; font-size:10px; padding:2px 6px;">${name}</span>`;
-          }).join(' ');
-          const assignedOps = (UanifyState.operators || []).filter(o => u.assignedDepartments.includes(o.deptCode)).length;
           deptsInfo = `
-            <div style="display:flex; flex-wrap:wrap; gap:3px; max-width:230px;">${pills}</div>
-            <span class="table-cell-subtext" style="display:block; margin-top:2px;">
-              <strong>${u.assignedDepartments.length} depts</strong> · ${assignedOps} ops
-            </span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 8px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
+                ${u.assignedDepartments.length} Departamento${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
+              </span>
+              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:28px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de departamentos y estaciones asignadas">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver Detalle
+              </button>
+            </div>
           `;
         } else {
-          deptsInfo = `<span style="font-size:11px; color:var(--text-muted);">Sin departamentos asignados</span>`;
+          deptsInfo = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin departamentos asignados</span>`;
         }
 
         return `
           <tr>
-            <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${u.id}</span></td>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${u.name}</div>
-              <span class="table-cell-subtext">${u.email}</span>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${u.name}</div>
             </td>
             <td style="text-align:center;">
-              <span class="role-badge ${roleBadgeClass}" style="margin:0 auto;">${u.badge || u.roleName}</span>
+              <span class="role-badge ${roleBadgeClass}" style="margin:0 auto; font-size:11.5px; padding:4px 10px;">${u.badge || u.roleName}</span>
             </td>
             <td>
               ${deptsInfo}
             </td>
             <td>
               ${permInfo}
-            </td>
-            <td class="col-status" style="text-align:center;">
-              <span class="table-status-pill status-active" style="margin:0 auto;">
-                <span class="status-dot"></span>Activo
-              </span>
             </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center;">
@@ -469,6 +463,54 @@ window.initConfigView = function() {
 
     syncSidebarUserSelector();
   }
+
+  // ── VISOR DE DEPARTAMENTOS ASIGNADOS A UN USUARIO ──────────────────────────
+  window.viewUserDepts = function(userId) {
+    const user = UanifyState.users.find(u => u.id === userId);
+    const modal = document.getElementById('modalUserDeptsViewer');
+    const titleEl = document.getElementById('userDeptsViewerTitle');
+    const subEl = document.getElementById('userDeptsViewerSubtitle');
+    const listEl = document.getElementById('userDeptsViewerList');
+    if (!user || !modal || !listEl) return;
+
+    if (titleEl) titleEl.textContent = `Departamentos Asignados · ${user.name}`;
+    if (subEl) subEl.textContent = `${user.badge || user.roleName} · Estaciones de trabajo asignadas`;
+
+    const userDepts = user.assignedDepartments || [];
+    const isGlobal = userDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
+
+    let deptsToShow = [];
+    if (isGlobal) {
+      deptsToShow = UanifyState.stations || [];
+    } else {
+      deptsToShow = (UanifyState.stations || []).filter(s => userDepts.includes(s.code));
+    }
+
+    if (deptsToShow.length === 0) {
+      listEl.innerHTML = `
+        <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px; background:#F8FAFC; border-radius:8px;">
+          Este usuario no tiene estaciones ni departamentos asignados actualmente.
+        </div>
+      `;
+    } else {
+      listEl.innerHTML = deptsToShow.map(st => {
+        const opCount = (UanifyState.operators || []).filter(o => o.deptCode === st.code).length;
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:8px;">
+            <div>
+              <div style="font-size:13.5px; font-weight:700; color:var(--text-primary);">${st.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${st.warehouseLocation || 'Nave de Producción'}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-weight:700; font-size:11px; background:#FFFFFF;">${opCount} operadores</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    modal.classList.add('active');
+  };
 
   // ── 3. RENDER DE PADRÓN DE OPERADORES EN CONFIG (REGLA 0.35) ─────────────
   let cfgOpFiltersBound = false;
@@ -752,16 +794,18 @@ window.initConfigView = function() {
     if (!selectNewRole) return;
 
     if (activeUser.role === 'ingeniero') {
-      // Ingenieros solo pueden crear supervisores
+      // Ingenieros pueden crear supervisores e inspectores de calidad
       selectNewRole.innerHTML = `
-        <option value="supervisor" selected>Supervisor de Piso / Nave (Permitido para Ingeniería)</option>
+        <option value="supervisor" selected>Supervisor de Planta (Piso y Almacenes)</option>
+        <option value="calidad">Inspector de Calidad (Paradas C1 a C5)</option>
       `;
     } else {
       // Admins pueden crear cualquier rol
       selectNewRole.innerHTML = `
-        <option value="supervisor" selected>Supervisor de Nave (Acceso Piso & Terminal)</option>
-        <option value="ingeniero">Ingeniero de Procesos (Acceso Piso, Terminal & Consola)</option>
-        <option value="admin">Administrador General (Acceso Total)</option>
+        <option value="supervisor" selected>Supervisor de Planta (Piso y Almacenes)</option>
+        <option value="calidad">Inspector de Calidad (Paradas C1 a C5)</option>
+        <option value="ingeniero">Ingeniero de Procesos y Calidad</option>
+        <option value="admin">Administrador General (Control Total)</option>
       `;
     }
   }
@@ -791,6 +835,8 @@ window.initConfigView = function() {
           cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory' || mod === 'operators' || mod === 'analytics' || mod === 'engineer');
         } else if (role === 'supervisor') {
           cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory' || mod === 'operators');
+        } else if (role === 'calidad') {
+          cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory');
         }
       });
     });
@@ -801,17 +847,17 @@ window.initConfigView = function() {
       e.preventDefault();
       const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
       const name = document.getElementById('newUserName')?.value.trim();
-      const email = document.getElementById('newUserEmail')?.value.trim();
+      const email = document.getElementById('newUserEmail')?.value.trim() || 'usuario@tombstone.mx';
       const role = selectNewRole ? selectNewRole.value : 'supervisor';
 
-      if (!name || !email) {
-        window.UanifyUI.toast('Por favor completa todos los campos del usuario.', 'warning', 'Campos Incompletos');
+      if (!name) {
+        window.UanifyUI.toast('Por favor ingresa el nombre completo del usuario.', 'warning', 'Nombre Requerido');
         return;
       }
 
       // Restricción: Los ingenieros no pueden crear otros ingenieros ni administradores
       if (activeUser.role === 'ingeniero' && (role === 'ingeniero' || role === 'admin')) {
-        window.UanifyUI.toast('Los Ingenieros de Procesos únicamente tienen autorización para crear usuarios con rol Supervisor.', 'error', 'Permiso Denegado');
+        window.UanifyUI.toast('Los Ingenieros de Procesos no pueden crear usuarios con rol Administrador o Ingeniero.', 'error', 'Permiso Denegado');
         return;
       }
 
@@ -820,18 +866,22 @@ window.initConfigView = function() {
         selectedPerms.push(cb.value);
       });
 
-      let roleName = 'Supervisor de Nave';
-      let badge = ' Supervisor';
+      let roleName = 'Supervisor de Planta';
+      let badge = 'Supervisor';
       let assignedDepts = ['D-05', 'D-06'];
 
       if (role === 'admin') {
         roleName = 'Administrador General';
-        badge = 'Admin';
+        badge = 'Ingeniero (Admin)';
         assignedDepts = ['*'];
       } else if (role === 'ingeniero') {
-        roleName = 'Ingeniero de Procesos';
-        badge = ' Ingeniero';
+        roleName = 'Ingeniero de Procesos y Calidad';
+        badge = 'Ingeniero (Admin)';
         assignedDepts = ['*'];
+      } else if (role === 'calidad') {
+        roleName = 'Inspector de Calidad';
+        badge = 'Inspector Calidad';
+        assignedDepts = ['C-01', 'C-02', 'C-03', 'C-04'];
       }
 
       const newUser = {
@@ -851,9 +901,9 @@ window.initConfigView = function() {
       formCreateUser.reset();
 
       window.UanifyUI.toast(
-        `Usuario "${name}" (${roleName}) creado exitosamente con permisos: ${newUser.permissions.join(', ')}.`,
+        `Usuario "${name}" (${roleName}) creado exitosamente.`,
         'success',
-        'OK Usuario Creado'
+        'Usuario Registrado'
       );
     });
   }
@@ -1177,19 +1227,23 @@ window.initConfigView = function() {
 
       if (role === 'admin') {
         user.roleName = 'Administrador General';
-        user.badge = 'Admin';
+        user.badge = 'Ingeniero (Admin)';
         user.assignedDepartments = ['*'];
       } else if (role === 'ingeniero') {
-        user.roleName = 'Ingeniero de Procesos';
-        user.badge = ' Ingeniero';
+        user.roleName = 'Ingeniero de Procesos y Calidad';
+        user.badge = 'Ingeniero (Admin)';
         user.assignedDepartments = ['*'];
+      } else if (role === 'calidad') {
+        user.roleName = 'Inspector de Calidad';
+        user.badge = 'Inspector Calidad';
+        user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : ['C-01', 'C-02', 'C-03', 'C-04'];
       } else {
         const deptNames = selectedDepts.map(c => {
           const st = (UanifyState.stations || []).find(s => s.code === c);
           return st ? st.name : c;
         });
         user.roleName = `Supervisor (${deptNames.length > 0 ? deptNames.join(', ') : 'Sin Deptos'})`;
-        user.badge = ' Supervisor';
+        user.badge = 'Supervisor';
         user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : [];
       }
 

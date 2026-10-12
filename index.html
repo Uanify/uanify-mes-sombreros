@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.72.0">
-  <link rel="stylesheet" href="css/components.css?v=2.72.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.73.0">
+  <link rel="stylesheet" href="css/components.css?v=2.73.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.72.0</span>
+        <span class="system-version-pill login-version-pill">v2.73.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.72.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.73.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2355,17 +2355,18 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre, correo, departamento..." autocomplete="off">
+                  <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre o departamento..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
-                  <select id="userRoleFilter" class="custom-select" style="min-width:160px;">
+                  <select id="userRoleFilter" class="custom-select" style="min-width:180px;">
                     <option value="all">Todos los Roles</option>
-                    <option value="admin">Administrador</option>
-                    <option value="ingeniero">Ingeniero de Producción</option>
+                    <option value="admin">Administrador General</option>
+                    <option value="ingeniero">Ingeniero de Procesos y Calidad</option>
                     <option value="supervisor">Supervisor de Planta</option>
+                    <option value="calidad">Inspector de Calidad</option>
                   </select>
                 </div>
-                <span class="filter-count-badge" id="userFilteredCountBadge">4 usuarios</span>
+                <span class="filter-count-badge" id="userFilteredCountBadge">5 usuarios</span>
                 <button type="button" class="btn-reset-filters" id="btnResetUserFilters" title="Restablecer filtros">Limpiar</button>
               </div>
             </div>
@@ -2374,13 +2375,11 @@
               <table class="data-table" id="cfgUsersDataTable">
                 <thead>
                   <tr>
-                    <th class="col-code" style="width:85px; text-align:center;">ID</th>
-                    <th class="col-name" style="width:200px;">Nombre & Correo</th>
-                    <th style="width:130px; text-align:center;">Rol en Planta</th>
-                    <th style="min-width:200px;">Departamentos Asignados</th>
+                    <th class="col-name" style="min-width:220px;">Nombre del Usuario</th>
+                    <th style="width:160px; text-align:center;">Rol en Planta</th>
+                    <th style="min-width:220px;">Departamentos Asignados</th>
                     <th style="min-width:200px;">Permisos Modulares</th>
-                    <th class="col-status" style="width:110px; text-align:center;">Estatus</th>
-                    <th class="col-actions" style="width:100px; text-align:center;">Acciones</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -3173,16 +3172,17 @@
             <label class="field-label">Nombre Completo:</label>
             <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
           </div>
-          <div class="form-group">
+          <div class="form-group" style="display:none;">
             <label class="field-label">Correo Electrónico / Identificador:</label>
-            <input type="email" id="newUserEmail" class="form-input" placeholder="rsanchez@tombstone.mx" required>
+            <input type="email" id="newUserEmail" class="form-input" placeholder="usuario@tombstone.mx" value="usuario@tombstone.mx">
           </div>
           <div class="form-group">
             <label class="field-label">Rol del Usuario:</label>
             <select id="newRoleSelect" class="custom-select">
-              <option value="supervisor" selected> Supervisor de Piso y Almacenes</option>
-              <option value="ingeniero"> Ingeniero (Procesos, OEE y Subensambles)</option>
-              <option value="admin">Administrador (Acceso y Configuración Total)</option>
+              <option value="supervisor" selected> Supervisor de Planta (Piso y Almacenes)</option>
+              <option value="calidad"> Inspector de Calidad (Paradas C1 a C5)</option>
+              <option value="ingeniero"> Ingeniero de Procesos y Calidad</option>
+              <option value="admin">Administrador General (Control Total)</option>
             </select>
           </div>
           <div class="form-group">
@@ -3242,23 +3242,19 @@
         <div class="modal-body">
           <input type="hidden" id="editUserId">
           
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="field-label">Nombre Completo:</label>
-              <input type="text" id="editUserNameInput" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Correo Electrónico:</label>
-              <input type="email" id="editUserEmailInput" class="form-input" required>
-            </div>
+          <div class="form-group">
+            <label class="field-label">Nombre Completo:</label>
+            <input type="text" id="editUserNameInput" class="form-input" required>
           </div>
+          <input type="hidden" id="editUserEmailInput" value="usuario@tombstone.mx">
 
           <div class="form-group">
             <label class="field-label">Rol del Usuario:</label>
             <select id="editUserRoleSelect" class="custom-select">
-              <option value="supervisor"> Supervisor de Piso y Almacenes</option>
-              <option value="ingeniero"> Ingeniero de Procesos y OEE</option>
-              <option value="admin">Administrador General</option>
+              <option value="supervisor"> Supervisor de Planta (Piso y Almacenes)</option>
+              <option value="calidad"> Inspector de Calidad (Paradas C1 a C5)</option>
+              <option value="ingeniero"> Ingeniero de Procesos y Calidad</option>
+              <option value="admin">Administrador General (Control Total)</option>
             </select>
           </div>
 
@@ -4373,6 +4369,31 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: VISOR DE DEPARTAMENTOS ASIGNADOS AL USUARIO
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalUserDeptsViewer">
+    <div class="modal-box card-glass" style="max-width:540px; width:95%; max-height:85vh; overflow-y:auto;">
+      <div class="modal-header">
+        <div>
+          <h3 id="userDeptsViewerTitle" style="color:var(--text-primary); font-size:18px; margin:0;">
+            Departamentos Asignados
+          </h3>
+          <p class="modal-header-sub" id="userDeptsViewerSubtitle">Estaciones de trabajo bajo supervisión directa</p>
+        </div>
+        <button class="modal-close" id="btnCloseUserDeptsViewerModal" type="button" onclick="document.getElementById('modalUserDeptsViewer').classList.remove('active')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+        <div id="userDeptsViewerList" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Inyectado por JS -->
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+        <button type="button" class="btn-primary" onclick="document.getElementById('modalUserDeptsViewer').classList.remove('active')" style="min-height:44px; padding:0 24px; font-weight:700;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: REGISTRAR / EDITAR ÁREA / PARADA DE CONTROL DE CALIDAD (CRUD)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateQualityArea">
@@ -5120,11 +5141,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.72.0"></script>
-  <script src="js/andon.js?v=2.72.0"></script>
-  <script src="js/terminal.js?v=2.72.0"></script>
-  <script src="js/engineer.js?v=2.72.0"></script>
-  <script src="js/executive.js?v=2.72.0"></script>
-  <script src="js/config.js?v=2.72.0"></script>
+  <script src="js/app.js?v=2.73.0"></script>
+  <script src="js/andon.js?v=2.73.0"></script>
+  <script src="js/terminal.js?v=2.73.0"></script>
+  <script src="js/engineer.js?v=2.73.0"></script>
+  <script src="js/executive.js?v=2.73.0"></script>
+  <script src="js/config.js?v=2.73.0"></script>
 </body>
 </html>
