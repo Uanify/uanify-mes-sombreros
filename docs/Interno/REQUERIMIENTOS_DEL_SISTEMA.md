@@ -121,105 +121,96 @@ graph TD
 
 El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** estricto y adaptado a la jerarquía operativa de la planta de sombreros de San Francisco del Rincón.
 
-### 2.1 Definición Exhaustiva de Roles y Capacidades
+### 2.1 Definición Exhaustiva de Roles y Capacidades (3 Roles Oficiales)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   JERARQUÍA OPERATIVA TOMBSTONE HATS                   │
 └────────────────────────────────────────────────────────────────────────┘
                                     │
+                                    ▼
+                        [INGENIERO (ADMIN MAYOR)]
+                  (Edmundo González / Ing. Carlos Ortiz)
+                                    │
                   ┌─────────────────┴─────────────────┐
                   ▼                                   ▼
-        [ADMINISTRADOR GENERAL]             [INGENIERO DE PLANTA]
-          (Edmundo González)                  (Ing. Carlos Ortiz)
-                  │                                   │
-                  └─────────────────┬─────────────────┘
-                                    ▼
-                        [SUPERVISOR DE NAVE]
-                 (Juan Manuel Pérez / Roberto Méndez)
-                                    │
-                                    ▼
-                        [OPERADORES DE PLANTA]
-                 (Jorge, Melany, Pedro Morales, etc.)
+        [SUPERVISOR DE PLANTA]              [INSPECTOR DE CALIDAD]
+ (Juan Manuel Pérez / Roberto Méndez)      (Inspectora de Turno)
+                  │
+                  ▼
+        [OPERADORES DE PLANTA]
+   (Jorge, Melany, Pedro Morales, etc. - Padrón de mano de obra sin login)
 ```
 
-#### 1. Administrador General (`admin`)
+#### 1. Ingeniero (Admin Mayor · `ingeniero`)
 
-- **Usuario de Referencia:** Edmundo González (Director / Gerente General).
-- **Acceso a Módulos:** Acceso total e irrestricto a los **7 módulos** (`andon`, `terminal`, `inventory`, `operators`, `engineer`, `executive`, `config`).
+- **Usuarios de Referencia:** Edmundo González (Director / Administrador General) e Ing. Carlos Ortiz (Jefe de Ingeniería y Procesos).
+- **Acceso a Módulos:** Acceso total e irrestricto a los **7 módulos** (`orders`, `terminal`, `andon`, `inventory`, `operators`, `analytics`, `engineer`, `executive`, `config`).
 - **Alcance Departamental:** Global (`*` - Todas las estaciones de planta).
 - **Funcionalidades y Capacidades Específicas:**
-  - **Gestión Integral de Usuarios:** Dar de alta, editar credenciales, modificar roles y dar de baja a cualquier usuario del sistema (incluyendo ingenieros y supervisores).
-  - **Asignación Departamental y Permisos:** Modificar la matriz de permisos modulares y asignar/desasignar departamentos supervisados.
-  - **Parámetros Financieros y de Negocio:** Consultar y ajustar el valor comercial de catálogo por sombrero ($1,310 MXN), costo promedio de merma y valor de recuperación en segundas.
-  - **Enlace COMPAC / CONTPAQi:** Supervisar el valor acumulado en piso de producción, generar vales de traspaso a producto terminado y preparar pre-facturas para mayoristas.
-  - **Control de Metas Globales:** Modificar la meta de producción semanal de planta (ej. 4,250 pzas/semana).
-  - **Auditoría Global:** Visualizar la totalidad de métricas de OEE, paros de línea y balances de inventario.
+  - **Ingesta CONTPAQi SQL & Tarjetas Viajeras:** Conexión local a pedidos de CONTPAQi Comercial, partición manual de lotes/sublotes e impresión oficial de tarjetas viajeras con QR.
+  - **Gestión Integral de Usuarios y Roles RBAC:** Dar de alta, editar departamentos y gestionar los 3 roles del sistema (Ingeniero, Supervisor, Inspector de Calidad).
+  - **Modelado de Rutas de Fabricación y Puntos de Calidad:** Configurar secuencias por modelo, crear nuevas áreas de calidad (`C-XX`) y dar de alta departamentos (`D-XX`).
+  - **Parámetros Financieros, Turno y Metas:** Ajustar metas semanales de planta, horario informativo de turno y vales de producto terminado.
+  - **Auditoría Global:** Visualización integral de OEE, rendimientos por operador y balances de inventario WIP.
 
-#### 2. Ingeniero de Procesos y Planta (`ingeniero`)
+#### 2. Supervisor de Planta (`supervisor`)
 
-- **Usuario de Referencia:** Ing. Carlos Ortiz (Jefe de Ingeniería y Mejora Continua).
-- **Acceso a Módulos:** Autorizado en **6 módulos** (`andon`, `terminal`, `inventory`, `operators`, `engineer`, `config`). Módulo de `executive` restringido por defecto.
-- **Alcance Departamental:** Global (`*` - Todas las estaciones de planta).
-- **Funcionalidades y Capacidades Específicas:**
-  - **Consola de Rendimiento e Ingeniería (`engineer`):** Monitorear en tiempo real el OEE desagregado (Disponibilidad $A$, Rendimiento $P$, Calidad $Q$), Takt Time de referencia (42s) y desviaciones horarias de línea.
-  - **Análisis de Paros SMED:** Auditar la bitácora de paros no programados (fallas mecánicas, falta de vapor en caldera, cambios de hormas de aluminio) para aplicar acciones correctivas.
-  - **Modelado de Rutas de Fabricación por Modelo (`subtab-config-routes`):** Crear, editar y reordenar secuencias de manufactura para cada tipo de sombrero (1000X Master Telar, Campana Preformada, Laqueados Especiales), insertando o suprimiendo estaciones.
-  - **Catálogo de Puntos de Calidad (`C-XX`):** Dar de alta y configurar nuevas estaciones de inspección de calidad (criterios de tolerancia, tiempo estándar de ciclo e inspector responsable).
-  - **Auditoría de Almacenes e Inventarios (`inventory`):** Monitorear el inventario de moldes de hormas de aluminio maquinado (Johnson, Sonora, Chaparral, Denver, etc.), estatus de calentamiento y desgaste de prensas.
-  - **Gestión del Padrón de Operadores:** Consultar rendimientos individuales por operador, dar de alta operadores y actualizar sus máquinas asignadas.
-  - **Alta de Supervisores:** Registrar nuevos supervisores de línea y asignarles departamentos operativos.
-
-#### 3. Supervisor de Nave / Almacén (`supervisor`)
-
-- **Usuarios de Referencia:** Juan Manuel Pérez (Área de Prensas a Terminado, Depts D-05 a D-08), Roberto Méndez (Área de Telar y Preparación, Depts D-01 a D-04).
-- **Acceso a Módulos:** Autorizado en **2 módulos primarios** (`andon`, `terminal`). Los módulos de configuración, finanzas e ingeniería avanzada se mantienen ocultos.
+- **Usuarios de Referencia:** Juan Manuel Pérez (Hormado & Acabado, Depts D-05 a D-08), Roberto Méndez (Preparación & Dope, Depts D-01 a D-04).
+- **Acceso a Módulos:** Autorizado en **Terminal de Piso (`terminal`)**, **Tablero Andon (`andon`)**, **Almacenes e Inventarios (`inventory`)** y **Padrón de Operadores (`operators`)**. Módulos de configuración avanzada y finanzas ocultos por completo (sin candados visibles).
 - **Alcance Departamental:** **Delimitado estrictamente** a los departamentos asignados en su perfil (`assignedDepartments`).
 - **Funcionalidades y Capacidades Específicas:**
-  - **Escaneo y Trazabilidad QR en Vivo:** Utilizar la cámara web o pistola de códigos para escanear las tarjetas viajeras físicas al ingresar a su departamento.
-  - **Rastreador de Lotes & Value Stream Map:** Consultar en el mapa de línea de tiempo interactivo la ubicación física de cualquier lote en planta, su progreso porcentual y operador asignado.
-  - **Avance y Retroceso Operativo:** Confirmar el avance de lote al siguiente departamento o retrocederlo para retrabajo en caso de requerir ajuste técnico.
-  - **Fraccionamiento en Rampa (Sombreros 2 Piezas):** Ejecutar la partición del lote madre de 60 piezas en 4 sublotes de 15 piezas cada uno en la estación de ensamble.
-  - **Depósito en Almacén de Salida:** Marcar el lote como terminado en máquina y depositarlo formalmente en el almacén intermedio de salida de su estación.
-  - **Monitor de Almacenes y Recolección:** Consultar qué lotes están listos en los almacenes del departamento anterior para autorizar y ejecutar su recolección física.
-  - **Registro de Mermas y Segundas:** Tipificar mermas por falla física en máquina (con solicitud de reposición por pieza de saldo) o destinar piezas a "Segundas de Viernes".
-  - **Liberación de Filtros de Calidad:** Certificar y autorizar el paso de lotes en las estaciones de control de calidad asignadas.
+  - **Escaneo QR de Tarjetas Viajeras:** Escaneo óptico o por cámara web para ingreso y avance de lotes en sus estaciones asignadas.
+  - **Fraccionamiento en Rampa:** Partición de lote madre (60 pzas) a 4 sublotes (15 pzas) en ensamble/rampa.
+  - **Depósito en Almacén de Salida:** Registro de fin de operación y depósito en el buffer intermedio de salida.
+  - **Registro de Mermas y Reprocesos:** Captura de piezas defectuosas con motivo para segregación física.
+  - **Padrón de Mano de Obra:** Consulta de operadores asignados y captura de avance de destajo.
 
-#### 4. Operador de Planta / Mano de Obra (`operador`)
+#### 3. Inspector de Calidad (`calidad`)
+
+- **Usuarios de Referencia:** Inspectora de Calidad de Turno.
+- **Acceso a Módulos:** Autorizado en **Terminal de Calidad (`terminal`)**, **Tablero Andon (`andon`)** y **Almacén & Inventarios (`inventory`)**.
+- **Alcance Departamental:** Estaciones de control e inspección física asignadas (Puntos de Calidad `C-01` a `C-05`).
+- **Funcionalidades y Capacidades Específicas:**
+  - **Dictamen de Calidad (Aprobar / Rechazar):** Validación física de tolerancias y geometría del sombrero en los 5 filtros oficiales (C1 Cuadros/Corte, C2 Refuerzo, C3 Pintura, C4 Hidráulicas/Alineado, C5 Calidad Final/Adorno).
+  - **Retornos de Reproceso Específicos:** Desvío de piezas no conformes a la estación causante (C2 a Pintura-Refuerzo, C3 a Pintura, C4 a Prensas, C5 a Adorno) o destino a Segundas/Merma.
+  - **Liberación Oficial:** Autorización del pase del lote hacia la siguiente fase de manufactura o empaque final.
+
+#### 4. Operador de Planta / Mano de Obra (Sin Acceso al Software)
 
 - **Usuarios de Referencia:** Jorge, Melany, Pedro Morales, etc.
 - **Acceso a Módulos:** **Sin acceso interactivo directo al software** (no cuentan con usuario ni contraseña en la interfaz digital para evitar distracciones en máquina).
 - **Papel en el Sistema:**
-  - **Identificación en Padrón de Mano de Obra:** Cada operador está registrado con Número de Nómina, Nombre, Departamento Base, Máquina/Puesto asignado y Estatus.
-  - **Vínculo Físico con Tarjeta Viajera:** El nombre del operador responsable se proyecta en el sticker circular de la réplica de la tarjeta viajera física con mica protectora que acompaña al lote.
-  - **Cómputo de Rendimiento:** El sistema calcula las piezas procesadas por operador a partir de las confirmaciones de lote registradas por el supervisor en la terminal.
+  - **Identificación en Padrón de Mano de Obra:** Cada operador está registrado con Número de Nómina, Nombre, Departamento Base, Proceso y Máquina/Puesto asignado.
+  - **Vínculo Físico con Tarjeta Viajera:** El nombre del operador responsable se proyecta en el sticker circular de la tarjeta viajera física.
+  - **Cómputo de Rendimiento:** El sistema calcula las piezas concluidas por operario según tarifa para la pre-nómina de destajo.
 
 ---
 
-### 2.2 Matriz Detallada de Permisos por Acción
+### 2.2 Matriz Detallada de Permisos por Acción (3 Roles Oficiales)
 
-| Acción / Funcionalidad del Sistema                      | Administrador (`admin`) | Ingeniero (`ingeniero`) | Supervisor (`supervisor`) | Operador (`operador`) |
-| :------------------------------------------------------ | :---------------------: | :---------------------: | :-----------------------: | :-------------------: |
-| **Visualizar Tablero Andon General**                    |           OK            |           OK            |            OK             |        (En TV)        |
-| **Escanear Tarjetas QR con Cámara Web**                 |           OK            |           OK            |            OK             |                       |
-| **Captura Manual de Lote / Folio de Orden**             |           OK            |           OK            |            OK             |                       |
-| **Avanzar / Retroceder Lotes en Línea de Tiempo**       |           OK            |           OK            |    OK (Depts propios)     |                       |
-| **Fraccionar Lote Madre (60 a 15 pzas en Rampa)**       |           OK            |           OK            |    OK (Depts propios)     |                       |
-| **Recolectar Lote de Almacén Previo**                   |           OK            |           OK            |    OK (Depts propios)     |                       |
-| **Registrar Mermas y Segundas de Viernes**              |           OK            |           OK            |    OK (Depts propios)     |                       |
-| **Liberar Filtro de Calidad (`C-XX`)**                  |           OK            |           OK            |       OK (Asignado)       |                       |
-| **Auditar OEE, Takt Time y Balanceo de Línea**          |           OK            |           OK            |                           |                       |
-| **Registrar Paros e Incidencias SMED**                  |           OK            |           OK            |                           |                       |
-| **Consultar Almacenes e Inventario de Hormas**          |           OK            |           OK            |                           |                       |
-| **Consultar Padrón de Operadores**                      |           OK            |           OK            |                           |                       |
-| **Crear / Editar / Eliminar Operadores de Planta**      |           OK            |           OK            |                           |                       |
-| **Crear / Editar / Reordenar Rutas de Fabricación**     |           OK            |           OK            |                           |                       |
-| **Dar de Alta Nuevas Áreas de Calidad (`C-XX`)**        |           OK            |           OK            |                           |                       |
-| **Dar de Alta Nuevos Departamentos (`D-XX`)**           |           OK            |           OK            |                           |                       |
-| **Editar Departamentos Asignados a Supervisores**       |           OK            |           OK            |                           |                       |
-| **Gestionar Usuarios del Sistema y Roles RBAC**         |           OK            |                         |                           |                       |
-| **Consultar Valuación Financiera y Enlace COMPAC**      |           OK            |                         |                           |                       |
-| **Modificar Horario de Turno y Meta Semanal de Planta** |           OK            |                         |                           |                       |
+| Acción / Funcionalidad del Sistema                      | Ingeniero (Admin Mayor) | Supervisor de Planta | Inspector de Calidad | Operador (Mano de Obra) |
+| :------------------------------------------------------ | :---------------------: | :------------------: | :------------------: | :---------------------: |
+| **Visualizar Tablero Andon General**                    |           OK            |          OK          |          OK          |         (En TV)         |
+| **Escanear Tarjetas QR con Cámara Web**                 |           OK            |          OK          |          OK          |                         |
+| **Captura Manual de Lote / Folio de Orden**             |           OK            |          OK          |          OK          |                         |
+| **Avanzar / Retroceder Lotes en Línea de Tiempo**       |           OK            |  OK (Depts propios)  |                      |                         |
+| **Fraccionar Lote Madre (en Rampa/Alineado)**           |           OK            |  OK (Depts propios)  |                      |                         |
+| **Recolectar Lote de Almacén Previo**                   |           OK            |  OK (Depts propios)  |                      |                         |
+| **Registrar Mermas y Segundas de Viernes**              |           OK            |  OK (Depts propios)  |                      |                         |
+| **Dictamen de Filtros de Calidad (`C1` a `C5`)**        |           OK            |                      |    OK (Filtros C)    |                         |
+| **Auditar OEE, Takt Time y Analítica de Planta**        |           OK            |                      |                      |                         |
+| **Registrar Paros e Incidencias en Máquina**            |           OK            |  OK (Depts propios)  |                      |                         |
+| **Consultar Almacenes e Inventario de Hormas**          |           OK            |          OK          |          OK          |                         |
+| **Consultar Padrón de Operadores**                      |           OK            |          OK          |                      |                         |
+| **Crear / Editar / Asignar Operadores de Planta**       |           OK            |                      |                      |                         |
+| **Crear / Editar / Reordenar Rutas de Fabricación**     |           OK            |                      |                      |                         |
+| **Dar de Alta Nuevas Áreas de Calidad (`C-XX`)**        |           OK            |                      |                      |                         |
+| **Dar de Alta Nuevos Departamentos (`D-XX`)**           |           OK            |                      |                      |                         |
+| **Editar Departamentos Asignados a Supervisores**       |           OK            |                      |                      |                         |
+| **Gestionar Usuarios del Sistema (3 Roles RBAC)**       |           OK            |                      |                      |                         |
+| **Consultar Valuación Financiera y Enlace CONTPAQi**    |           OK            |                      |                      |                         |
+| **Modificar Horario de Turno y Meta Semanal de Planta** |           OK            |                      |                      |                         |
 
 ---
 

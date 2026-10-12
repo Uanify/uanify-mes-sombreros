@@ -362,18 +362,17 @@ window.initConfigView = function() {
     } else {
       usersTableBody.innerHTML = filtered.map(u => {
         let roleBadgeClass = 'role-badge-supervisor';
-        if (u.role === 'admin') roleBadgeClass = 'role-badge-admin';
-        else if (u.role === 'ingeniero') roleBadgeClass = 'role-badge-ingeniero';
+        if (u.role === 'ingeniero' || u.role === 'admin') roleBadgeClass = 'role-badge-ingeniero';
         else if (u.role === 'calidad') roleBadgeClass = 'role-badge-calidad';
 
         // Sintetizar permisos modulares para evitar sobrecarga visual
         let permInfo = '';
-        if (u.role === 'admin' || (u.permissions && u.permissions.length >= (AvailableModules || []).length)) {
+        if (u.role === 'ingeniero' || u.role === 'admin' || (u.permissions && u.permissions.length >= (AvailableModules || []).length)) {
           permInfo = `<span class="badge-subtle" style="background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0; font-weight:700; font-size:11px; padding:3px 8px;">Acceso Total (Todos los Módulos)</span>`;
-        } else if (u.role === 'ingeniero' || (u.permissions && u.permissions.length >= 5)) {
+        } else if (u.role === 'calidad') {
           permInfo = `
-            <span class="badge-subtle" style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; font-weight:700; font-size:11px; padding:3px 8px;">Acceso Avanzado (${u.permissions.length} Módulos)</span>
-            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Andon, Terminal, Catálogos, KPIs, Config</span>
+            <span class="badge-subtle" style="background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF; font-weight:700; font-size:11px; padding:3px 8px;">Filtros de Calidad C1 a C5</span>
+            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Terminal de Inspección, Andon, Almacén</span>
           `;
         } else {
           const permPills = (u.permissions || []).map(p => {
@@ -767,33 +766,24 @@ window.initConfigView = function() {
   const btnOpenCreate = document.getElementById('btnOpenCreateUserModal');
   const btnCloseCreate = document.getElementById('btnCloseCreateUserModal');
   const formCreateUser = document.getElementById('formCreateUser');
-  const selectNewRole = document.getElementById('newRoleSelect');
-
   const RoleFixedPermissions = {
-    admin: {
-      title: 'Administrador General (Control Total)',
-      desc: 'Acceso total e irrestricto a todos los módulos: Órdenes, Terminal, Andon, Almacenes & Hormas, Operadores, Analítica & OEE, Finanzas y Configuración.',
-      perms: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
-      roleName: 'Administrador General',
-      badge: 'Ingeniero (Admin)'
-    },
     ingeniero: {
-      title: 'Ingeniero de Procesos y Calidad',
-      desc: 'Acceso a Terminal de Piso, Andon, Catálogos & Hormas, Padrón de Operadores, Analítica & OEE, Rutas Productivas y Configuración de Planta.',
-      perms: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
-      roleName: 'Ingeniero de Procesos y Calidad',
+      title: 'Ingeniero (Admin Mayor · Control Total)',
+      desc: 'Acceso total: Ingesta CONTPAQi SQL, Lotes & Tarjetas QR, Terminal de Piso, Andon, Almacenes & Hormas, Operadores, Analítica, Rutas y Configuración General.',
+      perms: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
+      roleName: 'Ingeniero (Admin Mayor)',
       badge: 'Ingeniero (Admin)'
     },
     supervisor: {
       title: 'Supervisor de Planta (Piso y Almacenes)',
-      desc: 'Acceso a Terminal de Piso, Escaneo de Tarjetas QR, Almacenes Intermedios, Padrón de Operadores y Tablero Andon.',
+      desc: 'Acceso a Terminal de Piso de sus áreas asignadas, Escaneo QR, Almacenes Intermedios, Padrón de Operadores y Tablero Andon.',
       perms: ['terminal', 'andon', 'inventory', 'operators'],
       roleName: 'Supervisor de Planta',
       badge: 'Supervisor'
     },
     calidad: {
-      title: 'Inspector de Calidad (Paradas C1 a C5)',
-      desc: 'Acceso a Terminal de Piso para dictamen y liberación de filtros C1 a C5, Catálogos y Tablero Andon.',
+      title: 'Inspector de Calidad (Filtros C1 a C5)',
+      desc: 'Acceso a Terminal de Piso para dictamen y liberación/rechazo en los 5 filtros de calidad (C1 a C5), Catálogos y Tablero Andon.',
       perms: ['terminal', 'andon', 'inventory'],
       roleName: 'Inspector de Calidad',
       badge: 'Inspector Calidad'
@@ -809,24 +799,12 @@ window.initConfigView = function() {
   }
 
   function configureUserRoleOptions() {
-    const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     if (!selectNewRole) return;
-
-    if (activeUser.role === 'ingeniero') {
-      // Ingenieros pueden crear supervisores e inspectores de calidad
-      selectNewRole.innerHTML = `
-        <option value="supervisor" selected>Supervisor de Planta (Piso y Almacenes)</option>
-        <option value="calidad">Inspector de Calidad (Paradas C1 a C5)</option>
-      `;
-    } else {
-      // Admins pueden crear cualquier rol
-      selectNewRole.innerHTML = `
-        <option value="supervisor" selected>Supervisor de Planta (Piso y Almacenes)</option>
-        <option value="calidad">Inspector de Calidad (Paradas C1 a C5)</option>
-        <option value="ingeniero">Ingeniero de Procesos y Calidad</option>
-        <option value="admin">Administrador General (Control Total)</option>
-      `;
-    }
+    selectNewRole.innerHTML = `
+      <option value="supervisor" selected>Supervisor de Planta (Piso y Almacenes)</option>
+      <option value="calidad">Inspector de Calidad (Filtros C1 a C5)</option>
+      <option value="ingeniero">Ingeniero (Admin Mayor · Control Total)</option>
+    `;
     updateRolePermsPreview(selectNewRole.value, 'rolePermsTitle', 'rolePermsDesc');
   }
 
@@ -863,15 +841,10 @@ window.initConfigView = function() {
       }
 
       // Restricción: Los ingenieros no pueden crear otros ingenieros ni administradores
-      if (activeUser.role === 'ingeniero' && (role === 'ingeniero' || role === 'admin')) {
-        window.UanifyUI.toast('Los Ingenieros de Procesos no pueden crear usuarios con rol Administrador o Ingeniero.', 'error', 'Permiso Denegado');
-        return;
-      }
-
       const roleDef = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
       let assignedDepts = ['D-05', 'D-06'];
 
-      if (role === 'admin' || role === 'ingeniero') {
+      if (role === 'ingeniero') {
         assignedDepts = ['*'];
       } else if (role === 'calidad') {
         assignedDepts = ['C-01', 'C-02', 'C-03', 'C-04'];
@@ -1312,7 +1285,7 @@ window.initConfigView = function() {
       user.role = role;
       user.permissions = [...roleDef.perms];
 
-      if (role === 'admin' || role === 'ingeniero') {
+      if (role === 'ingeniero') {
         user.roleName = roleDef.roleName;
         user.badge = roleDef.badge;
         user.assignedDepartments = ['*'];

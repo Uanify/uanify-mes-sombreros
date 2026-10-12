@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.78.0">
-  <link rel="stylesheet" href="css/components.css?v=2.78.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.79.0">
+  <link rel="stylesheet" href="css/components.css?v=2.79.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.78.0</span>
+        <span class="system-version-pill login-version-pill">v2.79.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.78.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.79.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2348,8 +2348,7 @@
                 <div class="filter-select-group">
                   <select id="userRoleFilter" class="custom-select" style="min-width:180px;">
                     <option value="all">Todos los Roles</option>
-                    <option value="admin">Administrador General</option>
-                    <option value="ingeniero">Ingeniero de Procesos y Calidad</option>
+                    <option value="ingeniero">Ingeniero (Admin Mayor)</option>
                     <option value="supervisor">Supervisor de Planta</option>
                     <option value="calidad">Inspector de Calidad</option>
                   </select>
@@ -3147,9 +3146,8 @@
             <label class="field-label">Rol del Usuario:</label>
             <select id="newRoleSelect" class="custom-select">
               <option value="supervisor" selected> Supervisor de Planta (Piso y Almacenes)</option>
-              <option value="calidad"> Inspector de Calidad (Paradas C1 a C5)</option>
-              <option value="ingeniero"> Ingeniero de Procesos y Calidad</option>
-              <option value="admin">Administrador General (Control Total)</option>
+              <option value="calidad"> Inspector de Calidad (Filtros C1 a C5)</option>
+              <option value="ingeniero"> Ingeniero (Admin Mayor · Control Total)</option>
             </select>
           </div>
 
@@ -3157,7 +3155,7 @@
             <label class="field-label">Permisos de Acceso Asignados:</label>
             <div id="rolePermsPreview" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">
               <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;" id="rolePermsTitle">Supervisor de Planta</div>
-              <div id="rolePermsDesc">Acceso a Terminal de Piso, Escaneo de Tarjetas QR, Almacenes Intermedios y Tablero Andon.</div>
+              <div id="rolePermsDesc">Acceso a Terminal de Piso de sus áreas asignadas, Escaneo QR, Almacenes Intermedios y Tablero Andon.</div>
             </div>
           </div>
         </div>
@@ -3198,9 +3196,8 @@
             <label class="field-label">Rol del Usuario:</label>
             <select id="editUserRoleSelect" class="custom-select">
               <option value="supervisor"> Supervisor de Planta (Piso y Almacenes)</option>
-              <option value="calidad"> Inspector de Calidad (Paradas C1 a C5)</option>
-              <option value="ingeniero"> Ingeniero de Procesos y Calidad</option>
-              <option value="admin">Administrador General (Control Total)</option>
+              <option value="calidad"> Inspector de Calidad (Filtros C1 a C5)</option>
+              <option value="ingeniero"> Ingeniero (Admin Mayor · Control Total)</option>
             </select>
           </div>
 
@@ -5056,11 +5053,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.78.0"></script>
-  <script src="js/andon.js?v=2.78.0"></script>
-  <script src="js/terminal.js?v=2.78.0"></script>
-  <script src="js/engineer.js?v=2.78.0"></script>
-  <script src="js/executive.js?v=2.78.0"></script>
-  <script src="js/config.js?v=2.78.0"></script>
+  <script src="js/app.js?v=2.79.0"></script>
+  <script src="js/andon.js?v=2.79.0"></script>
+  <script src="js/terminal.js?v=2.79.0"></script>
+  <script src="js/engineer.js?v=2.79.0"></script>
+  <script src="js/executive.js?v=2.79.0"></script>
+  <script src="js/config.js?v=2.79.0"></script>
 </body>
 </html>

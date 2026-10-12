@@ -97,10 +97,10 @@ Este archivo unifica y formaliza las directrices de ingeniería, arquitectura, d
    - Meta diaria del turno: **850 piezas/día**.
    - Takt Time estándar: **42 segundos por pieza**.
    - Queda prohibido reactivar selectores de turnos múltiples ficticios.
-2. **Seguridad Basada en Roles (RBAC):**
-   - **Administrador ( Admin):** Acceso a todos los módulos y capacidad exclusiva de gestionar usuarios y editar permisos.
-   - **Ingeniero de Producción ( Ingeniero):** Acceso a Tablero Andon, Ingeniería & Subensambles y Dirección & COMPAC.
-   - **Supervisor de Línea ( Supervisor):** Acceso a Tablero Andon y Lotes, QR & Almacenes; pestañas restringidas OCULTAS por completo (sin candados ni opciones deshabilitadas).
+2. **Seguridad Basada en Roles (RBAC Oficial · 3 Roles de Planta):**
+   - **Ingeniero (Admin Mayor):** Acceso total e irrestricto a los módulos (Ingesta CONTPAQi, Lotes & QR, Terminal, Andon, Almacenes & Hormas, Operadores, Analítica y Configuración). Capacidad de dar de alta supervisores e inspectores y editar parámetros de planta. *(Dirección General opera con perfil Ingeniero Admin).*
+   - **Supervisor de Planta:** Acceso a Terminal de Piso de sus áreas asignadas, Escaneo QR, Almacenes Intermedios, Padrón de Operadores y Tablero Andon. Pestañas restringidas ocultas por completo (sin candados).
+   - **Inspector de Calidad:** Acceso a Terminal de Piso exclusivo para dictamen, aprobación y rechazo en los 5 filtros de calidad (C1 a C5), Almacenes y Tablero Andon.
 
 ---
 

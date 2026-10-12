@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UANIFY MES · GLOBAL APP CONTROLLER
  * Sistema MES para Planta Matriz Tombstone Hats (San Francisco del Rincón, Gto.)
  * 
@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.78.0',
+  version: '2.79.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -512,8 +512,8 @@ const UanifyState = {
       id: 'admin-1',
       name: 'Edmundo González',
       email: 'egonzalez@tombstone.mx',
-      role: 'admin',
-      roleName: 'Ingeniero / Administrador General',
+      role: 'ingeniero',
+      roleName: 'Ingeniero (Admin Mayor)',
       pin: '1111',
       payrollNumber: '101',
       permissions: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
@@ -525,10 +525,10 @@ const UanifyState = {
       name: 'Ing. Carlos Ortiz',
       email: 'cortiz@tombstone.mx',
       role: 'ingeniero',
-      roleName: 'Ingeniero de Procesos y Calidad',
+      roleName: 'Ingeniero (Admin Mayor)',
       pin: '2222',
       payrollNumber: '102',
-      permissions: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
+      permissions: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
       assignedDepartments: ['*'],
       badge: 'Ingeniero (Admin)'
     },
