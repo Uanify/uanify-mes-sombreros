@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.74.0">
-  <link rel="stylesheet" href="css/components.css?v=2.74.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.75.0">
+  <link rel="stylesheet" href="css/components.css?v=2.75.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.74.0</span>
+        <span class="system-version-pill login-version-pill">v2.75.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.74.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.75.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -3153,10 +3153,8 @@
             <label class="field-label">Nombre Completo:</label>
             <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
           </div>
-          <div class="form-group" style="display:none;">
-            <label class="field-label">Correo Electrónico / Identificador:</label>
-            <input type="email" id="newUserEmail" class="form-input" placeholder="usuario@tombstone.mx" value="usuario@tombstone.mx">
-          </div>
+          <input type="hidden" id="newUserEmail" value="usuario@tombstone.mx">
+
           <div class="form-group">
             <label class="field-label">Rol del Usuario:</label>
             <select id="newRoleSelect" class="custom-select">
@@ -3166,33 +3164,12 @@
               <option value="admin">Administrador General (Control Total)</option>
             </select>
           </div>
+
           <div class="form-group">
-            <label class="field-label">Permisos de Acceso por Módulo:</label>
-            <div class="permissions-checklist">
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="terminal" checked>
-                <span>Terminal de Supervisor (Lotes & QR)</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="andon" checked>
-                <span>Tablero Andon (Línea de Piso)</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="inventory">
-                <span>Catálogos, Hormas & Almacenes WIP</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="operators">
-                <span>Padrón de Operadores de Planta</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="analytics">
-                <span>Analítica, OEE & KPIs de Planta</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="new-perm-cb" value="config">
-                <span>Configuración de Planta & ERP</span>
-              </label>
+            <label class="field-label">Permisos de Acceso Asignados:</label>
+            <div id="rolePermsPreview" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">
+              <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;" id="rolePermsTitle">Supervisor de Planta</div>
+              <div id="rolePermsDesc">Acceso a Terminal de Piso, Escaneo de Tarjetas QR, Almacenes Intermedios y Tablero Andon.</div>
             </div>
           </div>
         </div>
@@ -3262,34 +3239,12 @@
             </div>
           </div>
 
-          <!-- SECCIÓN: Permisos Modulares de Acceso -->
+          <!-- SECCIÓN: Permisos Modulares de Acceso (Regidos por Rol) -->
           <div class="form-group">
-            <label class="field-label">Permisos de Acceso a Módulos del Sistema:</label>
-            <div class="permissions-checklist">
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="terminal">
-                <span>Terminal de Supervisor (Lotes & QR)</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="andon">
-                <span>Tablero Andon (Línea de Piso)</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="inventory">
-                <span>Catálogos, Hormas & Almacenes WIP</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="operators">
-                <span>Padrón de Operadores de Planta</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="analytics">
-                <span>Analítica, OEE & KPIs de Planta</span>
-              </label>
-              <label class="perm-check-item">
-                <input type="checkbox" class="edit-perm-cb" value="config">
-                <span>Configuración de Planta & ERP</span>
-              </label>
+            <label class="field-label">Permisos de Acceso Asignados:</label>
+            <div id="editRolePermsPreview" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">
+              <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;" id="editRolePermsTitle">-</div>
+              <div id="editRolePermsDesc">-</div>
             </div>
           </div>
         </div>
@@ -3901,30 +3856,39 @@
             </div>
           </div>
 
+          <!-- Cascada Relacional: Departamento -> Proceso -> Máquina -->
           <div class="form-group">
-            <label class="field-label">Departamento Productivo Asignado:</label>
+            <label class="field-label">1. Departamento:</label>
             <select id="newOperatorDept" class="custom-select">
-              <option value="D-01">Corte de Telar</option>
-              <option value="D-02">Englopado y Camas</option>
-              <option value="D-03">Refuerzos de Corona</option>
-              <option value="D-04">Engomado y Secado</option>
-              <option value="D-05" selected>Prensas de Hormado</option>
-              <option value="D-06">Recorte y Alambrado</option>
-              <option value="D-07">Planchado y Horno</option>
-              <option value="D-08">Brillo y Pulido</option>
-              <option value="D-09">Pintura y Matizado</option>
-              <option value="D-10">Ribete de Ala</option>
-              <option value="D-11">Hormado Final</option>
-              <option value="D-12">Adorno (Tafilete y Toquilla)</option>
-              <option value="D-13">Inspección Final</option>
-              <option value="D-14">Empaque y Embarque</option>
+              <!-- Llenado dinámico en config.js -->
             </select>
           </div>
 
           <div class="form-group">
-            <label class="field-label">Máquina o Puesto de Trabajo Asignado:</label>
-            <input type="text" id="newOperatorMachine" class="form-input" placeholder="Ej. Prensa Vapor Matriz #2" required>
+            <label class="field-label">2. Proceso / Etapa Productiva:</label>
+            <select id="newOperatorProcess" class="custom-select">
+              <!-- Llenado dinámico según departamento en config.js -->
+            </select>
           </div>
+
+          <div class="form-group">
+            <label class="field-label">3. Máquina o Puesto de Trabajo:</label>
+            <select id="newOperatorMachineSelect" class="custom-select">
+              <!-- Llenado dinámico según proceso/estación en config.js -->
+            </select>
+            <input type="text" id="newOperatorMachine" class="form-input" placeholder="Nombre específico o identificador del puesto" style="margin-top:6px;">
+          </div>
+
+          <!-- Tarjeta de contexto jerárquico asignado -->
+          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; margin-top:4px;">
+            <div style="font-size:11px; text-transform:uppercase; font-weight:800; color:var(--text-muted); letter-spacing:0.5px;">Estructura de Asignación en Planta</div>
+            <div style="margin-top:6px; display:flex; flex-direction:column; gap:4px;">
+              <div><strong>Departamento:</strong> <span id="opPreviewDept" style="color:var(--text-primary);">-</span></div>
+              <div><strong>Proceso:</strong> <span id="opPreviewProcess" style="color:var(--text-primary);">-</span></div>
+              <div><strong>Máquina / Puesto:</strong> <span id="opPreviewMachine" style="color:var(--color-brand); font-weight:700;">-</span></div>
+            </div>
+          </div>
+
           <input type="hidden" id="newOperatorStatus" value="Activo">
           <input type="hidden" id="newOperatorShift" value="Turno Único">
         </div>
@@ -5104,11 +5068,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.74.0"></script>
-  <script src="js/andon.js?v=2.74.0"></script>
-  <script src="js/terminal.js?v=2.74.0"></script>
-  <script src="js/engineer.js?v=2.74.0"></script>
-  <script src="js/executive.js?v=2.74.0"></script>
-  <script src="js/config.js?v=2.74.0"></script>
+  <script src="js/app.js?v=2.75.0"></script>
+  <script src="js/andon.js?v=2.75.0"></script>
+  <script src="js/terminal.js?v=2.75.0"></script>
+  <script src="js/engineer.js?v=2.75.0"></script>
+  <script src="js/executive.js?v=2.75.0"></script>
+  <script src="js/config.js?v=2.75.0"></script>
 </body>
 </html>

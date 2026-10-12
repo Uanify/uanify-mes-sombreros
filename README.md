@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.74.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.75.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.74.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.75.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,14 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.75.0] - 2026-10-12
+- **Permisos Inmutables por Rol & Eliminación de Correo en Alta de Usuario:**
+  - **Permisos Automatizados e Inalterables:** Se reemplazó el checklist manipulable de permisos modulares por una matriz estricta e inmutable vinculada al rol asignado (*Administrador General*, *Ingeniero de Procesos y Calidad*, *Supervisor de Planta*, *Inspector de Calidad*). Al cambiar el rol se previsualiza dinámicamente el alcance sin checklists arbitrarios.
+  - **Eliminación del Campo Correo:** Se suprimió el input visible de correo electrónico en la creación de usuario.
+- **Asignación Relacional Jerárquica en Operadores (Máquina ⊂ Proceso ⊂ Departamento):**
+  - **Cascada Dinámica:** El formulario de alta y edición de operador permite seleccionar el *Departamento*, derivando sus *Procesos* asociados, y de este se desprenden las *Máquinas y Puestos de Trabajo* instalados.
+  - **Tarjeta de Contexto Operativo:** Visualización en tiempo real de la jerarquía asignada y reflejo explícito en la tabla del Padrón de Operadores.
 
 ### [2.74.0] - 2026-10-12
 - **Depuración Integral del Padrón de Operadores (Mano de Obra):**

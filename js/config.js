@@ -577,7 +577,10 @@ window.initConfigView = function() {
               <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${op.name}</div>
             </td>
             <td><span class="badge-subtle" style="font-weight:600; font-size:12px;">${op.deptCode} · ${op.deptName}</span></td>
-            <td><span style="font-size:13px; font-weight:500; color:var(--text-primary);">${op.machine}</span></td>
+            <td>
+              <div style="font-size:13px; font-weight:700; color:var(--text-primary);">${op.machine}</div>
+              <span class="table-cell-subtext" style="font-size:11.5px; color:var(--text-secondary);">${op.processName || op.deptName}</span>
+            </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar Operador">
@@ -766,6 +769,45 @@ window.initConfigView = function() {
   const formCreateUser = document.getElementById('formCreateUser');
   const selectNewRole = document.getElementById('newRoleSelect');
 
+  const RoleFixedPermissions = {
+    admin: {
+      title: 'Administrador General (Control Total)',
+      desc: 'Acceso total e irrestricto a todos los módulos: Órdenes, Terminal, Andon, Almacenes & Hormas, Operadores, Analítica & OEE, Finanzas y Configuración.',
+      perms: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'executive', 'config'],
+      roleName: 'Administrador General',
+      badge: 'Ingeniero (Admin)'
+    },
+    ingeniero: {
+      title: 'Ingeniero de Procesos y Calidad',
+      desc: 'Acceso a Terminal de Piso, Andon, Catálogos & Hormas, Padrón de Operadores, Analítica & OEE, Rutas Productivas y Configuración de Planta.',
+      perms: ['orders', 'terminal', 'andon', 'inventory', 'operators', 'analytics', 'engineer', 'config'],
+      roleName: 'Ingeniero de Procesos y Calidad',
+      badge: 'Ingeniero (Admin)'
+    },
+    supervisor: {
+      title: 'Supervisor de Planta (Piso y Almacenes)',
+      desc: 'Acceso a Terminal de Piso, Escaneo de Tarjetas QR, Almacenes Intermedios, Padrón de Operadores y Tablero Andon.',
+      perms: ['terminal', 'andon', 'inventory', 'operators'],
+      roleName: 'Supervisor de Planta',
+      badge: 'Supervisor'
+    },
+    calidad: {
+      title: 'Inspector de Calidad (Paradas C1 a C5)',
+      desc: 'Acceso a Terminal de Piso para dictamen y liberación de filtros C1 a C5, Catálogos y Tablero Andon.',
+      perms: ['terminal', 'andon', 'inventory'],
+      roleName: 'Inspector de Calidad',
+      badge: 'Inspector Calidad'
+    }
+  };
+
+  function updateRolePermsPreview(role, titleId = 'rolePermsTitle', descId = 'rolePermsDesc') {
+    const config = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
+    const tEl = document.getElementById(titleId);
+    const dEl = document.getElementById(descId);
+    if (tEl) tEl.textContent = config.title;
+    if (dEl) dEl.textContent = config.desc;
+  }
+
   function configureUserRoleOptions() {
     const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     if (!selectNewRole) return;
@@ -785,6 +827,7 @@ window.initConfigView = function() {
         <option value="admin">Administrador General (Control Total)</option>
       `;
     }
+    updateRolePermsPreview(selectNewRole.value, 'rolePermsTitle', 'rolePermsDesc');
   }
 
   if (btnOpenCreate && modalCreateUser) {
@@ -802,20 +845,7 @@ window.initConfigView = function() {
 
   if (selectNewRole) {
     selectNewRole.addEventListener('change', (e) => {
-      const role = e.target.value;
-      const checkboxes = document.querySelectorAll('.new-perm-cb');
-      checkboxes.forEach(cb => {
-        const mod = cb.value;
-        if (role === 'admin') {
-          cb.checked = true;
-        } else if (role === 'ingeniero') {
-          cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory' || mod === 'operators' || mod === 'analytics' || mod === 'engineer');
-        } else if (role === 'supervisor') {
-          cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory' || mod === 'operators');
-        } else if (role === 'calidad') {
-          cb.checked = (mod === 'andon' || mod === 'terminal' || mod === 'inventory');
-        }
-      });
+      updateRolePermsPreview(e.target.value, 'rolePermsTitle', 'rolePermsDesc');
     });
   }
 
@@ -838,26 +868,12 @@ window.initConfigView = function() {
         return;
       }
 
-      const selectedPerms = [];
-      document.querySelectorAll('.new-perm-cb:checked').forEach(cb => {
-        selectedPerms.push(cb.value);
-      });
-
-      let roleName = 'Supervisor de Planta';
-      let badge = 'Supervisor';
+      const roleDef = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
       let assignedDepts = ['D-05', 'D-06'];
 
-      if (role === 'admin') {
-        roleName = 'Administrador General';
-        badge = 'Ingeniero (Admin)';
-        assignedDepts = ['*'];
-      } else if (role === 'ingeniero') {
-        roleName = 'Ingeniero de Procesos y Calidad';
-        badge = 'Ingeniero (Admin)';
+      if (role === 'admin' || role === 'ingeniero') {
         assignedDepts = ['*'];
       } else if (role === 'calidad') {
-        roleName = 'Inspector de Calidad';
-        badge = 'Inspector Calidad';
         assignedDepts = ['C-01', 'C-02', 'C-03', 'C-04'];
       }
 
@@ -866,10 +882,10 @@ window.initConfigView = function() {
         name,
         email,
         role,
-        roleName,
-        badge,
+        roleName: roleDef.roleName,
+        badge: roleDef.badge,
         assignedDepartments: assignedDepts,
-        permissions: selectedPerms.length > 0 ? selectedPerms : ['andon', 'terminal']
+        permissions: [...roleDef.perms]
       };
 
       UanifyState.users.push(newUser);
@@ -878,7 +894,7 @@ window.initConfigView = function() {
       formCreateUser.reset();
 
       window.UanifyUI.toast(
-        `Usuario "${name}" (${roleName}) creado exitosamente.`,
+        `Usuario "${name}" (${roleDef.roleName}) creado exitosamente con permisos automáticos de su rol.`,
         'success',
         'Usuario Registrado'
       );
@@ -891,33 +907,132 @@ window.initConfigView = function() {
   const btnCloseOperator = document.getElementById('btnCloseRegisterOperatorModal');
   const formOperator = document.getElementById('formRegisterOperator');
 
-  function populateOperatorDeptsSelect() {
-    const select = document.getElementById('newOperatorDept');
-    if (!select || !UanifyState || !UanifyState.stations) return;
-    const currentVal = select.value;
-    select.innerHTML = UanifyState.stations.map(s => `
+  function populateOperatorCascadingSelects(selectedDeptCode = null, selectedProcName = null, selectedMachine = null) {
+    const deptSelect = document.getElementById('newOperatorDept');
+    const procSelect = document.getElementById('newOperatorProcess');
+    const machineSelect = document.getElementById('newOperatorMachineSelect');
+    const machineInput = document.getElementById('newOperatorMachine');
+
+    if (!deptSelect || !procSelect || !machineSelect || !UanifyState || !UanifyState.stations) return;
+
+    // 1. Llenar Departamentos
+    const deptList = (UanifyState.stations || []).filter(s => !s.code.startsWith('C-'));
+    deptSelect.innerHTML = deptList.map(s => `
       <option value="${s.code}">${s.code} · ${s.name}</option>
     `).join('');
-    if (currentVal && Array.from(select.options).some(o => o.value === currentVal)) {
-      select.value = currentVal;
-    } else if (select.options.length > 0) {
-      select.selectedIndex = 0;
+
+    if (selectedDeptCode && Array.from(deptSelect.options).some(o => o.value === selectedDeptCode)) {
+      deptSelect.value = selectedDeptCode;
+    } else if (deptSelect.options.length > 0) {
+      deptSelect.selectedIndex = 0;
     }
-    if (select._uanifySelect) {
-      select._uanifySelect.updateLabel();
+
+    // 2. Función para actualizar procesos a partir del departamento
+    const updateProcesses = () => {
+      const currentDeptCode = deptSelect.value;
+      const st = UanifyState.stations.find(s => s.code === currentDeptCode);
+      const deptsProcesses = (st && st.processes && st.processes.length > 0)
+        ? st.processes
+        : [{ name: st ? st.name : 'Operación Principal' }];
+
+      procSelect.innerHTML = deptsProcesses.map(p => `
+        <option value="${p.name}">${p.name}</option>
+      `).join('');
+
+      if (selectedProcName && Array.from(procSelect.options).some(o => o.value === selectedProcName)) {
+        procSelect.value = selectedProcName;
+      } else if (procSelect.options.length > 0) {
+        procSelect.selectedIndex = 0;
+      }
+
+      if (procSelect._uanifySelect) procSelect._uanifySelect.updateLabel();
+      updateMachines();
+    };
+
+    // 3. Función para actualizar máquinas a partir del departamento / proceso
+    const updateMachines = () => {
+      const currentDeptCode = deptSelect.value;
+      const st = UanifyState.stations.find(s => s.code === currentDeptCode);
+      
+      let machineList = [];
+      if (st && st.machines) {
+        if (typeof st.machines === 'string') {
+          machineList = st.machines.split(',').map(m => m.trim()).filter(Boolean);
+        } else if (Array.isArray(st.machines)) {
+          machineList = st.machines.map(m => typeof m === 'object' ? (m.name || m.code) : m);
+        }
+      }
+
+      if (machineList.length === 0) {
+        machineList = [`Línea / Estación ${st ? st.name : 'General'}`];
+      }
+
+      machineSelect.innerHTML = machineList.map(m => `
+        <option value="${m}">${m}</option>
+      `).join('') + `<option value="otro">-- Otro / Puesto Específico --</option>`;
+
+      if (selectedMachine && Array.from(machineSelect.options).some(o => o.value === selectedMachine)) {
+        machineSelect.value = selectedMachine;
+        if (machineInput) machineInput.value = selectedMachine;
+      } else if (selectedMachine) {
+        machineSelect.value = 'otro';
+        if (machineInput) machineInput.value = selectedMachine;
+      } else {
+        machineSelect.selectedIndex = 0;
+        if (machineInput) machineInput.value = machineSelect.value !== 'otro' ? machineSelect.value : '';
+      }
+
+      if (machineSelect._uanifySelect) machineSelect._uanifySelect.updateLabel();
+      updatePreview();
+    };
+
+    // 4. Actualizar tarjeta de previsualización
+    const updatePreview = () => {
+      const currentDeptCode = deptSelect.value;
+      const st = UanifyState.stations.find(s => s.code === currentDeptCode);
+      const pDept = document.getElementById('opPreviewDept');
+      const pProc = document.getElementById('opPreviewProcess');
+      const pMach = document.getElementById('opPreviewMachine');
+
+      if (pDept) pDept.textContent = st ? `${st.code} · ${st.name}` : currentDeptCode;
+      if (pProc) pProc.textContent = procSelect.value || (st ? st.name : '-');
+      const finalMach = (machineInput && machineInput.value.trim()) ? machineInput.value.trim() : (machineSelect.value !== 'otro' ? machineSelect.value : 'Puesto General');
+      if (pMach) pMach.textContent = finalMach;
+    };
+
+    deptSelect.onchange = () => {
+      if (deptSelect._uanifySelect) deptSelect._uanifySelect.updateLabel();
+      updateProcesses();
+    };
+
+    procSelect.onchange = () => {
+      if (procSelect._uanifySelect) procSelect._uanifySelect.updateLabel();
+      updateMachines();
+    };
+
+    machineSelect.onchange = () => {
+      if (machineSelect._uanifySelect) machineSelect._uanifySelect.updateLabel();
+      if (machineSelect.value !== 'otro') {
+        if (machineInput) machineInput.value = machineSelect.value;
+      } else {
+        if (machineInput) machineInput.value = '';
+        if (machineInput) machineInput.focus();
+      }
+      updatePreview();
+    };
+
+    if (machineInput) {
+      machineInput.oninput = () => updatePreview();
     }
+
+    if (deptSelect._uanifySelect) deptSelect._uanifySelect.updateLabel();
+    updateProcesses();
   }
 
   window.openCreateOperatorModal = function() {
     if (!modalOperator) return;
-    populateOperatorDeptsSelect();
     if (formOperator) formOperator.reset();
-    populateOperatorDeptsSelect();
-
-    // Sincronizar todos los selects custom dentro del modal tras form.reset()
-    modalOperator.querySelectorAll('select').forEach(sel => {
-      if (sel._uanifySelect) sel._uanifySelect.updateLabel();
-    });
+    populateOperatorCascadingSelects();
 
     const origId = document.getElementById('opOriginalEmpId');
     const title = document.getElementById('operatorModalTitle');
@@ -926,7 +1041,7 @@ window.initConfigView = function() {
 
     if (origId) origId.value = '';
     if (title) title.textContent = 'Registrar Operador de Planta (Mano de Obra)';
-    if (sub) sub.textContent = 'Asignación de personal de piso a máquinas y estaciones';
+    if (sub) sub.textContent = 'Asignación de puesto dentro de proceso y departamento';
     if (submitBtn) submitBtn.textContent = 'Guardar Operador';
 
     modalOperator.classList.add('active');
@@ -935,15 +1050,12 @@ window.initConfigView = function() {
   window.openEditOperatorModal = function(empId) {
     const op = UanifyState.operators.find(o => o.empId === empId);
     if (!op || !modalOperator) return;
-    populateOperatorDeptsSelect();
+
+    populateOperatorCascadingSelects(op.deptCode, op.processName || null, op.machine);
 
     const origId = document.getElementById('opOriginalEmpId');
     const payroll = document.getElementById('newOperatorPayroll');
     const name = document.getElementById('newOperatorName');
-    const dept = document.getElementById('newOperatorDept');
-    const machine = document.getElementById('newOperatorMachine');
-    const status = document.getElementById('newOperatorStatus');
-    const shift = document.getElementById('newOperatorShift');
     const title = document.getElementById('operatorModalTitle');
     const sub = document.getElementById('operatorModalSubtitle');
     const submitBtn = document.getElementById('btnSubmitOperator');
@@ -951,17 +1063,9 @@ window.initConfigView = function() {
     if (origId) origId.value = op.empId;
     if (payroll) payroll.value = op.empId;
     if (name) name.value = op.name;
-    if (dept) dept.value = op.deptCode;
-    if (machine) machine.value = op.machine;
-    if (status) status.value = op.status;
-    if (shift) shift.value = op.shift || 'Turno Único';
     if (title) title.textContent = `Editar Operador · ${op.name}`;
-    if (sub) sub.textContent = `Modificando estación, máquina y estatus de ${op.empId}`;
+    if (sub) sub.textContent = `Modificando asignación de puesto y máquina para nómina ${op.empId}`;
     if (submitBtn) submitBtn.textContent = 'Actualizar Operador';
-
-    modalOperator.querySelectorAll('select').forEach(sel => {
-      if (sel._uanifySelect) sel._uanifySelect.updateLabel();
-    });
 
     modalOperator.classList.add('active');
   };
@@ -983,7 +1087,10 @@ window.initConfigView = function() {
       const name = document.getElementById('newOperatorName')?.value.trim();
       const empId = document.getElementById('newOperatorPayroll')?.value.trim();
       const deptCode = document.getElementById('newOperatorDept')?.value || 'D-05';
-      const machine = document.getElementById('newOperatorMachine')?.value.trim();
+      const procName = document.getElementById('newOperatorProcess')?.value;
+      const machineSelectVal = document.getElementById('newOperatorMachineSelect')?.value;
+      const machineInputVal = document.getElementById('newOperatorMachine')?.value.trim();
+      const machine = machineInputVal || (machineSelectVal !== 'otro' ? machineSelectVal : 'Puesto de Línea');
       const status = document.getElementById('newOperatorStatus')?.value || 'Activo';
       const shift = document.getElementById('newOperatorShift')?.value || 'Turno Único';
 
@@ -1004,7 +1111,8 @@ window.initConfigView = function() {
           op.name = name;
           op.deptCode = resolvedCode;
           op.deptName = deptName;
-          op.machine = machine || 'Máquina de Línea';
+          op.processName = procName || deptName;
+          op.machine = machine;
           op.status = status;
           op.shift = shift;
 
@@ -1014,7 +1122,7 @@ window.initConfigView = function() {
           modalOperator.classList.remove('active');
 
           window.UanifyUI.toast(
-            `Operador "${name}" (${empId}) actualizado en ${resolvedCode} · ${deptName}.`,
+            `Operador "${name}" (${empId}) asignado a: ${machine} (${resolvedCode} · ${deptName}).`,
             'success',
             'Operador Actualizado'
           );
@@ -1034,10 +1142,11 @@ window.initConfigView = function() {
         name,
         deptCode: resolvedCode,
         deptName,
+        processName: procName || deptName,
         machine: machine || 'Máquina de Línea',
         shift,
         status,
-        pzasToday: Math.floor(Math.random() * 25 + 75)
+        pzasToday: 85
       };
 
       if (!UanifyState.operators) UanifyState.operators = [];
@@ -1165,10 +1274,14 @@ window.initConfigView = function() {
       };
     }
 
-    // Permisos modulares RBAC
-    document.querySelectorAll('.edit-perm-cb').forEach(cb => {
-      cb.checked = user.permissions.includes(cb.value);
-    });
+    // Configurar vista previa de permisos según rol
+    updateRolePermsPreview(user.role, 'editRolePermsTitle', 'editRolePermsDesc');
+    const editRoleSelect = document.getElementById('editUserRoleSelect');
+    if (editRoleSelect) {
+      editRoleSelect.onchange = (e) => {
+        updateRolePermsPreview(e.target.value, 'editRolePermsTitle', 'editRolePermsDesc');
+      };
+    }
 
     modalEditPerms.classList.add('active');
   };
@@ -1192,27 +1305,20 @@ window.initConfigView = function() {
         selectedDepts.push(cb.value);
       });
 
-      const newPerms = [];
-      document.querySelectorAll('.edit-perm-cb:checked').forEach(cb => {
-        newPerms.push(cb.value);
-      });
+      const roleDef = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
 
       user.name = name;
       user.email = email;
       user.role = role;
-      user.permissions = newPerms;
+      user.permissions = [...roleDef.perms];
 
-      if (role === 'admin') {
-        user.roleName = 'Administrador General';
-        user.badge = 'Ingeniero (Admin)';
-        user.assignedDepartments = ['*'];
-      } else if (role === 'ingeniero') {
-        user.roleName = 'Ingeniero de Procesos y Calidad';
-        user.badge = 'Ingeniero (Admin)';
+      if (role === 'admin' || role === 'ingeniero') {
+        user.roleName = roleDef.roleName;
+        user.badge = roleDef.badge;
         user.assignedDepartments = ['*'];
       } else if (role === 'calidad') {
-        user.roleName = 'Inspector de Calidad';
-        user.badge = 'Inspector Calidad';
+        user.roleName = roleDef.roleName;
+        user.badge = roleDef.badge;
         user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : ['C-01', 'C-02', 'C-03', 'C-04'];
       } else {
         const deptNames = selectedDepts.map(c => {
