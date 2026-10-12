@@ -548,16 +548,7 @@ window.initConfigView = function() {
         (op.machine && op.machine.toLowerCase().includes(q));
 
       const matchDept = dept === 'all' || op.deptCode === dept;
-      const matchStatus = st === 'all' || op.status === st;
-      const matchShift = shift === 'all' || (op.shift && op.shift.includes(shift));
-
-      let matchPerf = true;
-      const pzas = op.pzasToday || 85;
-      if (perf === 'high') matchPerf = (pzas >= 80);
-      else if (perf === 'mid') matchPerf = (pzas >= 70 && pzas < 80);
-      else if (perf === 'low') matchPerf = (pzas < 70);
-
-      return matchSearch && matchDept && matchStatus && matchShift && matchPerf;
+      return matchSearch && matchDept;
     });
 
     if (countBadge) {
@@ -567,7 +558,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       operatorsTableBody.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="7">
+          <td colspan="5">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron operadores coincidentes</span>
@@ -579,28 +570,14 @@ window.initConfigView = function() {
       `;
     } else {
       operatorsTableBody.innerHTML = filtered.map(op => {
-        const pzas = op.pzasToday || 85;
-        let statusClass = 'status-active';
-        if (op.status === 'Incapacidad') statusClass = 'status-danger';
-        else if (op.status === 'Capacitación') statusClass = 'status-warning';
-
         return `
           <tr>
             <td class="col-code" style="text-align:center;"><span class="table-badge-code" style="margin:0 auto;">${op.empId}</span></td>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${op.name}</div>
-              <span class="table-cell-subtext">${op.shift || 'Turno Único'}</span>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${op.name}</div>
             </td>
-            <td><span class="badge-subtle" style="font-weight:600;">${op.deptCode} · ${op.deptName}</span></td>
-            <td><span style="font-size:12.5px; font-weight:500; color:var(--text-primary);">${op.machine}</span></td>
-            <td style="text-align:center;">
-              <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-brand); font-size:12.5px; padding:3px 10px; background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25); display:inline-block; margin:0 auto;">${pzas} pzas</span>
-            </td>
-            <td class="col-status" style="text-align:center;">
-              <span class="table-status-pill ${statusClass}" style="margin:0 auto;">
-                <span class="status-dot"></span>${op.status}
-              </span>
-            </td>
+            <td><span class="badge-subtle" style="font-weight:600; font-size:12px;">${op.deptCode} · ${op.deptName}</span></td>
+            <td><span style="font-size:13px; font-weight:500; color:var(--text-primary);">${op.machine}</span></td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center;">
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditOperatorModal('${op.empId}')" title="Editar Operador">

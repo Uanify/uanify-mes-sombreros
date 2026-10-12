@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.73.0">
-  <link rel="stylesheet" href="css/components.css?v=2.73.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.74.0">
+  <link rel="stylesheet" href="css/components.css?v=2.74.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.73.0</span>
+        <span class="system-version-pill login-version-pill">v2.74.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.73.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.74.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2410,7 +2410,7 @@
               </button>
             </div>
 
-            <!-- Barra de Filtrado Multi-Criterio Estandarizada (Regla 0.35) -->
+            <!-- Barra de Filtrado Estandarizada -->
             <div class="uanify-filter-toolbar">
               <div class="filter-toolbar-inputs">
                 <div class="filter-search-box">
@@ -2420,25 +2420,8 @@
                   <input type="text" id="cfgOperatorSearchInput" class="form-input" placeholder="Buscar por nómina, nombre, departamento, máquina..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
-                  <select id="cfgOperatorDeptFilter" class="custom-select" style="min-width:180px;">
+                  <select id="cfgOperatorDeptFilter" class="custom-select" style="min-width:200px;">
                     <option value="all">Todos los Departamentos</option>
-                  </select>
-                  <select id="cfgOperatorStatusFilter" class="custom-select" style="min-width:140px;">
-                    <option value="all">Todos los Estatus</option>
-                    <option value="Activo">Activos</option>
-                    <option value="Incapacidad">Incapacidad</option>
-                    <option value="Capacitación">En Capacitación</option>
-                  </select>
-                  <select id="cfgOperatorShiftFilter" class="custom-select" style="min-width:150px;">
-                    <option value="all">Todos los Turnos</option>
-                    <option value="Turno Único">Turno Único (07:00-15:30)</option>
-                    <option value="Turno Mantenimiento">Turno Mantenimiento</option>
-                  </select>
-                  <select id="cfgOperatorPerformanceFilter" class="custom-select" style="min-width:160px;">
-                    <option value="all">Todo Rendimiento</option>
-                    <option value="high">Meta Cumplida (>= 80 pzas)</option>
-                    <option value="mid">Rendimiento Regular (70-79 pzas)</option>
-                    <option value="low">Requiere Apoyo (< 70 pzas)</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="cfgOperatorCountBadge">7 operadores</span>
@@ -2450,13 +2433,11 @@
               <table class="data-table" id="cfgOperatorsDataTable">
                 <thead>
                   <tr>
-                    <th class="col-code" style="width:110px; text-align:center;">No. Nómina</th>
-                    <th class="col-name" style="width:200px;">Nombre del Operador</th>
-                    <th style="width:210px;">Departamento Asignado</th>
-                    <th style="width:200px;">Máquina / Puesto</th>
-                    <th style="width:160px; text-align:center;">Piezas Procesadas Hoy</th>
-                    <th class="col-status" style="width:120px; text-align:center;">Estatus</th>
-                    <th class="col-actions" style="width:100px; text-align:center;">Acciones</th>
+                    <th class="col-code" style="width:120px; text-align:center;">No. Nómina</th>
+                    <th class="col-name" style="min-width:220px;">Nombre del Operador</th>
+                    <th style="min-width:240px;">Departamento Asignado</th>
+                    <th style="min-width:220px;">Máquina / Puesto</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="operatorsTableBody">
@@ -3944,26 +3925,8 @@
             <label class="field-label">Máquina o Puesto de Trabajo Asignado:</label>
             <input type="text" id="newOperatorMachine" class="form-input" placeholder="Ej. Prensa Vapor Matriz #2" required>
           </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="field-label">Estatus Operativo:</label>
-              <select id="newOperatorStatus" class="custom-select">
-                <option value="Activo" selected>● Activo (En Piso)</option>
-                <option value="Incapacidad">● Incapacidad</option>
-                <option value="Capacitación">● Capacitación</option>
-                <option value="Baja Temporal">● Baja Temporal</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Turno de Trabajo:</label>
-              <select id="newOperatorShift" class="custom-select">
-                <option value="Turno Único" selected>Turno Único (07:00 - 15:30)</option>
-                <option value="Turno Matutino">Turno Matutino</option>
-                <option value="Turno Vespertino">Turno Vespertino</option>
-              </select>
-            </div>
-          </div>
+          <input type="hidden" id="newOperatorStatus" value="Activo">
+          <input type="hidden" id="newOperatorShift" value="Turno Único">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-secondary" id="btnCancelOperatorModal" onclick="document.getElementById('modalRegisterOperator').classList.remove('active')">Cancelar</button>
@@ -5141,11 +5104,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.73.0"></script>
-  <script src="js/andon.js?v=2.73.0"></script>
-  <script src="js/terminal.js?v=2.73.0"></script>
-  <script src="js/engineer.js?v=2.73.0"></script>
-  <script src="js/executive.js?v=2.73.0"></script>
-  <script src="js/config.js?v=2.73.0"></script>
+  <script src="js/app.js?v=2.74.0"></script>
+  <script src="js/andon.js?v=2.74.0"></script>
+  <script src="js/terminal.js?v=2.74.0"></script>
+  <script src="js/engineer.js?v=2.74.0"></script>
+  <script src="js/executive.js?v=2.74.0"></script>
+  <script src="js/config.js?v=2.74.0"></script>
 </body>
 </html>
