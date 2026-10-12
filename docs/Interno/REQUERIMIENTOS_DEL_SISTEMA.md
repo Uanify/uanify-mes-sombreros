@@ -3,7 +3,7 @@
 # SISTEMA TOMBSTONE HATS MES · CONTROL DE PLANTA & ANDON
 
 > **Documento Oficial de Requerimientos de Software y Trazabilidad de Funcionalidades**  
-> **Código de Documento:** `SRS-MES-TH-2026-v2.80.0` | **Versión:** `v2.80.0`  
+> **Código de Documento:** `SRS-MES-TH-2026-v2.81.0` | **Versión:** `v2.81.0`  
 > **Fecha de Emisión / Última Actualización:** 12 de Octubre de 2026  
 > **Cliente:** Tombstone Hats (Planta Matriz · San Francisco del Rincón, Guanajuato)  
 > **Desarrollador / Proveedor Tecnológico:** [Uanify](https://github.com/Uanify)  
@@ -429,11 +429,10 @@ El sistema implementa un modelo de **Control de Acceso Basado en Roles (RBAC)** 
       1. _Configuración:_ Catálogo de Departamentos y Almacenes Intermedios (`#cfgDeptTableBody`).
       2. _Configuración:_ Catálogo de Puntos de Calidad y Tolerancias (`#cfgQualityTableBody`).
       3. _Configuración:_ Gestión de Usuarios y Permisos RBAC (`#usersTableBody`).
-      4. _Configuración:_ Padrón de Operadores en Planta (`#operatorsTableBody`).
-      5. _Padrón de Operadores:_ Directorio Operativo de Mano de Obra (`#operatorsDirectoryBody`).
-      6. _Almacén & Inventarios:_ Saldos de Almacenes Físicos (`#tblPhysicalWarehousesBody`).
-      7. _Almacén & Inventarios:_ Catálogo Maestro de Hormas y Moldes de Aluminio (`#tblInventoryMoldsBody`).
-      8. _Almacén & Inventarios:_ Kárdex & Movimientos de Almacén (`#tblInventoryKardexBody`).
+      4. _Padrón de Operadores:_ Directorio Operativo de Mano de Obra en Planta (`#operatorsDirectoryBody`).
+      5. _Almacén & Inventarios:_ Saldos de Almacenes Físicos (`#tblPhysicalWarehousesBody`).
+      6. _Almacén & Inventarios:_ Catálogo Maestro de Hormas y Moldes de Aluminio (`#tblInventoryMoldsBody`).
+      7. _Almacén & Inventarios:_ Kárdex & Movimientos de Almacén (`#tblInventoryKardexBody`).
     - **Barra de Filtros Multi-Criterio Estandarizada (`.uanify-filter-toolbar`):**
       - Búsqueda en tiempo real por texto (`input[type="text"]` con clase `.filter-search-box`) filtrando por código, nombre y metadatos relevantes.
       - Selectores contextuales de categoría, tipo de proceso o estatus (`.filter-select-group`).

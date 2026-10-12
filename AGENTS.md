@@ -388,10 +388,10 @@ Excepciones permitidas con style="":
 
 ---
 
-## REGLA 0.29: CRUD Completo de Operadores de Planta (MANDATORIA)
+## REGLA 0.29: CRUD y Ubicación Única del Padrón de Operadores de Planta (MANDATORIA)
 
-1. **Disponibilidad Dual:** La gestión de operadores debe estar plenamente funcional tanto en el módulo de *Configuración de Planta* (`subtab-config-operators`) como en el módulo de *Padrón de Operadores de Planta* (`view-operators`).
-2. **Acciones por Registro:** Cada fila de operador debe incluir obligatoriamente los botones ` Editar` y ` Eliminar`.
+1. **Ubicación Única y Centralizada:** Existe exactamente **1 solo Padrón de Operadores** en todo el sistema, ubicado en el módulo principal de la barra lateral (*Almacén & Personal* &rarr; `view-operators`). Queda prohibido duplicar sub-pestañas redundantes de operadores dentro del módulo de Configuración.
+2. **Acciones por Registro:** Cada fila de operador debe incluir obligatoriamente los botones `Editar` y `Eliminar`.
 3. **Formulario Unificado Alta/Edición:**
    - El modal de operador (`#modalRegisterOperator`) debe admitir tanto el alta de nuevo personal como la edición de personal existente (`#opOriginalEmpId`).
    - Campos requeridos: No. Nómina (identificador único), Nombre Completo, Departamento Asignado (select con las 14 estaciones), Máquina / Puesto de Trabajo, Estatus Operativo (Activo, Incapacidad, Capacitación, Baja Temporal) y Turno.

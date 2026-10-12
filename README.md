@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.80.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.81.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.80.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.81.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.81.0] - 2026-10-12
+- **Consolidación a 1 Solo Padrón de Operadores en todo el Sistema MES:**
+  - **Ubicación Única Centralizada:** Se eliminó la sub-pestaña duplicada de operadores dentro del módulo de Configuración de Planta (`subtab-config-operators`), dejando el **Padrón de Operadores** como una vista única, accesible e integrada en el sidebar (`data-tab="operators"`).
+  - **Limpieza de Interfaz:** La sub-navegación de Configuración se redujo a 5 sub-pestañas operativas limpias (*Departamentos & Almacenes*, *Filtros de Calidad*, *Rutas & Secuencias*, *Parámetros & Turno*, *Usuarios RBAC*, *Integración COMPAC*).
+  - **Sincronización Normativa:** Actualización de la **Regla 0.29** en `AGENTS.md` y de los requerimientos en `docs/Interno/REQUERIMIENTOS_DEL_SISTEMA.md`.
 
 ### [2.80.0] - 2026-10-12
 - **Gestión Jerárquica y Creación Independiente de Máquinas (Máquina ⊂ Proceso ⊂ Departamento):**

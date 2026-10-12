@@ -638,7 +638,6 @@ window.initConfigView = function() {
 
   renderDepartmentsConfig();
   renderUsersTable();
-  renderOperatorsTable();
 
   // Escuchar cambio de pestañas para re-renderizar
   if (typeof EventBus !== 'undefined') {
@@ -646,7 +645,6 @@ window.initConfigView = function() {
       if (tab === 'config') {
         renderDepartmentsConfig();
         renderUsersTable();
-        renderOperatorsTable();
       }
     });
   }
