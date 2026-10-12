@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.69.0">
-  <link rel="stylesheet" href="css/components.css?v=2.69.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.70.0">
+  <link rel="stylesheet" href="css/components.css?v=2.70.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.69.0</span>
+        <span class="system-version-pill login-version-pill">v2.70.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.69.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.70.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2650,16 +2650,11 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="qualitySearchInput" class="form-input" placeholder="Buscar por código, filtro, criterio, inspector, ubicación..." autocomplete="off">
+                  <input type="text" id="qualitySearchInput" class="form-input" placeholder="Buscar por filtro, criterio, inspector, ubicación..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="qualityInspectorFilter" class="custom-select" style="min-width:180px;">
                     <option value="all">Todos los Inspectores</option>
-                  </select>
-                  <select id="qualityStatusFilter" class="custom-select" style="min-width:130px;">
-                    <option value="all">Todos los Estatus</option>
-                    <option value="active">Activos</option>
-                    <option value="inactive">Inactivos</option>
                   </select>
                 </div>
                 <span class="filter-count-badge" id="qualityFilteredCountBadge">4 filtros de calidad</span>
@@ -2671,13 +2666,10 @@
               <table class="data-table" id="cfgQualityDataTable">
                 <thead>
                   <tr>
-                    <th class="col-code" style="width:85px; text-align:center;">Código</th>
-                    <th class="col-name" style="width:200px;">Filtro de Calidad & Área</th>
-                    <th style="min-width:220px;">Criterios & Tolerancias</th>
-                    <th style="width:160px;">Inspector Responsable</th>
-                    <th style="width:120px; text-align:center;">Tiempo de Ciclo</th>
-                    <th class="col-status" style="width:110px; text-align:center;">Estatus</th>
-                    <th class="col-actions" style="width:100px; text-align:center;">Acciones</th>
+                    <th class="col-name" style="min-width:260px;">Filtro de Calidad & Área</th>
+                    <th style="min-width:280px;">Criterios & Tolerancias</th>
+                    <th style="width:220px;">Inspector Responsable</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgQualityTable">
@@ -4457,16 +4449,13 @@
       <form id="formCreateQualityArea">
         <input type="hidden" id="qualityEditMode" value="create">
         <input type="hidden" id="origQualityCode" value="">
+        <input type="hidden" id="newQualityCode" value="C-04">
+        <input type="hidden" id="newQualityCycleTime" value="18s">
+        <input type="hidden" id="newQualityStatus" value="Activo">
         <div class="modal-body" style="padding:20px;">
-          <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="field-label">Código (C-XX):</label>
-              <input type="text" id="newQualityCode" class="form-input" value="C-04" required style="font-weight:700; font-family:var(--font-mono); min-height:48px;">
-            </div>
-            <div class="form-group">
-              <label class="field-label">Nombre del Filtro de Calidad:</label>
-              <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad 4 (Post-Laqueado Especial)" required style="min-height:48px;">
-            </div>
+          <div class="form-group">
+            <label class="field-label">Nombre del Filtro de Calidad:</label>
+            <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad 4 (Post-Laqueado Especial)" required style="min-height:48px;">
           </div>
 
           <div class="form-group">
@@ -4479,27 +4468,14 @@
             <textarea id="newQualityDesc" class="form-input" rows="3" placeholder="Especificar qué se evalúa: alineación de copa, curvatura de falda, espesor de película, planchado, simetría..."></textarea>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr 120px; gap:12px;">
-            <div class="form-group">
-              <label class="field-label">Inspector Responsable:</label>
-              <select id="newQualityInspector" class="custom-select" style="min-height:48px;">
-                <option value="Inspectora de Calidad (Turno)">Inspectora de Calidad (Turno)</option>
-                <option value="Ing. Carlos Ortiz">Ing. Carlos Ortiz (Procesos)</option>
-                <option value="Juan Manuel Pérez">Juan Manuel Pérez (Supervisor)</option>
-                <option value="Roberto Méndez">Roberto Méndez (Supervisor)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="field-label">Tiempo de Ciclo / Inspección:</label>
-              <input type="text" id="newQualityCycleTime" class="form-input" value="18s" placeholder="ej. 18s" style="min-height:48px;">
-            </div>
-            <div class="form-group">
-              <label class="field-label">Estatus:</label>
-              <select id="newQualityStatus" class="custom-select" style="min-height:48px;">
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label class="field-label">Inspector Responsable:</label>
+            <select id="newQualityInspector" class="custom-select" style="min-height:48px;">
+              <option value="Inspectora de Calidad (Turno)">Inspectora de Calidad (Turno)</option>
+              <option value="Ing. Carlos Ortiz">Ing. Carlos Ortiz (Procesos)</option>
+              <option value="Juan Manuel Pérez">Juan Manuel Pérez (Supervisor)</option>
+              <option value="Roberto Méndez">Roberto Méndez (Supervisor)</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
@@ -5211,11 +5187,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.69.0"></script>
-  <script src="js/andon.js?v=2.69.0"></script>
-  <script src="js/terminal.js?v=2.69.0"></script>
-  <script src="js/engineer.js?v=2.69.0"></script>
-  <script src="js/executive.js?v=2.69.0"></script>
-  <script src="js/config.js?v=2.69.0"></script>
+  <script src="js/app.js?v=2.70.0"></script>
+  <script src="js/andon.js?v=2.70.0"></script>
+  <script src="js/terminal.js?v=2.70.0"></script>
+  <script src="js/engineer.js?v=2.70.0"></script>
+  <script src="js/executive.js?v=2.70.0"></script>
+  <script src="js/config.js?v=2.70.0"></script>
 </body>
 </html>

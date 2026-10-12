@@ -2136,7 +2136,6 @@ window.initConfigView = function() {
 
     const searchInput = document.getElementById('qualitySearchInput');
     const inspectorFilter = document.getElementById('qualityInspectorFilter');
-    const statusFilter = document.getElementById('qualityStatusFilter');
     const countBadge = document.getElementById('qualityFilteredCountBadge');
     const btnReset = document.getElementById('btnResetQualityFilters');
 
@@ -2153,11 +2152,9 @@ window.initConfigView = function() {
 
     const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const insp = inspectorFilter ? inspectorFilter.value : 'all';
-    const stStatus = statusFilter ? statusFilter.value : 'all';
 
     const filtered = areas.filter(item => {
       const matchSearch = !q ||
-        (item.code && item.code.toLowerCase().includes(q)) ||
         (item.name && item.name.toLowerCase().includes(q)) ||
         (item.location && item.location.toLowerCase().includes(q)) ||
         (item.criteria && item.criteria.toLowerCase().includes(q)) ||
@@ -2165,12 +2162,8 @@ window.initConfigView = function() {
         (item.inspector && item.inspector.toLowerCase().includes(q));
 
       const matchInsp = insp === 'all' || item.inspector === insp;
-      const isActive = item.status !== 'Inactivo';
-      let matchStatus = true;
-      if (stStatus === 'active') matchStatus = isActive;
-      else if (stStatus === 'inactive') matchStatus = !isActive;
 
-      return matchSearch && matchInsp && matchStatus;
+      return matchSearch && matchInsp;
     });
 
     if (countBadge) {
@@ -2180,7 +2173,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       cfgQualityTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="7">
+          <td colspan="4">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
@@ -2197,14 +2190,10 @@ window.initConfigView = function() {
     const canManage = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
     cfgQualityTable.innerHTML = filtered.map(q => {
-      const isActive = q.status !== 'Inactivo';
       return `
         <tr>
-          <td class="col-code" style="text-align:center;">
-            <span class="table-badge-code" style="color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border-color:rgba(139, 94, 60, 0.25); margin:0 auto;">${q.code}</span>
-          </td>
           <td class="col-name">
-            <div class="table-cell-primary" style="font-size:13.5px; font-weight:700;">${q.name}</div>
+            <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${q.name}</div>
             <span class="table-cell-subtext">${q.location || 'Nave de Producción'}</span>
           </td>
           <td>
@@ -2213,14 +2202,6 @@ window.initConfigView = function() {
           </td>
           <td>
             <div style="font-size:12.5px; font-weight:600; color:var(--text-primary);">${q.inspector || 'Inspectora de Turno'}</div>
-          </td>
-          <td style="text-align:center;">
-            <span class="badge-subtle" style="font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12px; color:var(--text-primary); padding:3px 8px; display:inline-block; margin:0 auto;">${q.cycleTime || '18s'}</span>
-          </td>
-          <td class="col-status" style="text-align:center;">
-            <span class="table-status-pill ${isActive ? 'status-active' : 'status-danger'}" style="margin:0 auto;">
-              <span class="status-dot"></span>${isActive ? 'Activo' : 'Inactivo'}
-            </span>
           </td>
           <td class="col-actions" style="text-align:center;">
             ${canManage ? `
@@ -2242,19 +2223,16 @@ window.initConfigView = function() {
       qualityFiltersBound = true;
       if (searchInput) searchInput.addEventListener('input', renderQualityFiltersConfig);
       if (inspectorFilter) inspectorFilter.addEventListener('change', renderQualityFiltersConfig);
-      if (statusFilter) statusFilter.addEventListener('change', renderQualityFiltersConfig);
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInput) searchInput.value = '';
           if (inspectorFilter) inspectorFilter.value = 'all';
-          if (statusFilter) statusFilter.value = 'all';
           renderQualityFiltersConfig();
         });
       }
       window.resetQualityFilters = function() {
         if (searchInput) searchInput.value = '';
         if (inspectorFilter) inspectorFilter.value = 'all';
-        if (statusFilter) statusFilter.value = 'all';
         renderQualityFiltersConfig();
       };
     }
@@ -2282,7 +2260,7 @@ window.initConfigView = function() {
     if (titleEl) titleEl.textContent = ' Dar de Alta Filtro de Control de Calidad';
     if (modeEl) modeEl.value = 'create';
     if (origCodeEl) origCodeEl.value = '';
-    if (codeEl) { codeEl.value = nextCode; codeEl.readOnly = false; }
+    if (codeEl) codeEl.value = nextCode;
     if (nameEl) nameEl.value = '';
     if (locEl) locEl.value = '';
     if (descEl) descEl.value = '';
@@ -2309,10 +2287,10 @@ window.initConfigView = function() {
     const cycleEl = document.getElementById('newQualityCycleTime');
     const statusEl = document.getElementById('newQualityStatus');
 
-    if (titleEl) titleEl.textContent = `Editar Filtro de Calidad · ${q.code}`;
+    if (titleEl) titleEl.textContent = `Editar Filtro de Calidad · ${q.name || q.code}`;
     if (modeEl) modeEl.value = 'edit';
     if (origCodeEl) origCodeEl.value = q.code;
-    if (codeEl) { codeEl.value = q.code; codeEl.readOnly = true; }
+    if (codeEl) codeEl.value = q.code;
     if (nameEl) nameEl.value = q.name || '';
     if (locEl) locEl.value = q.location || '';
     if (descEl) descEl.value = q.criteria || q.desc || '';
