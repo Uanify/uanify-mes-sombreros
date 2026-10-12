@@ -127,8 +127,12 @@ body.industrial-theme {
   z-index: 100;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+.app-sidebar > .sidebar-header,
+.app-sidebar > .sidebar-footer {
+  flex-shrink: 0;
 }
 
 /* Sidebar Header */
@@ -322,7 +326,11 @@ body.industrial-theme {
 
 /* Sidebar Navigation Groups */
 .sidebar-nav {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding: 16px 12px;
   display: flex;
   flex-direction: column;

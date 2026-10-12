@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UANIFY MES · GLOBAL APP CONTROLLER
  * Sistema MES para Planta Matriz Tombstone Hats (San Francisco del Rincón, Gto.)
  * 
@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.76.0',
+  version: '2.77.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -5115,3 +5115,14 @@ function enrichStationWithDefaults(st, idx) {
     window.UanifyUI.initAllSelects();
   }
 });
+
+// Altura real de la cabecera fija para anclar sub-pestañas justo debajo
+(function(){
+  function sync(){
+    const h = document.querySelector('.view-panel.active .view-hero-bar');
+    if (h) document.documentElement.style.setProperty('--hero-h', h.offsetHeight + 'px');
+  }
+  window.addEventListener('resize', sync);
+  document.addEventListener('click', () => setTimeout(sync, 60));
+  window.addEventListener('load', () => { sync(); setInterval(sync, 800); });
+})();

@@ -1,7 +1,7 @@
-# Tombstone Hats MES · Control de Planta & Tablero Andon
+﻿# Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.76.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.77.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.76.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.77.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,7 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.76.0] - 2026-10-12
+### [2.77.0] - 2026-10-12
 - **Corrección Estructural y Ergonómica del Modal de Departamento:**
   - **Reparación de Nombres Truncados de Máquinas:** Se corrigió el bug de truncamiento en el input de máquina (que mostraba erróneamente `de Tendido 12m Alumínio` en lugar de `Mesa de Tendido 12m Alumínio`) eliminando particiones defectuosas y reparando el estado en memoria.
   - **Arquitectura de Scroll Fijo & Limpieza Visual:** Se eliminaron scrolls dobles y estilos inline que desbordaban la caja modal. Encabezado y pie de página ahora son estrictamente estáticos con scroll central exclusivo en `.modal-body`.
