@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.71.0">
-  <link rel="stylesheet" href="css/components.css?v=2.71.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.72.0">
+  <link rel="stylesheet" href="css/components.css?v=2.72.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.71.0</span>
+        <span class="system-version-pill login-version-pill">v2.72.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.71.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.72.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2241,46 +2241,6 @@
                 </span>
                 <span id="cfgShiftLunchDuration" style="font-weight:700; color:var(--color-brand); font-family:var(--font-mono);">45 min</span>
               </div>
-
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Días de Operación de Planta:</span>
-                  <div class="info-tip">
-                    <button type="button" class="info-tip-btn" aria-label="Días de operación" style="width:16px; height:16px;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                    </button>
-                    <div class="info-tip-popup">Jornada habitual de trabajo programada para la manufactura.</div>
-                  </div>
-                </label>
-                <input type="text" class="form-input" id="cfgShiftDays" value="Lunes a Viernes" placeholder="Lunes a Viernes">
-              </div>
-
-              <!-- Régimen Dinámico de Arranque de Turno (US-17) -->
-              <div class="form-group" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                  <label class="field-label" style="font-weight:700; margin-bottom:0;">
-                    <span>Modo de Arranque de Turno (US-17):</span>
-                    <div class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Régimen dinámico" style="width:16px; height:16px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <div class="info-tip-popup">Régimen Dinámico permanente: el inicio de turno se sincroniza en tiempo real al registrar el primer escaneo QR en planta para medir con máxima fidelidad el ramp-up operativo.</div>
-                    </div>
-                  </label>
-                  <span class="table-status-pill status-active" style="font-size:11px; padding:3px 9px;">
-                    <span class="status-dot"></span> Dinámico
-                  </span>
-                </div>
-                <div id="cfgShiftStartStatusBox" style="margin-top:8px; padding:10px 14px; border-radius:8px; background:#F8FAFC; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <div>
-                    <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); display:block;">Arranque Registrado Hoy:</span>
-                    <span id="cfgShiftStartDetails" style="font-size:13px; font-weight:700; color:var(--text-primary);">Esperando primer escaneo QR...</span>
-                  </div>
-                  <button type="button" class="btn-outline btn-sm" id="btnResetShiftStart" style="font-size:11px; padding:4px 10px;">
-                    Reiniciar Arranque (Simular Nuevo Turno)
-                  </button>
-                </div>
-              </div>
             </div>
 
             <!-- Columna 2: Parámetros Operativos & Umbrales de Alerta Andon -->
@@ -2313,31 +2273,17 @@
                 <input type="number" class="form-input" id="cfgShiftGoal" value="4250">
               </div>
 
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                <div class="form-group">
-                  <label class="field-label">
-                    <span>Takt Time Estándar (Seg/Pza):</span>
-                    <div class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Takt Time" style="width:16px; height:16px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <div class="info-tip-popup">Ritmo de salida requerido por pieza para cumplir con la meta semanal programada.</div>
-                    </div>
-                  </label>
-                  <input type="number" class="form-input" id="cfgTaktTime" value="42">
-                </div>
-                <div class="form-group">
-                  <label class="field-label">
-                    <span>Tamaño Lote Madre (Pzas):</span>
-                    <div class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Tamaño Lote Madre" style="width:16px; height:16px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <div class="info-tip-popup">Lote estándar inicial fraccionable en rampa en 4 sublotes de 15 piezas trazables.</div>
-                    </div>
-                  </label>
-                  <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
-                </div>
+              <div class="form-group">
+                <label class="field-label">
+                  <span>Tamaño Lote Madre (Pzas):</span>
+                  <div class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Tamaño Lote Madre" style="width:16px; height:16px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                    </button>
+                    <div class="info-tip-popup">Lote estándar inicial fraccionable en rampa en 4 sublotes de 15 piezas trazables.</div>
+                  </div>
+                </label>
+                <input type="number" class="form-input" value="60" readonly style="background:#F1F5F9;">
               </div>
 
               <div style="margin-top:8px; padding-top:12px; border-top:1px dashed var(--border-subtle);">
@@ -5174,11 +5120,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.71.0"></script>
-  <script src="js/andon.js?v=2.71.0"></script>
-  <script src="js/terminal.js?v=2.71.0"></script>
-  <script src="js/engineer.js?v=2.71.0"></script>
-  <script src="js/executive.js?v=2.71.0"></script>
-  <script src="js/config.js?v=2.71.0"></script>
+  <script src="js/app.js?v=2.72.0"></script>
+  <script src="js/andon.js?v=2.72.0"></script>
+  <script src="js/terminal.js?v=2.72.0"></script>
+  <script src="js/engineer.js?v=2.72.0"></script>
+  <script src="js/executive.js?v=2.72.0"></script>
+  <script src="js/config.js?v=2.72.0"></script>
 </body>
 </html>

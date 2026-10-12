@@ -696,11 +696,9 @@ window.initConfigView = function() {
   if (btnSaveConfig) {
     btnSaveConfig.addEventListener('click', () => {
       const newWeeklyGoal = parseInt(cfgShiftGoal ? cfgShiftGoal.value : 4250, 10);
-      const newTakt = parseInt(cfgTaktTime ? cfgTaktTime.value : 42, 10);
       
       UanifyState.metaWeeklyTotal = newWeeklyGoal;
       UanifyState.metaShiftTotal = Math.round(newWeeklyGoal / 5);
-      UanifyState.taktTimeSec = newTakt;
 
       // Horario de Turno con selectores estandarizados
       const shiftStart = cfgShiftStart ? cfgShiftStart.value : '07:00';
@@ -708,7 +706,7 @@ window.initConfigView = function() {
       const lunchStart = cfgShiftLunchStart ? cfgShiftLunchStart.value : '12:00';
       const lunchEnd = cfgShiftLunchEnd ? cfgShiftLunchEnd.value : '12:45';
       const shiftLunch = `${lunchStart} a ${lunchEnd} hrs`;
-      const shiftDays = cfgShiftDays ? cfgShiftDays.value : 'Lunes a Viernes';
+      const shiftDays = 'Lunes a Viernes';
       const shiftSummary = `Turno Único (${shiftStart} - ${shiftEnd} · ${shiftDays})`;
       const shiftMode = 'dynamic';
 
@@ -732,16 +730,12 @@ window.initConfigView = function() {
       }
 
       const goalEl = document.getElementById('andonGoalTotal');
-      const taktEl = document.getElementById('andonTaktTime');
       if (goalEl) goalEl.textContent = `${newWeeklyGoal.toLocaleString()} pzas/sem`;
-      if (taktEl) taktEl.textContent = `${newTakt} seg/pza`;
-
-      renderShiftStartStatus();
 
       window.UanifyUI.toast(
-        `Horario guardado: ${shiftStart} a ${shiftEnd} hrs (${shiftDays}) · Comida: ${shiftLunch}. Modo: Dinámico en tiempo real. Meta Semanal: ${newWeeklyGoal.toLocaleString()} pzas.`,
+        `Horario guardado: ${shiftStart} a ${shiftEnd} hrs · Receso/Comida: ${shiftLunch}. Meta Semanal: ${newWeeklyGoal.toLocaleString()} pzas.`,
         'success',
-        'Horario y Configuración Guardados'
+        'Horario y Parámetros Guardados'
       );
     });
   }

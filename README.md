@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.71.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.72.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.71.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.72.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.72.0] - 2026-10-12
+- **Depuración de Parámetros de Turno & Operación de Planta:**
+  - **Eliminación de Takt Time Estándar:** Se removió definitivamente el campo de Takt Time de la tarjeta de parámetros operativos, ya que la métrica rectora de planta es el avance real de lotes y el monitoreo WIP.
+  - **Supresión de Modo de Arranque de Turno (US-17):** Se retiró el contenedor de estado y botón de arranque dinámico del formulario de configuración para evitar controles innecesarios en la vista del administrador.
+  - **Eliminación de Días de Operación de Planta:** Se suprimió el campo de texto de días laborables, manteniendo únicamente el horario formal de jornada (Entrada, Salida y Receso/Comida con cálculo de duración).
 
 ### [2.71.0] - 2026-10-12
 - **Depuración Integral de Filtros de Calidad: Criterios, Ubicación y Asignación de Inspector Requerida:**
