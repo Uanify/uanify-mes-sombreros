@@ -235,7 +235,7 @@ window.initConfigView = function() {
             <td class="col-name">
               <strong style="font-size:14px; color:var(--text-primary); display:block;">${st.name}</strong>
               <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;">
-                Ritmo: <strong>${st.cycleTime || '35s'}</strong> · Capacidad: <strong>${st.wipCapacity || 180}</strong> pzas
+                Capacidad WIP: <strong>${st.wipCapacity || 180}</strong> pzas
               </div>
             </td>
             <td>
@@ -256,9 +256,6 @@ window.initConfigView = function() {
             </td>
             <td>
               ${warehousesHtml}
-              <div style="font-size:11px; color:var(--text-secondary); margin-top:4px; display:flex; align-items:center; gap:4px;">
-                <span>📍 ${warehouseLoc}</span>
-              </div>
             </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center; gap:6px;">
@@ -1265,6 +1262,31 @@ window.initConfigView = function() {
   // Estado temporal de procesos y máquinas para el modal en edición/creación
   let currentModalProcesses = [];
 
+  // Toggle colapsable para secciones del modal de departamento (acordeón ergonómico)
+  window.toggleModalCollapse = function(secId) {
+    const sec = document.getElementById(secId);
+    if (!sec) return;
+    sec.classList.toggle('active');
+  };
+
+  // Buscador interactivo de supervisores en el modal
+  const newDeptSupervisorSearch = document.getElementById('newDeptSupervisorSearch');
+  if (newDeptSupervisorSearch && newDeptSupervisor) {
+    newDeptSupervisorSearch.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const options = Array.from(newDeptSupervisor.options);
+      let firstVisible = null;
+      options.forEach(opt => {
+        const matches = opt.textContent.toLowerCase().includes(q);
+        opt.style.display = matches ? '' : 'none';
+        if (matches && !firstVisible) firstVisible = opt;
+      });
+      if (firstVisible && !options.find(o => o.selected && o.style.display !== 'none')) {
+        firstVisible.selected = true;
+      }
+    });
+  }
+
   function renderModalProcessesUI() {
     if (!deptProcessesContainer) return;
     if (currentModalProcesses.length === 0) {
@@ -1277,72 +1299,58 @@ window.initConfigView = function() {
     }
 
     deptProcessesContainer.innerHTML = currentModalProcesses.map((proc, pIdx) => {
-      const isQuality = proc.type === 'calidad' || (proc.code && proc.code.startsWith('C-')) || (proc.name && proc.name.toLowerCase().includes('calidad'));
-      const procBadgeColor = isQuality ? '#B45309' : '#8B5E3C';
-      const procBgColor = isQuality ? 'rgba(217, 119, 6, 0.08)' : 'rgba(139, 94, 60, 0.06)';
-      const procBorder = isQuality ? '1px solid rgba(217, 119, 6, 0.3)' : '1px solid rgba(139, 94, 60, 0.2)';
-
-      const machinesListHtml = (proc.machines || []).map((m, mIdx) => `
-        <div style="display:grid; grid-template-columns: 110px 1fr 34px; gap:6px; align-items:center; margin-bottom:6px;">
-          <input type="text" class="form-input form-input-sm proc-mach-id" data-pidx="${pIdx}" data-midx="${mIdx}" value="${m.id || ''}" placeholder="ID (ej. PRE-01)" style="font-family:var(--font-mono); font-weight:700; height:32px; font-size:11.5px;" required>
-          <input type="text" class="form-input form-input-sm proc-mach-name" data-pidx="${pIdx}" data-midx="${mIdx}" value="${m.name || ''}" placeholder="Nombre / Tipo de máquina o área de trabajo" style="height:32px; font-size:11.5px;" required>
-          <button type="button" class="btn-table-action btn-action-delete" style="height:32px; width:32px;" onclick="window.removeMachineFromProcess(${pIdx}, ${mIdx})" title="Quitar máquina">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-      `).join('');
+      const cleanProcName = (proc.name || '').replace(/^(PROC-\d+|C-\d+)\s*/i, '');
+      const machinesListHtml = (proc.machines || []).map((m, mIdx) => {
+        const cleanMachName = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
+        return `
+          <div style="display:grid; grid-template-columns: 1fr 34px; gap:6px; align-items:center; margin-bottom:6px;">
+            <input type="text" class="form-input form-input-sm proc-mach-name" data-pidx="${pIdx}" data-midx="${mIdx}" value="${cleanMachName}" placeholder="Nombre de máquina o puesto (ej. Prensas Hidráulicas Michelagnoli)" style="height:34px; font-size:12px;" required>
+            <button type="button" class="btn-table-action btn-action-delete" style="height:34px; width:34px;" onclick="window.removeMachineFromProcess(${pIdx}, ${mIdx})" title="Quitar máquina">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
 
       return `
-        <div style="background:${procBgColor}; border:${procBorder}; border-radius:8px; padding:12px; position:relative;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:12px; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:11px; font-family:var(--font-mono); font-weight:800; color:#FFF; background:${procBadgeColor}; padding:2px 6px; border-radius:4px;">
-                ${proc.code || `PROC-${pIdx+1}`}
+              <span style="font-size:12px; font-weight:800; color:var(--color-brand); background:rgba(139, 94, 60, 0.1); padding:2px 8px; border-radius:6px;">
+                Proceso #${pIdx+1}
               </span>
-              <strong style="font-size:12.5px; color:var(--text-primary);">Proceso #${pIdx+1}</strong>
             </div>
-            <button type="button" class="btn-table-action btn-action-delete" style="height:26px; width:26px;" onclick="window.removeProcessRow(${pIdx})" title="Eliminar este proceso">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <button type="button" class="btn-table-action btn-action-delete" style="height:28px; width:28px;" onclick="window.removeProcessRow(${pIdx})" title="Eliminar este proceso">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
 
-          <!-- Campos de Proceso -->
-          <div style="display:grid; grid-template-columns: 100px 1fr 110px 100px; gap:8px; margin-bottom:10px;">
-            <div>
-              <label class="field-label" style="font-size:10.5px; margin-bottom:2px;">Código:</label>
-              <input type="text" class="form-input form-input-sm proc-field-code" data-pidx="${pIdx}" value="${proc.code || ''}" placeholder="PROC-01" style="font-family:var(--font-mono); font-weight:700; height:32px; font-size:11.5px;" required>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:10.5px; margin-bottom:2px;">Nombre de la Operación / Parada:</label>
-              <input type="text" class="form-input form-input-sm proc-field-name" data-pidx="${pIdx}" value="${proc.name || ''}" placeholder="Ej. Hormado Térmico Copa o C-01 Calidad" style="height:32px; font-size:11.5px;" required>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:10.5px; margin-bottom:2px;">Tipo:</label>
-              <select class="custom-select proc-field-type" data-pidx="${pIdx}" style="height:32px; font-size:11.5px; padding:0 6px;">
-                <option value="manufactura" ${proc.type === 'manufactura' ? 'selected' : ''}>Manufactura</option>
-                <option value="prensas" ${proc.type === 'prensas' ? 'selected' : ''}>Prensas / Vapor</option>
-                <option value="calidad" ${proc.type === 'calidad' ? 'selected' : ''}>Calidad (C-XX)</option>
-                <option value="logistica" ${proc.type === 'logistica' ? 'selected' : ''}>Logística</option>
-              </select>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:10.5px; margin-bottom:2px;">Ciclo:</label>
-              <input type="text" class="form-input form-input-sm proc-field-cycle" data-pidx="${pIdx}" value="${proc.cycleTime || '25s'}" placeholder="25s" style="height:32px; font-size:11.5px;">
-            </div>
+          <!-- Solo nombre del proceso limpio (sin IDs, sin tipo, sin ciclo) -->
+          <div style="margin-bottom:10px;">
+            <label class="field-label" style="font-size:11px; margin-bottom:4px;">
+              <span>Nombre de la Operación / Proceso:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Nombre de la operación productiva o parada de control de calidad.</span>
+              </span>
+            </label>
+            <input type="text" class="form-input form-input-sm proc-field-name" data-pidx="${pIdx}" value="${cleanProcName}" placeholder="ej. Tendido de Rollos, Baño de Dope, Calidad Final" style="height:36px; font-size:12.5px;" required>
           </div>
 
-          <!-- Sub-lista: Máquinas y Áreas de Trabajo con Identificador (ID) -->
-          <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:6px; padding:8px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
-                🔧 Máquinas / Puestos con Identificador (ID)
+          <!-- Sub-lista: Máquinas y Áreas de Trabajo Limpias (sin IDs) -->
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
+                🏭 Máquinas & Puestos de Trabajo
               </span>
-              <button type="button" class="btn-secondary btn-sm" style="min-height:24px; font-size:10.5px; padding:0 8px;" onclick="window.addMachineToProcess(${pIdx})">
-                + Agregar Máquina con ID
+              <button type="button" class="btn-secondary btn-sm" style="min-height:26px; font-size:10.5px; padding:0 8px; font-weight:700;" onclick="window.addMachineToProcess(${pIdx})">
+                + Agregar Máquina / Puesto
               </button>
             </div>
             <div class="proc-machines-list" data-pidx="${pIdx}">
-              ${machinesListHtml || '<div style="font-size:11px; color:var(--text-muted); font-style:italic; padding:4px 0;">No hay máquinas registradas en este proceso aún.</div>'}
+              ${machinesListHtml || '<div style="font-size:11.5px; color:var(--text-muted); font-style:italic; padding:4px 0;">No hay máquinas registradas en este proceso aún.</div>'}
             </div>
           </div>
         </div>
@@ -1350,40 +1358,10 @@ window.initConfigView = function() {
     }).join('');
 
     // Sincronizar inputs al escribir para no perder valores
-    deptProcessesContainer.querySelectorAll('.proc-field-code').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        if (currentModalProcesses[pIdx]) currentModalProcesses[pIdx].code = e.target.value;
-      });
-    });
     deptProcessesContainer.querySelectorAll('.proc-field-name').forEach(input => {
       input.addEventListener('input', (e) => {
         const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
         if (currentModalProcesses[pIdx]) currentModalProcesses[pIdx].name = e.target.value;
-      });
-    });
-    deptProcessesContainer.querySelectorAll('.proc-field-type').forEach(select => {
-      select.addEventListener('change', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        if (currentModalProcesses[pIdx]) {
-          currentModalProcesses[pIdx].type = e.target.value;
-          renderModalProcessesUI();
-        }
-      });
-    });
-    deptProcessesContainer.querySelectorAll('.proc-field-cycle').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        if (currentModalProcesses[pIdx]) currentModalProcesses[pIdx].cycleTime = e.target.value;
-      });
-    });
-    deptProcessesContainer.querySelectorAll('.proc-mach-id').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        const mIdx = parseInt(e.target.getAttribute('data-midx'), 10);
-        if (currentModalProcesses[pIdx] && currentModalProcesses[pIdx].machines[mIdx]) {
-          currentModalProcesses[pIdx].machines[mIdx].id = e.target.value;
-        }
       });
     });
     deptProcessesContainer.querySelectorAll('.proc-mach-name').forEach(input => {
@@ -1400,7 +1378,7 @@ window.initConfigView = function() {
   // Funciones de gestión en modal expuestas globalmente
   window.removeProcessRow = function(pIdx) {
     if (currentModalProcesses.length <= 1) {
-      window.UanifyUI.toast('Un departamento debe tener al menos 1 proceso o parada asignada.', 'warning');
+      window.UanifyUI.toast('Un departamento debe tener al menos 1 proceso asignado.', 'warning');
       return;
     }
     currentModalProcesses.splice(pIdx, 1);
@@ -1413,9 +1391,8 @@ window.initConfigView = function() {
       currentModalProcesses[pIdx].machines = [];
     }
     const nextMachNum = currentModalProcesses[pIdx].machines.length + 1;
-    const defaultPrefix = currentModalProcesses[pIdx].type === 'calidad' ? 'INS' : (currentModalProcesses[pIdx].type === 'prensas' ? 'PRE' : 'MAQ');
     currentModalProcesses[pIdx].machines.push({
-      id: `${defaultPrefix}-${String(nextMachNum).padStart(2, '0')}`,
+      id: `MAQ-${nextMachNum}`,
       name: `Estación / Máquina ${nextMachNum}`,
       status: 'operativa'
     });
@@ -1429,22 +1406,20 @@ window.initConfigView = function() {
     }
   };
 
-  if (btnDeptAddProcessRow) {
-    btnDeptAddProcessRow.addEventListener('click', () => {
-      const nextPNum = currentModalProcesses.length + 1;
-      currentModalProcesses.push({
-        id: `PROC-NEW-${Date.now()}-${nextPNum}`,
-        code: `PROC-${String(nextPNum).padStart(2, '0')}`,
-        name: `Operación / Proceso ${nextPNum}`,
-        type: 'manufactura',
-        cycleTime: '30s',
-        machines: [
-          { id: `MAQ-01`, name: `Celda de Trabajo Principal`, status: 'operativa' }
-        ]
-      });
-      renderModalProcessesUI();
+  window.addProcessRowToDeptModal = function() {
+    const nextPNum = currentModalProcesses.length + 1;
+    currentModalProcesses.push({
+      id: `PROC-${Date.now()}-${nextPNum}`,
+      code: `PROC-${String(nextPNum).padStart(2, '0')}`,
+      name: `Proceso ${nextPNum}`,
+      type: 'manufactura',
+      cycleTime: '35s',
+      machines: [
+        { id: `MAQ-${nextPNum}`, name: `Estación ${nextPNum}`, status: 'operativa' }
+      ]
     });
-  }
+    renderModalProcessesUI();
+  };
 
   function openCreateDeptModal() {
     if (!modalCreateDept) return;
@@ -1582,6 +1557,12 @@ window.initConfigView = function() {
 
     currentModalProcesses = JSON.parse(JSON.stringify(linkedProcesses));
     renderModalProcessesUI();
+
+    const supSearchInput = document.getElementById('newDeptSupervisorSearch');
+    if (supSearchInput) supSearchInput.value = '';
+
+    // Asegurar que las secciones colapsables inicien abiertas para comodidad
+    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach(sec => sec.classList.add('active'));
 
     // Poblar supervisores
     if (newDeptSupervisor && UanifyState.users) {
@@ -2057,7 +2038,6 @@ window.initConfigView = function() {
     if (titleEl) titleEl.textContent = station.name;
     if (subEl) subEl.textContent = `Detalles de flujo operativo y estaciones para ${station.name}`;
     if (supEl) supEl.textContent = station.operator || 'Supervisor Asignado';
-    if (taktEl) taktEl.textContent = `${station.cycleTime || '35s'}`;
     if (capEl) capEl.textContent = `${station.wipCapacity || 180} piezas`;
 
     // Procesos formales
@@ -2125,7 +2105,6 @@ window.initConfigView = function() {
         whListEl.innerHTML = whList.map(w => `
           <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px;">
             <span class="chip-clean-wh" style="font-size:12.5px;">📦 ${w}</span>
-            <span style="font-size:11.5px; color:var(--text-muted);">Ubicación: ${station.warehouseLocation || 'Nave Central'}</span>
           </div>
         `).join('');
       } else {

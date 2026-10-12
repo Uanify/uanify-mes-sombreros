@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.68.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.69.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.68.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.69.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.68.0] - 2026-10-12
+### [2.69.0] - 2026-10-12
+- **Modal de Departamentos Colapsable, Purga de Takt Time/Ubicación y Búsqueda Ágil de Supervisores:**
+  - **Secciones Colapsables en Acordeón (.modal-collapse-section):** Las secciones 1 a 4 del formulario de alta/edición de departamentos ahora son plegables con chevron interactivo y cabeceras ergonómicas.
+  - **Depuración de Campos No Operativos:** Se eliminaron del modal y de la tabla el campo **Takt Time / Ritmo Estándar**, la **Descripción Técnica & Criterios Operativos**, la **Ubicación Física de Almacenes**, así como el código de proceso, tipo y ciclo, dejando una captura limpia enfocada en: Nombre, Capacidad WIP, Procesos, Máquinas, Almacenes y Supervisión.
+  - **Búsqueda Dinámica de Supervisores:** Se integró un campo de búsqueda en vivo (`#newDeptSupervisorSearch`) dentro del selector de supervisores para filtrar instantáneamente por nombre.
+  - **Tooltips Estandarizados (Micro-puntos ⓘ):** Todos los textos descriptivos extensos fueron reemplazados por tooltips contextuales para mantener los formularios limpios y legibles.
 - **Sub-pestañas Sticky, Tooltips Prioritarios, Creación Dedicada de Procesos/Almacenes y Catálogo Limpio de Departamentos:**
   - **Sub-navegación Sticky (.sub-nav-tabs):** Las pestañas internas de cada módulo ahora se mantienen fijas en la parte superior (`position: sticky; top: 72px; z-index: 95`) al hacer scroll vertical en pantalla, sin desaparecer ni quedar ocultas.
   - **Prioridad Absoluta de Tooltips & Info-tips (.info-tip-popup):** Los tooltips ahora cuentan con elevación de capa máxima (`z-index: 99999999 !important`), garantizando que se desplieguen siempre por encima de pestañas fijas y cabeceras.

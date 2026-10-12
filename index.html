@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.68.0">
-  <link rel="stylesheet" href="css/components.css?v=2.68.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.69.0">
+  <link rel="stylesheet" href="css/components.css?v=2.69.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.68.0</span>
+        <span class="system-version-pill login-version-pill">v2.69.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.68.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.69.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -4063,113 +4063,159 @@
         <input type="hidden" id="deptModalEditMode" value="create">
         <input type="hidden" id="deptModalOriginalCode" value="">
 
-        <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
-          <!-- 1. Datos Maestros del Departamento -->
-          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-brand); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              1. Datos Principales del Departamento
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:12px; padding:18px;">
+          
+          <!-- SECCIÓN 1: DATOS PRINCIPALES DEL DEPARTAMENTO (COLAPSABLE) -->
+          <div class="modal-collapse-section active" id="secDeptDatos">
+            <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptDatos')">
+              <div class="modal-collapse-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                1. Datos Principales del Departamento
+              </div>
+              <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
-            <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Código Depto:</label>
-                <input type="text" id="newDeptCode" class="form-input" placeholder="D-15" required style="font-family:var(--font-mono); font-weight:800;">
+            <div class="modal-collapse-body">
+              <input type="hidden" id="newDeptCode" value="D-15">
+              <input type="hidden" id="newDeptCycleTime" value="35s">
+              <input type="hidden" id="newDeptDesc" value="">
+              <div style="display:grid; grid-template-columns: 1fr 180px; gap:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="field-label">
+                    <span>Nombre del Departamento:</span>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Nombre oficial del área o estación de trabajo de manufactura o calidad en planta.</span>
+                    </span>
+                  </label>
+                  <input type="text" id="newDeptName" class="form-input" placeholder="ej. Engomado y Dope, Prensas Térmicas, Ribeteado" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="field-label">
+                    <span>Capacidad WIP (piezas):</span>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Capacidad máxima estándar de sombreros en proceso o espera para esta estación.</span>
+                    </span>
+                  </label>
+                  <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
+                </div>
               </div>
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Nombre del Departamento:</label>
-                <input type="text" id="newDeptName" class="form-input" placeholder="Bordado Especial & Adornos" required>
-              </div>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Takt Time / Ritmo Estándar:</label>
-                <input type="text" id="newDeptCycleTime" class="form-input" value="35s" placeholder="35s" required>
-              </div>
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Capacidad WIP Total (piezas):</label>
-                <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
-              </div>
-            </div>
-            <div class="form-group" style="margin-top:10px; margin-bottom:0;">
-              <label class="field-label">Descripción Técnica & Criterios Operativos:</label>
-              <input type="text" id="newDeptDesc" class="form-input" placeholder="Detalles operativos, criterios de flujo o requerimientos de calidad">
             </div>
           </div>
 
-          <!-- 2. Procesos Asignados y Máquinas / Puestos con Identificador Único -->
-          <div style="background:#FFFFFF; border:1px solid rgba(139, 94, 60, 0.25); border-radius:10px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
+          <!-- SECCIÓN 2: PROCESOS & MÁQUINAS ASIGNADAS (COLAPSABLE) -->
+          <div class="modal-collapse-section active" id="secDeptProcesos">
+            <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptProcesos')">
+              <div class="modal-collapse-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                2. Procesos y Máquinas / Áreas de Trabajo Asignadas
+                2. Procesos y Máquinas Asignadas
               </div>
-              <button type="button" class="btn-secondary btn-sm" id="btnDeptAddProcessRow" style="min-height:30px; font-size:11.5px; padding:0 10px; font-weight:700;">
-                + Agregar Proceso
-              </button>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnDeptAddProcessRow" onclick="event.stopPropagation(); window.addProcessRowToDeptModal();" style="min-height:28px; font-size:11px; padding:0 10px; font-weight:700;">
+                  + Agregar Proceso
+                </button>
+                <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
             </div>
-            <p style="font-size:11.5px; color:var(--text-secondary); margin:0 0 10px 0;">
-              Un departamento puede tener múltiples procesos (manufactura o filtros de calidad C-XX). Dentro de cada proceso, registra las máquinas o áreas de trabajo con su identificador formal (ej. <code>PRE-01</code>, <code>HID-01</code>, <code>COR-01</code>).
-            </p>
-
-            <div id="deptProcessesContainer" style="display:flex; flex-direction:column; gap:10px;">
-              <!-- Tarjetas dinámicas de procesos inyectadas por JS -->
+            <div class="modal-collapse-body">
+              <div id="deptProcessesContainer" style="display:flex; flex-direction:column; gap:10px;">
+                <!-- Tarjetas dinámicas de procesos inyectadas por JS sin IDs, sin tipo, sin ciclo -->
+              </div>
             </div>
           </div>
 
-          <!-- 3. Almacenes Intermedios Asociados (Buffers WIP de Entrada y Salida) -->
-          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-brand); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-              3. Almacenes Intermedios Asignados (Buffers de Entrada / Salida)
+          <!-- SECCIÓN 3: ALMACENES INTERMEDIOS ASIGNADOS (COLAPSABLE) -->
+          <div class="modal-collapse-section active" id="secDeptAlmacenes">
+            <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptAlmacenes')">
+              <div class="modal-collapse-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                3. Almacenes Intermedios Asignados (Buffers)
+              </div>
+              <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="modal-collapse-body">
+              <input type="hidden" id="newDeptWarehouseLocation" value="Nave Central">
               <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Almacenes Buffer Asociados:</label>
-                <input type="text" id="newDeptWarehouse" class="form-input" placeholder="Buffer Entrada (ALM-01), Buffer Salida (ALM-02)" required>
-                <span class="field-hint">Puedes ingresar uno o varios almacenes intermedios separados por coma.</span>
+                <label class="field-label">
+                  <span>Almacenes Buffer Asignados (Separados por coma):</span>
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Nombre de los almacenes intermedios o pulmones de piso donde se depositan los lotes terminados de este departamento.</span>
+                  </span>
+                </label>
+                <input type="text" id="newDeptWarehouse" class="form-input" placeholder="ej. Buffer de Salida Prensas, Pulmón Rampa" required>
               </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 4: SUPERVISIÓN Y OPERADORES (COLAPSABLE) -->
+          <div class="modal-collapse-section active" id="secDeptSupervision">
+            <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptSupervision')">
+              <div class="modal-collapse-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                4. Asignación de Supervisor y Operadores
+              </div>
+              <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="modal-collapse-body">
+              <div class="form-group">
+                <label class="field-label">
+                  <span>Supervisor Responsable:</span>
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Supervisor o Ingeniero a cargo del departamento. Puedes escribir en el buscador para filtrar rápidamente.</span>
+                  </span>
+                </label>
+                <!-- Buscador rápido y selector de supervisores -->
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <div style="position:relative;">
+                    <input type="text" id="newDeptSupervisorSearch" class="form-input" placeholder="Escribe para buscar supervisor por nombre..." autocomplete="off" style="padding-left:32px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </div>
+                  <select id="newDeptSupervisor" class="custom-select">
+                    <!-- Llenado dinámicamente con supervisores e ingenieros -->
+                  </select>
+                </div>
+              </div>
+
               <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">Ubicación Física en Nave:</label>
-                <input type="text" id="newDeptWarehouseLocation" class="form-input" placeholder="Nave Central - Pasillo 3" required>
-                <span class="field-hint">Ubicación física en planta donde se depositan y recogen los lotes.</span>
+                <label class="field-label">
+                  <span>Operadores Asignados a este Departamento:</span>
+                  <span class="info-tip">
+                    <button type="button" class="info-tip-btn" aria-label="Información">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                    </button>
+                    <span class="info-tip-popup">Mano de obra asignada físicamente a las máquinas y puestos de trabajo de este departamento.</span>
+                  </span>
+                </label>
+                <div id="newDeptOperatorsList" style="max-height:120px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FFFFFF; display:flex; flex-direction:column; gap:6px;">
+                  <!-- Checkboxes de operadores inyectados por JS -->
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top:10px; margin-bottom:0;">
+                <label class="field-label">+ O registrar nuevo operador en piso (Opcional):</label>
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre del operador (ej. Gabriel Santos)">
+                  <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Puesto / Máquina (ej. Prensas Hidráulicas)">
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 4. Supervisión y Padrón de Operadores Asignados -->
-          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-brand); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              4. Supervisión Asignada (Relación Multi-Departamento) & Operadores
-            </div>
-            <div class="form-group">
-              <label class="field-label">Supervisor de Planta Responsable:</label>
-              <select id="newDeptSupervisor" class="custom-select">
-                <!-- Llenado dinámicamente con supervisores e ingenieros -->
-              </select>
-              <span class="field-hint">Un supervisor puede estar a cargo de múltiples departamentos simultáneamente.</span>
-            </div>
-
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label">Operadores Asignados a este Departamento:</label>
-              <div id="newDeptOperatorsList" style="max-height:120px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FFFFFF; display:flex; flex-direction:column; gap:6px;">
-                <!-- Checkboxes de operadores inyectados por JS -->
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-top:10px; margin-bottom:0;">
-              <label class="field-label">+ O agregar nuevo operador directamente (Opcional):</label>
-              <div style="display:flex; gap:8px;">
-                <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre operador (ej. Gabriel Santos)">
-                <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Máquina / ID asignado (ej. PRE-03)">
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
-          <button type="button" class="btn-secondary" id="btnCancelCreateDept" style="min-height:48px; padding:0 20px; font-weight:700;">Cancelar</button>
-          <button type="submit" class="btn-primary" style="min-height:48px; padding:0 24px; font-weight:700;">Guardar Departamento y Entidades</button>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+          <button type="button" class="btn-secondary" id="btnCancelCreateDept" style="min-height:46px; padding:0 20px; font-weight:700;">Cancelar</button>
+          <button type="submit" class="btn-primary" style="min-height:46px; padding:0 24px; font-weight:700;">Guardar Departamento</button>
         </div>
       </form>
     </div>
@@ -4197,38 +4243,48 @@
       </div>
       <form id="formCreateProcessStandalone">
         <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; padding:20px;">
+          <input type="hidden" id="procStandaloneType" value="manufactura">
+          <input type="hidden" id="procStandaloneCycle" value="35s">
           <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Nombre del Proceso:</label>
+            <label class="field-label">
+              <span>Nombre del Proceso:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Nombre de la operación o parada productiva (ej. Tendido, Prensas, Ribeteado, Control de Calidad).</span>
+              </span>
+            </label>
             <input type="text" id="procStandaloneName" class="form-input" placeholder="ej. Engrapado de Badana, Troquelado de Visera" required>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label">Tipo de Proceso:</label>
-              <select id="procStandaloneType" class="custom-select">
-                <option value="manufactura">Manufactura / Confección</option>
-                <option value="calidad">Inspección de Calidad</option>
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label">Takt Time / Ritmo Estándar:</label>
-              <input type="text" id="procStandaloneCycle" class="form-input" value="35s" placeholder="ej. 35s" required>
-            </div>
-          </div>
-
           <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Departamento Responsable (Asignación Única):</label>
+            <label class="field-label">
+              <span>Departamento Responsable (Asignación Única):</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Cada proceso pertenece de forma exclusiva a un solo departamento y no puede asociarse a otro simultáneamente.</span>
+              </span>
+            </label>
             <select id="procStandaloneDept" class="custom-select" required>
               <option value="">Selecciona un departamento...</option>
               <!-- Llenado dinámicamente -->
             </select>
-            <span class="field-hint">Este proceso pertenecerá únicamente a este departamento y no podrá asignarse a otro simultáneamente.</span>
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Máquinas / Puestos de Trabajo (Separados por coma):</label>
+            <label class="field-label">
+              <span>Máquinas / Puestos de Trabajo (Separados por coma):</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Nombres legibles de las máquinas o estaciones donde se procesa (ej. Prensas Hidráulicas Michelagnoli, Mesa de Coser Singer).</span>
+              </span>
+            </label>
             <input type="text" id="procStandaloneMachines" class="form-input" placeholder="ej. Máquina de Coser Perimetral, Mesa de Corte Manual">
-            <span class="field-hint">Nombres legibles de las máquinas o estaciones donde se ejecuta el proceso.</span>
           </div>
         </div>
         <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
@@ -4261,39 +4317,48 @@
       </div>
       <form id="formCreateWarehouseStandalone">
         <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; padding:20px;">
+          <input type="hidden" id="whStandaloneType" value="Buffer de Salida">
+          <input type="hidden" id="whStandaloneLocation" value="Nave Central">
           <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Nombre del Almacén Intermedio:</label>
+            <label class="field-label">
+              <span>Nombre del Almacén Intermedio:</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Nombre representativo del pulmón de piso (ej. Pulmón Salida Prensas, Buffer Rampa).</span>
+              </span>
+            </label>
             <input type="text" id="whStandaloneName" class="form-input" placeholder="ej. Pulmón Salida Adorno, Buffer Ensamble Toquillas" required>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label">Tipo de Pulmón:</label>
-              <select id="whStandaloneType" class="custom-select">
-                <option value="Buffer de Salida">Buffer de Salida (WIP Terminado)</option>
-                <option value="Pulmón de Entrada">Pulmón de Entrada (Espera)</option>
-                <option value="Pulmón de Fraccionamiento">Pulmón de Fraccionamiento</option>
-                <option value="Inspección de Calidad">Inspección de Calidad</option>
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="field-label">Capacidad de Espera (piezas):</label>
-              <input type="number" id="whStandaloneCap" class="form-input" value="180" min="20" max="2000" required>
-            </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>Capacidad en Espera (piezas):</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Capacidad física máxima de almacenamiento temporal antes de generar saturación.</span>
+              </span>
+            </label>
+            <input type="number" id="whStandaloneCap" class="form-input" value="180" min="20" max="2000" required>
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Ubicación Física en Nave:</label>
-            <input type="text" id="whStandaloneLocation" class="form-input" placeholder="ej. Nave B - Pasillo Central Norte" required>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label class="field-label">Departamento Asignado (Asignación Única):</label>
+            <label class="field-label">
+              <span>Departamento Asignado (Asignación Única):</span>
+              <span class="info-tip">
+                <button type="button" class="info-tip-btn" aria-label="Información">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                </button>
+                <span class="info-tip-popup">Este almacén intermedio se vinculará únicamente a este departamento.</span>
+              </span>
+            </label>
             <select id="whStandaloneDept" class="custom-select" required>
               <option value="">Selecciona un departamento...</option>
               <!-- Llenado dinámicamente -->
             </select>
-            <span class="field-hint">Este almacén quedará asociado exclusivamente a este departamento. Si ya está asignado no podrá usarse en otro.</span>
           </div>
         </div>
         <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
@@ -4326,11 +4391,7 @@
             <div style="font-size:15px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerSupervisor">-</div>
           </div>
           <div>
-            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Ritmo Estándar</div>
-            <div style="font-size:14px; font-weight:700; color:var(--color-brand); margin-top:2px;" id="deptViewerTakt">-</div>
-          </div>
-          <div>
-            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Capacidad en Espera</div>
+            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Capacidad WIP Máxima</div>
             <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerCap">-</div>
           </div>
         </div>
@@ -5150,11 +5211,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.68.0"></script>
-  <script src="js/andon.js?v=2.68.0"></script>
-  <script src="js/terminal.js?v=2.68.0"></script>
-  <script src="js/engineer.js?v=2.68.0"></script>
-  <script src="js/executive.js?v=2.68.0"></script>
-  <script src="js/config.js?v=2.68.0"></script>
+  <script src="js/app.js?v=2.69.0"></script>
+  <script src="js/andon.js?v=2.69.0"></script>
+  <script src="js/terminal.js?v=2.69.0"></script>
+  <script src="js/engineer.js?v=2.69.0"></script>
+  <script src="js/executive.js?v=2.69.0"></script>
+  <script src="js/config.js?v=2.69.0"></script>
 </body>
 </html>
