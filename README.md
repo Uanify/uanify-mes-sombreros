@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.70.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.71.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.70.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.71.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -36,7 +36,11 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 
 ## Historial de Versiones (Changelog)
 
-### [2.70.0] - 2026-10-12
+### [2.71.0] - 2026-10-12
+- **Depuración Integral de Filtros de Calidad: Criterios, Ubicación y Asignación de Inspector Requerida:**
+  - **Eliminación de Ubicación y Criterios:** Se suprimieron de la tabla y del modal los campos redundantes de *Ubicación / Área en Planta* y *Criterios de Inspección / Tolerancias*, reduciendo la tabla a 3 columnas limpias: *Filtro de Calidad*, *Inspector Responsable* y *Acciones*.
+  - **Asignación de Inspector Obligatoria y Sin Valor por Defecto:** El modal de alta de filtro ahora inicia con `-- Seleccionar Inspector Responsable --` sin inspector precargado y valida obligatoriamente que se elija un usuario del sistema antes de guardar.
+  - **Población Dinámica de Usuarios:** El selector de inspector lista a los usuarios registrados en el sistema MES con su nombre y rol correspondiente.
 - **Depuración y Limpieza del Catálogo de Filtros de Calidad:**
   - **Eliminación de IDs/Códigos Técnicos:** Se suprimió la columna `Código` (`C-XX`) de la tabla de Filtros de Calidad, priorizando el nombre operativo claro del punto de inspección.
   - **Eliminación de Tiempo de Ciclo y Ritmos Teóricos:** Se removió la columna y campo de `Tiempo de Ciclo` tanto de la tabla como del modal de captura de filtros.

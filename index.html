@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.70.0">
-  <link rel="stylesheet" href="css/components.css?v=2.70.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.71.0">
+  <link rel="stylesheet" href="css/components.css?v=2.71.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.70.0</span>
+        <span class="system-version-pill login-version-pill">v2.71.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -212,7 +212,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.70.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.71.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2666,9 +2666,8 @@
               <table class="data-table" id="cfgQualityDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:260px;">Filtro de Calidad & Área</th>
-                    <th style="min-width:280px;">Criterios & Tolerancias</th>
-                    <th style="width:220px;">Inspector Responsable</th>
+                    <th class="col-name" style="min-width:320px;">Filtro de Calidad</th>
+                    <th style="min-width:240px;">Inspector Responsable</th>
                     <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
@@ -4454,28 +4453,16 @@
         <input type="hidden" id="newQualityStatus" value="Activo">
         <div class="modal-body" style="padding:20px;">
           <div class="form-group">
-            <label class="field-label">Nombre del Filtro de Calidad:</label>
+            <label class="field-label">Nombre del Filtro de Calidad: <span style="color:var(--color-danger); font-weight:700;">*</span></label>
             <input type="text" id="newQualityName" class="form-input" placeholder="ej. Calidad 4 (Post-Laqueado Especial)" required style="min-height:48px;">
           </div>
 
-          <div class="form-group">
-            <label class="field-label">Ubicación / Área en Planta:</label>
-            <input type="text" id="newQualityLocation" class="form-input" placeholder="ej. Salida Cabina de Pintura / Túnel UV" style="min-height:48px;">
-          </div>
-
-          <div class="form-group">
-            <label class="field-label">Criterios de Inspección / Tolerancias Tombstone:</label>
-            <textarea id="newQualityDesc" class="form-input" rows="3" placeholder="Especificar qué se evalúa: alineación de copa, curvatura de falda, espesor de película, planchado, simetría..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="field-label">Inspector Responsable:</label>
-            <select id="newQualityInspector" class="custom-select" style="min-height:48px;">
-              <option value="Inspectora de Calidad (Turno)">Inspectora de Calidad (Turno)</option>
-              <option value="Ing. Carlos Ortiz">Ing. Carlos Ortiz (Procesos)</option>
-              <option value="Juan Manuel Pérez">Juan Manuel Pérez (Supervisor)</option>
-              <option value="Roberto Méndez">Roberto Méndez (Supervisor)</option>
+          <div class="form-group" style="margin-top:14px;">
+            <label class="field-label">Inspector Responsable: <span style="color:var(--color-danger); font-weight:700;">*</span></label>
+            <select id="newQualityInspector" class="custom-select" required style="min-height:48px;">
+              <option value="">-- Seleccionar Inspector Responsable --</option>
             </select>
+            <span class="field-hint" style="margin-top:4px; font-size:12px; color:var(--text-muted);">Selecciona el usuario asignado a la certificación e inspección de este punto de control.</span>
           </div>
         </div>
         <div class="modal-footer" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
@@ -5187,11 +5174,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.70.0"></script>
-  <script src="js/andon.js?v=2.70.0"></script>
-  <script src="js/terminal.js?v=2.70.0"></script>
-  <script src="js/engineer.js?v=2.70.0"></script>
-  <script src="js/executive.js?v=2.70.0"></script>
-  <script src="js/config.js?v=2.70.0"></script>
+  <script src="js/app.js?v=2.71.0"></script>
+  <script src="js/andon.js?v=2.71.0"></script>
+  <script src="js/terminal.js?v=2.71.0"></script>
+  <script src="js/engineer.js?v=2.71.0"></script>
+  <script src="js/executive.js?v=2.71.0"></script>
+  <script src="js/config.js?v=2.71.0"></script>
 </body>
 </html>

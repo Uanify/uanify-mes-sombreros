@@ -2173,7 +2173,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       cfgQualityTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="4">
+          <td colspan="3">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
@@ -2194,19 +2194,17 @@ window.initConfigView = function() {
         <tr>
           <td class="col-name">
             <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${q.name}</div>
-            <span class="table-cell-subtext">${q.location || 'Nave de Producción'}</span>
           </td>
           <td>
-            <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${q.tolerances || 'Tolerancia estándar'}</div>
-            <span class="table-cell-subtext">${q.criteria || q.desc || 'Inspección visual de primera'}</span>
-          </td>
-          <td>
-            <div style="font-size:12.5px; font-weight:600; color:var(--text-primary);">${q.inspector || 'Inspectora de Turno'}</div>
+            <div style="font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ${q.inspector || '<span style="color:var(--text-muted); font-style:italic;">Sin inspector asignado</span>'}
+            </div>
           </td>
           <td class="col-actions" style="text-align:center;">
             ${canManage ? `
               <div class="action-btns-cell" style="justify-content:center;">
-                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar Criterios y Tolerancias">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar Filtro de Calidad">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteQualityFilter('${q.code}')" title="Eliminar Filtro de Calidad">
@@ -2238,6 +2236,33 @@ window.initConfigView = function() {
     }
   }
 
+  function populateQualityInspectorsSelect(selectedInspector = '') {
+    const inspectorEl = document.getElementById('newQualityInspector');
+    if (!inspectorEl) return;
+
+    // Obtener inspectores y usuarios disponibles
+    const users = UanifyState.users || [];
+    // Priorizar usuarios con rol calidad o inspectores, e incluir supervisores e ingenieros
+    let eligible = users.filter(u => u.role === 'calidad' || (u.roleName && u.roleName.toLowerCase().includes('inspector')));
+    if (eligible.length === 0) {
+      eligible = users.filter(u => u.role === 'calidad' || u.role === 'supervisor' || u.role === 'ingeniero' || u.role === 'admin');
+    }
+
+    inspectorEl.innerHTML = `
+      <option value="">-- Seleccionar Inspector Responsable --</option>
+      ${users.map(u => `
+        <option value="${u.name}" ${u.name === selectedInspector ? 'selected' : ''}>
+          ${u.name} (${u.roleName || u.role})
+        </option>
+      `).join('')}
+    `;
+    if (selectedInspector) {
+      inspectorEl.value = selectedInspector;
+    } else {
+      inspectorEl.value = '';
+    }
+  }
+
   window.openCreateQualityModal = function() {
     if (!modalCreateQuality) return;
     const existing = (UanifyState.qualityAreas || [])
@@ -2253,7 +2278,6 @@ window.initConfigView = function() {
     const nameEl = document.getElementById('newQualityName');
     const locEl = document.getElementById('newQualityLocation');
     const descEl = document.getElementById('newQualityDesc');
-    const inspectorEl = document.getElementById('newQualityInspector');
     const cycleEl = document.getElementById('newQualityCycleTime');
     const statusEl = document.getElementById('newQualityStatus');
 
@@ -2264,9 +2288,11 @@ window.initConfigView = function() {
     if (nameEl) nameEl.value = '';
     if (locEl) locEl.value = '';
     if (descEl) descEl.value = '';
-    if (inspectorEl) inspectorEl.value = 'Inspectora de Calidad (Turno)';
     if (cycleEl) cycleEl.value = '18s';
     if (statusEl) statusEl.value = 'Activo';
+
+    // Sin inspector asignado por defecto
+    populateQualityInspectorsSelect('');
 
     modalCreateQuality.classList.add('active');
   };
@@ -2283,7 +2309,6 @@ window.initConfigView = function() {
     const nameEl = document.getElementById('newQualityName');
     const locEl = document.getElementById('newQualityLocation');
     const descEl = document.getElementById('newQualityDesc');
-    const inspectorEl = document.getElementById('newQualityInspector');
     const cycleEl = document.getElementById('newQualityCycleTime');
     const statusEl = document.getElementById('newQualityStatus');
 
@@ -2294,9 +2319,10 @@ window.initConfigView = function() {
     if (nameEl) nameEl.value = q.name || '';
     if (locEl) locEl.value = q.location || '';
     if (descEl) descEl.value = q.criteria || q.desc || '';
-    if (inspectorEl) inspectorEl.value = q.inspector || 'Inspectora de Calidad (Turno)';
     if (cycleEl) cycleEl.value = q.cycleTime || '18s';
     if (statusEl) statusEl.value = q.status || 'Activo';
+
+    populateQualityInspectorsSelect(q.inspector || '');
 
     modalCreateQuality.classList.add('active');
   };
@@ -2363,13 +2389,17 @@ window.initConfigView = function() {
       const code = (document.getElementById('newQualityCode')?.value || 'C-04').trim().toUpperCase();
       const name = (document.getElementById('newQualityName')?.value || '').trim();
       const location = (document.getElementById('newQualityLocation')?.value || '').trim();
-      const desc = (document.getElementById('newQualityDesc')?.value || '').trim();
-      const inspector = document.getElementById('newQualityInspector')?.value || 'Inspectora de Calidad (Turno)';
+      const inspector = (document.getElementById('newQualityInspector')?.value || '').trim();
       const cycleTime = document.getElementById('newQualityCycleTime')?.value || '18s';
       const status = document.getElementById('newQualityStatus')?.value || 'Activo';
 
       if (!name) {
         window.UanifyUI.toast('Ingresa el nombre del filtro de calidad.', 'warning');
+        return;
+      }
+
+      if (!inspector) {
+        window.UanifyUI.toast('Debes seleccionar un usuario como Inspector Responsable.', 'warning');
         return;
       }
 
