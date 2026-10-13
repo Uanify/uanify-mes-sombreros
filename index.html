@@ -270,7 +270,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.96.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.97.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2373,7 +2373,7 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre o correo..." autocomplete="off">
+                  <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar usuario por nombre o rol..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="userRoleFilter" class="custom-select select-sm" style="min-width:180px;">
@@ -3421,7 +3421,7 @@
        MODAL: CREAR NUEVO USUARIO (ADMIN ONLY)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalCreateUser">
-    <div class="modal-box card-glass">
+    <div class="modal-box card-glass" style="max-width:580px; width:95%;">
       <div class="modal-header">
         <div>
           <h3 style="display:flex; align-items:center; gap:6px;">
@@ -3430,30 +3430,61 @@
               <button type="button" class="info-tip-btn" aria-label="Información">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </button>
-              <span class="info-tip-popup">Alta de supervisores, ingenieros y administradores con roles RBAC.</span>
+              <span class="info-tip-popup">Alta de supervisores, inspectores e ingenieros con control de acceso por PIN.</span>
             </span>
           </h3>
+          <p class="modal-header-sub">Configura nombre, rol, PIN y asignación operativa</p>
         </div>
         <button class="modal-close" id="btnCloseCreateUserModal" type="button">&times;</button>
       </div>
       <form id="formCreateUser">
-        <div class="modal-body">
-          <div class="form-group">
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; padding:20px;">
+          <div class="form-group" style="margin-bottom:0;">
             <label class="field-label">Nombre Completo:</label>
             <input type="text" id="newUserName" class="form-input" placeholder="Ej. Roberto Sánchez" required>
           </div>
-          <input type="hidden" id="newUserEmail" value="usuario@tombstone.mx">
 
-          <div class="form-group">
-            <label class="field-label">Rol del Usuario:</label>
-            <select id="newRoleSelect" class="custom-select">
-              <option value="supervisor" selected> Supervisor de Planta (Piso y Almacenes)</option>
-              <option value="calidad"> Inspector de Calidad (Filtros C1 a C5)</option>
-              <option value="ingeniero"> Ingeniero (Admin Mayor · Control Total)</option>
-            </select>
+          <div style="display:grid; grid-template-columns: 1fr 140px; gap:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">Rol del Usuario:</label>
+              <select id="newRoleSelect" class="custom-select">
+                <option value="supervisor" selected>Supervisor de Planta</option>
+                <option value="calidad">Inspector de Calidad</option>
+                <option value="ingeniero">Ingeniero (Admin Mayor)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">PIN de Acceso:</label>
+              <input type="password" id="newUserPin" class="form-input" placeholder="4 dígitos" maxlength="4" pattern="[0-9]{4}" style="text-align:center; font-family:var(--font-mono); font-weight:700; letter-spacing:2px;" required>
+            </div>
           </div>
 
-          <div class="form-group">
+          <!-- SECCIÓN: Asignación Operativa según Rol al Crear -->
+          <div id="createAssignmentSection" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div>
+                <strong style="font-size:13px; color:var(--text-primary);" id="createAssignSectionTitle">Departamentos Asignados</strong>
+                <p style="font-size:11px; color:var(--text-muted); margin:2px 0 0 0;" id="createAssignSectionSubtitle">Selecciona los departamentos que supervisará:</p>
+              </div>
+              <button type="button" class="btn-secondary" style="padding:4px 10px; font-size:11px; height:28px;" id="btnClearCreateAssigns">Limpiar</button>
+            </div>
+
+            <!-- Buscador de Departamentos / Puntos de Calidad -->
+            <div style="margin-bottom:8px;">
+              <input type="text" id="createAssignSearchInp" class="form-input" placeholder="Buscar por nombre..." style="height:34px; font-size:12px;" autocomplete="off">
+            </div>
+
+            <div id="createAssignGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:160px; overflow-y:auto; padding:4px 2px;">
+              <!-- Inyectado dinámicamente -->
+            </div>
+
+            <div style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+              <span style="color:var(--text-secondary);">Seleccionados: <strong id="createSelectedCount" style="color:var(--color-brand);">0</strong></span>
+              <span class="badge-subtle" id="createAssignSummaryBadge" style="font-weight:700;">-</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
             <label class="field-label">Permisos de Acceso Asignados:</label>
             <div id="rolePermsPreview" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">
               <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;" id="rolePermsTitle">Supervisor de Planta</div>
@@ -3470,64 +3501,68 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: EDITAR USUARIO, ASIGNACIÓN DE DEPARTAMENTOS Y PERMISOS (RBAC)
+       MODAL: EDITAR USUARIO, ASIGNACIÓN Y PERMISOS (RBAC)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalEditPermissions">
-    <div class="modal-box card-glass" style="max-width:580px;">
+    <div class="modal-box card-glass" style="max-width:580px; width:95%;">
       <div class="modal-header">
         <div>
-          <h3>Editar Usuario & Departamentos Asignados</h3>
-          <p class="modal-header-sub">
-            Usuario: <strong id="editUserNameTitle" style="color:var(--text-primary);">-</strong>
-            <span id="editUserRoleBadge" class="role-badge" style="margin-left:6px;">-</span>
-          </p>
+          <h3 style="margin:0;">Editar Usuario</h3>
+          <p class="modal-header-sub" style="margin:2px 0 0 0;">Configura nombre, rol, PIN y asignaciones del usuario</p>
         </div>
         <button class="modal-close" id="btnCloseEditPermsModal" type="button">&times;</button>
       </div>
       <form id="formEditPermissions">
-        <div class="modal-body">
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; padding:20px;">
           <input type="hidden" id="editUserId">
           
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom:0;">
             <label class="field-label">Nombre Completo:</label>
             <input type="text" id="editUserNameInput" class="form-input" required>
           </div>
-          <input type="hidden" id="editUserEmailInput" value="usuario@tombstone.mx">
 
-          <div class="form-group">
-            <label class="field-label">Rol del Usuario:</label>
-            <select id="editUserRoleSelect" class="custom-select">
-              <option value="supervisor"> Supervisor de Planta (Piso y Almacenes)</option>
-              <option value="calidad"> Inspector de Calidad (Filtros C1 a C5)</option>
-              <option value="ingeniero"> Ingeniero (Admin Mayor · Control Total)</option>
-            </select>
+          <div style="display:grid; grid-template-columns: 1fr 140px; gap:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">Rol del Usuario:</label>
+              <select id="editUserRoleSelect" class="custom-select">
+                <option value="supervisor">Supervisor de Planta</option>
+                <option value="calidad">Inspector de Calidad</option>
+                <option value="ingeniero">Ingeniero (Admin Mayor)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-label">PIN de Acceso:</label>
+              <input type="password" id="editUserPinInput" class="form-input" placeholder="4 dígitos" maxlength="4" pattern="[0-9]{4}" style="text-align:center; font-family:var(--font-mono); font-weight:700; letter-spacing:2px;" required>
+            </div>
           </div>
 
-          <!-- SECCIÓN: Departamentos Asignados al Supervisor -->
-          <div id="editSupervisorDeptsSection" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:16px;">
+          <!-- SECCIÓN: Asignación Operativa según Rol al Editar -->
+          <div id="editSupervisorDeptsSection" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:12px; padding:14px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <div>
-                <strong style="font-size:13px; color:var(--text-primary);">Departamentos Asignados al Supervisor</strong>
-                <p style="font-size:11.5px; color:var(--text-muted); margin:2px 0 0 0;">Estaciones sobre las cuales este supervisor tiene mando y control de lotes:</p>
+                <strong style="font-size:13px; color:var(--text-primary);" id="editAssignSectionTitle">Departamentos Asignados</strong>
+                <p style="font-size:11px; color:var(--text-muted); margin:2px 0 0 0;" id="editAssignSectionSubtitle">Estaciones sobre las cuales tiene mando:</p>
               </div>
-              <div style="display:flex; gap:6px;">
-                <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px;" id="btnSelectAllDepts">Todos</button>
-                <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:11px;" id="btnClearAllDepts">Ninguno</button>
-              </div>
+              <button type="button" class="btn-secondary" style="padding:4px 10px; font-size:11px; height:28px;" id="btnClearAllDepts">Limpiar</button>
             </div>
 
-            <div id="editDeptsCheckboxesGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:170px; overflow-y:auto; padding:6px 2px;">
-              <!-- Inyectado dinámicamente con los 14 departamentos de planta -->
+            <!-- Buscador de Departamentos / Puntos de Calidad -->
+            <div style="margin-bottom:8px;">
+              <input type="text" id="editAssignSearchInp" class="form-input" placeholder="Buscar por nombre..." style="height:34px; font-size:12px;" autocomplete="off">
             </div>
 
-            <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
-              <span style="color:var(--text-secondary);">Seleccionados: <strong id="editSelectedDeptsCount" style="color:var(--color-brand);">0</strong> áreas</span>
+            <div id="editDeptsCheckboxesGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:160px; overflow-y:auto; padding:4px 2px;">
+              <!-- Inyectado dinámicamente -->
+            </div>
+
+            <div style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+              <span style="color:var(--text-secondary);">Seleccionados: <strong id="editSelectedDeptsCount" style="color:var(--color-brand);">0</strong></span>
               <span class="badge-subtle" id="editDeptsOperatorsCountBadge" style="font-weight:700;">0 operadores a cargo</span>
             </div>
           </div>
 
           <!-- SECCIÓN: Permisos Modulares de Acceso (Regidos por Rol) -->
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom:0;">
             <label class="field-label">Permisos de Acceso Asignados:</label>
             <div id="editRolePermsPreview" style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">
               <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;" id="editRolePermsTitle">-</div>
@@ -5623,11 +5658,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.96.0"></script>
-  <script src="js/andon.js?v=2.96.0"></script>
-  <script src="js/terminal.js?v=2.96.0"></script>
-  <script src="js/engineer.js?v=2.96.0"></script>
-  <script src="js/executive.js?v=2.96.0"></script>
-  <script src="js/config.js?v=2.96.0"></script>
+  <script src="js/app.js?v=2.97.0"></script>
+  <script src="js/andon.js?v=2.97.0"></script>
+  <script src="js/terminal.js?v=2.97.0"></script>
+  <script src="js/engineer.js?v=2.97.0"></script>
+  <script src="js/executive.js?v=2.97.0"></script>
+  <script src="js/config.js?v=2.97.0"></script>
 </body>
 </html>

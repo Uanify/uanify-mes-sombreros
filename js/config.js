@@ -400,7 +400,7 @@ window.initConfigView = function() {
           permInfo = `<div style="display:flex; flex-wrap:wrap; gap:4px; max-width:300px;">${permPills}</div>`;
         }
 
-        // Departamentos asignados compactos con botón de ver detalle
+        // Departamentos asignados compactos con botón de ver detalle idéntico
         let deptsInfo = '';
         if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
           deptsInfo = `
@@ -408,30 +408,34 @@ window.initConfigView = function() {
               <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">
                 Supervisión Global (14 Áreas)
               </span>
-              <button type="button" class="btn-subtle" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 9px; height:26px; cursor:pointer;" title="Consultar todas las áreas asignadas">Ver Áreas</button>
-            </div>
-          `;
-        } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
-          deptsInfo = `
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
-                ${u.assignedDepartments.length} Departamento${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
-              </span>
               <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:26px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de departamentos y estaciones asignadas">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 Ver Detalle
               </button>
             </div>
           `;
+        } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
+          const isQualityUser = u.role === 'calidad';
+          const labelPrefix = isQualityUser ? 'Filtro' : 'Departamento';
+          deptsInfo = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
+                ${u.assignedDepartments.length} ${labelPrefix}${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
+              </span>
+              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:26px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de asignaciones">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver Detalle
+              </button>
+            </div>
+          `;
         } else {
-          deptsInfo = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin departamentos asignados</span>`;
+          deptsInfo = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin asignaciones</span>`;
         }
 
         return `
           <tr>
             <td class="col-name">
               <div class="table-cell-primary" style="font-size:14px; font-weight:700; color:var(--text-primary);">${u.name}</div>
-              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">${u.email || ''}</div>
             </td>
             <td>
               <span class="role-badge ${roleBadgeClass}" style="font-size:11.5px; padding:4px 10px; font-weight:700;">${u.badge || u.roleName}</span>
@@ -505,40 +509,71 @@ window.initConfigView = function() {
     const listEl = document.getElementById('userDeptsViewerList');
     if (!user || !modal || !listEl) return;
 
-    if (titleEl) titleEl.textContent = `Departamentos Asignados · ${user.name}`;
-    if (subEl) subEl.textContent = `${user.badge || user.roleName} · Estaciones de trabajo asignadas`;
+    if (titleEl) {
+      titleEl.textContent = user.role === 'calidad' 
+        ? `Filtros de Calidad Asignados · ${user.name}`
+        : `Departamentos Asignados · ${user.name}`;
+    }
+    if (subEl) {
+      subEl.textContent = user.role === 'calidad'
+        ? `${user.badge || user.roleName} · Puntos de control de calidad bajo supervisión`
+        : `${user.badge || user.roleName} · Estaciones de trabajo asignadas`;
+    }
 
     const userDepts = user.assignedDepartments || [];
     const isGlobal = userDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
 
-    let deptsToShow = [];
-    if (isGlobal) {
-      deptsToShow = UanifyState.stations || [];
-    } else {
-      deptsToShow = (UanifyState.stations || []).filter(s => userDepts.includes(s.code));
-    }
-
-    if (deptsToShow.length === 0) {
-      listEl.innerHTML = `
-        <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px; background:#F8FAFC; border-radius:8px;">
-          Este usuario no tiene estaciones ni departamentos asignados actualmente.
-        </div>
-      `;
-    } else {
-      listEl.innerHTML = deptsToShow.map(st => {
-        const opCount = (UanifyState.operators || []).filter(o => o.deptCode === st.code).length;
-        return `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:8px;">
-            <div>
-              <div style="font-size:13.5px; font-weight:700; color:var(--text-primary);">${st.name}</div>
-              <div style="font-size:11.5px; color:var(--text-muted);">${st.warehouseLocation || 'Nave de Producción'}</div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11px; background:#FFFFFF;">${opCount} operadores</span>
-            </div>
+    if (user.role === 'calidad') {
+      const qAreas = (UanifyState.qualityAreas || []).filter(q => userDepts.includes(q.code));
+      if (qAreas.length === 0) {
+        listEl.innerHTML = `
+          <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px; background:#F8FAFC; border-radius:8px;">
+            Este inspector no tiene puntos de calidad asignados actualmente.
           </div>
         `;
-      }).join('');
+      } else {
+        listEl.innerHTML = qAreas.map(qa => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:8px;">
+            <div>
+              <div style="font-size:13.5px; font-weight:700; color:var(--text-primary);">${qa.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${qa.location || 'Nave de Producción'}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge-subtle" style="font-weight:700; font-size:11px; background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF;">${qa.code}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    } else {
+      let deptsToShow = [];
+      if (isGlobal) {
+        deptsToShow = (UanifyState.stations || []).filter(s => !s.code.startsWith('C-'));
+      } else {
+        deptsToShow = (UanifyState.stations || []).filter(s => userDepts.includes(s.code));
+      }
+
+      if (deptsToShow.length === 0) {
+        listEl.innerHTML = `
+          <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px; background:#F8FAFC; border-radius:8px;">
+            Este usuario no tiene departamentos asignados actualmente.
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = deptsToShow.map(st => {
+          const opCount = (UanifyState.operators || []).filter(o => o.deptCode === st.code).length;
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:8px;">
+              <div>
+                <div style="font-size:13.5px; font-weight:700; color:var(--text-primary);">${st.name}</div>
+                <div style="font-size:11.5px; color:var(--text-muted);">${st.warehouseLocation || 'Nave de Producción'}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-subtle" style="font-weight:700; font-size:11px; background:#FFFFFF;">${opCount} operadores</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
     modal.classList.add('active');
@@ -843,11 +878,119 @@ window.initConfigView = function() {
     updateRolePermsPreview(selectNewRole.value, 'rolePermsTitle', 'rolePermsDesc');
   }
 
+  // Asignación operativa en Modal de Crear Usuario
+  const createAssignSection = document.getElementById('createAssignmentSection');
+  const createAssignGrid = document.getElementById('createAssignGrid');
+  const createAssignSearchInp = document.getElementById('createAssignSearchInp');
+  const btnClearCreateAssigns = document.getElementById('btnClearCreateAssigns');
+
+  function renderCreateAssignGrid(role, filterQuery = '') {
+    if (!createAssignGrid) return;
+    const q = filterQuery.toLowerCase().trim();
+    const countBadge = document.getElementById('createSelectedCount');
+    const summaryBadge = document.getElementById('createAssignSummaryBadge');
+    const titleEl = document.getElementById('createAssignSectionTitle');
+    const subEl = document.getElementById('createAssignSectionSubtitle');
+
+    if (role === 'ingeniero') {
+      if (createAssignSection) createAssignSection.style.display = 'none';
+      return;
+    }
+    if (createAssignSection) createAssignSection.style.display = 'block';
+
+    if (role === 'calidad') {
+      if (titleEl) titleEl.textContent = 'Puntos de Control de Calidad';
+      if (subEl) subEl.textContent = 'Selecciona los filtros de calidad a cargo:';
+      const areas = UanifyState.qualityAreas || [];
+      const filtered = areas.filter(a => !q || (a.name && a.name.toLowerCase().includes(q)) || (a.code && a.code.toLowerCase().includes(q)));
+      
+      if (filtered.length === 0) {
+        createAssignGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron puntos de calidad</div>';
+      } else {
+        createAssignGrid.innerHTML = filtered.map(a => `
+          <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${a.name}">
+            <input type="checkbox" class="create-assign-cb" value="${a.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+            <div style="flex:1; min-width:0;">
+              <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.name}</strong>
+              <small style="color:var(--text-muted); font-size:10.5px;">${a.location || 'Planta'}</small>
+            </div>
+          </label>
+        `).join('');
+      }
+    } else {
+      // Supervisor: Departamentos
+      if (titleEl) titleEl.textContent = 'Departamentos Asignados al Supervisor';
+      if (subEl) subEl.textContent = 'Estaciones sobre las cuales tendrá mando operativo:';
+      const depts = (UanifyState.stations || []).filter(s => !s.code.startsWith('C-'));
+      const filtered = depts.filter(s => !q || (s.name && s.name.toLowerCase().includes(q)) || (s.code && s.code.toLowerCase().includes(q)));
+
+      if (filtered.length === 0) {
+        createAssignGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron departamentos</div>';
+      } else {
+        createAssignGrid.innerHTML = filtered.map(s => {
+          const opCount = (UanifyState.operators || []).filter(o => o.deptCode === s.code).length;
+          return `
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${s.name}">
+              <input type="checkbox" class="create-assign-cb" value="${s.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</strong>
+                  <small style="color:var(--text-muted); font-size:10px; margin-left:4px;">${opCount} ops</small>
+                </div>
+              </div>
+            </label>
+          `;
+        }).join('');
+      }
+    }
+
+    const updateCreateAssignCount = () => {
+      const checkedBoxes = createAssignGrid.querySelectorAll('.create-assign-cb:checked');
+      if (countBadge) countBadge.textContent = checkedBoxes.length;
+      if (summaryBadge) {
+        if (role === 'calidad') {
+          summaryBadge.textContent = `${checkedBoxes.length} punto(s) de inspección`;
+        } else {
+          const selectedCodes = Array.from(checkedBoxes).map(cb => cb.value);
+          const totalOps = (UanifyState.operators || []).filter(o => selectedCodes.includes(o.deptCode)).length;
+          summaryBadge.textContent = `${totalOps} operadores a cargo`;
+        }
+      }
+    };
+
+    createAssignGrid.querySelectorAll('.create-assign-cb').forEach(cb => {
+      cb.addEventListener('change', updateCreateAssignCount);
+    });
+    updateCreateAssignCount();
+  }
+
+  if (createAssignSearchInp) {
+    createAssignSearchInp.addEventListener('input', (e) => {
+      const role = selectNewRole ? selectNewRole.value : 'supervisor';
+      renderCreateAssignGrid(role, e.target.value);
+    });
+  }
+
+  if (btnClearCreateAssigns) {
+    btnClearCreateAssigns.addEventListener('click', () => {
+      document.querySelectorAll('.create-assign-cb').forEach(cb => cb.checked = false);
+      const countBadge = document.getElementById('createSelectedCount');
+      const summaryBadge = document.getElementById('createAssignSummaryBadge');
+      if (countBadge) countBadge.textContent = '0';
+      if (summaryBadge) summaryBadge.textContent = '0 asignados';
+    });
+  }
+
   window.openCreateUserModal = function() {
     if (!modalCreateUser) return;
     configureUserRoleOptions();
     const nameInput = document.getElementById('newUserName');
+    const pinInput = document.getElementById('newUserPin');
     if (nameInput) nameInput.value = '';
+    if (pinInput) pinInput.value = '';
+    if (createAssignSearchInp) createAssignSearchInp.value = '';
+    const initialRole = selectNewRole ? selectNewRole.value : 'supervisor';
+    renderCreateAssignGrid(initialRole, '');
     modalCreateUser.classList.add('active');
   };
 
@@ -866,36 +1009,42 @@ window.initConfigView = function() {
   if (selectNewRole) {
     selectNewRole.addEventListener('change', (e) => {
       updateRolePermsPreview(e.target.value, 'rolePermsTitle', 'rolePermsDesc');
+      if (createAssignSearchInp) createAssignSearchInp.value = '';
+      renderCreateAssignGrid(e.target.value, '');
     });
   }
 
   if (formCreateUser) {
     formCreateUser.addEventListener('submit', (e) => {
       e.preventDefault();
-      const activeUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
       const name = document.getElementById('newUserName')?.value.trim();
-      const email = document.getElementById('newUserEmail')?.value.trim() || 'usuario@tombstone.mx';
+      const pin = document.getElementById('newUserPin')?.value.trim();
       const role = selectNewRole ? selectNewRole.value : 'supervisor';
 
       if (!name) {
         window.UanifyUI.toast('Por favor ingresa el nombre completo del usuario.', 'warning', 'Nombre Requerido');
         return;
       }
+      if (!pin || !/^[0-9]{4}$/.test(pin)) {
+        window.UanifyUI.toast('El PIN de acceso debe contener exactamente 4 dígitos numéricos.', 'warning', 'PIN Inválido');
+        return;
+      }
 
-      // Restricción: Los ingenieros no pueden crear otros ingenieros ni administradores
       const roleDef = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
-      let assignedDepts = ['D-05', 'D-06'];
+      let assignedDepts = [];
 
       if (role === 'ingeniero') {
         assignedDepts = ['*'];
-      } else if (role === 'calidad') {
-        assignedDepts = ['C-01', 'C-02', 'C-03', 'C-04'];
+      } else {
+        const checkedAssigns = document.querySelectorAll('.create-assign-cb:checked');
+        assignedDepts = Array.from(checkedAssigns).map(cb => cb.value);
       }
 
       const newUser = {
         id: 'usr-' + Date.now().toString(36),
         name,
-        email,
+        email: `${name.toLowerCase().replace(/\s+/g, '.')}@tombstone.mx`,
+        pin,
         role,
         roleName: roleDef.roleName,
         badge: roleDef.badge,
@@ -909,7 +1058,7 @@ window.initConfigView = function() {
       formCreateUser.reset();
 
       window.UanifyUI.toast(
-        `Usuario "${name}" (${roleDef.roleName}) creado exitosamente con permisos automáticos de su rol.`,
+        `Usuario "${name}" (${roleDef.roleName}) creado exitosamente con PIN de acceso.`,
         'success',
         'Usuario Registrado'
       );
@@ -1211,19 +1360,112 @@ window.initConfigView = function() {
     });
   }
 
-  function updateSupervisorDeptsSummary() {
-    const checkboxes = document.querySelectorAll('.edit-dept-cb:checked');
-    const countEl = document.getElementById('editSelectedDeptsCount');
-    const opBadge = document.getElementById('editDeptsOperatorsCountBadge');
-    if (!countEl) return;
+  // Asignación operativa en Modal de Editar Usuario
+  const editAssignSection = document.getElementById('editSupervisorDeptsSection');
+  const editAssignGrid = document.getElementById('editDeptsCheckboxesGrid');
+  const editAssignSearchInp = document.getElementById('editAssignSearchInp');
+  const btnClearAllDepts = document.getElementById('btnClearAllDepts');
 
-    const selectedCodes = Array.from(checkboxes).map(cb => cb.value);
-    countEl.textContent = selectedCodes.length;
+  function renderEditAssignGrid(role, selectedCodes = [], filterQuery = '') {
+    if (!editAssignGrid) return;
+    const q = filterQuery.toLowerCase().trim();
+    const countBadge = document.getElementById('editSelectedDeptsCount');
+    const summaryBadge = document.getElementById('editDeptsOperatorsCountBadge');
+    const titleEl = document.getElementById('editAssignSectionTitle');
+    const subEl = document.getElementById('editAssignSectionSubtitle');
 
-    if (opBadge && UanifyState.operators) {
-      const totalOpsInDepts = UanifyState.operators.filter(o => selectedCodes.includes(o.deptCode)).length;
-      opBadge.textContent = `${totalOpsInDepts} operadores a cargo`;
+    if (role === 'ingeniero') {
+      if (editAssignSection) editAssignSection.style.display = 'none';
+      return;
     }
+    if (editAssignSection) editAssignSection.style.display = 'block';
+
+    if (role === 'calidad') {
+      if (titleEl) titleEl.textContent = 'Puntos de Control de Calidad';
+      if (subEl) subEl.textContent = 'Filtros de calidad asignados a esta inspectora:';
+      const areas = UanifyState.qualityAreas || [];
+      const filtered = areas.filter(a => !q || (a.name && a.name.toLowerCase().includes(q)) || (a.code && a.code.toLowerCase().includes(q)));
+
+      if (filtered.length === 0) {
+        editAssignGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron puntos de calidad</div>';
+      } else {
+        editAssignGrid.innerHTML = filtered.map(a => {
+          const isChecked = selectedCodes.includes(a.code);
+          return `
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${a.name}">
+              <input type="checkbox" class="edit-dept-cb" value="${a.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+              <div style="flex:1; min-width:0;">
+                <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.name}</strong>
+                <small style="color:var(--text-muted); font-size:10.5px;">${a.location || 'Planta'}</small>
+              </div>
+            </label>
+          `;
+        }).join('');
+      }
+    } else {
+      // Supervisor: Departamentos
+      if (titleEl) titleEl.textContent = 'Departamentos Asignados al Supervisor';
+      if (subEl) subEl.textContent = 'Estaciones sobre las cuales tiene mando operativo:';
+      const depts = (UanifyState.stations || []).filter(s => !s.code.startsWith('C-'));
+      const filtered = depts.filter(s => !q || (s.name && s.name.toLowerCase().includes(q)) || (s.code && s.code.toLowerCase().includes(q)));
+
+      if (filtered.length === 0) {
+        editAssignGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron departamentos</div>';
+      } else {
+        editAssignGrid.innerHTML = filtered.map(s => {
+          const isChecked = selectedCodes.includes(s.code);
+          const opCount = (UanifyState.operators || []).filter(o => o.deptCode === s.code).length;
+          return `
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${s.name}">
+              <input type="checkbox" class="edit-dept-cb" value="${s.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</strong>
+                  <small style="color:var(--text-muted); font-size:10px; margin-left:4px;">${opCount} ops</small>
+                </div>
+              </div>
+            </label>
+          `;
+        }).join('');
+      }
+    }
+
+    const updateEditAssignCount = () => {
+      const checkedBoxes = editAssignGrid.querySelectorAll('.edit-dept-cb:checked');
+      if (countBadge) countBadge.textContent = checkedBoxes.length;
+      if (summaryBadge) {
+        if (role === 'calidad') {
+          summaryBadge.textContent = `${checkedBoxes.length} punto(s) de inspección`;
+        } else {
+          const codes = Array.from(checkedBoxes).map(cb => cb.value);
+          const totalOps = (UanifyState.operators || []).filter(o => codes.includes(o.deptCode)).length;
+          summaryBadge.textContent = `${totalOps} operadores a cargo`;
+        }
+      }
+    };
+
+    editAssignGrid.querySelectorAll('.edit-dept-cb').forEach(cb => {
+      cb.addEventListener('change', updateEditAssignCount);
+    });
+    updateEditAssignCount();
+  }
+
+  if (editAssignSearchInp) {
+    editAssignSearchInp.addEventListener('input', (e) => {
+      const role = document.getElementById('editUserRoleSelect')?.value || 'supervisor';
+      const currentChecked = Array.from(document.querySelectorAll('.edit-dept-cb:checked')).map(c => c.value);
+      renderEditAssignGrid(role, currentChecked, e.target.value);
+    });
+  }
+
+  if (btnClearAllDepts) {
+    btnClearAllDepts.addEventListener('click', () => {
+      document.querySelectorAll('.edit-dept-cb').forEach(cb => cb.checked = false);
+      const countEl = document.getElementById('editSelectedDeptsCount');
+      const opBadge = document.getElementById('editDeptsOperatorsCountBadge');
+      if (countEl) countEl.textContent = '0';
+      if (opBadge) opBadge.textContent = '0 asignados';
+    });
   }
 
   window.openEditUserModal = function(userId) {
@@ -1231,70 +1473,26 @@ window.initConfigView = function() {
     if (!user || !modalEditPerms) return;
 
     const idInput = document.getElementById('editUserId');
-    const nameTitle = document.getElementById('editUserNameTitle');
     const nameInput = document.getElementById('editUserNameInput');
-    const emailInput = document.getElementById('editUserEmailInput');
+    const pinInput = document.getElementById('editUserPinInput');
     const roleSelect = document.getElementById('editUserRoleSelect');
-    const roleBadge = document.getElementById('editUserRoleBadge');
-    const deptsGrid = document.getElementById('editDeptsCheckboxesGrid');
 
     if (idInput) idInput.value = user.id;
-    if (nameTitle) nameTitle.textContent = user.name;
     if (nameInput) nameInput.value = user.name;
-    if (emailInput) emailInput.value = user.email;
+    if (pinInput) pinInput.value = user.pin || '1234';
     if (roleSelect) roleSelect.value = user.role;
-    if (roleBadge) roleBadge.textContent = user.badge || user.roleName;
+    if (editAssignSearchInp) editAssignSearchInp.value = '';
 
-    // Renderizar los 14 departamentos con checkboxes interactivos y detalle de operadores
-    if (deptsGrid && UanifyState.stations) {
-      const userDepts = user.assignedDepartments || [];
-      const isGlobal = userDepts.includes('*') || user.role === 'admin' || user.role === 'ingeniero';
-
-      deptsGrid.innerHTML = UanifyState.stations.map(st => {
-        const isChecked = isGlobal || userDepts.includes(st.code);
-        const opCount = (UanifyState.operators || []).filter(o => o.deptCode === st.code).length;
-        return `
-          <label class="perm-check-item" style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;">
-            <input type="checkbox" class="edit-dept-cb" value="${st.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer;">
-            <div style="flex:1; min-width:0;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:var(--text-primary); font-family:var(--font-mono); font-size:11.5px;">${st.code}</strong>
-                <small style="color:var(--text-muted); font-size:10px;">${opCount} ops</small>
-              </div>
-              <span style="display:block; color:var(--text-secondary); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${st.name}</span>
-            </div>
-          </label>
-        `;
-      }).join('');
-
-      deptsGrid.querySelectorAll('.edit-dept-cb').forEach(cb => {
-        cb.addEventListener('change', updateSupervisorDeptsSummary);
-      });
-      updateSupervisorDeptsSummary();
-    }
-
-    // Botones Seleccionar Todos y Limpiar
-    const btnAll = document.getElementById('btnSelectAllDepts');
-    const btnClear = document.getElementById('btnClearAllDepts');
-    if (btnAll) {
-      btnAll.onclick = () => {
-        document.querySelectorAll('.edit-dept-cb').forEach(cb => cb.checked = true);
-        updateSupervisorDeptsSummary();
-      };
-    }
-    if (btnClear) {
-      btnClear.onclick = () => {
-        document.querySelectorAll('.edit-dept-cb').forEach(cb => cb.checked = false);
-        updateSupervisorDeptsSummary();
-      };
-    }
+    const userDepts = user.assignedDepartments || [];
+    renderEditAssignGrid(user.role, userDepts, '');
 
     // Configurar vista previa de permisos según rol
     updateRolePermsPreview(user.role, 'editRolePermsTitle', 'editRolePermsDesc');
-    const editRoleSelect = document.getElementById('editUserRoleSelect');
-    if (editRoleSelect) {
-      editRoleSelect.onchange = (e) => {
+    if (roleSelect) {
+      roleSelect.onchange = (e) => {
         updateRolePermsPreview(e.target.value, 'editRolePermsTitle', 'editRolePermsDesc');
+        if (editAssignSearchInp) editAssignSearchInp.value = '';
+        renderEditAssignGrid(e.target.value, userDepts, '');
       };
     }
 
@@ -1304,26 +1502,35 @@ window.initConfigView = function() {
   window.openEditPermissionsModal = window.openEditUserModal;
 
   if (formEditPerms) {
-    formEditPerms.addEventListener('submit', (e) => {
+    formEditPerms.onsubmit = function(e) {
       e.preventDefault();
       const userId = document.getElementById('editUserId').value;
       const user = UanifyState.users.find(u => u.id === userId);
       if (!user) return;
 
       const name = document.getElementById('editUserNameInput')?.value.trim() || user.name;
-      const email = document.getElementById('editUserEmailInput')?.value.trim() || user.email;
+      const pin = document.getElementById('editUserPinInput')?.value.trim() || user.pin;
       const role = document.getElementById('editUserRoleSelect')?.value || user.role;
 
-      // Departamentos asignados
-      const selectedDepts = [];
+      if (!name) {
+        window.UanifyUI.toast('Por favor ingresa el nombre del usuario.', 'warning', 'Nombre Requerido');
+        return;
+      }
+      if (!pin || !/^[0-9]{4}$/.test(pin)) {
+        window.UanifyUI.toast('El PIN de acceso debe contener exactamente 4 dígitos numéricos.', 'warning', 'PIN Inválido');
+        return;
+      }
+
+      // Asignaciones
+      const selectedCodes = [];
       document.querySelectorAll('.edit-dept-cb:checked').forEach(cb => {
-        selectedDepts.push(cb.value);
+        selectedCodes.push(cb.value);
       });
 
       const roleDef = RoleFixedPermissions[role] || RoleFixedPermissions.supervisor;
 
       user.name = name;
-      user.email = email;
+      user.pin = pin;
       user.role = role;
       user.permissions = [...roleDef.perms];
 
@@ -1334,40 +1541,35 @@ window.initConfigView = function() {
       } else if (role === 'calidad') {
         user.roleName = roleDef.roleName;
         user.badge = roleDef.badge;
-        user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : ['C-01', 'C-02', 'C-03', 'C-04'];
+        user.assignedDepartments = selectedCodes.length > 0 ? selectedCodes : ['C-01', 'C-02', 'C-03', 'C-04'];
       } else {
-        const deptNames = selectedDepts.map(c => {
+        const deptNames = selectedCodes.map(c => {
           const st = (UanifyState.stations || []).find(s => s.code === c);
           return st ? st.name : c;
         });
         user.roleName = `Supervisor (${deptNames.length > 0 ? deptNames.join(', ') : 'Sin Deptos'})`;
         user.badge = 'Supervisor';
-        user.assignedDepartments = selectedDepts.length > 0 ? selectedDepts : [];
+        user.assignedDepartments = selectedCodes.length > 0 ? selectedCodes : [];
       }
 
       renderUsersTable();
-      syncSidebarUserSelector();
       modalEditPerms.classList.remove('active');
 
+      // Actualizar interfaz del usuario activo si es el editado sin reloguear ni duplicar alertas
       if (UanifyState.currentUser === user.id) {
-        if (typeof window.switchActiveUser === 'function') {
-          window.switchActiveUser(user.id);
-        }
+        updateUserInterface();
       }
 
-      const savedDeptNames = user.assignedDepartments.includes('*')
-        ? 'Todos los Departamentos'
-        : user.assignedDepartments.map(c => {
-            const st = (UanifyState.stations || []).find(s => s.code === c);
-            return st ? st.name : c;
-          }).join(', ');
+      const countMsg = user.assignedDepartments.includes('*') 
+        ? 'Supervisión Global (14 áreas)' 
+        : `${user.assignedDepartments.length} asignaciones`;
 
       window.UanifyUI.toast(
-        `Usuario "${user.name}" actualizado. Departamentos asignados: ${savedDeptNames || 'Ninguno'}.`,
+        `Usuario "${user.name}" actualizado correctamente (${countMsg}).`,
         'success',
-        'OK Usuario y Deptos Actualizados'
+        'Usuario Actualizado'
       );
-    });
+    };
   }
 
   // ── 8. ELIMINAR USUARIO ──────────────────────────────────────────────────
