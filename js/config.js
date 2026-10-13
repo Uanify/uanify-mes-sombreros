@@ -2300,6 +2300,17 @@ window.initConfigView = function() {
     modalDeptViewer.classList.add('active');
   }
 
+  if (btnCloseDeptViewer) {
+    btnCloseDeptViewer.addEventListener('click', () => {
+      if (modalDeptViewer) modalDeptViewer.classList.remove('active');
+    });
+  }
+  if (btnCloseDeptViewerBtn) {
+    btnCloseDeptViewerBtn.addEventListener('click', () => {
+      if (modalDeptViewer) modalDeptViewer.classList.remove('active');
+    });
+  }
+
   // ── 5.3. CREACIÓN INDEPENDIENTE DE MÁQUINA / PUESTO (JERARQUÍA: MÁQUINA ⊂ PROCESO ⊂ DEPARTAMENTO) ──
   const modalCreateMachStandalone = document.getElementById('modalCreateMachineStandalone');
   const btnCloseMachStandalone = document.getElementById('btnCloseCreateMachineStandaloneModal');

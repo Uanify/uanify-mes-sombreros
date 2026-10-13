@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.86.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.87.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.86.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.87.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.87.0] - 2026-10-12
+- **Manejador Global Universal de Cierre de Modales (Regla 0.20):**
+  - **Cierre Inmediato Garantizado:** Se implementó `initGlobalModalHandlers()` en `js/app.js`, que intercepta universalmente cualquier botón de cierre `.modal-close` o con atributo `data-dismiss="modal"` y remueve la clase `.active` de forma inmediata.
+  - **Doble Protección por Clic Fuera y Tecla Escape:** Se habilitó el cierre al hacer clic directamente en el backdrop (`.modal-backdrop`) fuera del cuerpo del modal y mediante la pulsación de la tecla `Escape`.
+  - **Listeners Específicos:** Se agregaron listeners directos en `js/config.js` para `btnCloseDeptViewerModal` y `btnCloseDeptViewerBtn` (botón 'Cerrar Detalle').
 
 ### [2.86.0] - 2026-10-12
 - **Corrección Arquitectónica: Asignación Estricta de WIP y Capacidad por Almacén Buffer:**

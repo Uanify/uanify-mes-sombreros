@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.86.0',
+  version: '2.87.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -5149,14 +5149,52 @@ function enrichStationWithDefaults(st, idx) {
     }
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (window.UanifyUI && window.UanifyUI.closeAllSelects) {
-        window.UanifyUI.closeAllSelects();
+  // Manejador global robusto de modales (Regla 0.20): Botones de cierre (.modal-close), clics fuera y tecla Escape
+  function initGlobalModalHandlers() {
+    document.addEventListener('click', (e) => {
+      // 1. Clic en botón de cierre con clase .modal-close o data-dismiss="modal"
+      const closeBtn = e.target.closest('.modal-close, [data-dismiss="modal"]');
+      if (closeBtn) {
+        const modal = closeBtn.closest('.modal-backdrop');
+        if (modal) {
+          modal.classList.remove('active');
+          if (modal.style.display !== 'none' && modal.style.display !== '') {
+            modal.style.display = 'none';
+          }
+        }
+        return;
       }
-    }
-  });
 
+      // 2. Clic directamente en el fondo del modal (.modal-backdrop) fuera de .modal-box
+      if (e.target.classList && e.target.classList.contains('modal-backdrop')) {
+        // No cerrar modales críticos si contienen clase data-backdrop-static
+        if (!e.target.hasAttribute('data-backdrop-static')) {
+          e.target.classList.remove('active');
+          if (e.target.style.display !== 'none' && e.target.style.display !== '') {
+            e.target.style.display = 'none';
+          }
+        }
+      }
+    });
+
+    // 3. Tecla Escape cierra el modal activo superior
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const activeModals = document.querySelectorAll('.modal-backdrop.active');
+        if (activeModals.length > 0) {
+          const topModal = activeModals[activeModals.length - 1];
+          if (!topModal.hasAttribute('data-backdrop-static')) {
+            topModal.classList.remove('active');
+            if (topModal.style.display !== 'none' && topModal.style.display !== '') {
+              topModal.style.display = 'none';
+            }
+          }
+        }
+      }
+    });
+  }
+
+  initGlobalModalHandlers();
   initLoginScreen();
   initSubTabs();
   initInfoTips();
