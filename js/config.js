@@ -252,9 +252,6 @@ window.initConfigView = function() {
               </div>
             </td>
             <td style="text-align:center;">
-              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${st.wipCapacity || 180} pzas</span>
-            </td>
-            <td style="text-align:center;">
               <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-secondary);">${st.cycleTime || '35s'}</span>
             </td>
             <td>
@@ -2165,7 +2162,7 @@ window.initConfigView = function() {
     const subEl = document.getElementById('deptViewerSubtitle');
     const supEl = document.getElementById('deptViewerSupervisor');
     const taktEl = document.getElementById('deptViewerTakt');
-    const capEl = document.getElementById('deptViewerCap');
+    const cycleEl = document.getElementById('deptViewerCycle');
     const procListEl = document.getElementById('deptViewerProcessesList');
     const machListEl = document.getElementById('deptViewerMachinesList');
     const whListEl = document.getElementById('deptViewerWarehousesList');
@@ -2173,7 +2170,7 @@ window.initConfigView = function() {
     if (titleEl) titleEl.textContent = station.name;
     if (subEl) subEl.textContent = `Detalles de flujo operativo y estaciones para ${station.name}`;
     if (supEl) supEl.textContent = station.operator || 'Supervisor Asignado';
-    if (capEl) capEl.textContent = `${station.wipCapacity || 180} piezas`;
+    if (cycleEl) cycleEl.textContent = station.cycleTime || '35s';
 
     // Procesos formales
     let deptProcesses = (UanifyState.processes || []).filter(p => p.deptCode === station.code);
@@ -2278,13 +2275,21 @@ window.initConfigView = function() {
       }
     }
 
-    // 4. Almacenes
+    // 4. Almacenes Buffer y su capacidad WIP
     const whList = (station.intermediateWarehouse ? station.intermediateWarehouse.split(/[,;]/) : ['Buffer de Espera']).map(w => w.trim().replace(/\s*\([A-Z0-9\-]+\)/gi, '')).filter(Boolean);
     if (whListEl) {
       if (whList.length > 0) {
+        const whCap = station.wipCapacity || 180;
         whListEl.innerHTML = whList.map(w => `
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px;">
-            <span class="chip-clean-wh" style="font-size:12.5px;">📦 ${w}</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 12px; border-radius:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="chip-clean-wh" style="font-size:12.5px;">📦 ${w}</span>
+              <span style="font-size:11.5px; color:var(--text-muted);">Buffer de Salida / Traspaso</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Capacidad WIP:</span>
+              <span style="font-family:var(--font-mono); font-size:12.5px; font-weight:700; color:var(--color-brand); background:rgba(139,94,60,0.08); padding:2px 8px; border-radius:6px; border:1px solid rgba(139,94,60,0.2);">${whCap} piezas</span>
+            </div>
           </div>
         `).join('');
       } else {

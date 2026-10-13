@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.85.0">
-  <link rel="stylesheet" href="css/components.css?v=2.85.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.86.0">
+  <link rel="stylesheet" href="css/components.css?v=2.86.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.85.0</span>
+        <span class="system-version-pill login-version-pill">v2.86.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -260,7 +260,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.85.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.86.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2491,10 +2491,9 @@
                   <tr>
                     <th class="col-name" style="min-width:200px;">Departamento</th>
                     <th style="min-width:180px;">Supervisor Asignado</th>
-                    <th style="min-width:130px; text-align:center;">Capacidad WIP</th>
                     <th style="min-width:130px; text-align:center;">Tiempo de Ciclo</th>
-                    <th style="min-width:200px;">Procesos Vinculados</th>
-                    <th style="min-width:190px;">Almacén Buffer</th>
+                    <th style="min-width:220px;">Procesos Vinculados</th>
+                    <th style="min-width:200px;">Almacén Buffer de Salida</th>
                     <th class="col-actions" style="width:120px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
@@ -4128,7 +4127,7 @@
               <input type="hidden" id="newDeptCode" value="D-15">
               <input type="hidden" id="newDeptCycleTime" value="35s">
               <input type="hidden" id="newDeptDesc" value="">
-              <div style="display:grid; grid-template-columns: 1fr 180px; gap:12px;">
+              <div style="display:grid; grid-template-columns: 1fr; gap:12px;">
                 <div class="form-group" style="margin-bottom:0;">
                   <label class="field-label">
                     <span>Nombre del Departamento:</span>
@@ -4140,18 +4139,6 @@
                     </span>
                   </label>
                   <input type="text" id="newDeptName" class="form-input" placeholder="ej. Engomado y Dope, Prensas Térmicas, Ribeteado" required>
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                  <label class="field-label">
-                    <span>Capacidad WIP (piezas):</span>
-                    <span class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Información">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <span class="info-tip-popup">Capacidad máxima estándar de sombreros en proceso o espera para esta estación.</span>
-                    </span>
-                  </label>
-                  <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
                 </div>
               </div>
             </div>
@@ -4183,23 +4170,37 @@
             <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptAlmacenes')">
               <div class="modal-collapse-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                3. Almacenes Intermedios Asignados (Buffers)
+                3. Almacén Intermedio Asignado (Buffer WIP)
               </div>
               <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
             <div class="modal-collapse-body">
               <input type="hidden" id="newDeptWarehouseLocation" value="Nave Central">
-              <div class="form-group" style="margin-bottom:0;">
-                <label class="field-label">
-                  <span>Almacenes Buffer Asignados (Separados por coma):</span>
-                  <span class="info-tip">
-                    <button type="button" class="info-tip-btn" aria-label="Información">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                    </button>
-                    <span class="info-tip-popup">Nombre de los almacenes intermedios o pulmones de piso donde se depositan los lotes terminados de este departamento.</span>
-                  </span>
-                </label>
-                <input type="text" id="newDeptWarehouse" class="form-input" placeholder="ej. Buffer de Salida Prensas, Pulmón Rampa" required>
+              <div style="display:grid; grid-template-columns: 1fr 180px; gap:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="field-label">
+                    <span>Nombre del Almacén Buffer de Salida:</span>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Nombre del almacén intermedio donde se depositan los lotes terminados de este departamento.</span>
+                    </span>
+                  </label>
+                  <input type="text" id="newDeptWarehouse" class="form-input" placeholder="ej. Buffer de Salida Prensas, Pulmón Rampa" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="field-label">
+                    <span>Capacidad WIP del Buffer:</span>
+                    <span class="info-tip">
+                      <button type="button" class="info-tip-btn" aria-label="Información">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                      </button>
+                      <span class="info-tip-popup">Capacidad máxima en piezas que puede albergar este almacén buffer (el WIP le pertenece al almacén).</span>
+                    </span>
+                  </label>
+                  <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
+                </div>
               </div>
             </div>
           </div>
@@ -4549,8 +4550,8 @@
             <div style="font-size:15px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerSupervisor">-</div>
           </div>
           <div>
-            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Capacidad WIP Máxima</div>
-            <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerCap">-</div>
+            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Tiempo de Ciclo Estándar</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerCycle">-</div>
           </div>
         </div>
 
@@ -5393,11 +5394,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.85.0"></script>
-  <script src="js/andon.js?v=2.85.0"></script>
-  <script src="js/terminal.js?v=2.85.0"></script>
-  <script src="js/engineer.js?v=2.85.0"></script>
-  <script src="js/executive.js?v=2.85.0"></script>
-  <script src="js/config.js?v=2.85.0"></script>
+  <script src="js/app.js?v=2.86.0"></script>
+  <script src="js/andon.js?v=2.86.0"></script>
+  <script src="js/terminal.js?v=2.86.0"></script>
+  <script src="js/engineer.js?v=2.86.0"></script>
+  <script src="js/executive.js?v=2.86.0"></script>
+  <script src="js/config.js?v=2.86.0"></script>
 </body>
 </html>

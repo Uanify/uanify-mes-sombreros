@@ -1508,7 +1508,7 @@ window.initTerminalView = function() {
           ` : ''}
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-            <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Capacidad: ${st.wipCapacity || 150} pzas</span>
+            <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Capacidad Almacén: ${st.wipCapacity || 150} pzas</span>
             <span style="font-size:12px; font-weight:800; color:var(--color-brand);">Auditar Almacén ↗</span>
           </div>
         </div>
