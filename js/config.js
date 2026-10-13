@@ -2500,6 +2500,8 @@ window.initConfigView = function() {
   const cfgProcessesTable = document.getElementById('cfgProcessesTable');
   let procFiltersBound = false;
   let activeProcessViewingId = null;
+  let procCurrentPage = 1;
+  const procItemsPerPage = 8;
 
   function renderProcessesConfig() {
     if (!cfgProcessesTable) return;
@@ -2530,11 +2532,33 @@ window.initConfigView = function() {
       return matchSearch && matchDept;
     });
 
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / procItemsPerPage) || 1;
+    if (procCurrentPage > totalPages) procCurrentPage = totalPages;
+    if (procCurrentPage < 1) procCurrentPage = 1;
+
+    const startIndex = (procCurrentPage - 1) * procItemsPerPage;
+    const endIndex = Math.min(startIndex + procItemsPerPage, totalItems);
+    const paginatedItems = filtered.slice(startIndex, endIndex);
+
     if (countBadge) {
       countBadge.textContent = `Mostrando ${filtered.length} de ${procs.length} procesos`;
     }
 
-    if (filtered.length === 0) {
+    // Actualizar barras de paginación
+    const paginationRange = document.getElementById('procPaginationRange');
+    const paginationTotal = document.getElementById('procPaginationTotal');
+    const pageIndicator = document.getElementById('procPageIndicator');
+    const btnPrev = document.getElementById('btnProcPrevPage');
+    const btnNext = document.getElementById('btnProcNextPage');
+
+    if (paginationRange) paginationRange.textContent = totalItems === 0 ? '0' : `${startIndex + 1} - ${endIndex}`;
+    if (paginationTotal) paginationTotal.textContent = totalItems;
+    if (pageIndicator) pageIndicator.textContent = `${procCurrentPage} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = (procCurrentPage <= 1);
+    if (btnNext) btnNext.disabled = (procCurrentPage >= totalPages);
+
+    if (paginatedItems.length === 0) {
       cfgProcessesTable.innerHTML = `
         <tr class="table-empty-row">
           <td colspan="4">
@@ -2548,7 +2572,7 @@ window.initConfigView = function() {
         </tr>
       `;
     } else {
-      cfgProcessesTable.innerHTML = filtered.map(p => {
+      cfgProcessesTable.innerHTML = paginatedItems.map(p => {
         const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
         const deptLabel = dept ? dept.name : (p.deptCode || 'Sin Departamento');
 
@@ -2578,18 +2602,36 @@ window.initConfigView = function() {
     }
 
     if (!procFiltersBound) {
-      if (searchInp) searchInp.addEventListener('input', renderProcessesConfig);
-      if (deptFilter) deptFilter.addEventListener('change', renderProcessesConfig);
+      if (searchInp) searchInp.addEventListener('input', () => { procCurrentPage = 1; renderProcessesConfig(); });
+      if (deptFilter) deptFilter.addEventListener('change', () => { procCurrentPage = 1; renderProcessesConfig(); });
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (procCurrentPage > 1) {
+            procCurrentPage--;
+            renderProcessesConfig();
+          }
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (procCurrentPage < totalPages) {
+            procCurrentPage++;
+            renderProcessesConfig();
+          }
+        });
+      }
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInp) searchInp.value = '';
           if (deptFilter) deptFilter.value = 'all';
+          procCurrentPage = 1;
           renderProcessesConfig();
         });
       }
       window.resetProcFilters = () => {
         if (searchInp) searchInp.value = '';
         if (deptFilter) deptFilter.value = 'all';
+        procCurrentPage = 1;
         renderProcessesConfig();
       };
       procFiltersBound = true;
@@ -2781,6 +2823,8 @@ window.initConfigView = function() {
   // ── CATÁLOGO DEDICADO 2: ALMACENES INTERMEDIOS BUFFER ────────────────────
   const cfgWarehousesTable = document.getElementById('cfgWarehousesTable');
   let whFiltersBound = false;
+  let whCurrentPage = 1;
+  const whItemsPerPage = 8;
 
   function renderWarehousesConfig() {
     if (!cfgWarehousesTable) return;
@@ -2844,11 +2888,33 @@ window.initConfigView = function() {
       return matchSearch && matchDept && matchSup && matchCap;
     });
 
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / whItemsPerPage) || 1;
+    if (whCurrentPage > totalPages) whCurrentPage = totalPages;
+    if (whCurrentPage < 1) whCurrentPage = 1;
+
+    const startIndex = (whCurrentPage - 1) * whItemsPerPage;
+    const endIndex = Math.min(startIndex + whItemsPerPage, totalItems);
+    const paginatedItems = filtered.slice(startIndex, endIndex);
+
     if (countBadge) {
       countBadge.textContent = `Mostrando ${filtered.length} de ${warehousesList.length} almacenes buffer`;
     }
 
-    if (filtered.length === 0) {
+    // Actualizar barras de paginación
+    const paginationRange = document.getElementById('whPaginationRange');
+    const paginationTotal = document.getElementById('whPaginationTotal');
+    const pageIndicator = document.getElementById('whPageIndicator');
+    const btnPrev = document.getElementById('btnWhPrevPage');
+    const btnNext = document.getElementById('btnWhNextPage');
+
+    if (paginationRange) paginationRange.textContent = totalItems === 0 ? '0' : `${startIndex + 1} - ${endIndex}`;
+    if (paginationTotal) paginationTotal.textContent = totalItems;
+    if (pageIndicator) pageIndicator.textContent = `${whCurrentPage} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = (whCurrentPage <= 1);
+    if (btnNext) btnNext.disabled = (whCurrentPage >= totalPages);
+
+    if (paginatedItems.length === 0) {
       cfgWarehousesTable.innerHTML = `
         <tr class="table-empty-row">
           <td colspan="5">
@@ -2862,7 +2928,7 @@ window.initConfigView = function() {
         </tr>
       `;
     } else {
-      cfgWarehousesTable.innerHTML = filtered.map(w => {
+      cfgWarehousesTable.innerHTML = paginatedItems.map(w => {
         return `
           <tr>
             <td class="col-name">
@@ -2895,16 +2961,33 @@ window.initConfigView = function() {
     }
 
     if (!whFiltersBound) {
-      if (searchInp) searchInp.addEventListener('input', renderWarehousesConfig);
-      if (deptFilter) deptFilter.addEventListener('change', renderWarehousesConfig);
-      if (supFilter) supFilter.addEventListener('change', renderWarehousesConfig);
-      if (capFilter) capFilter.addEventListener('change', renderWarehousesConfig);
+      if (searchInp) searchInp.addEventListener('input', () => { whCurrentPage = 1; renderWarehousesConfig(); });
+      if (deptFilter) deptFilter.addEventListener('change', () => { whCurrentPage = 1; renderWarehousesConfig(); });
+      if (supFilter) supFilter.addEventListener('change', () => { whCurrentPage = 1; renderWarehousesConfig(); });
+      if (capFilter) capFilter.addEventListener('change', () => { whCurrentPage = 1; renderWarehousesConfig(); });
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (whCurrentPage > 1) {
+            whCurrentPage--;
+            renderWarehousesConfig();
+          }
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (whCurrentPage < totalPages) {
+            whCurrentPage++;
+            renderWarehousesConfig();
+          }
+        });
+      }
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInp) searchInp.value = '';
           if (deptFilter) deptFilter.value = 'all';
           if (supFilter) supFilter.value = 'all';
           if (capFilter) capFilter.value = 'all';
+          whCurrentPage = 1;
           renderWarehousesConfig();
         });
       }
@@ -2913,6 +2996,7 @@ window.initConfigView = function() {
         if (deptFilter) deptFilter.value = 'all';
         if (supFilter) supFilter.value = 'all';
         if (capFilter) capFilter.value = 'all';
+        whCurrentPage = 1;
         renderWarehousesConfig();
       };
       whFiltersBound = true;
@@ -2922,13 +3006,15 @@ window.initConfigView = function() {
   // ── CATÁLOGO DEDICADO 3: MAQUINARIA & EQUIPOS DE TRABAJO ──────────────────
   const cfgMachinesTable = document.getElementById('cfgMachinesTable');
   let machFiltersBound = false;
+  let machCurrentPage = 1;
+  const machItemsPerPage = 8;
 
   function renderMachinesConfig() {
     if (!cfgMachinesTable) return;
     const procs = UanifyState.processes || [];
     const searchInp = document.getElementById('machSearchInput');
     const deptFilter = document.getElementById('machDeptFilter');
-    const statusFilter = document.getElementById('machStatusFilter');
+    const opStatusFilter = document.getElementById('machOpStatusFilter');
     const countBadge = document.getElementById('machFilteredCountBadge');
     const btnReset = document.getElementById('btnResetMachFilters');
 
@@ -2937,9 +3023,10 @@ window.initConfigView = function() {
     procs.forEach(p => {
       const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
       (p.machines || []).forEach(m => {
-        // Buscar operadores asignados a esta máquina
+        // Buscar operadores asignados a esta máquina (por nombre o IDs)
         const assignedOps = (UanifyState.operators || []).filter(o => 
-          o.machine && o.machine.toLowerCase().includes(m.name.toLowerCase())
+          (o.machine && o.machine.toLowerCase().includes(m.name.toLowerCase())) ||
+          (Array.isArray(m.operatorIds) && (m.operatorIds.includes(o.empId) || m.operatorIds.includes(o.id)))
         );
 
         machinesList.push({
@@ -2949,7 +3036,6 @@ window.initConfigView = function() {
           procName: p.name,
           deptCode: p.deptCode,
           deptName: dept ? dept.name : p.deptCode,
-          status: m.status || 'operativa',
           operators: assignedOps
         });
       });
@@ -2958,35 +3044,59 @@ window.initConfigView = function() {
     // Poblar selector de departamentos
     if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
       deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
-        UanifyState.stations.map(st => `<option value="${st.code}">${st.code} · ${st.name}</option>`).join('');
+        UanifyState.stations.map(st => `<option value="${st.code}">${st.name}</option>`).join('');
     }
 
     const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
     const selectedDept = deptFilter ? deptFilter.value : 'all';
-    const selectedStatus = statusFilter ? statusFilter.value : 'all';
+    const selectedOpStatus = opStatusFilter ? opStatusFilter.value : 'all';
 
     const filtered = machinesList.filter(m => {
       const matchSearch = !q ||
         m.name.toLowerCase().includes(q) ||
         m.procName.toLowerCase().includes(q) ||
         m.deptName.toLowerCase().includes(q) ||
-        m.deptCode.toLowerCase().includes(q) ||
         m.operators.some(o => o.name.toLowerCase().includes(q));
 
       const matchDept = selectedDept === 'all' || m.deptCode === selectedDept;
-      const matchStatus = selectedStatus === 'all' || m.status === selectedStatus;
 
-      return matchSearch && matchDept && matchStatus;
+      let matchOp = true;
+      if (selectedOpStatus === 'assigned') matchOp = m.operators.length > 0;
+      else if (selectedOpStatus === 'unassigned') matchOp = m.operators.length === 0;
+
+      return matchSearch && matchDept && matchOp;
     });
+
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / machItemsPerPage) || 1;
+    if (machCurrentPage > totalPages) machCurrentPage = totalPages;
+    if (machCurrentPage < 1) machCurrentPage = 1;
+
+    const startIndex = (machCurrentPage - 1) * machItemsPerPage;
+    const endIndex = Math.min(startIndex + machItemsPerPage, totalItems);
+    const paginatedItems = filtered.slice(startIndex, endIndex);
 
     if (countBadge) {
       countBadge.textContent = `Mostrando ${filtered.length} de ${machinesList.length} máquinas`;
     }
 
-    if (filtered.length === 0) {
+    // Actualizar barras de paginación
+    const paginationRange = document.getElementById('machPaginationRange');
+    const paginationTotal = document.getElementById('machPaginationTotal');
+    const pageIndicator = document.getElementById('machPageIndicator');
+    const btnPrev = document.getElementById('btnMachPrevPage');
+    const btnNext = document.getElementById('btnMachNextPage');
+
+    if (paginationRange) paginationRange.textContent = totalItems === 0 ? '0' : `${startIndex + 1} - ${endIndex}`;
+    if (paginationTotal) paginationTotal.textContent = totalItems;
+    if (pageIndicator) pageIndicator.textContent = `${machCurrentPage} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = (machCurrentPage <= 1);
+    if (btnNext) btnNext.disabled = (machCurrentPage >= totalPages);
+
+    if (paginatedItems.length === 0) {
       cfgMachinesTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="6">
+          <td colspan="5">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron máquinas coincidentes</span>
@@ -2997,43 +3107,51 @@ window.initConfigView = function() {
         </tr>
       `;
     } else {
-      cfgMachinesTable.innerHTML = filtered.map(m => {
-        const isOp = m.status === 'operativa';
-        const statusBadge = isOp
-          ? '<span class="status-pill status-active" style="font-size:11.5px;">✓ Operativa</span>'
-          : '<span class="status-pill status-warning" style="font-size:11.5px;">🛠 Mantenimiento</span>';
-
+      cfgMachinesTable.innerHTML = paginatedItems.map(m => {
         let opsHtml = '';
         if (m.operators.length > 0) {
-          opsHtml = m.operators.map(o => `<span class="chip-clean" style="font-size:11.5px; background:#F1F5F9;" title="No. Nómina: ${o.empId}">👤 ${o.name}</span>`).join(' ');
+          opsHtml = m.operators.map(o => `
+            <span class="chip-clean" style="font-size:11.5px; background:#EFF6FF; color:#1E40AF; border:1px solid #BFDBFE; font-weight:600;" title="No. Nómina: ${o.empId || ''}">
+              👤 ${o.name}
+            </span>
+          `).join(' ');
         } else {
           opsHtml = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin operador asignado</span>';
         }
 
+        const safeMachName = encodeURIComponent(m.name);
+        const safeDeptCode = encodeURIComponent(m.deptCode);
+
         return `
           <tr>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">🏭 ${m.name}</div>
-              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Identificador: <strong>${m.id}</strong></div>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700; color:var(--text-primary);">🏭 ${m.name}</div>
             </td>
             <td>
               <span style="font-size:13px; font-weight:600; color:var(--text-primary);">⚙️ ${m.procName}</span>
             </td>
             <td>
               <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
-                🏢 ${m.deptCode} · ${m.deptName}
+                🏢 ${m.deptName}
               </span>
             </td>
-            <td style="text-align:center;">${statusBadge}</td>
             <td>
-              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+              <div style="display:flex; flex-wrap:wrap; gap:5px; align-items:center;">
                 ${opsHtml}
+                <button type="button" class="btn-secondary btn-sm" onclick="window.openAssignMachineOperatorsModal('${safeMachName}', '${safeDeptCode}')" style="min-height:28px; padding:0 8px; font-size:11px; margin-left:4px; font-weight:700; cursor:pointer;" title="Gestionar o asignar operadores a esta máquina">
+                  + Asignar
+                </button>
               </div>
             </td>
             <td class="col-actions" style="text-align:center;">
-              <button class="btn-icon" title="Ver estructura de departamento" onclick="window.openDeptDetailViewer('${m.deptCode}')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
+              <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                <button type="button" class="btn-table-action" onclick="window.openAssignMachineOperatorsModal('${safeMachName}', '${safeDeptCode}')" title="Asignar o editar operadores de esta máquina" style="background:#F0FDF4; color:#166534; border:1px solid #BBF7D0;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                </button>
+                <button type="button" class="btn-table-action" onclick="window.openDeptDetailViewer('${m.deptCode}')" title="Ver estructura completa de este departamento" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -3041,26 +3159,199 @@ window.initConfigView = function() {
     }
 
     if (!machFiltersBound) {
-      if (searchInp) searchInp.addEventListener('input', renderMachinesConfig);
-      if (deptFilter) deptFilter.addEventListener('change', renderMachinesConfig);
-      if (statusFilter) statusFilter.addEventListener('change', renderMachinesConfig);
+      if (searchInp) searchInp.addEventListener('input', () => { machCurrentPage = 1; renderMachinesConfig(); });
+      if (deptFilter) deptFilter.addEventListener('change', () => { machCurrentPage = 1; renderMachinesConfig(); });
+      if (opStatusFilter) opStatusFilter.addEventListener('change', () => { machCurrentPage = 1; renderMachinesConfig(); });
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (machCurrentPage > 1) {
+            machCurrentPage--;
+            renderMachinesConfig();
+          }
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (machCurrentPage < totalPages) {
+            machCurrentPage++;
+            renderMachinesConfig();
+          }
+        });
+      }
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInp) searchInp.value = '';
           if (deptFilter) deptFilter.value = 'all';
-          if (statusFilter) statusFilter.value = 'all';
+          if (opStatusFilter) opStatusFilter.value = 'all';
+          machCurrentPage = 1;
           renderMachinesConfig();
         });
       }
       window.resetMachFilters = () => {
         if (searchInp) searchInp.value = '';
         if (deptFilter) deptFilter.value = 'all';
-        if (statusFilter) statusFilter.value = 'all';
+        if (opStatusFilter) opStatusFilter.value = 'all';
+        machCurrentPage = 1;
         renderMachinesConfig();
       };
       machFiltersBound = true;
     }
   }
+
+  // ── MODAL INDEPENDIENTE: ASIGNACIÓN DIRECTA DE OPERADORES A MÁQUINA ───────
+  const modalAssignMach = document.getElementById('modalAssignMachineOperators');
+  const btnCloseAssignMach = document.getElementById('btnCloseAssignMachModal');
+  const btnCancelAssignMach = document.getElementById('btnCancelAssignMachModal');
+  const formAssignMach = document.getElementById('formAssignMachineOperators');
+  const assignMachOpSearch = document.getElementById('assignMachOpSearch');
+
+  function openAssignMachineOperatorsModal(encodedMachName, encodedDeptCode) {
+    if (!modalAssignMach) return;
+    const machName = decodeURIComponent(encodedMachName);
+    const deptCode = decodeURIComponent(encodedDeptCode);
+
+    const titleEl = document.getElementById('assignMachTitle');
+    const chipEl = document.getElementById('assignMachDeptChip');
+    const hiddenName = document.getElementById('assignMachTargetName');
+    const hiddenDept = document.getElementById('assignMachTargetDeptCode');
+    const listEl = document.getElementById('assignMachOperatorsList');
+
+    const dept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+
+    if (titleEl) titleEl.textContent = machName;
+    if (chipEl) chipEl.textContent = dept ? dept.name : (deptCode || 'General');
+    if (hiddenName) hiddenName.value = machName;
+    if (hiddenDept) hiddenDept.value = deptCode;
+    if (assignMachOpSearch) assignMachOpSearch.value = '';
+
+    renderAssignModalOpList(machName, deptCode, '');
+    modalAssignMach.classList.add('active');
+  }
+
+  function renderAssignModalOpList(machName, deptCode, filterQuery = '') {
+    const listEl = document.getElementById('assignMachOperatorsList');
+    const countBadge = document.getElementById('assignMachSelectedCount');
+    if (!listEl) return;
+
+    const allOps = UanifyState.operators || [];
+    const q = filterQuery.toLowerCase().trim();
+
+    const filtered = allOps.filter(op => {
+      if (!q) return true;
+      return (op.name && op.name.toLowerCase().includes(q)) ||
+             (op.empId && op.empId.toLowerCase().includes(q)) ||
+             (op.department && op.department.toLowerCase().includes(q));
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron operadores con ese criterio</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(op => {
+      // Verificar si el operador ya tiene asignada esta máquina
+      const isAssigned = (op.machine && op.machine.toLowerCase().includes(machName.toLowerCase()));
+      const isDept = op.deptCode === deptCode || op.department === deptCode;
+      const otherMach = (op.machine && !isAssigned) ? `<span style="font-size:11px; color:#DC2626;">[Ocupado en: ${op.machine}]</span>` : '';
+
+      return `
+        <label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12.5px; cursor:pointer; padding:6px 4px; border-bottom:1px solid #F1F5F9;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" class="assign-mach-op-cb" value="${op.empId || op.id}" ${isAssigned ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:16px; height:16px;">
+            <span style="font-weight:600; color:var(--text-primary);">👤 ${op.name}</span>
+            <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${op.empId ? `(Nóm: ${op.empId})` : ''}</span>
+          </div>
+          <div>
+            ${otherMach}
+            <span class="chip-clean" style="font-size:10.5px; padding:2px 6px;">${op.department || op.deptCode || 'Piso'}</span>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    const updateCount = () => {
+      const checked = listEl.querySelectorAll('.assign-mach-op-cb:checked').length;
+      if (countBadge) countBadge.textContent = `${checked} seleccionado(s)`;
+    };
+
+    listEl.querySelectorAll('.assign-mach-op-cb').forEach(cb => {
+      cb.addEventListener('change', updateCount);
+    });
+    updateCount();
+  }
+
+  if (assignMachOpSearch) {
+    assignMachOpSearch.addEventListener('input', (e) => {
+      const machName = document.getElementById('assignMachTargetName')?.value || '';
+      const deptCode = document.getElementById('assignMachTargetDeptCode')?.value || '';
+      renderAssignModalOpList(machName, deptCode, e.target.value);
+    });
+  }
+
+  if (btnCloseAssignMach) btnCloseAssignMach.addEventListener('click', () => modalAssignMach.classList.remove('active'));
+  if (btnCancelAssignMach) btnCancelAssignMach.addEventListener('click', () => modalAssignMach.classList.remove('active'));
+
+  if (formAssignMach) {
+    formAssignMach.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const machName = document.getElementById('assignMachTargetName')?.value || '';
+      const deptCode = document.getElementById('assignMachTargetDeptCode')?.value || '';
+
+      if (!machName) return;
+
+      const checkedBoxes = document.querySelectorAll('.assign-mach-op-cb:checked');
+      const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+      const dept = (UanifyState.stations || []).find(s => s.code === deptCode || s.id === deptCode);
+
+      // Actualizar los operadores en UanifyState.operators
+      if (Array.isArray(UanifyState.operators)) {
+        UanifyState.operators.forEach(op => {
+          const isSelected = selectedIds.includes(op.empId) || selectedIds.includes(op.id);
+          const hadThisMach = (op.machine && op.machine.toLowerCase().includes(machName.toLowerCase()));
+
+          if (isSelected) {
+            op.machine = machName;
+            if (deptCode) op.deptCode = deptCode;
+            if (dept) {
+              op.deptName = dept.name;
+              op.department = dept.name;
+            }
+          } else if (hadThisMach) {
+            // Si estaba asignado a esta máquina pero fue desmarcado, limpiar su asignación
+            op.machine = '';
+          }
+        });
+      }
+
+      // Actualizar también en el proceso correspondiente
+      (UanifyState.processes || []).forEach(p => {
+        (p.machines || []).forEach(m => {
+          if (m.name.toLowerCase() === machName.toLowerCase()) {
+            m.operatorIds = selectedIds;
+          }
+        });
+      });
+
+      try {
+        localStorage.setItem('uanify_operators', JSON.stringify(UanifyState.operators));
+        localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
+      } catch (err) {
+        console.warn('Error saving operator machine assignments:', err);
+      }
+
+      if (window.UanifyUI && typeof window.UanifyUI.toast === 'function') {
+        window.UanifyUI.toast(`Asignaciones de la máquina "${machName}" guardadas exitosamente (${selectedIds.length} operador(es))`, 'success');
+      }
+
+      modalAssignMach.classList.remove('active');
+      renderMachinesConfig();
+      if (typeof renderDepartmentsConfig === 'function') renderDepartmentsConfig();
+      if (typeof renderProcessesConfig === 'function') renderProcessesConfig();
+    });
+  }
+
+  window.openAssignMachineOperatorsModal = openAssignMachineOperatorsModal;
 
   window.renderProcessesConfig = renderProcessesConfig;
   window.renderWarehousesConfig = renderWarehousesConfig;
@@ -3074,6 +3365,9 @@ window.initConfigView = function() {
   const cfgQualityTable = document.getElementById('cfgQualityTable');
 
   let qualityFiltersBound = false;
+  let qualityCurrentPage = 1;
+  const qualityItemsPerPage = 8;
+
   function renderQualityFiltersConfig() {
     if (!cfgQualityTable) return;
     const areas = UanifyState.qualityAreas || [];
@@ -3110,14 +3404,36 @@ window.initConfigView = function() {
       return matchSearch && matchInsp;
     });
 
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / qualityItemsPerPage) || 1;
+    if (qualityCurrentPage > totalPages) qualityCurrentPage = totalPages;
+    if (qualityCurrentPage < 1) qualityCurrentPage = 1;
+
+    const startIndex = (qualityCurrentPage - 1) * qualityItemsPerPage;
+    const endIndex = Math.min(startIndex + qualityItemsPerPage, totalItems);
+    const paginatedItems = filtered.slice(startIndex, endIndex);
+
     if (countBadge) {
       countBadge.textContent = `Mostrando ${filtered.length} de ${areas.length} filtros de calidad`;
     }
 
-    if (filtered.length === 0) {
+    // Actualizar barras de paginación
+    const paginationRange = document.getElementById('qualityPaginationRange');
+    const paginationTotal = document.getElementById('qualityPaginationTotal');
+    const pageIndicator = document.getElementById('qualityPageIndicator');
+    const btnPrev = document.getElementById('btnQualityPrevPage');
+    const btnNext = document.getElementById('btnQualityNextPage');
+
+    if (paginationRange) paginationRange.textContent = totalItems === 0 ? '0' : `${startIndex + 1} - ${endIndex}`;
+    if (paginationTotal) paginationTotal.textContent = totalItems;
+    if (pageIndicator) pageIndicator.textContent = `${qualityCurrentPage} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = (qualityCurrentPage <= 1);
+    if (btnNext) btnNext.disabled = (qualityCurrentPage >= totalPages);
+
+    if (paginatedItems.length === 0) {
       cfgQualityTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="3">
+          <td colspan="4">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
@@ -3133,7 +3449,7 @@ window.initConfigView = function() {
     const currentUser = UanifyState.users.find(u => u.id === UanifyState.currentUser) || UanifyState.users[0];
     const canManage = currentUser.role === 'admin' || currentUser.role === 'ingeniero';
 
-    cfgQualityTable.innerHTML = filtered.map(q => {
+    cfgQualityTable.innerHTML = paginatedItems.map(q => {
       const dept = (UanifyState.stations || []).find(s => s.code === q.deptCode || s.id === q.deptCode);
       const deptName = dept ? dept.name : (q.deptCode ? `Depto ${q.deptCode}` : 'Sin Depto asignado');
       return `
@@ -3172,18 +3488,36 @@ window.initConfigView = function() {
 
     if (!qualityFiltersBound) {
       qualityFiltersBound = true;
-      if (searchInput) searchInput.addEventListener('input', renderQualityFiltersConfig);
-      if (inspectorFilter) inspectorFilter.addEventListener('change', renderQualityFiltersConfig);
+      if (searchInput) searchInput.addEventListener('input', () => { qualityCurrentPage = 1; renderQualityFiltersConfig(); });
+      if (inspectorFilter) inspectorFilter.addEventListener('change', () => { qualityCurrentPage = 1; renderQualityFiltersConfig(); });
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (qualityCurrentPage > 1) {
+            qualityCurrentPage--;
+            renderQualityFiltersConfig();
+          }
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (qualityCurrentPage < totalPages) {
+            qualityCurrentPage++;
+            renderQualityFiltersConfig();
+          }
+        });
+      }
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInput) searchInput.value = '';
           if (inspectorFilter) inspectorFilter.value = 'all';
+          qualityCurrentPage = 1;
           renderQualityFiltersConfig();
         });
       }
       window.resetQualityFilters = function() {
         if (searchInput) searchInput.value = '';
         if (inspectorFilter) inspectorFilter.value = 'all';
+        qualityCurrentPage = 1;
         renderQualityFiltersConfig();
       };
     }

@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.91.0">
-  <link rel="stylesheet" href="css/components.css?v=2.91.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.92.0">
+  <link rel="stylesheet" href="css/components.css?v=2.92.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.91.0</span>
+        <span class="system-version-pill login-version-pill">v2.92.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -260,7 +260,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.91.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.92.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2559,6 +2559,28 @@
                 </tbody>
               </table>
             </div>
+
+            <!-- Paginación de Procesos -->
+            <div class="uanify-pagination-bar" id="procPaginationBar" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); flex-wrap:wrap; gap:12px;">
+              <div style="font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                <span>Mostrando</span>
+                <strong id="procPaginationRange" style="color:var(--text-primary);">1 - 8</strong>
+                <span>de</span>
+                <strong id="procPaginationTotal" style="color:var(--text-primary);">0</strong>
+                <span>procesos</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnProcPrevPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Anterior
+                </button>
+                <span id="procPageIndicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:var(--color-brand); font-family:var(--font-mono);">1 / 1</span>
+                <button type="button" class="btn-secondary btn-sm" id="btnProcNextPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página siguiente">
+                  Siguiente
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2632,6 +2654,28 @@
                 </tbody>
               </table>
             </div>
+
+            <!-- Paginación de Almacenes Buffer -->
+            <div class="uanify-pagination-bar" id="whPaginationBar" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); flex-wrap:wrap; gap:12px;">
+              <div style="font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                <span>Mostrando</span>
+                <strong id="whPaginationRange" style="color:var(--text-primary);">1 - 8</strong>
+                <span>de</span>
+                <strong id="whPaginationTotal" style="color:var(--text-primary);">0</strong>
+                <span>almacenes buffer</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnWhPrevPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Anterior
+                </button>
+                <span id="whPageIndicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:var(--color-brand); font-family:var(--font-mono);">1 / 1</span>
+                <button type="button" class="btn-secondary btn-sm" id="btnWhNextPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página siguiente">
+                  Siguiente
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2663,21 +2707,21 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="machSearchInput" class="form-input" placeholder="Buscar por máquina, proceso, departamento..." autocomplete="off">
+                  <input type="text" id="machSearchInput" class="form-input" placeholder="Buscar por máquina, proceso, operador..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="machDeptFilter" class="custom-select select-sm" style="min-width:180px;">
                     <option value="all">Todos los Departamentos</option>
                   </select>
-                  <select id="machStatusFilter" class="custom-select select-sm" style="min-width:150px;">
-                    <option value="all">Todos los Estatus</option>
-                    <option value="operativa">Operativa</option>
-                    <option value="mantenimiento">Mantenimiento</option>
+                  <select id="machOpStatusFilter" class="custom-select select-sm" style="min-width:170px;">
+                    <option value="all">Todos los Operadores</option>
+                    <option value="assigned">Con Operador Asignado</option>
+                    <option value="unassigned">Sin Operador Asignado</option>
                   </select>
                 </div>
               </div>
               <div class="filter-toolbar-actions">
-                <span class="filter-count-badge" id="machFilteredCountBadge">Cargando maquinaria...</span>
+                <span class="filter-count-badge" id="machFilteredCountBadge">Mostrando máquinas...</span>
                 <button type="button" class="btn-reset-filters" id="btnResetMachFilters" title="Restablecer filtros">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                   Limpiar
@@ -2689,18 +2733,39 @@
               <table class="data-table" id="cfgMachinesDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:240px;">Máquina / Estación</th>
-                    <th style="min-width:200px;">Proceso Asociado</th>
-                    <th style="min-width:180px;">Departamento</th>
-                    <th style="min-width:140px; text-align:center;">Estatus Operativo</th>
-                    <th style="min-width:220px;">Operadores Asignados</th>
-                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
+                    <th class="col-name" style="min-width:260px;">Máquina / Estación</th>
+                    <th style="min-width:220px;">Proceso Asociado</th>
+                    <th style="min-width:200px;">Departamento</th>
+                    <th style="min-width:260px;">Operadores Asignados</th>
+                    <th class="col-actions" style="width:120px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgMachinesTable">
                   <!-- Llenado dinámico en config.js -->
                 </tbody>
               </table>
+            </div>
+
+            <!-- Paginación de Maquinaria -->
+            <div class="uanify-pagination-bar" id="machPaginationBar" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); flex-wrap:wrap; gap:12px;">
+              <div style="font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                <span>Mostrando</span>
+                <strong id="machPaginationRange" style="color:var(--text-primary);">1 - 8</strong>
+                <span>de</span>
+                <strong id="machPaginationTotal" style="color:var(--text-primary);">0</strong>
+                <span>máquinas</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnMachPrevPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Anterior
+                </button>
+                <span id="machPageIndicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:var(--color-brand); font-family:var(--font-mono);">1 / 1</span>
+                <button type="button" class="btn-secondary btn-sm" id="btnMachNextPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página siguiente">
+                  Siguiente
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -2765,6 +2830,28 @@
                   <!-- Llenado dinámico en config.js -->
                 </tbody>
               </table>
+            </div>
+
+            <!-- Paginación de Calidad -->
+            <div class="uanify-pagination-bar" id="qualityPaginationBar" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); flex-wrap:wrap; gap:12px;">
+              <div style="font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                <span>Mostrando</span>
+                <strong id="qualityPaginationRange" style="color:var(--text-primary);">1 - 8</strong>
+                <span>de</span>
+                <strong id="qualityPaginationTotal" style="color:var(--text-primary);">0</strong>
+                <span>filtros de calidad</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-secondary btn-sm" id="btnQualityPrevPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Anterior
+                </button>
+                <span id="qualityPageIndicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:var(--color-brand); font-family:var(--font-mono);">1 / 1</span>
+                <button type="button" class="btn-secondary btn-sm" id="btnQualityNextPage" style="min-height:36px; padding:0 12px; cursor:pointer;" title="Página siguiente">
+                  Siguiente
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -4502,6 +4589,71 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: ASIGNAR OPERADOR(ES) A MÁQUINA DIRECTAMENTE DESDE EL CATÁLOGO
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalAssignMachineOperators">
+    <div class="modal-box card-glass" style="max-width:540px; width:95%;">
+      <div class="modal-header">
+        <div>
+          <h3 style="display:flex; align-items:center; gap:6px;">
+            Asignar Operador(es) a Máquina
+            <span class="info-tip">
+              <button type="button" class="info-tip-btn" aria-label="Información">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+              </button>
+              <span class="info-tip-popup">Una máquina puede tener uno o múltiples operadores asignados de manera flexible. Selecciona los operadores del padrón que operan este equipo.</span>
+            </span>
+          </h3>
+          <p class="modal-header-sub" id="assignMachModalSub">Configura el personal asignado a este equipo</p>
+        </div>
+        <button class="modal-close" id="btnCloseAssignMachModal" type="button">&times;</button>
+      </div>
+      <form id="formAssignMachineOperators">
+        <input type="hidden" id="assignMachTargetName" value="">
+        <input type="hidden" id="assignMachTargetDeptCode" value="">
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; overflow-x:hidden;">
+          <!-- Tarjeta de Información de la Máquina -->
+          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <div style="font-size:11.5px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Máquina Seleccionada</div>
+              <div id="assignMachTitle" style="font-size:15px; font-weight:800; color:var(--text-primary); margin-top:2px;">-</div>
+            </div>
+            <div id="assignMachDeptChip" class="chip-clean" style="font-size:12px; font-weight:700; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
+              -
+            </div>
+          </div>
+
+          <!-- Buscador de Operadores en el Modal -->
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="field-label">
+              <span>Buscar en el Padrón de Operadores:</span>
+            </label>
+            <input type="text" id="assignMachOpSearch" class="form-input" placeholder="Buscar por nombre o número de nómina..." autocomplete="off">
+          </div>
+
+          <!-- Lista de Operadores con Checkbox Múltiple -->
+          <div class="form-group" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span class="field-label" style="margin-bottom:0;">Selecciona 1 o más Operadores:</span>
+              <span id="assignMachSelectedCount" style="font-size:11.5px; font-weight:700; color:var(--color-brand);">0 seleccionados</span>
+            </div>
+            <div style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:10px; padding:10px; max-height:210px; overflow-y:auto;" id="assignMachOperatorsList">
+              <!-- Llenado dinámico en config.js -->
+            </div>
+            <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">
+              Los operadores seleccionados quedarán asignados a esta máquina y computarán en sus registros de producción.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+          <button type="button" class="btn-secondary" id="btnCancelAssignMachModal" style="min-height:46px; padding:0 20px; font-weight:700;">Cancelar</button>
+          <button type="submit" class="btn-primary" style="min-height:46px; padding:0 24px; font-weight:700;">Guardar Asignaciones</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: VISOR DE DETALLES COMPLETOS DEL DEPARTAMENTO (SIN IDS)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalDeptDetailViewer">
@@ -5433,11 +5585,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.91.0"></script>
-  <script src="js/andon.js?v=2.91.0"></script>
-  <script src="js/terminal.js?v=2.91.0"></script>
-  <script src="js/engineer.js?v=2.91.0"></script>
-  <script src="js/executive.js?v=2.91.0"></script>
-  <script src="js/config.js?v=2.91.0"></script>
+  <script src="js/app.js?v=2.92.0"></script>
+  <script src="js/andon.js?v=2.92.0"></script>
+  <script src="js/terminal.js?v=2.92.0"></script>
+  <script src="js/engineer.js?v=2.92.0"></script>
+  <script src="js/executive.js?v=2.92.0"></script>
+  <script src="js/config.js?v=2.92.0"></script>
 </body>
 </html>
