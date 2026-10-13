@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.98.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.99.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.98.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.99.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -538,6 +538,14 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 - **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas en Departamentos y Filtros de Calidad; eliminación de descripciones largas innecesarias en celdas para evitar saturación visual y sobrecarga de información.
 - **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Los botones de fila en todas las tablas (`.btn-table-action`) se estandarizaron como botones cuadrados compactos de 32x32px con iconos SVG claros (Editar en gris suave `#F1F5F9`/`#E2E8F0`, Eliminar en rojo pastel `#FEF2F2`/`#FEE2E2`, Ver/Ficha en verde pastel `#F0FDF4`/`#DCFCE7`), sin texto intrusivo y con tooltips nativos en `title`.
 - **Estandarización de Paleta de Botones del Sistema:** Unificación de todos los botones primarios a `--color-brand` artesanal, eliminando colores arbitrarios o ad-hoc en módulos aislados.
+### [2.99.0] - 2026-10-13
+- **Rediseño Visual Limpio y Jerárquico del Visor de Detalles de Departamento (`#modalDeptDetailViewer`):**
+  - **Eliminación de Métricas Residuales:** Se retiró el Tiempo de Ciclo y el texto innecesario "Etapa Productiva" que sobrecargaban la vista.
+  - **Supervisor Responsable Destacado:** Tarjeta superior limpia con avatar y código oficial del departamento (`D-XX`).
+  - **Procesos con Conteo de Máquinas y Acceso a Detalle:** Cada proceso muestra su nombre limpio, el conteo exacto de máquinas que contiene (`🏭 X máquinas`) y un botón directo de inspección que abre el visor detallado del proceso.
+  - **Almacenes Intermedios Limpios:** Despliegue de los buffers asociados con su capacidad WIP destacada en chip monoespaciado, eliminando leyendas redundantes como "Buffer de Salida / Traspaso".
+  - **Filtros de Calidad Condicionales:** Sección visual para puntos de control (`C-XX`) que se oculta automáticamente si el departamento no tiene inspecciones asignadas.
+
 ### [2.98.0] - 2026-10-13
 - **Asignación Relacional y Consulta Paginada en Departamentos:**
   - **Consulta de Registros Existentes:** En la creación y edición de departamentos, los Procesos de Manufactura, Almacenes Intermedios Buffer (WIP) y Puntos de Control de Calidad (`C-XX`) ahora se consultan directamente de los catálogos ya creados en el sistema.

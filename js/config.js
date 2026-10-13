@@ -2428,139 +2428,117 @@ window.initConfigView = function() {
     const titleEl = document.getElementById('deptViewerTitle');
     const subEl = document.getElementById('deptViewerSubtitle');
     const supEl = document.getElementById('deptViewerSupervisor');
-    const taktEl = document.getElementById('deptViewerTakt');
-    const cycleEl = document.getElementById('deptViewerCycle');
+    const codeBadgeEl = document.getElementById('deptViewerCodeBadge');
     const procListEl = document.getElementById('deptViewerProcessesList');
-    const machListEl = document.getElementById('deptViewerMachinesList');
+    const procsCountEl = document.getElementById('deptViewerProcsCount');
+    const qualSecEl = document.getElementById('deptViewerQualitySection');
+    const qualListEl = document.getElementById('deptViewerQualityList');
+    const qualCountEl = document.getElementById('deptViewerQualityCount');
     const whListEl = document.getElementById('deptViewerWarehousesList');
+    const whsCountEl = document.getElementById('deptViewerWhsCount');
 
-    if (titleEl) titleEl.textContent = station.name;
-    if (subEl) subEl.textContent = `Detalles de flujo operativo y estaciones para ${station.name}`;
+    if (titleEl) titleEl.innerHTML = `<span>${station.name}</span>`;
+    if (subEl) subEl.textContent = `Estructura operativa de procesos, maquinaria y almacenes intermedios para ${station.name}`;
     if (supEl) supEl.textContent = station.operator || 'Supervisor Asignado';
-    if (cycleEl) cycleEl.textContent = station.cycleTime || '35s';
+    if (codeBadgeEl) codeBadgeEl.textContent = station.code || 'DEPTO';
 
-    // Procesos formales
+    // 1. Procesos asociados al departamento
     let deptProcesses = (UanifyState.processes || []).filter(p => p.deptCode === station.code);
     if (deptProcesses.length === 0 && station.processes) {
-      deptProcesses = station.processes.split(/[,;]/).map(p => ({
-        name: p.trim().replace(/^(PROC-\d+|C-\d+)\s*/i, ''),
-        type: p.toLowerCase().includes('calidad') ? 'calidad' : 'manufactura'
-      })).filter(p => p.name);
+      deptProcesses = station.processes.split(/[,;]/).map((p, idx) => {
+        const cleanName = p.trim().replace(/^(PROC-\d+|C-\d+)\s*/i, '');
+        return {
+          id: `PROC-${station.code}-${idx+1}`,
+          code: `PROC-${String(idx+1).padStart(2, '0')}`,
+          name: cleanName,
+          machines: []
+        };
+      }).filter(p => p.name);
     }
+
+    if (procsCountEl) procsCountEl.textContent = `${deptProcesses.length} ${deptProcesses.length === 1 ? 'proceso' : 'procesos'}`;
 
     if (procListEl) {
       if (deptProcesses.length > 0) {
-        procListEl.innerHTML = deptProcesses.map((p, idx) => {
-          const isQ = p.type === 'calidad' || (p.name && p.name.toLowerCase().includes('calidad'));
+        procListEl.innerHTML = deptProcesses.map(p => {
           const cleanName = (p.name || '').replace(/^(PROC-\d+|C-\d+)\s*/i, '');
-          const badgeClass = isQ ? 'chip-clean chip-clean-quality' : 'chip-clean chip-clean-process';
-          const icon = isQ ? '🔬' : '⚙️';
+          const machCount = Array.isArray(p.machines) ? p.machines.length : 0;
+          const procId = p.id || p.code;
+
           return `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:8px 12px; border-radius:8px;">
-              <span class="${badgeClass}">${icon} ${cleanName}</span>
-              <span style="font-size:12px; color:var(--text-secondary);">${isQ ? 'Punto de Calidad' : 'Etapa Productiva'}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 14px; border-radius:8px; gap:12px;">
+              <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                <span class="chip-clean chip-clean-process" style="font-weight:700;">⚙️ ${cleanName}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                <span style="font-size:12px; font-weight:700; color:var(--text-secondary); background:#FFFFFF; border:1px solid var(--border-subtle); padding:3px 8px; border-radius:6px;">
+                  🏭 ${machCount} ${machCount === 1 ? 'máquina' : 'máquinas'}
+                </span>
+                <button type="button" class="btn-table-action" onclick="window.openProcessDetailViewer('${procId}')" title="Ver detalle de máquinas asignadas a este proceso" style="height:30px; width:30px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
             </div>
           `;
         }).join('');
       } else {
-        procListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin procesos asignados</span>';
+        procListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:6px 0;">Sin procesos asignados</span>';
       }
     }
 
     // 2. Filtros de Calidad vinculados al departamento
-    const qualListEl = document.getElementById('deptViewerQualityList');
     const deptQualities = (UanifyState.qualityAreas || []).filter(q => q.deptCode === station.code || q.deptCode === station.id);
-    if (qualListEl) {
+    if (qualCountEl) qualCountEl.textContent = `${deptQualities.length} ${deptQualities.length === 1 ? 'filtro' : 'filtros'}`;
+
+    if (qualSecEl) {
       if (deptQualities.length > 0) {
-        qualListEl.innerHTML = deptQualities.map(q => `
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFBEB; border:1px solid #FDE68A; padding:8px 12px; border-radius:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="chip-clean chip-clean-quality" style="font-weight:700;">🔬 ${q.name}</span>
-              <span style="font-size:11.5px; color:#B45309; font-weight:600;">(${q.code})</span>
+        qualSecEl.style.display = 'block';
+        if (qualListEl) {
+          qualListEl.innerHTML = deptQualities.map(q => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFBEB; border:1px solid #FDE68A; padding:9px 14px; border-radius:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="chip-clean chip-clean-quality" style="font-weight:700;">🔬 ${q.name}</span>
+                <span style="font-size:11.5px; color:#B45309; font-weight:700;">(${q.code})</span>
+              </div>
+              <div style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:5px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>${q.inspector || 'Inspector por asignar'}</span>
+              </div>
             </div>
-            <div style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:5px;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span>${q.inspector || 'Inspector por asignar'}</span>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       } else {
-        qualListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin filtros de calidad asignados a este departamento.</span>';
+        qualSecEl.style.display = 'none';
       }
     }
 
-    // 3. Máquinas y sus Operadores asignados
-    let allMachines = [];
-    deptProcesses.forEach(proc => {
-      if (Array.isArray(proc.machines) && proc.machines.length > 0) {
-        proc.machines.forEach(m => {
-          if (m && m.name && !allMachines.some(existing => existing.name === m.name)) {
-            allMachines.push({ ...m, processName: proc.name });
-          }
-        });
-      }
-    });
+    // 3. Almacenes Intermedios Asignados y Capacidad WIP Limpia
+    const rawWhList = (station.intermediateWarehouse ? station.intermediateWarehouse.split(/[,;]/) : []).map(w => w.trim().replace(/\s*\([A-Z0-9\-]+\)/gi, '')).filter(Boolean);
+    const whList = rawWhList.length > 0 ? rawWhList : [`Buffer ${station.name}`];
+    if (whsCountEl) whsCountEl.textContent = `${whList.length} ${whList.length === 1 ? 'almacén' : 'almacenes'}`;
 
-    if (allMachines.length === 0 && station.machines) {
-      allMachines = station.machines.split(/[,;]/).map(m => {
-        const clean = m.trim().replace(/^[A-Z0-9\-]+\s+/i, '');
-        return { name: clean || m.trim(), processName: station.name };
-      }).filter(m => m.name);
-    }
-
-    if (machListEl) {
-      if (allMachines.length > 0) {
-        machListEl.innerHTML = allMachines.map(m => {
-          const cleanM = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
-          // Buscar operadores asignados a esta máquina en el padrón
-          const assignedOps = (UanifyState.operators || []).filter(op => {
-            return (op.machine && op.machine.toLowerCase() === cleanM.toLowerCase()) ||
-                   (Array.isArray(m.operatorIds) && (m.operatorIds.includes(op.empId) || m.operatorIds.includes(op.id)));
-          });
-
-          const opsHtml = assignedOps.length > 0
-            ? assignedOps.map(op => `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; background:#EFF6FF; color:#1E40AF; padding:2px 8px; border-radius:6px; font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${op.name}</span>`).join(' ')
-            : `<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Sin operador fijo</span>`;
+    if (whListEl) {
+      if (whList.length > 0) {
+        const defaultCap = station.wipCapacity || 180;
+        whListEl.innerHTML = whList.map(w => {
+          // Si existe en UanifyState.warehouses buscar su capacidad real, si no usar la de la estación
+          const matchedWh = (UanifyState.warehouses || []).find(wh => wh.name.toLowerCase().includes(w.toLowerCase()) || w.toLowerCase().includes(wh.name.toLowerCase()));
+          const capText = matchedWh?.stock ? matchedWh.stock : `${defaultCap} piezas`;
 
           return `
-            <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-              <div>
-                <div style="font-size:13px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                  <span class="chip-clean chip-clean-machine" style="font-size:12px; padding:4px 10px;">🏭 ${cleanM}</span>
-                  ${m.processName ? `<span style="font-size:11.5px; color:var(--text-muted);">· ${m.processName}</span>` : ''}
-                </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 14px; border-radius:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="chip-clean-wh" style="font-size:12.5px; font-weight:700;">📦 ${w}</span>
               </div>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Operador(es):</span>
-                ${opsHtml}
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Capacidad WIP:</span>
+                <span style="font-family:var(--font-mono); font-size:12.5px; font-weight:800; color:var(--color-brand); background:rgba(139,94,60,0.08); padding:3px 10px; border-radius:6px; border:1px solid rgba(139,94,60,0.2);">${capText}</span>
               </div>
             </div>
           `;
         }).join('');
       } else {
-        machListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin máquinas asignadas</span>';
-      }
-    }
-
-    // 4. Almacenes Buffer y su capacidad WIP
-    const whList = (station.intermediateWarehouse ? station.intermediateWarehouse.split(/[,;]/) : ['Buffer de Espera']).map(w => w.trim().replace(/\s*\([A-Z0-9\-]+\)/gi, '')).filter(Boolean);
-    if (whListEl) {
-      if (whList.length > 0) {
-        const whCap = station.wipCapacity || 180;
-        whListEl.innerHTML = whList.map(w => `
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid var(--border-subtle); padding:10px 12px; border-radius:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="chip-clean-wh" style="font-size:12.5px;">📦 ${w}</span>
-              <span style="font-size:11.5px; color:var(--text-muted);">Buffer de Salida / Traspaso</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Capacidad WIP:</span>
-              <span style="font-family:var(--font-mono); font-size:12.5px; font-weight:700; color:var(--color-brand); background:rgba(139,94,60,0.08); padding:2px 8px; border-radius:6px; border:1px solid rgba(139,94,60,0.2);">${whCap} piezas</span>
-            </div>
-          </div>
-        `).join('');
-      } else {
-        whListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin almacenes asociados</span>';
+        whListEl.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:6px 0;">Sin almacenes asociados</span>';
       }
     }
 

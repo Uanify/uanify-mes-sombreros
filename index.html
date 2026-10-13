@@ -270,7 +270,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.98.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.99.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -4759,75 +4759,79 @@
        MODAL: VISOR DE DETALLES COMPLETOS DEL DEPARTAMENTO (SIN IDS)
        ====================================================================== -->
   <div class="modal-backdrop" id="modalDeptDetailViewer">
-    <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:90vh; overflow-y:auto;">
+    <div class="modal-box card-glass" style="max-width:620px; width:95%; max-height:88vh; overflow-y:auto;">
       <div class="modal-header">
         <div>
-          <h3 id="deptViewerTitle" style="color:var(--text-primary); font-size:18px; margin:0;">
+          <h3 id="deptViewerTitle" style="color:var(--text-primary); font-size:18px; margin:0; display:flex; align-items:center; gap:8px;">
             Detalles del Departamento
           </h3>
-          <p class="modal-header-sub" id="deptViewerSubtitle">Estructura completa de procesos, áreas de trabajo y almacenes</p>
+          <p class="modal-header-sub" id="deptViewerSubtitle">Estructura operativa de procesos, máquinas asignadas y almacenes intermedios</p>
         </div>
         <button class="modal-close" id="btnCloseDeptViewerModal" type="button">&times;</button>
       </div>
-      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
-        <!-- Tarjeta de Información General -->
-        <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-          <div>
-            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Supervisor a Cargo</div>
-            <div style="font-size:15px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerSupervisor">-</div>
+      <div class="modal-body" style="padding:16px 20px; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Tarjeta de Supervisor Responsable Único -->
+        <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(139, 94, 60, 0.12); color:var(--color-brand); display:flex; align-items:center; justify-content:center; font-size:16px;">
+              👤
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Supervisor Responsable</div>
+              <div style="font-size:14.5px; font-weight:700; color:var(--text-primary); margin-top:1px;" id="deptViewerSupervisor">-</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Tiempo de Ciclo Estándar</div>
-            <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="deptViewerCycle">-</div>
+          <div id="deptViewerCodeBadge" style="font-size:12px; font-weight:800; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.2); padding:3px 10px; border-radius:6px;">
+            -
           </div>
         </div>
 
-        <!-- Sección 1: Procesos de Fabricación del Departamento -->
-        <div>
-          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            Procesos de Fabricación Asignados
-          </h4>
-          <div id="deptViewerProcessesList" style="display:flex; flex-direction:column; gap:6px;">
+        <!-- Sección 1: Procesos de Fabricación del Departamento (con conteo de máquinas y botón ver detalle) -->
+        <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; font-size:12.5px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Procesos de Fabricación Asignados
+            </h4>
+            <span class="badge-subtle" id="deptViewerProcsCount" style="font-size:11px; font-weight:700;">0 procesos</span>
+          </div>
+          <div id="deptViewerProcessesList" style="display:flex; flex-direction:column; gap:8px;">
             <!-- Inyectado por JS -->
           </div>
         </div>
 
         <!-- Sección 2: Filtros de Calidad Vinculados al Departamento -->
-        <div>
-          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:#D97706; display:flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Filtros de Calidad del Departamento (C-XX)
-          </h4>
-          <div id="deptViewerQualityList" style="display:flex; flex-direction:column; gap:6px;">
+        <div id="deptViewerQualitySection" style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; font-size:12.5px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:#D97706; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Puntos de Control de Calidad (C-XX)
+            </h4>
+            <span class="badge-subtle" id="deptViewerQualityCount" style="font-size:11px; font-weight:700;">0 filtros</span>
+          </div>
+          <div id="deptViewerQualityList" style="display:flex; flex-direction:column; gap:8px;">
             <!-- Inyectado por JS -->
           </div>
         </div>
 
-        <!-- Sección 3: Máquinas / Áreas de Trabajo y Operadores Asignados -->
-        <div>
-          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            Máquinas, Puestos de Trabajo & Operadores Asignados
-          </h4>
-          <div id="deptViewerMachinesList" style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Sección 3: Almacenes Intermedios Asignados y Capacidad WIP Limpia -->
+        <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; font-size:12.5px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              Almacenes Intermedios Asignados
+            </h4>
+            <span class="badge-subtle" id="deptViewerWhsCount" style="font-size:11px; font-weight:700;">0 almacenes</span>
+          </div>
+          <div id="deptViewerWarehousesList" style="display:flex; flex-direction:column; gap:8px;">
             <!-- Inyectado por JS -->
           </div>
         </div>
 
-        <!-- Sección 4: Almacenes Intermedios Asignados -->
-        <div>
-          <h4 style="margin:0 0 8px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-            Almacenes Intermedios (Buffer de Salida / Entrada)
-          </h4>
-          <div id="deptViewerWarehousesList" style="display:flex; flex-direction:column; gap:6px;">
-            <!-- Inyectado por JS -->
-          </div>
-        </div>
       </div>
-      <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
-        <button type="button" class="btn-primary" id="btnCloseDeptViewerBtn" style="min-height:44px; padding:0 24px; font-weight:700;">Cerrar Detalle</button>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:12px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+        <button type="button" class="btn-primary" id="btnCloseDeptViewerBtn" style="min-height:42px; padding:0 24px; font-weight:700;">Cerrar Detalle</button>
       </div>
     </div>
   </div>
@@ -5687,11 +5691,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.98.0"></script>
-  <script src="js/andon.js?v=2.98.0"></script>
-  <script src="js/terminal.js?v=2.98.0"></script>
-  <script src="js/engineer.js?v=2.98.0"></script>
-  <script src="js/executive.js?v=2.98.0"></script>
-  <script src="js/config.js?v=2.98.0"></script>
+  <script src="js/app.js?v=2.99.0"></script>
+  <script src="js/andon.js?v=2.99.0"></script>
+  <script src="js/terminal.js?v=2.99.0"></script>
+  <script src="js/engineer.js?v=2.99.0"></script>
+  <script src="js/executive.js?v=2.99.0"></script>
+  <script src="js/config.js?v=2.99.0"></script>
 </body>
 </html>
