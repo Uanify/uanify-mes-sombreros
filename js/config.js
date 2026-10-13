@@ -2425,13 +2425,28 @@ window.initConfigView = function() {
     listContainer.innerHTML = allOps.map(op => {
       const isDeptMatch = selectedDeptCode && op.deptCode === selectedDeptCode;
       const deptTag = op.deptCode ? `<span style="font-size:11px; color:var(--text-muted);">${op.deptCode}</span>` : '';
-      const currMach = op.machine ? `<span style="font-size:11px; color:var(--color-brand); font-weight:600;">[${op.machine}]</span>` : '';
+      const isOccupied = !!(op.machine && op.machine.trim());
+      const currMach = isOccupied 
+        ? `<span style="font-size:11px; font-weight:600; color:#B91C1C; background:#FEF2F2; border:1px solid #FECACA; padding:1px 5px; border-radius:4px;" title="Este operador ya está asignado a otra máquina y no puede ser seleccionado">[Ocupado en: ${op.machine}]</span>` 
+        : '';
+
+      const rowDisabledStyle = isOccupied 
+        ? 'opacity: 0.55; cursor: not-allowed; background: #F8FAFC;' 
+        : 'cursor: pointer;';
+      const checkboxDisabledAttr = isOccupied ? 'disabled' : '';
+      const checkboxCursor = isOccupied ? 'cursor: not-allowed;' : 'cursor: pointer;';
+
       return `
-        <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:4px 0; border-bottom:1px solid #F1F5F9;">
-          <input type="checkbox" class="mach-standalone-op-cb" value="${op.empId || op.id}" ${isDeptMatch ? '' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
-          <span style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <strong>${op.name}</strong> ${deptTag} ${currMach}
-          </span>
+        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; padding:5px 6px; border-bottom:1px solid #F1F5F9; border-radius:5px; transition:background 0.15s ease; ${rowDisabledStyle}" title="${isOccupied ? `Inhabilitado: ${op.name} ya se encuentra operando en ${op.machine}` : ''}">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" class="mach-standalone-op-cb" value="${op.empId || op.id}" ${checkboxDisabledAttr} style="accent-color:var(--color-brand); width:15px; height:15px; ${checkboxCursor}">
+            <span style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <strong>${op.name}</strong> ${deptTag}
+            </span>
+          </div>
+          <div>
+            ${currMach}
+          </div>
         </label>
       `;
     }).join('');
@@ -3304,19 +3319,29 @@ window.initConfigView = function() {
 
     listEl.innerHTML = filtered.map(op => {
       // Verificar si el operador ya tiene asignada esta máquina
-      const isAssigned = (op.machine && op.machine.toLowerCase().includes(machName.toLowerCase()));
+      const isAssignedToThis = (op.machine && op.machine.toLowerCase().includes(machName.toLowerCase()));
+      const isAssignedToOther = (op.machine && !isAssignedToThis);
       const isDept = op.deptCode === deptCode || op.department === deptCode;
-      const otherMach = (op.machine && !isAssigned) ? `<span style="font-size:11px; color:#DC2626;">[Ocupado en: ${op.machine}]</span>` : '';
+      
+      const otherMachBadge = isAssignedToOther 
+        ? `<span style="font-size:11px; font-weight:600; color:#B91C1C; background:#FEF2F2; border:1px solid #FECACA; padding:2px 6px; border-radius:4px;" title="Este operador ya está asignado a otra máquina y no puede ser seleccionado">[Ocupado en: ${op.machine}]</span>` 
+        : (isAssignedToThis ? `<span style="font-size:11px; font-weight:600; color:#15803D; background:#F0FDF4; border:1px solid #BBF7D0; padding:2px 6px; border-radius:4px;">[Asignado a esta máquina]</span>` : '');
+
+      const rowDisabledStyle = isAssignedToOther 
+        ? 'opacity: 0.55; cursor: not-allowed; background: #F8FAFC;' 
+        : 'cursor: pointer;';
+      const checkboxDisabledAttr = isAssignedToOther ? 'disabled' : '';
+      const checkboxCursor = isAssignedToOther ? 'cursor: not-allowed;' : 'cursor: pointer;';
 
       return `
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12.5px; cursor:pointer; padding:6px 4px; border-bottom:1px solid #F1F5F9;">
+        <label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12.5px; padding:7px 8px; border-bottom:1px solid #F1F5F9; border-radius:6px; transition:background 0.15s ease; ${rowDisabledStyle}" title="${isAssignedToOther ? `Inhabilitado: ${op.name} ya se encuentra operando en ${op.machine}` : ''}">
           <div style="display:flex; align-items:center; gap:8px;">
-            <input type="checkbox" class="assign-mach-op-cb" value="${op.empId || op.id}" ${isAssigned ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:16px; height:16px;">
+            <input type="checkbox" class="assign-mach-op-cb" value="${op.empId || op.id}" ${isAssignedToThis ? 'checked' : ''} ${checkboxDisabledAttr} style="accent-color:var(--color-brand); width:16px; height:16px; ${checkboxCursor}">
             <span style="font-weight:600; color:var(--text-primary);">👤 ${op.name}</span>
             <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${op.empId ? `(Nóm: ${op.empId})` : ''}</span>
           </div>
-          <div>
-            ${otherMach}
+          <div style="display:flex; align-items:center; gap:6px;">
+            ${otherMachBadge}
             <span class="chip-clean" style="font-size:10.5px; padding:2px 6px;">${op.department || op.deptCode || 'Piso'}</span>
           </div>
         </label>
