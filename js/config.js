@@ -243,9 +243,7 @@ window.initConfigView = function() {
           <tr>
             <td class="col-name">
               <strong style="font-size:14px; color:var(--text-primary); display:block;">${st.name}</strong>
-              <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;">
-                Capacidad WIP: <strong>${st.wipCapacity || 180}</strong> pzas
-              </div>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Código: <strong>${st.code || st.id}</strong></div>
             </td>
             <td>
               <div class="dept-supervisor-badge">
@@ -253,14 +251,15 @@ window.initConfigView = function() {
                 <span>${supervisorName}</span>
               </div>
             </td>
-            <td>
-              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
-                ${processesHtml}
-              </div>
+            <td style="text-align:center;">
+              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${st.wipCapacity || 180} pzas</span>
+            </td>
+            <td style="text-align:center;">
+              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-secondary);">${st.cycleTime || '35s'}</span>
             </td>
             <td>
               <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
-                ${machinesHtml}
+                ${processesHtml}
               </div>
             </td>
             <td>
@@ -654,6 +653,9 @@ window.initConfigView = function() {
       if (tab === 'config') {
         renderDepartmentsConfig();
         renderUsersTable();
+        if (typeof renderProcessesConfig === 'function') renderProcessesConfig();
+        if (typeof renderWarehousesConfig === 'function') renderWarehousesConfig();
+        if (typeof renderMachinesConfig === 'function') renderMachinesConfig();
       }
     });
   }
@@ -2492,6 +2494,401 @@ window.initConfigView = function() {
   window.openCreateWarehouseModal = openCreateWarehouseModal;
   window.openDeptDetailViewer = openDeptDetailViewer;
 
+  // ── CATÁLOGO DEDICADO 1: PROCESOS PRODUCTIVOS ────────────────────────────
+  const cfgProcessesTable = document.getElementById('cfgProcessesTable');
+  let procFiltersBound = false;
+
+  function renderProcessesConfig() {
+    if (!cfgProcessesTable) return;
+    const procs = UanifyState.processes || [];
+    const searchInp = document.getElementById('procSearchInput');
+    const deptFilter = document.getElementById('procDeptFilter');
+    const typeFilter = document.getElementById('procTypeFilter');
+    const countBadge = document.getElementById('procFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetProcFilters');
+
+    // Poblar selector de departamentos si no está poblado
+    if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
+      deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
+        UanifyState.stations.map(st => `<option value="${st.code}">${st.code} · ${st.name}</option>`).join('');
+    }
+
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const selectedDept = deptFilter ? deptFilter.value : 'all';
+    const selectedType = typeFilter ? typeFilter.value : 'all';
+
+    const filtered = procs.filter(p => {
+      const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
+      const deptName = dept ? dept.name.toLowerCase() : '';
+      const matchSearch = !q ||
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.code && p.code.toLowerCase().includes(q)) ||
+        (p.deptCode && p.deptCode.toLowerCase().includes(q)) ||
+        deptName.includes(q);
+
+      const matchDept = selectedDept === 'all' || p.deptCode === selectedDept;
+      const matchType = selectedType === 'all' || (p.type || 'manufactura') === selectedType;
+
+      return matchSearch && matchDept && matchType;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${procs.length} procesos`;
+    }
+
+    if (filtered.length === 0) {
+      cfgProcessesTable.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="6">
+            <div class="table-empty-content">
+              <span class="table-empty-icon"></span>
+              <span class="table-empty-title">No se encontraron procesos coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetProcFilters()">Limpiar Filtros</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      cfgProcessesTable.innerHTML = filtered.map(p => {
+        const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
+        const deptLabel = dept ? `${dept.code} · ${dept.name}` : (p.deptCode || 'Sin Departamento');
+        const isQ = p.type === 'calidad';
+        const typeBadge = isQ
+          ? '<span class="status-pill status-warning" style="font-size:11.5px;">🔬 Calidad</span>'
+          : '<span class="status-pill status-active" style="font-size:11.5px;">⚙️ Manufactura</span>';
+        
+        const machines = p.machines || [];
+        let machsHtml = '';
+        if (machines.length > 0) {
+          machsHtml = machines.map(m => `<span class="chip-clean chip-clean-machine" style="font-size:11.5px;" title="${m.name}">🏭 ${m.name}</span>`).join(' ');
+        } else {
+          machsHtml = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin máquinas asignadas</span>';
+        }
+
+        return `
+          <tr>
+            <td class="col-name">
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${p.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Código: <strong>${p.code || p.id}</strong></div>
+            </td>
+            <td>
+              <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
+                🏢 ${deptLabel}
+              </span>
+            </td>
+            <td style="text-align:center;">${typeBadge}</td>
+            <td style="text-align:center;">
+              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${p.cycleTime || '35s'}</span>
+            </td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                ${machsHtml}
+              </div>
+            </td>
+            <td class="col-actions" style="text-align:center;">
+              <button class="btn-icon" title="Ver estructura de departamento" onclick="window.openDeptDetailViewer('${p.deptCode}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!procFiltersBound) {
+      if (searchInp) searchInp.addEventListener('input', renderProcessesConfig);
+      if (deptFilter) deptFilter.addEventListener('change', renderProcessesConfig);
+      if (typeFilter) typeFilter.addEventListener('change', renderProcessesConfig);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInp) searchInp.value = '';
+          if (deptFilter) deptFilter.value = 'all';
+          if (typeFilter) typeFilter.value = 'all';
+          renderProcessesConfig();
+        });
+      }
+      window.resetProcFilters = () => {
+        if (searchInp) searchInp.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        if (typeFilter) typeFilter.value = 'all';
+        renderProcessesConfig();
+      };
+      procFiltersBound = true;
+    }
+  }
+
+  // ── CATÁLOGO DEDICADO 2: ALMACENES INTERMEDIOS BUFFER ────────────────────
+  const cfgWarehousesTable = document.getElementById('cfgWarehousesTable');
+  let whFiltersBound = false;
+
+  function renderWarehousesConfig() {
+    if (!cfgWarehousesTable) return;
+    const stations = UanifyState.stations || [];
+    const searchInp = document.getElementById('whSearchInput');
+    const deptFilter = document.getElementById('whDeptFilter');
+    const countBadge = document.getElementById('whFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetWhFilters');
+
+    // Construir lista estructurada de almacenes desde las estaciones
+    let warehousesList = [];
+    stations.forEach(st => {
+      const rawWh = st.intermediateWarehouse ? st.intermediateWarehouse.split(/[,;]/).map(w => w.trim()).filter(Boolean) : [`Buffer Entrada`];
+      rawWh.forEach((wName, idx) => {
+        const cleanName = wName.replace(/\s*\([A-Z0-9\-]+\)/gi, '');
+        warehousesList.push({
+          id: `WH-${st.code}-${idx+1}`,
+          name: cleanName,
+          deptCode: st.code,
+          deptName: st.name,
+          location: st.warehouseLocation || 'Nave Central - Pasillo de Traspaso',
+          capacity: st.wipCapacity || 180,
+          currentWip: st.wipWaiting || Math.floor((st.wipCapacity || 180) * 0.35)
+        });
+      });
+    });
+
+    // Poblar selector de departamentos
+    if (deptFilter && deptFilter.options.length <= 1) {
+      deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
+        stations.map(st => `<option value="${st.code}">${st.code} · ${st.name}</option>`).join('');
+    }
+
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const selectedDept = deptFilter ? deptFilter.value : 'all';
+
+    const filtered = warehousesList.filter(w => {
+      const matchSearch = !q ||
+        w.name.toLowerCase().includes(q) ||
+        w.location.toLowerCase().includes(q) ||
+        w.deptName.toLowerCase().includes(q) ||
+        w.deptCode.toLowerCase().includes(q);
+
+      const matchDept = selectedDept === 'all' || w.deptCode === selectedDept;
+
+      return matchSearch && matchDept;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${warehousesList.length} almacenes buffer`;
+    }
+
+    if (filtered.length === 0) {
+      cfgWarehousesTable.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="6">
+            <div class="table-empty-content">
+              <span class="table-empty-icon"></span>
+              <span class="table-empty-title">No se encontraron almacenes coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetWhFilters()">Limpiar Filtros</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      cfgWarehousesTable.innerHTML = filtered.map(w => {
+        const fillPct = Math.min(100, Math.round((w.currentWip / w.capacity) * 100));
+        const fillPill = fillPct > 85
+          ? `<span class="status-pill status-danger" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`
+          : fillPct > 60
+          ? `<span class="status-pill status-warning" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`
+          : `<span class="status-pill status-active" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`;
+
+        return `
+          <tr>
+            <td class="col-name">
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">📦 ${w.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Tipo: <strong>Buffer de Traspaso / Salida</strong></div>
+            </td>
+            <td>
+              <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
+                🏢 ${w.deptCode} · ${w.deptName}
+              </span>
+            </td>
+            <td>
+              <span style="font-size:12.5px; color:var(--text-secondary);">📍 ${w.location}</span>
+            </td>
+            <td style="text-align:center;">
+              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${w.capacity} pzas</span>
+            </td>
+            <td style="text-align:center;">${fillPill}</td>
+            <td class="col-actions" style="text-align:center;">
+              <button class="btn-icon" title="Ver estructura de departamento" onclick="window.openDeptDetailViewer('${w.deptCode}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!whFiltersBound) {
+      if (searchInp) searchInp.addEventListener('input', renderWarehousesConfig);
+      if (deptFilter) deptFilter.addEventListener('change', renderWarehousesConfig);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInp) searchInp.value = '';
+          if (deptFilter) deptFilter.value = 'all';
+          renderWarehousesConfig();
+        });
+      }
+      window.resetWhFilters = () => {
+        if (searchInp) searchInp.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        renderWarehousesConfig();
+      };
+      whFiltersBound = true;
+    }
+  }
+
+  // ── CATÁLOGO DEDICADO 3: MAQUINARIA & EQUIPOS DE TRABAJO ──────────────────
+  const cfgMachinesTable = document.getElementById('cfgMachinesTable');
+  let machFiltersBound = false;
+
+  function renderMachinesConfig() {
+    if (!cfgMachinesTable) return;
+    const procs = UanifyState.processes || [];
+    const searchInp = document.getElementById('machSearchInput');
+    const deptFilter = document.getElementById('machDeptFilter');
+    const statusFilter = document.getElementById('machStatusFilter');
+    const countBadge = document.getElementById('machFilteredCountBadge');
+    const btnReset = document.getElementById('btnResetMachFilters');
+
+    // Consolidar lista de todas las máquinas vinculadas a procesos y departamentos
+    let machinesList = [];
+    procs.forEach(p => {
+      const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
+      (p.machines || []).forEach(m => {
+        // Buscar operadores asignados a esta máquina
+        const assignedOps = (UanifyState.operators || []).filter(o => 
+          o.machine && o.machine.toLowerCase().includes(m.name.toLowerCase())
+        );
+
+        machinesList.push({
+          id: m.id || `M-${machinesList.length+1}`,
+          name: m.name,
+          procId: p.id,
+          procName: p.name,
+          deptCode: p.deptCode,
+          deptName: dept ? dept.name : p.deptCode,
+          status: m.status || 'operativa',
+          operators: assignedOps
+        });
+      });
+    });
+
+    // Poblar selector de departamentos
+    if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
+      deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
+        UanifyState.stations.map(st => `<option value="${st.code}">${st.code} · ${st.name}</option>`).join('');
+    }
+
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const selectedDept = deptFilter ? deptFilter.value : 'all';
+    const selectedStatus = statusFilter ? statusFilter.value : 'all';
+
+    const filtered = machinesList.filter(m => {
+      const matchSearch = !q ||
+        m.name.toLowerCase().includes(q) ||
+        m.procName.toLowerCase().includes(q) ||
+        m.deptName.toLowerCase().includes(q) ||
+        m.deptCode.toLowerCase().includes(q) ||
+        m.operators.some(o => o.name.toLowerCase().includes(q));
+
+      const matchDept = selectedDept === 'all' || m.deptCode === selectedDept;
+      const matchStatus = selectedStatus === 'all' || m.status === selectedStatus;
+
+      return matchSearch && matchDept && matchStatus;
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `Mostrando ${filtered.length} de ${machinesList.length} máquinas`;
+    }
+
+    if (filtered.length === 0) {
+      cfgMachinesTable.innerHTML = `
+        <tr class="table-empty-row">
+          <td colspan="6">
+            <div class="table-empty-content">
+              <span class="table-empty-icon"></span>
+              <span class="table-empty-title">No se encontraron máquinas coincidentes</span>
+              <span class="table-empty-subtitle">Intenta buscar con otros términos o limpia los filtros</span>
+              <button type="button" class="btn-reset-filters" onclick="window.resetMachFilters()">Limpiar Filtros</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      cfgMachinesTable.innerHTML = filtered.map(m => {
+        const isOp = m.status === 'operativa';
+        const statusBadge = isOp
+          ? '<span class="status-pill status-active" style="font-size:11.5px;">✓ Operativa</span>'
+          : '<span class="status-pill status-warning" style="font-size:11.5px;">🛠 Mantenimiento</span>';
+
+        let opsHtml = '';
+        if (m.operators.length > 0) {
+          opsHtml = m.operators.map(o => `<span class="chip-clean" style="font-size:11.5px; background:#F1F5F9;" title="No. Nómina: ${o.empId}">👤 ${o.name}</span>`).join(' ');
+        } else {
+          opsHtml = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin operador asignado</span>';
+        }
+
+        return `
+          <tr>
+            <td class="col-name">
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">🏭 ${m.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Identificador: <strong>${m.id}</strong></div>
+            </td>
+            <td>
+              <span style="font-size:13px; font-weight:600; color:var(--text-primary);">⚙️ ${m.procName}</span>
+            </td>
+            <td>
+              <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
+                🏢 ${m.deptCode} · ${m.deptName}
+              </span>
+            </td>
+            <td style="text-align:center;">${statusBadge}</td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                ${opsHtml}
+              </div>
+            </td>
+            <td class="col-actions" style="text-align:center;">
+              <button class="btn-icon" title="Ver estructura de departamento" onclick="window.openDeptDetailViewer('${m.deptCode}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (!machFiltersBound) {
+      if (searchInp) searchInp.addEventListener('input', renderMachinesConfig);
+      if (deptFilter) deptFilter.addEventListener('change', renderMachinesConfig);
+      if (statusFilter) statusFilter.addEventListener('change', renderMachinesConfig);
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (searchInp) searchInp.value = '';
+          if (deptFilter) deptFilter.value = 'all';
+          if (statusFilter) statusFilter.value = 'all';
+          renderMachinesConfig();
+        });
+      }
+      window.resetMachFilters = () => {
+        if (searchInp) searchInp.value = '';
+        if (deptFilter) deptFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        renderMachinesConfig();
+      };
+      machFiltersBound = true;
+    }
+  }
+
+  window.renderProcessesConfig = renderProcessesConfig;
+  window.renderWarehousesConfig = renderWarehousesConfig;
+  window.renderMachinesConfig = renderMachinesConfig;
+
   // ── 6. CRUD DE FILTROS DE CALIDAD & TOLERANCIAS (C-XX) ───────────────────
   const modalCreateQuality = document.getElementById('modalCreateQualityArea');
   const btnCloseCreateQuality = document.getElementById('btnCloseCreateQualityModal');
@@ -3354,7 +3751,15 @@ window.initConfigView = function() {
   EventBus.on('user-switched', () => {
     renderQualityFiltersConfig();
     renderRouteSequence();
+    if (typeof renderProcessesConfig === 'function') renderProcessesConfig();
+    if (typeof renderWarehousesConfig === 'function') renderWarehousesConfig();
+    if (typeof renderMachinesConfig === 'function') renderMachinesConfig();
   });
+
+  // Render inicial de las entidades
+  if (typeof renderProcessesConfig === 'function') renderProcessesConfig();
+  if (typeof renderWarehousesConfig === 'function') renderWarehousesConfig();
+  if (typeof renderMachinesConfig === 'function') renderMachinesConfig();
 };
 
 if (document.readyState === 'loading') {

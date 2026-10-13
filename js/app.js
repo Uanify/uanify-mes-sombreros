@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.84.0',
+  version: '2.85.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2476,6 +2476,12 @@ function initSubTabs() {
         // Re-renderizado específico para vistas dinámicas si aplica
         if (targetId === 'subtab-config-depts' && typeof renderDepartmentsConfig === 'function') {
           renderDepartmentsConfig();
+        } else if (targetId === 'subtab-config-procs' && typeof renderProcessesConfig === 'function') {
+          renderProcessesConfig();
+        } else if (targetId === 'subtab-config-warehouses' && typeof renderWarehousesConfig === 'function') {
+          renderWarehousesConfig();
+        } else if (targetId === 'subtab-config-machines' && typeof renderMachinesConfig === 'function') {
+          renderMachinesConfig();
         } else if (targetId === 'subtab-config-quality' && typeof renderQualityFiltersConfig === 'function') {
           renderQualityFiltersConfig();
         } else if (targetId === 'subtab-config-routes' && typeof renderRouteSequence === 'function') {

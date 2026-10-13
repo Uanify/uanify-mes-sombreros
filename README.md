@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.84.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.85.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.84.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.85.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,16 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.85.0] - 2026-10-12
+- **Separación Estricta de Entidades en Listados y Navegación Independientes:**
+  - **Listados Dedicados e Individuales:** Se desacopló la vista mixta y se implementaron 5 catálogos independientes con sus propias tablas, filtros y modales:
+    1. *Catálogo de Departamentos* (`#subtab-config-depts`): listado de estaciones con supervisor, capacidad WIP, tiempo de ciclo, procesos y almacén de transferencia.
+    2. *Catálogo de Procesos* (`#subtab-config-procs`): listado oficial de procesos (manufactura / calidad), tiempo de ciclo y maquinaria asignada vinculado a su departamento.
+    3. *Catálogo de Almacenes Intermedios Buffer* (`#subtab-config-warehouses`): listado de almacenes físicos, ubicación en nave, capacidad máxima y nivel WIP en vivo.
+    4. *Catálogo de Maquinaria & Estaciones de Trabajo* (`#subtab-config-machines`): listado de máquinas y prensas, proceso asociado, estatus operativo y padrón de operadores asignados.
+    5. *Catálogo de Filtros de Calidad C-XX* (`#subtab-config-quality`): tolerancias, criterios e inspectores responsables.
+  - **Navegación Modular en Sidebar y Barra de Pestañas:** Tanto la barra lateral izquierda como la barra de sub-pestañas de Configuración cuentan con botones directos e independientes para cada una de las 5 entidades, manteniendo la vinculación jerárquica estricta (`Depto -> Procesos -> Máquinas -> Operadores` y `Depto -> Almacenes / Filtros de Calidad`).
 
 ### [2.84.0] - 2026-10-12
 - **Corrección Integral y Blindaje de Apertura de Modales y Formularios:**

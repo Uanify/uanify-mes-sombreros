@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.84.0">
-  <link rel="stylesheet" href="css/components.css?v=2.84.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.85.0">
+  <link rel="stylesheet" href="css/components.css?v=2.85.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.84.0</span>
+        <span class="system-version-pill login-version-pill">v2.85.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -193,11 +193,29 @@
         <!-- Grupo 4: Configuración & Catálogos Maestros (Segmentado por Entidad) -->
         <div class="nav-group-title">Configuración de Planta</div>
         <div class="nav-tabs">
-          <button class="nav-btn" data-tab="config" data-subtab="subtab-config-depts" title="Departamentos, Procesos, Almacenes & Máquinas">
+          <button class="nav-btn" data-tab="config" data-subtab="subtab-config-depts" title="Catálogo de Departamentos Productivos">
             <span class="tab-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
             </span>
-            <span class="tab-label">Departamentos & Almacenes</span>
+            <span class="tab-label">Departamentos</span>
+          </button>
+          <button class="nav-btn" data-tab="config" data-subtab="subtab-config-procs" title="Catálogo de Procesos de Fabricación">
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span class="tab-label">Procesos</span>
+          </button>
+          <button class="nav-btn" data-tab="config" data-subtab="subtab-config-warehouses" title="Catálogo de Almacenes Intermedios Buffer">
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </span>
+            <span class="tab-label">Almacenes Buffer</span>
+          </button>
+          <button class="nav-btn" data-tab="config" data-subtab="subtab-config-machines" title="Catálogo de Máquinas & Estaciones de Trabajo">
+            <span class="tab-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><circle cx="12" cy="7" r="1.5"/></svg>
+            </span>
+            <span class="tab-label">Maquinaria & Equipos</span>
           </button>
           <button class="nav-btn" data-tab="config" data-subtab="subtab-config-quality" title="Catálogo de Filtros de Calidad C-XX">
             <span class="tab-icon">
@@ -242,7 +260,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.84.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.85.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2161,7 +2179,19 @@
         <div class="sub-nav-tabs" data-module="config" style="margin-top:14px; margin-bottom:20px;">
           <button class="sub-tab-btn active" data-subtab="subtab-config-depts">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
-            Departamentos & Almacenes
+            Departamentos
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-procs">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Procesos
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-warehouses">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Almacenes Buffer
+          </button>
+          <button class="sub-tab-btn" data-subtab="subtab-config-machines">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><circle cx="12" cy="7" r="1.5"/></svg>
+            Maquinaria & Equipos
           </button>
           <button class="sub-tab-btn" data-subtab="subtab-config-quality">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -2409,36 +2439,24 @@
         </div>
 
 
-        <!-- Pestaña: Departamentos, Procesos, Almacenes & Máquinas -->
+        <!-- Pestaña 1: Catálogo Maestro de Departamentos -->
         <div class="sub-tab-content active" id="subtab-config-depts">
           <div class="card-glass" style="padding:22px;">
             <div class="card-head" style="flex-wrap:wrap; gap:12px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <h3 style="margin:0;">Departamentos, Procesos & Almacenes</h3>
+                <h3 style="margin:0;">Catálogo de Departamentos Productivos</h3>
                 <div class="info-tip">
                   <button type="button" class="info-tip-btn" aria-label="Información de departamentos">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
                   </button>
                   <div class="info-tip-popup">
-                    Catálogo integral de departamentos con procesos productivos y de calidad, almacenes buffer vinculados, maquinaria identificada y asignación de supervisores.
+                    Catálogo de departamentos de planta con supervisor asignado, capacidad WIP estándar, tiempo de ciclo y vinculación de procesos y almacenes de transferencia.
                   </div>
                 </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <button class="btn-primary" id="btnOpenCreateDeptModal" onclick="window.openCreateDeptModal()" style="min-height:44px; padding:0 18px; font-weight:700;">
                   + Nuevo Departamento
-                </button>
-                <button class="btn-secondary" id="btnOpenCreateProcessModal" onclick="window.openCreateProcessModal()" style="min-height:44px; padding:0 16px; font-weight:700; background:#FFFFFF; border:1.5px solid var(--border-medium); color:var(--text-primary);">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                  + Nuevo Proceso
-                </button>
-                <button class="btn-secondary" id="btnOpenCreateMachineModal" onclick="window.openCreateMachineModal()" style="min-height:44px; padding:0 16px; font-weight:700; background:#FFFFFF; border:1.5px solid var(--border-medium); color:var(--text-primary);">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><circle cx="12" cy="7" r="1.5"/></svg>
-                  + Nueva Máquina
-                </button>
-                <button class="btn-secondary" id="btnOpenCreateWarehouseModal" onclick="window.openCreateWarehouseModal()" style="min-height:44px; padding:0 16px; font-weight:700; background:#FFFFFF; border:1.5px solid var(--border-medium); color:var(--text-primary);">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                  + Nuevo Almacén Buffer
                 </button>
               </div>
             </div>
@@ -2450,24 +2468,16 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por departamento, proceso, supervisor, máquina, almacén..." autocomplete="off">
+                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar departamento por código, nombre o supervisor..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="deptSupervisorFilter" class="custom-select select-sm" style="min-width:180px;">
                     <option value="all">Todos los Supervisores</option>
                   </select>
-                  <select id="deptProcessFilter" class="custom-select select-sm" style="min-width:180px;">
-                    <option value="all">Todos los Procesos</option>
-                    <option value="manufactura">Manufactura</option>
-                    <option value="prensas">Prensas & Vapor</option>
-                    <option value="calidad">Control de Calidad</option>
-                    <option value="rampa">Rampa / Fraccionamiento</option>
-                    <option value="logistica">Logística / PT</option>
-                  </select>
                 </div>
               </div>
               <div class="filter-toolbar-actions">
-                <span class="filter-count-badge" id="deptFilteredCountBadge">Cargando...</span>
+                <span class="filter-count-badge" id="deptFilteredCountBadge">Cargando departamentos...</span>
                 <button type="button" class="btn-reset-filters" id="btnResetDeptFilters" title="Restablecer filtros">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                   Limpiar
@@ -2479,11 +2489,12 @@
               <table class="data-table" id="cfgDepartmentsDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:180px;">Departamento</th>
-                    <th style="min-width:170px;">Supervisor Asignado</th>
-                    <th style="min-width:230px;">Procesos & Calidad</th>
-                    <th style="min-width:220px;">Máquinas / Áreas de Trabajo</th>
-                    <th style="min-width:210px;">Almacenes Intermedios</th>
+                    <th class="col-name" style="min-width:200px;">Departamento</th>
+                    <th style="min-width:180px;">Supervisor Asignado</th>
+                    <th style="min-width:130px; text-align:center;">Capacidad WIP</th>
+                    <th style="min-width:130px; text-align:center;">Tiempo de Ciclo</th>
+                    <th style="min-width:200px;">Procesos Vinculados</th>
+                    <th style="min-width:190px;">Almacén Buffer</th>
                     <th class="col-actions" style="width:120px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
@@ -2513,6 +2524,211 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 2: Catálogo Dedicado de Procesos -->
+        <div class="sub-tab-content" id="subtab-config-procs">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Catálogo de Procesos de Fabricación</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de procesos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                  </button>
+                  <div class="info-tip-popup">
+                    Listado oficial de procesos productivos. Cada proceso pertenece jerárquicamente a un único departamento y agrupa a su maquinaria y operarios.
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button class="btn-primary" id="btnOpenCreateProcessModal" onclick="window.openCreateProcessModal()" style="min-height:44px; padding:0 18px; font-weight:700;">
+                  + Nuevo Proceso
+                </button>
+              </div>
+            </div>
+
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="procSearchInput" class="form-input" placeholder="Buscar por proceso, código, departamento..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="procDeptFilter" class="custom-select select-sm" style="min-width:180px;">
+                    <option value="all">Todos los Departamentos</option>
+                  </select>
+                  <select id="procTypeFilter" class="custom-select select-sm" style="min-width:160px;">
+                    <option value="all">Todos los Tipos</option>
+                    <option value="manufactura">Manufactura</option>
+                    <option value="calidad">Calidad</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-toolbar-actions">
+                <span class="filter-count-badge" id="procFilteredCountBadge">Cargando procesos...</span>
+                <button type="button" class="btn-reset-filters" id="btnResetProcFilters" title="Restablecer filtros">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
+              <table class="data-table" id="cfgProcessesDataTable">
+                <thead>
+                  <tr>
+                    <th class="col-name" style="min-width:240px;">Proceso</th>
+                    <th style="min-width:200px;">Departamento Perteneciente</th>
+                    <th style="min-width:120px; text-align:center;">Tipo</th>
+                    <th style="min-width:130px; text-align:center;">Tiempo de Ciclo</th>
+                    <th style="min-width:240px;">Maquinaria Asignada</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cfgProcessesTable">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Catálogo Dedicado de Almacenes Intermedios Buffer -->
+        <div class="sub-tab-content" id="subtab-config-warehouses">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Catálogo de Almacenes Intermedios Buffer</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de almacenes buffer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                  </button>
+                  <div class="info-tip-popup">
+                    Puntos físicos de acopio y transferencia interdepartamental (Regla 0.9). Cada departamento deposita en su almacén de salida para recolección posterior.
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button class="btn-primary" id="btnOpenCreateWarehouseModal" onclick="window.openCreateWarehouseModal()" style="min-height:44px; padding:0 18px; font-weight:700;">
+                  + Nuevo Almacén Buffer
+                </button>
+              </div>
+            </div>
+
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="whSearchInput" class="form-input" placeholder="Buscar por almacén, ubicación, departamento..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="whDeptFilter" class="custom-select select-sm" style="min-width:180px;">
+                    <option value="all">Todos los Departamentos</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-toolbar-actions">
+                <span class="filter-count-badge" id="whFilteredCountBadge">Cargando almacenes...</span>
+                <button type="button" class="btn-reset-filters" id="btnResetWhFilters" title="Restablecer filtros">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
+              <table class="data-table" id="cfgWarehousesDataTable">
+                <thead>
+                  <tr>
+                    <th class="col-name" style="min-width:240px;">Almacén Buffer</th>
+                    <th style="min-width:200px;">Departamento Asignado</th>
+                    <th style="min-width:220px;">Ubicación Física en Nave</th>
+                    <th style="min-width:140px; text-align:center;">Capacidad Máxima</th>
+                    <th style="min-width:140px; text-align:center;">Nivel WIP Actual</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cfgWarehousesTable">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: Catálogo Dedicado de Maquinaria & Equipos -->
+        <div class="sub-tab-content" id="subtab-config-machines">
+          <div class="card-glass" style="padding:22px;">
+            <div class="card-head" style="flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Catálogo de Maquinaria & Estaciones de Trabajo</h3>
+                <div class="info-tip">
+                  <button type="button" class="info-tip-btn" aria-label="Información de maquinaria">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
+                  </button>
+                  <div class="info-tip-popup">
+                    Inventario de máquinas, prensas hidráulicas, mesas de tendido y cabinas. Vinculadas jerárquicamente a un proceso específico y con operadores asignados.
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button class="btn-primary" id="btnOpenCreateMachineModal" onclick="window.openCreateMachineModal()" style="min-height:44px; padding:0 18px; font-weight:700;">
+                  + Nueva Máquina
+                </button>
+              </div>
+            </div>
+
+            <div class="uanify-filter-toolbar">
+              <div class="filter-toolbar-inputs">
+                <div class="filter-search-box">
+                  <span class="search-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </span>
+                  <input type="text" id="machSearchInput" class="form-input" placeholder="Buscar por máquina, proceso, departamento..." autocomplete="off">
+                </div>
+                <div class="filter-select-group">
+                  <select id="machDeptFilter" class="custom-select select-sm" style="min-width:180px;">
+                    <option value="all">Todos los Departamentos</option>
+                  </select>
+                  <select id="machStatusFilter" class="custom-select select-sm" style="min-width:150px;">
+                    <option value="all">Todos los Estatus</option>
+                    <option value="operativa">Operativa</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-toolbar-actions">
+                <span class="filter-count-badge" id="machFilteredCountBadge">Cargando maquinaria...</span>
+                <button type="button" class="btn-reset-filters" id="btnResetMachFilters" title="Restablecer filtros">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="downtime-table-wrapper table-responsive" style="margin-top:14px;">
+              <table class="data-table" id="cfgMachinesDataTable">
+                <thead>
+                  <tr>
+                    <th class="col-name" style="min-width:240px;">Máquina / Estación</th>
+                    <th style="min-width:200px;">Proceso Asociado</th>
+                    <th style="min-width:180px;">Departamento</th>
+                    <th style="min-width:140px; text-align:center;">Estatus Operativo</th>
+                    <th style="min-width:220px;">Operadores Asignados</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="cfgMachinesTable">
+                  <!-- Llenado dinámico en config.js -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -5177,11 +5393,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.84.0"></script>
-  <script src="js/andon.js?v=2.84.0"></script>
-  <script src="js/terminal.js?v=2.84.0"></script>
-  <script src="js/engineer.js?v=2.84.0"></script>
-  <script src="js/executive.js?v=2.84.0"></script>
-  <script src="js/config.js?v=2.84.0"></script>
+  <script src="js/app.js?v=2.85.0"></script>
+  <script src="js/andon.js?v=2.85.0"></script>
+  <script src="js/terminal.js?v=2.85.0"></script>
+  <script src="js/engineer.js?v=2.85.0"></script>
+  <script src="js/executive.js?v=2.85.0"></script>
+  <script src="js/config.js?v=2.85.0"></script>
 </body>
 </html>
