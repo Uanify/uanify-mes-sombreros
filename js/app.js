@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.87.0',
+  version: '2.89.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2541,15 +2541,34 @@ document.addEventListener('DOMContentLoaded', () => {
           if (subTabBtn) {
             subTabBtn.click();
           } else {
-            // Activar directamente el contenedor si existe
+            // Activar directamente el contenedor
             targetPanel.querySelectorAll('.sub-tab-content').forEach(c => {
               c.classList.remove('active');
+              c.classList.remove('d-none');
               c.style.setProperty('display', 'none', 'important');
             });
             const subContent = document.getElementById(targetSubtab);
             if (subContent) {
+              subContent.classList.remove('d-none');
               subContent.classList.add('active');
               subContent.style.setProperty('display', 'block', 'important');
+            }
+
+            // Invocar renderizado específico de la entidad
+            if (targetSubtab === 'subtab-config-depts' && typeof renderDepartmentsConfig === 'function') {
+              renderDepartmentsConfig();
+            } else if (targetSubtab === 'subtab-config-procs' && typeof renderProcessesConfig === 'function') {
+              renderProcessesConfig();
+            } else if (targetSubtab === 'subtab-config-warehouses' && typeof renderWarehousesConfig === 'function') {
+              renderWarehousesConfig();
+            } else if (targetSubtab === 'subtab-config-machines' && typeof renderMachinesConfig === 'function') {
+              renderMachinesConfig();
+            } else if (targetSubtab === 'subtab-config-quality' && typeof renderQualityFiltersConfig === 'function') {
+              renderQualityFiltersConfig();
+            } else if (targetSubtab === 'subtab-config-routes' && typeof renderRouteSequence === 'function') {
+              renderRouteSequence();
+            } else if (targetSubtab === 'subtab-config-users' && typeof renderUsersTable === 'function') {
+              renderUsersTable();
             }
           }
         }

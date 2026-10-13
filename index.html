@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.87.0">
-  <link rel="stylesheet" href="css/components.css?v=2.87.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.89.0">
+  <link rel="stylesheet" href="css/components.css?v=2.89.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.87.0</span>
+        <span class="system-version-pill login-version-pill">v2.89.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -260,7 +260,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.87.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.89.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2175,45 +2175,7 @@
           </div>
         </div>
 
-        <!-- Pestañas de Navegación Directa por Entidad (Regla 0.8 & Optimización Tablet-First) -->
-        <div class="sub-nav-tabs" data-module="config" style="margin-top:14px; margin-bottom:20px;">
-          <button class="sub-tab-btn active" data-subtab="subtab-config-depts">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
-            Departamentos
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-procs">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Procesos
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-warehouses">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            Almacenes Buffer
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-machines">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><circle cx="12" cy="7" r="1.5"/></svg>
-            Maquinaria & Equipos
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-quality">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Filtros de Calidad (C-XX)
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-routes">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/></svg>
-            Rutas & Secuencias
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-params">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Parámetros de Turno & WIP
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-users">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            Usuarios & Permisos (RBAC)
-          </button>
-          <button class="sub-tab-btn" data-subtab="subtab-config-compac">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-            Integración CONTPAQi / ERP
-          </button>
-        </div>
+        <!-- Contenido por Entidad Configurable (Navegación segmentada directa desde el Sidebar) -->
 
         <!-- Pestaña: Parámetros Generales & Horario de Turno -->
         <div class="sub-tab-content" id="subtab-config-params">
@@ -2468,11 +2430,22 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar departamento por código, nombre o supervisor..." autocomplete="off">
+                  <input type="text" id="deptSearchInput" class="form-input" placeholder="Buscar por departamento, supervisor, proceso o almacén..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
                   <select id="deptSupervisorFilter" class="custom-select select-sm" style="min-width:180px;">
                     <option value="all">Todos los Supervisores</option>
+                  </select>
+                  <select id="deptProcessFilter" class="custom-select select-sm" style="min-width:170px;">
+                    <option value="all">Todos los Procesos</option>
+                    <option value="manufactura">Manufactura & Armado</option>
+                    <option value="calidad">Inspección de Calidad</option>
+                    <option value="prensas">Prensas & Hormado</option>
+                    <option value="rampa">Rampa & Fraccionamiento</option>
+                    <option value="logistica">Empaque & Embarque</option>
+                  </select>
+                  <select id="deptWarehouseFilter" class="custom-select select-sm" style="min-width:170px;">
+                    <option value="all">Todos los Almacenes</option>
                   </select>
                 </div>
               </div>
@@ -2489,12 +2462,11 @@
               <table class="data-table" id="cfgDepartmentsDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:200px;">Departamento</th>
-                    <th style="min-width:180px;">Supervisor Asignado</th>
-                    <th style="min-width:130px; text-align:center;">Tiempo de Ciclo</th>
-                    <th style="min-width:220px;">Procesos Vinculados</th>
-                    <th style="min-width:200px;">Almacén Buffer de Salida</th>
-                    <th class="col-actions" style="width:120px; text-align:center;">Acciones</th>
+                    <th class="col-name" style="min-width:220px;">Departamento</th>
+                    <th style="min-width:190px;">Supervisor Asignado</th>
+                    <th style="min-width:240px;">Procesos Vinculados</th>
+                    <th style="min-width:240px;">Almacenes Buffer de Salida</th>
+                    <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="cfgDepartmentsTable">
@@ -5394,11 +5366,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.87.0"></script>
-  <script src="js/andon.js?v=2.87.0"></script>
-  <script src="js/terminal.js?v=2.87.0"></script>
-  <script src="js/engineer.js?v=2.87.0"></script>
-  <script src="js/executive.js?v=2.87.0"></script>
-  <script src="js/config.js?v=2.87.0"></script>
+  <script src="js/app.js?v=2.89.0"></script>
+  <script src="js/andon.js?v=2.89.0"></script>
+  <script src="js/terminal.js?v=2.89.0"></script>
+  <script src="js/engineer.js?v=2.89.0"></script>
+  <script src="js/executive.js?v=2.89.0"></script>
+  <script src="js/config.js?v=2.89.0"></script>
 </body>
 </html>

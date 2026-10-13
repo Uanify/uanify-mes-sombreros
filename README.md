@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.87.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.89.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.87.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.89.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,19 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.89.0] - 2026-10-13
+- **Optimización de Visualización & Filtrado Multi-Criterio en Catálogo de Departamentos:**
+  - **Eliminación de Códigos Técnicos Invasivos:** Se removió la visualización del código en el nombre del departamento, presentando una vista limpia con únicamente la denominación oficial.
+  - **Remoción de Columna Tiempo de Ciclo:** Se retiró la columna de Tiempo de Ciclo de la tabla principal de Departamentos para dar prioridad a las relaciones operativas clave.
+  - **Visualización Homologada de Almacenes Buffer Múltiples:** Los almacenes buffer se gestionan y presentan con la misma estructura ergonómica que los procesos vinculados (`.chip-clean` individuales con badge interactivo `+N más`).
+  - **Filtrado Multi-Propiedad Extendido:** Se incorporaron selectores de filtrado simultáneos por Supervisor, por Familia de Proceso y por Almacén Buffer de Salida, con sincronización de contador reactivo y botón de restablecimiento.
+
+### [2.88.0] - 2026-10-13
+- **Eliminación de Pestañas Superiores Redundantes en Configuración de Planta:**
+  - **Navegación Unificada Directa desde el Navbar / Sidebar:** Toda la navegación entre entidades maestras (Departamentos, Procesos, Almacenes Buffer, Maquinaria, Calidad, Rutas, Turno, RBAC, ERP) se gestiona de forma directa, limpia y exclusiva desde el menú lateral (`#mainNav`).
+  - **Limpieza Visual Integral:** Se eliminó la fila superior de sub-pestañas redundantes (`.sub-nav-tabs`) de la vista `#view-config`, otorgando el 100% del área útil de pantalla a los catálogos y formularios de gestión de planta.
+  - **Enrutamiento Directo e Invocación de Renders:** Al hacer clic en cualquier entidad de configuración desde el sidebar, `js/app.js` activa directamente el contenedor de la entidad y ejecuta su función de renderizado (`renderDepartmentsConfig()`, `renderProcessesConfig()`, `renderWarehousesConfig()`, etc.).
 
 ### [2.87.0] - 2026-10-12
 - **Manejador Global Universal de Cierre de Modales (Regla 0.20):**
