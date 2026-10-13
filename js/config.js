@@ -65,7 +65,7 @@ window.initConfigView = function() {
         (st.name && st.name.toLowerCase().includes(q)) ||
         (st.operator && st.operator.toLowerCase().includes(q)) ||
         (st.machines && st.machines.toLowerCase().includes(q)) ||
-        (st.processes && st.processes.toLowerCase().includes(q)) ||
+        (typeof st.processes === 'string' && st.processes.toLowerCase().includes(q)) ||
         (st.intermediateWarehouse && st.intermediateWarehouse.toLowerCase().includes(q));
 
       let matchSup = true;
@@ -76,7 +76,8 @@ window.initConfigView = function() {
 
       let matchProc = true;
       if (proc !== 'all') {
-        const isCalidad = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || (st.processes && st.processes.toLowerCase().includes('calidad'));
+        const procStr = typeof st.processes === 'string' ? st.processes.toLowerCase() : '';
+        const isCalidad = st.type === 'calidad' || (st.code && st.code.startsWith('C-')) || procStr.includes('calidad');
         const isPress = st.type === 'prensas' || st.code === 'D-05' || (st.id && st.id.includes('prensa'));
         const isRampa = st.type === 'rampa' || (st.id && st.id.includes('rampa'));
         const isLogistics = st.type === 'logistica' || st.code === 'D-11' || (st.id && st.id.includes('almacen'));
@@ -772,6 +773,7 @@ window.initConfigView = function() {
   const btnOpenCreate = document.getElementById('btnOpenCreateUserModal');
   const btnCloseCreate = document.getElementById('btnCloseCreateUserModal');
   const formCreateUser = document.getElementById('formCreateUser');
+  const selectNewRole = document.getElementById('newRoleSelect');
   const RoleFixedPermissions = {
     ingeniero: {
       title: 'Ingeniero (Admin Mayor · Control Total)',
@@ -814,10 +816,17 @@ window.initConfigView = function() {
     updateRolePermsPreview(selectNewRole.value, 'rolePermsTitle', 'rolePermsDesc');
   }
 
+  window.openCreateUserModal = function() {
+    if (!modalCreateUser) return;
+    configureUserRoleOptions();
+    const nameInput = document.getElementById('newUserName');
+    if (nameInput) nameInput.value = '';
+    modalCreateUser.classList.add('active');
+  };
+
   if (btnOpenCreate && modalCreateUser) {
     btnOpenCreate.addEventListener('click', () => {
-      configureUserRoleOptions();
-      modalCreateUser.classList.add('active');
+      window.openCreateUserModal();
     });
   }
 

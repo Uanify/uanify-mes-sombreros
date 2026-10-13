@@ -2019,7 +2019,7 @@ input.is-valid {
 }
 
 .modal-backdrop.active {
-  display: flex;
+  display: flex !important;
 }
 
 .modal-box {
