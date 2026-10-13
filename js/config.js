@@ -312,6 +312,9 @@ window.initConfigView = function() {
 
   // ── 2. RENDER DE USUARIOS Y ROLES (RBAC CON FILTROS - REGLA 0.35) ────────
   let userFiltersBound = false;
+  let userCurrentPage = 1;
+  const userItemsPerPage = 8;
+
   function renderUsersTable() {
     if (!usersTableBody || !UanifyState || !UanifyState.users) return;
 
@@ -333,11 +336,33 @@ window.initConfigView = function() {
       return matchSearch && matchRole;
     });
 
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / userItemsPerPage) || 1;
+    if (userCurrentPage > totalPages) userCurrentPage = totalPages;
+    if (userCurrentPage < 1) userCurrentPage = 1;
+
+    const startIndex = (userCurrentPage - 1) * userItemsPerPage;
+    const endIndex = Math.min(startIndex + userItemsPerPage, totalItems);
+    const paginatedItems = filtered.slice(startIndex, endIndex);
+
     if (countBadge) {
       countBadge.textContent = `Mostrando ${filtered.length} de ${UanifyState.users.length} usuarios`;
     }
 
-    if (filtered.length === 0) {
+    // Actualizar barras de paginación
+    const paginationRange = document.getElementById('userPaginationRange');
+    const paginationTotal = document.getElementById('userPaginationTotal');
+    const pageIndicator = document.getElementById('userPageIndicator');
+    const btnPrev = document.getElementById('btnUserPrevPage');
+    const btnNext = document.getElementById('btnUserNextPage');
+
+    if (paginationRange) paginationRange.textContent = totalItems === 0 ? '0' : `${startIndex + 1} - ${endIndex}`;
+    if (paginationTotal) paginationTotal.textContent = totalItems;
+    if (pageIndicator) pageIndicator.textContent = `${userCurrentPage} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = (userCurrentPage <= 1);
+    if (btnNext) btnNext.disabled = (userCurrentPage >= totalPages);
+
+    if (paginatedItems.length === 0) {
       usersTableBody.innerHTML = `
         <tr class="table-empty-row">
           <td colspan="5">
@@ -351,7 +376,7 @@ window.initConfigView = function() {
         </tr>
       `;
     } else {
-      usersTableBody.innerHTML = filtered.map(u => {
+      usersTableBody.innerHTML = paginatedItems.map(u => {
         let roleBadgeClass = 'role-badge-supervisor';
         if (u.role === 'ingeniero' || u.role === 'admin') roleBadgeClass = 'role-badge-ingeniero';
         else if (u.role === 'calidad') roleBadgeClass = 'role-badge-calidad';
@@ -359,18 +384,20 @@ window.initConfigView = function() {
         // Sintetizar permisos modulares para evitar sobrecarga visual
         let permInfo = '';
         if (u.role === 'ingeniero' || u.role === 'admin' || (u.permissions && u.permissions.length >= (AvailableModules || []).length)) {
-          permInfo = `<span class="badge-subtle" style="background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0; font-weight:700; font-size:11px; padding:3px 8px;">Acceso Total (Todos los Módulos)</span>`;
+          permInfo = `<span class="badge-subtle" style="background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0; font-weight:700; font-size:11.5px; padding:3px 9px;">Acceso Total (Todos los Módulos)</span>`;
         } else if (u.role === 'calidad') {
           permInfo = `
-            <span class="badge-subtle" style="background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF; font-weight:700; font-size:11px; padding:3px 8px;">Filtros de Calidad C1 a C5</span>
-            <span class="table-cell-subtext" style="display:block; margin-top:2px;">Terminal de Inspección, Andon, Almacén</span>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span class="badge-subtle" style="background:#FAF5FF; color:#7E22CE; border:1px solid #E9D5FF; font-weight:700; font-size:11.5px; padding:3px 9px; width:fit-content;">Filtros de Calidad C1 a C5</span>
+              <span style="font-size:11px; color:var(--text-muted);">Terminal de Inspección, Andon, Almacén</span>
+            </div>
           `;
         } else {
           const permPills = (u.permissions || []).map(p => {
             const mod = AvailableModules.find(m => m.id === p);
             return `<span class="perm-pill" style="font-size:10.5px; padding:2px 7px;">${mod ? mod.name : p}</span>`;
           }).join(' ');
-          permInfo = `<div style="display:flex; flex-wrap:wrap; gap:3px; max-width:280px;">${permPills}</div>`;
+          permInfo = `<div style="display:flex; flex-wrap:wrap; gap:4px; max-width:300px;">${permPills}</div>`;
         }
 
         // Departamentos asignados compactos con botón de ver detalle
@@ -378,17 +405,19 @@ window.initConfigView = function() {
         if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
           deptsInfo = `
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11px; padding:3px 8px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">Supervisión Global (14 Áreas)</span>
-              <button type="button" class="btn-subtle" onclick="window.viewUserDepts('${u.id}')" style="font-size:11px; padding:2px 8px; height:24px; cursor:pointer;" title="Consultar todas las áreas asignadas">Ver Áreas</button>
+              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">
+                Supervisión Global (14 Áreas)
+              </span>
+              <button type="button" class="btn-subtle" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 9px; height:26px; cursor:pointer;" title="Consultar todas las áreas asignadas">Ver Áreas</button>
             </div>
           `;
         } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
           deptsInfo = `
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 8px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
+              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
                 ${u.assignedDepartments.length} Departamento${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
               </span>
-              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:28px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de departamentos y estaciones asignadas">
+              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:26px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de departamentos y estaciones asignadas">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 Ver Detalle
               </button>
@@ -401,10 +430,11 @@ window.initConfigView = function() {
         return `
           <tr>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${u.name}</div>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700; color:var(--text-primary);">${u.name}</div>
+              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">${u.email || ''}</div>
             </td>
-            <td style="text-align:center;">
-              <span class="role-badge ${roleBadgeClass}" style="margin:0 auto; font-size:11.5px; padding:4px 10px;">${u.badge || u.roleName}</span>
+            <td>
+              <span class="role-badge ${roleBadgeClass}" style="font-size:11.5px; padding:4px 10px; font-weight:700;">${u.badge || u.roleName}</span>
             </td>
             <td>
               ${deptsInfo}
@@ -413,19 +443,13 @@ window.initConfigView = function() {
               ${permInfo}
             </td>
             <td class="col-actions" style="text-align:center;">
-              <div class="action-btns-cell" style="justify-content:center;">
-                <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos">
+              <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos de ${u.name}">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
-                ${u.id !== 'admin-1' ? `
-                  <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                  </button>
-                ` : `
-                  <button type="button" class="btn-table-action btn-action-delete" disabled style="opacity:0.35; cursor:not-allowed !important; background:#F8FAFC; border-color:#E2E8F0; color:#94A3B8;" title="Usuario Principal (Protegido contra eliminación)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                  </button>
-                `}
+                <button type="button" class="btn-table-action btn-action-delete" onclick="deleteUser('${u.id}')" title="Eliminar usuario ${u.name}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
               </div>
             </td>
           </tr>
@@ -435,18 +459,36 @@ window.initConfigView = function() {
 
     if (!userFiltersBound) {
       userFiltersBound = true;
-      if (searchInput) searchInput.addEventListener('input', renderUsersTable);
-      if (roleFilter) roleFilter.addEventListener('change', renderUsersTable);
+      if (searchInput) searchInput.addEventListener('input', () => { userCurrentPage = 1; renderUsersTable(); });
+      if (roleFilter) roleFilter.addEventListener('change', () => { userCurrentPage = 1; renderUsersTable(); });
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (userCurrentPage > 1) {
+            userCurrentPage--;
+            renderUsersTable();
+          }
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (userCurrentPage < totalPages) {
+            userCurrentPage++;
+            renderUsersTable();
+          }
+        });
+      }
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInput) searchInput.value = '';
           if (roleFilter) roleFilter.value = 'all';
+          userCurrentPage = 1;
           renderUsersTable();
         });
       }
       window.resetUserFilters = function() {
         if (searchInput) searchInput.value = '';
         if (roleFilter) roleFilter.value = 'all';
+        userCurrentPage = 1;
         renderUsersTable();
       };
     }
@@ -1333,15 +1375,27 @@ window.initConfigView = function() {
     const user = UanifyState.users.find(u => u.id === userId);
     if (!user) return;
 
+    // Validar que siempre quede al menos un Administrador / Ingeniero en el sistema
+    const adminCount = UanifyState.users.filter(u => u.role === 'ingeniero' || u.role === 'admin').length;
+    if ((user.role === 'ingeniero' || user.role === 'admin') && adminCount <= 1) {
+      window.UanifyUI.toast(
+        'No es posible eliminar al último Ingeniero (Admin Mayor). La planta requiere al menos un usuario administrador activo.',
+        'warning',
+        'Operación No Permitida'
+      );
+      return;
+    }
+
     window.UanifyUI.confirm(
       '¿Eliminar Usuario del Sistema?',
       `¿Confirmas la baja de acceso para "${user.name}" (${user.roleName})? Ya no podrá ingresar a la terminal ni a los tableros.`,
       () => {
         UanifyState.users = UanifyState.users.filter(u => u.id !== userId);
         if (UanifyState.currentUser === userId) {
-          UanifyState.currentUser = 'admin-1';
+          const nextAdmin = UanifyState.users.find(u => u.role === 'ingeniero' || u.role === 'admin') || UanifyState.users[0];
+          UanifyState.currentUser = nextAdmin ? nextAdmin.id : 'admin-1';
           if (typeof window.switchActiveUser === 'function') {
-            window.switchActiveUser('admin-1');
+            window.switchActiveUser(UanifyState.currentUser);
           }
         }
         renderUsersTable();

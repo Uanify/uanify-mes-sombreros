@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.93.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.94.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.93.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.94.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -538,6 +538,13 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 - **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas en Departamentos y Filtros de Calidad; eliminación de descripciones largas innecesarias en celdas para evitar saturación visual y sobrecarga de información.
 - **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Los botones de fila en todas las tablas (`.btn-table-action`) se estandarizaron como botones cuadrados compactos de 32x32px con iconos SVG claros (Editar en gris suave `#F1F5F9`/`#E2E8F0`, Eliminar en rojo pastel `#FEF2F2`/`#FEE2E2`, Ver/Ficha en verde pastel `#F0FDF4`/`#DCFCE7`), sin texto intrusivo y con tooltips nativos en `title`.
 - **Estandarización de Paleta de Botones del Sistema:** Unificación de todos los botones primarios a `--color-brand` artesanal, eliminando colores arbitrarios o ad-hoc en módulos aislados.
+### [2.94.0] - 2026-10-13
+- **Estandarización y Homologación de Usuarios & Permisos RBAC:**
+  - Supresión del icono de candado en las acciones del usuario principal (Edmundo González) en apego estricto a la Regla 0.13 de AGENTS.md (cero candados visuales en interfaces).
+  - Igualación de diseño, botones de acción (Editar y Eliminar) y alineación simétrica de celdas entre todos los perfiles Ingeniero (Admin Mayor).
+  - Incorporación de paginación de usuarios (rango, total y botones Anterior/Siguiente) y alineación de encabezados (Nombre de Usuario con correo secundario, Rol Asignado, Departamentos Asignados, Permisos Modulares y Acciones).
+  - Protección de borrado en cascada: el sistema valida que siempre permanezca al menos un Ingeniero (Admin Mayor) activo antes de procesar bajas.
+
 ### [2.93.0] - 2026-10-13
 - **Homologación Visual y Estructural de Filtros de Calidad (C-XX) con Almacenes Buffer:**
   - Estructura y jerarquía de tabla idéntica a Almacenes Buffer: Filtro de Calidad, Departamento Asignado (chip de marca `#8B5E3C`), Inspector Responsable (con icono SVG), Tiempo de Ciclo (en tipografía mono y centrado) y Acciones.
