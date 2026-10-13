@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.89.0">
-  <link rel="stylesheet" href="css/components.css?v=2.89.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.90.0">
+  <link rel="stylesheet" href="css/components.css?v=2.90.0">
 </head>
 <body class="industrial-theme">
 
@@ -26,7 +26,7 @@
           <h1 class="login-app-title">Tombstone Hats MES</h1>
           <p class="login-app-sub">Control de Planta · San Francisco del Rincón, Gto.</p>
         </div>
-        <span class="system-version-pill login-version-pill">v2.89.0</span>
+        <span class="system-version-pill login-version-pill">v2.90.0</span>
       </div>
 
       <!-- Cuerpo del Login -->
@@ -260,7 +260,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.89.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.90.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -2527,16 +2527,11 @@
                   <span class="search-icon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   </span>
-                  <input type="text" id="procSearchInput" class="form-input" placeholder="Buscar por proceso, código, departamento..." autocomplete="off">
+                  <input type="text" id="procSearchInput" class="form-input" placeholder="Buscar proceso o departamento..." autocomplete="off">
                 </div>
                 <div class="filter-select-group">
-                  <select id="procDeptFilter" class="custom-select select-sm" style="min-width:180px;">
+                  <select id="procDeptFilter" class="custom-select select-sm" style="min-width:200px;">
                     <option value="all">Todos los Departamentos</option>
-                  </select>
-                  <select id="procTypeFilter" class="custom-select select-sm" style="min-width:160px;">
-                    <option value="all">Todos los Tipos</option>
-                    <option value="manufactura">Manufactura</option>
-                    <option value="calidad">Calidad</option>
                   </select>
                 </div>
               </div>
@@ -2553,11 +2548,9 @@
               <table class="data-table" id="cfgProcessesDataTable">
                 <thead>
                   <tr>
-                    <th class="col-name" style="min-width:240px;">Proceso</th>
-                    <th style="min-width:200px;">Departamento Perteneciente</th>
-                    <th style="min-width:120px; text-align:center;">Tipo</th>
-                    <th style="min-width:130px; text-align:center;">Tiempo de Ciclo</th>
-                    <th style="min-width:240px;">Maquinaria Asignada</th>
+                    <th class="col-name" style="min-width:260px;">Proceso</th>
+                    <th style="min-width:240px;">Departamento Perteneciente</th>
+                    <th style="min-width:140px; text-align:center;">Tiempo de Ciclo</th>
                     <th class="col-actions" style="width:110px; text-align:center;">Acciones</th>
                   </tr>
                 </thead>
@@ -4578,6 +4571,72 @@
   </div>
 
   <!-- ======================================================================
+       MODAL: VISOR DE DETALLE DE PROCESO & ASIGNACIÓN DE MÁQUINAS / OPERADORES
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalProcessViewerModal">
+    <div class="modal-box card-glass" style="max-width:640px; width:95%; max-height:88vh; overflow-y:auto;">
+      <div class="modal-header">
+        <div>
+          <h3 id="procViewerTitle" style="color:var(--text-primary); font-size:18px; margin:0;">
+            Detalles del Proceso
+          </h3>
+          <p class="modal-header-sub" id="procViewerSubtitle">Máquinas vinculadas y operadores de estación asignados</p>
+        </div>
+        <button class="modal-close" id="btnCloseProcViewerModal" type="button" onclick="document.getElementById('modalProcessViewerModal').classList.remove('active')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+        <!-- Cabecera Informativa del Proceso -->
+        <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Departamento Perteneciente</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="procViewerDept">-</div>
+          </div>
+          <div>
+            <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Tiempo Estándar de Ciclo</div>
+            <div style="font-size:15px; font-weight:700; color:var(--color-brand); font-family:var(--font-mono); margin-top:2px;" id="procViewerCycle">-</div>
+          </div>
+        </div>
+
+        <!-- Sección: Panel para Vincular Nueva Máquina -->
+        <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+          <h4 style="margin:0 0 10px 0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--color-brand); display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            Asignar Nueva Máquina al Proceso
+          </h4>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <select id="procViewerNewMachineSelect" class="custom-select select-sm" style="flex:1; min-width:240px;">
+              <option value="">Seleccionar máquina disponible...</option>
+            </select>
+            <button type="button" class="btn-primary btn-sm" id="btnAssignMachineToProc" style="min-height:36px; padding:0 16px; font-weight:700;">
+              + Vincular Máquina
+            </button>
+          </div>
+          <span style="font-size:11.5px; color:var(--text-muted); margin-top:6px; display:block;">
+            Solo se listan máquinas que no están actualmente asignadas a este proceso.
+          </span>
+        </div>
+
+        <!-- Sección: Listado de Máquinas Asignadas con Operadores y Opción de Desvincular -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; font-size:13px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              Máquinas Vinculadas & Operadores Asignados
+            </h4>
+            <span class="filter-count-badge" id="procViewerMachCountBadge" style="font-size:11px;">0 máquinas</span>
+          </div>
+          <div id="procViewerMachinesList" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:14px 20px; border-top:1px solid var(--border-subtle); background:#FFFFFF; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+        <button type="button" class="btn-primary" id="btnCloseProcViewerBtn" onclick="document.getElementById('modalProcessViewerModal').classList.remove('active')" style="min-height:44px; padding:0 24px; font-weight:700;">Cerrar Detalle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: VISOR DE DEPARTAMENTOS ASIGNADOS AL USUARIO
        ====================================================================== -->
   <div class="modal-backdrop" id="modalUserDeptsViewer">
@@ -5366,11 +5425,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.89.0"></script>
-  <script src="js/andon.js?v=2.89.0"></script>
-  <script src="js/terminal.js?v=2.89.0"></script>
-  <script src="js/engineer.js?v=2.89.0"></script>
-  <script src="js/executive.js?v=2.89.0"></script>
-  <script src="js/config.js?v=2.89.0"></script>
+  <script src="js/app.js?v=2.90.0"></script>
+  <script src="js/andon.js?v=2.90.0"></script>
+  <script src="js/terminal.js?v=2.90.0"></script>
+  <script src="js/engineer.js?v=2.90.0"></script>
+  <script src="js/executive.js?v=2.90.0"></script>
+  <script src="js/config.js?v=2.90.0"></script>
 </body>
 </html>
