@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.94.0',
+  version: '2.95.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -2407,7 +2407,7 @@ function updateUserInterface() {
   });
 
   // Ocultar también títulos de grupo si todos sus botones están ocultos
-  document.querySelectorAll('.nav-tabs').forEach(group => {
+  document.querySelectorAll('.nav-tabs:not(.nav-tabs-collapsible)').forEach(group => {
     const buttons = group.querySelectorAll('.nav-btn');
     const hasVisible = Array.from(buttons).some(b => b.style.display !== 'none');
     const groupTitle = group.previousElementSibling;
@@ -2415,6 +2415,13 @@ function updateUserInterface() {
       groupTitle.style.display = hasVisible ? 'block' : 'none';
     }
   });
+
+  // Ocultar sección de Configuración si el usuario no tiene permisos
+  const configGroup = document.getElementById('navGroupConfig');
+  if (configGroup) {
+    const isConfigAllowed = user.permissions && user.permissions.includes('config');
+    configGroup.style.display = isConfigAllowed ? 'flex' : 'none';
+  }
 }
 
 // Cambiar de usuario activo (Simulación de login / perfiles para demo)
@@ -2583,6 +2590,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Toggle colapsable / desplegable para Configuración de Planta en el Sidebar
+  const navGroupConfig = document.getElementById('navGroupConfig');
+  const btnToggleNavConfig = document.getElementById('btnToggleNavConfig');
+
+  if (navGroupConfig && btnToggleNavConfig) {
+    // Restaurar estado guardado (por defecto expandido salvo que el usuario lo haya colapsado)
+    const isConfigCollapsed = localStorage.getItem('uanify_nav_config_collapsed') === 'true';
+    if (isConfigCollapsed) {
+      navGroupConfig.classList.add('is-collapsed');
+    }
+
+    btnToggleNavConfig.addEventListener('click', (e) => {
+      e.preventDefault();
+      const collapsed = navGroupConfig.classList.toggle('is-collapsed');
+      try {
+        localStorage.setItem('uanify_nav_config_collapsed', collapsed ? 'true' : 'false');
+      } catch (err) {
+        console.warn('Error guardando estado de navegación:', err);
+      }
+    });
+  }
+
   // Sincronizar vista activa con la pestaña seleccionada inicialmente
   const initialTab = UanifyState.activeTab || 'terminal';
   const initialNavBtn = document.querySelector(`.nav-btn[data-tab="${initialTab}"]`);
@@ -2592,6 +2621,11 @@ document.addEventListener('DOMContentLoaded', () => {
     viewPanels.forEach(p => p.classList.remove('active'));
     initialNavBtn.classList.add('active');
     initialPanel.classList.add('active');
+
+    // Si la pestaña inicial pertenece a configuración, asegurarse de desplegar el grupo
+    if (initialTab === 'config' && navGroupConfig) {
+      navGroupConfig.classList.remove('is-collapsed');
+    }
   }
 
   // Selector de usuario activo — ya no existe el <select>, el logout abre el login screen
