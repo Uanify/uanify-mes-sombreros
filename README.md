@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.92.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.93.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.92.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.93.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -538,6 +538,12 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 - **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas en Departamentos y Filtros de Calidad; eliminación de descripciones largas innecesarias en celdas para evitar saturación visual y sobrecarga de información.
 - **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Los botones de fila en todas las tablas (`.btn-table-action`) se estandarizaron como botones cuadrados compactos de 32x32px con iconos SVG claros (Editar en gris suave `#F1F5F9`/`#E2E8F0`, Eliminar en rojo pastel `#FEF2F2`/`#FEE2E2`, Ver/Ficha en verde pastel `#F0FDF4`/`#DCFCE7`), sin texto intrusivo y con tooltips nativos en `title`.
 - **Estandarización de Paleta de Botones del Sistema:** Unificación de todos los botones primarios a `--color-brand` artesanal, eliminando colores arbitrarios o ad-hoc en módulos aislados.
+### [2.93.0] - 2026-10-13
+- **Homologación Visual y Estructural de Filtros de Calidad (C-XX) con Almacenes Buffer:**
+  - Estructura y jerarquía de tabla idéntica a Almacenes Buffer: Filtro de Calidad, Departamento Asignado (chip de marca `#8B5E3C`), Inspector Responsable (con icono SVG), Tiempo de Ciclo (en tipografía mono y centrado) y Acciones.
+  - Toolbar de filtrado simétrica: buscador por nombre y departamento, selector de filtro por departamento, selector por inspector, badge de conteo y botón restablecer.
+  - Supresión de subtítulos artificiales de código repetido en celdas, armonizando la interfaz visual y la coherencia de entidades en el módulo de configuración.
+
 ### [2.92.0] - 2026-10-13
 - **Segmentación Dedicada en Sidebar:** Desglose del grupo Configuración en accesos directos por entidad (Departamentos, Almacenes Intermedios, Procesos Productivos, Maquinaria & Equipos, Filtros de Calidad, Rutas por Modelo, Parámetros de Turno, Usuarios RBAC, Integración CONTPAQi).
 - **Asignación Flexible Multi-Operador en Maquinaria:** Nuevo modal independiente para asignar 1 o múltiples operadores a cualquier máquina directamente desde el catálogo maestro, con búsqueda en tiempo real y persistencia.

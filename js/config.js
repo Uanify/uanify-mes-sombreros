@@ -3373,35 +3373,40 @@ window.initConfigView = function() {
     const areas = UanifyState.qualityAreas || [];
 
     const searchInput = document.getElementById('qualitySearchInput');
+    const deptFilter = document.getElementById('qualityDeptFilter');
     const inspectorFilter = document.getElementById('qualityInspectorFilter');
     const countBadge = document.getElementById('qualityFilteredCountBadge');
     const btnReset = document.getElementById('btnResetQualityFilters');
 
+    // Poblar selector de departamentos
+    if (deptFilter && deptFilter.options.length <= 1 && UanifyState.stations) {
+      deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
+        UanifyState.stations.map(st => `<option value="${st.code}">${st.name}</option>`).join('');
+    }
+
     // Poblar selector de inspectores si está vacío
     if (inspectorFilter && inspectorFilter.options.length <= 1) {
-      const inspectors = [...new Set(areas.map(a => a.inspector).filter(Boolean))];
-      inspectors.forEach(insp => {
-        const opt = document.createElement('option');
-        opt.value = insp;
-        opt.textContent = ` ${insp}`;
-        inspectorFilter.appendChild(opt);
-      });
+      const inspectors = [...new Set(areas.map(a => a.inspector).filter(Boolean))].sort();
+      inspectorFilter.innerHTML = '<option value="all">Todos los Inspectores</option>' +
+        inspectors.map(insp => `<option value="${insp}">${insp}</option>`).join('');
     }
 
     const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    const insp = inspectorFilter ? inspectorFilter.value : 'all';
+    const selectedDept = deptFilter ? deptFilter.value : 'all';
+    const selectedInsp = inspectorFilter ? inspectorFilter.value : 'all';
 
     const filtered = areas.filter(item => {
+      const dept = (UanifyState.stations || []).find(s => s.code === item.deptCode || s.id === item.deptCode);
+      const deptName = dept ? dept.name.toLowerCase() : '';
       const matchSearch = !q ||
         (item.name && item.name.toLowerCase().includes(q)) ||
-        (item.location && item.location.toLowerCase().includes(q)) ||
-        (item.criteria && item.criteria.toLowerCase().includes(q)) ||
-        (item.tolerances && item.tolerances.toLowerCase().includes(q)) ||
+        deptName.includes(q) ||
         (item.inspector && item.inspector.toLowerCase().includes(q));
 
-      const matchInsp = insp === 'all' || item.inspector === insp;
+      const matchDept = selectedDept === 'all' || item.deptCode === selectedDept;
+      const matchInsp = selectedInsp === 'all' || item.inspector === selectedInsp;
 
-      return matchSearch && matchInsp;
+      return matchSearch && matchDept && matchInsp;
     });
 
     const totalItems = filtered.length;
@@ -3433,7 +3438,7 @@ window.initConfigView = function() {
     if (paginatedItems.length === 0) {
       cfgQualityTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="4">
+          <td colspan="5">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron filtros de calidad coincidentes</span>
@@ -3452,35 +3457,42 @@ window.initConfigView = function() {
     cfgQualityTable.innerHTML = paginatedItems.map(q => {
       const dept = (UanifyState.stations || []).find(s => s.code === q.deptCode || s.id === q.deptCode);
       const deptName = dept ? dept.name : (q.deptCode ? `Depto ${q.deptCode}` : 'Sin Depto asignado');
+      const safeDeptCode = q.deptCode || (dept ? dept.code : '');
+
       return `
         <tr>
           <td class="col-name">
-            <div class="table-cell-primary" style="font-size:14px; font-weight:700;">${q.name}</div>
-            <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Código: <strong>${q.code}</strong></div>
+            <div class="table-cell-primary" style="font-size:14px; font-weight:700; color:var(--text-primary);">🛡️ ${q.name}</div>
           </td>
           <td>
-            <div style="font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>
-              <span>${deptName}</span>
-            </div>
+            <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
+              🏢 ${deptName}
+            </span>
           </td>
           <td>
-            <div style="font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              ${q.inspector || '<span style="color:var(--text-muted); font-style:italic;">Sin inspector asignado</span>'}
-            </div>
+            <span style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary); font-weight:600;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ${q.inspector || 'Sin inspector asignado'}
+            </span>
+          </td>
+          <td style="text-align:center;">
+            <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${q.cycleTime || '18s'}</span>
           </td>
           <td class="col-actions" style="text-align:center;">
-            ${canManage ? `
-              <div class="action-btns-cell" style="justify-content:center;">
+            <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+              ${canManage ? `
                 <button type="button" class="btn-table-action btn-action-edit" onclick="window.openEditQualityModal('${q.code}')" title="Editar Filtro de Calidad">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
                 <button type="button" class="btn-table-action btn-action-delete" onclick="window.deleteQualityFilter('${q.code}')" title="Eliminar Filtro de Calidad">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
-              </div>
-            ` : `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">Solo lectura</span>`}
+              ` : `
+                <button type="button" class="btn-table-action" onclick="window.openDeptDetailViewer('${safeDeptCode}')" title="Ver estructura y asignaciones de este departamento" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              `}
+            </div>
           </td>
         </tr>
       `;
@@ -3489,6 +3501,7 @@ window.initConfigView = function() {
     if (!qualityFiltersBound) {
       qualityFiltersBound = true;
       if (searchInput) searchInput.addEventListener('input', () => { qualityCurrentPage = 1; renderQualityFiltersConfig(); });
+      if (deptFilter) deptFilter.addEventListener('change', () => { qualityCurrentPage = 1; renderQualityFiltersConfig(); });
       if (inspectorFilter) inspectorFilter.addEventListener('change', () => { qualityCurrentPage = 1; renderQualityFiltersConfig(); });
       if (btnPrev) {
         btnPrev.addEventListener('click', () => {
@@ -3509,6 +3522,7 @@ window.initConfigView = function() {
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInput) searchInput.value = '';
+          if (deptFilter) deptFilter.value = 'all';
           if (inspectorFilter) inspectorFilter.value = 'all';
           qualityCurrentPage = 1;
           renderQualityFiltersConfig();
@@ -3516,6 +3530,7 @@ window.initConfigView = function() {
       }
       window.resetQualityFilters = function() {
         if (searchInput) searchInput.value = '';
+        if (deptFilter) deptFilter.value = 'all';
         if (inspectorFilter) inspectorFilter.value = 'all';
         qualityCurrentPage = 1;
         renderQualityFiltersConfig();
