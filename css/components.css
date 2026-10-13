@@ -2086,8 +2086,10 @@ input.is-valid {
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
+  overflow-x: hidden !important;
   flex: 1;
   min-height: 0;
+  box-sizing: border-box;
 }
 
 .modal-footer {

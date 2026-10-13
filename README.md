@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.90.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.91.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -18,7 +18,7 @@ Sistema MES interactivo desarrollado por **[Uanify](https://github.com/Uanify)**
 
 ---
 
-## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.90.0)
+## Arquitectura Funcional Tombstone Hats · 7 Módulos del MVP (v2.91.0)
 
 Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Módulos (MVP)**:
 
@@ -35,6 +35,15 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.91.0] - 2026-10-13
+- **Optimización Integral de Almacenes Intermedios Buffer & Erradicación de Scroll Horizontal:**
+  - **Eliminación Total de Tipo y Ubicación Física:** Se removió el concepto de "Tipo de Almacén" y "Ubicación Física" tanto del listado como de las fichas informativas de almacenes buffer.
+  - **Remoción de Columna WIP:** Se eliminó la columna "Nivel WIP Actual" del catálogo de almacenes buffer, enfocando la vista en la gestión estructural de capacidades y asignación departamental.
+  - **Filtrado Multi-Criterio Avanzado:** Incorporación de filtros simultáneos por (1) Buscador rápido, (2) Departamento asignado, (3) Supervisor a cargo y (4) Rango de capacidad máxima (Hasta 150 pzas, 151 a 200 pzas, Más de 200 pzas).
+  - **Resolución de Estado de Carga:** Se eliminó el texto estático residual *"Cargando almacenes..."*, inicializando y sincronizando el conteo dinámico real de almacenes en la barra de filtros.
+  - **Blindaje Anti-Scroll Horizontal en Modales y Formularios:** Se aplicó `overflow-x: hidden !important` y `box-sizing: border-box` en la capa de componentes base (`.modal-body`), corrigiendo los desbordamientos indeseados en modales de creación.
+  - **Estandarización de Botones de Acción:** Botón de ver detalle estandarizado con `.btn-table-action` (32x32px, azul suave con icono SVG y cursor: pointer).
 
 ### [2.90.0] - 2026-10-13
 - **Optimización Integral del Catálogo de Procesos & Gestión Modular de Maquinaria/Operadores:**

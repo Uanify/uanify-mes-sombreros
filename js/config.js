@@ -2787,6 +2787,8 @@ window.initConfigView = function() {
     const stations = UanifyState.stations || [];
     const searchInp = document.getElementById('whSearchInput');
     const deptFilter = document.getElementById('whDeptFilter');
+    const supFilter = document.getElementById('whSupervisorFilter');
+    const capFilter = document.getElementById('whCapFilter');
     const countBadge = document.getElementById('whFilteredCountBadge');
     const btnReset = document.getElementById('btnResetWhFilters');
 
@@ -2801,9 +2803,8 @@ window.initConfigView = function() {
           name: cleanName,
           deptCode: st.code,
           deptName: st.name,
-          location: st.warehouseLocation || 'Nave Central - Pasillo de Traspaso',
-          capacity: st.wipCapacity || 180,
-          currentWip: st.wipWaiting || Math.floor((st.wipCapacity || 180) * 0.35)
+          supervisor: st.operator || 'Supervisor Asignado',
+          capacity: st.wipCapacity || 180
         });
       });
     });
@@ -2811,22 +2812,36 @@ window.initConfigView = function() {
     // Poblar selector de departamentos
     if (deptFilter && deptFilter.options.length <= 1) {
       deptFilter.innerHTML = '<option value="all">Todos los Departamentos</option>' +
-        stations.map(st => `<option value="${st.code}">${st.code} · ${st.name}</option>`).join('');
+        stations.map(st => `<option value="${st.code}">${st.name}</option>`).join('');
+    }
+
+    // Poblar selector de supervisores
+    if (supFilter && supFilter.options.length <= 1) {
+      const allSups = [...new Set(warehousesList.map(w => w.supervisor).filter(Boolean))].sort();
+      supFilter.innerHTML = '<option value="all">Todos los Supervisores</option>' +
+        allSups.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
     const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
     const selectedDept = deptFilter ? deptFilter.value : 'all';
+    const selectedSup = supFilter ? supFilter.value : 'all';
+    const selectedCap = capFilter ? capFilter.value : 'all';
 
     const filtered = warehousesList.filter(w => {
       const matchSearch = !q ||
         w.name.toLowerCase().includes(q) ||
-        w.location.toLowerCase().includes(q) ||
         w.deptName.toLowerCase().includes(q) ||
-        w.deptCode.toLowerCase().includes(q);
+        w.supervisor.toLowerCase().includes(q);
 
       const matchDept = selectedDept === 'all' || w.deptCode === selectedDept;
+      const matchSup = selectedSup === 'all' || w.supervisor === selectedSup;
+      
+      let matchCap = true;
+      if (selectedCap === 'compact') matchCap = w.capacity <= 150;
+      else if (selectedCap === 'medium') matchCap = w.capacity > 150 && w.capacity <= 200;
+      else if (selectedCap === 'large') matchCap = w.capacity > 200;
 
-      return matchSearch && matchDept;
+      return matchSearch && matchDept && matchSup && matchCap;
     });
 
     if (countBadge) {
@@ -2836,7 +2851,7 @@ window.initConfigView = function() {
     if (filtered.length === 0) {
       cfgWarehousesTable.innerHTML = `
         <tr class="table-empty-row">
-          <td colspan="6">
+          <td colspan="5">
             <div class="table-empty-content">
               <span class="table-empty-icon"></span>
               <span class="table-empty-title">No se encontraron almacenes coincidentes</span>
@@ -2848,35 +2863,31 @@ window.initConfigView = function() {
       `;
     } else {
       cfgWarehousesTable.innerHTML = filtered.map(w => {
-        const fillPct = Math.min(100, Math.round((w.currentWip / w.capacity) * 100));
-        const fillPill = fillPct > 85
-          ? `<span class="status-pill status-danger" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`
-          : fillPct > 60
-          ? `<span class="status-pill status-warning" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`
-          : `<span class="status-pill status-active" style="font-size:11.5px; font-weight:700;">${w.currentWip} pzas (${fillPct}%)</span>`;
-
         return `
           <tr>
             <td class="col-name">
-              <div class="table-cell-primary" style="font-size:14px; font-weight:700;">📦 ${w.name}</div>
-              <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Tipo: <strong>Buffer de Traspaso / Salida</strong></div>
+              <div class="table-cell-primary" style="font-size:14px; font-weight:700; color:var(--text-primary);">📦 ${w.name}</div>
             </td>
             <td>
               <span class="chip-clean" style="font-size:12px; font-weight:600; color:var(--color-brand); background:rgba(139,94,60,0.08); border:1px solid rgba(139,94,60,0.2);">
-                🏢 ${w.deptCode} · ${w.deptName}
+                🏢 ${w.deptName}
               </span>
             </td>
             <td>
-              <span style="font-size:12.5px; color:var(--text-secondary);">📍 ${w.location}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary); font-weight:600;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-brand);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                ${w.supervisor}
+              </span>
             </td>
             <td style="text-align:center;">
               <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary);">${w.capacity} pzas</span>
             </td>
-            <td style="text-align:center;">${fillPill}</td>
             <td class="col-actions" style="text-align:center;">
-              <button class="btn-icon" title="Ver estructura de departamento" onclick="window.openDeptDetailViewer('${w.deptCode}')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
+              <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                <button type="button" class="btn-table-action" onclick="window.openDeptDetailViewer('${w.deptCode}')" title="Ver estructura y asignaciones de este departamento" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -2886,16 +2897,22 @@ window.initConfigView = function() {
     if (!whFiltersBound) {
       if (searchInp) searchInp.addEventListener('input', renderWarehousesConfig);
       if (deptFilter) deptFilter.addEventListener('change', renderWarehousesConfig);
+      if (supFilter) supFilter.addEventListener('change', renderWarehousesConfig);
+      if (capFilter) capFilter.addEventListener('change', renderWarehousesConfig);
       if (btnReset) {
         btnReset.addEventListener('click', () => {
           if (searchInp) searchInp.value = '';
           if (deptFilter) deptFilter.value = 'all';
+          if (supFilter) supFilter.value = 'all';
+          if (capFilter) capFilter.value = 'all';
           renderWarehousesConfig();
         });
       }
       window.resetWhFilters = () => {
         if (searchInp) searchInp.value = '';
         if (deptFilter) deptFilter.value = 'all';
+        if (supFilter) supFilter.value = 'all';
+        if (capFilter) capFilter.value = 'all';
         renderWarehousesConfig();
       };
       whFiltersBound = true;
