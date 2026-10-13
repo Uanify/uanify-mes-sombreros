@@ -270,7 +270,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.97.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.98.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -4268,7 +4268,7 @@
                       <button type="button" class="info-tip-btn" aria-label="Información">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
                       </button>
-                      <span class="info-tip-popup">Nombre oficial del área o estación de trabajo de manufactura o calidad en planta.</span>
+                      <span class="info-tip-popup">Nombre oficial del área o estación de trabajo de manufactura en planta.</span>
                     </span>
                   </label>
                   <input type="text" id="newDeptName" class="form-input" placeholder="ej. Engomado y Dope, Prensas Térmicas, Ribeteado" required>
@@ -4277,119 +4277,148 @@
             </div>
           </div>
 
-          <!-- SECCIÓN 2: PROCESOS & MÁQUINAS ASIGNADAS (COLAPSABLE) -->
+          <!-- SECCIÓN 2: PROCESOS DE FABRICACIÓN ASIGNADOS (CONSULTA Y ASIGNACIÓN) -->
           <div class="modal-collapse-section active" id="secDeptProcesos">
             <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptProcesos')">
               <div class="modal-collapse-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                2. Procesos y Máquinas Asignadas
+                2. Procesos de Fabricación Asignados
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <button type="button" class="btn-secondary btn-sm" id="btnDeptAddProcessRow" onclick="event.stopPropagation(); window.addProcessRowToDeptModal();" style="min-height:28px; font-size:11px; padding:0 10px; font-weight:700;">
-                  + Agregar Proceso
-                </button>
+                <span class="badge-subtle" id="deptModalProcsCountBadge" style="font-weight:700;">0 seleccionados</span>
                 <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
             </div>
             <div class="modal-collapse-body">
-              <div id="deptProcessesContainer" style="display:flex; flex-direction:column; gap:10px;">
-                <!-- Tarjetas dinámicas de procesos inyectadas por JS sin IDs, sin tipo, sin ciclo -->
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                <div style="flex:1; position:relative;">
+                  <input type="text" id="deptModalProcsSearch" class="form-input" placeholder="Buscar proceso por nombre..." style="height:34px; font-size:12px; padding-left:30px;" autocomplete="off">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <button type="button" class="btn-secondary" id="btnClearDeptModalProcs" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
+              </div>
+
+              <div id="deptModalProcsGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+                <!-- Inyectado dinámicamente con paginación/búsqueda -->
+              </div>
+
+              <!-- Paginación de Procesos -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px dashed var(--border-subtle); font-size:11.5px;">
+                <span style="color:var(--text-muted);" id="deptModalProcsPageInfo">Página 1 de 1</span>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalProcsPrev" style="height:26px; font-size:11px; padding:0 8px;">Anterior</button>
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalProcsNext" style="height:26px; font-size:11px; padding:0 8px;">Siguiente</button>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- SECCIÓN 3: ALMACENES INTERMEDIOS ASIGNADOS (COLAPSABLE) -->
+          <!-- SECCIÓN 3: ALMACENES BUFFER ASIGNADOS (CONSULTA Y ASIGNACIÓN) -->
           <div class="modal-collapse-section active" id="secDeptAlmacenes">
             <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptAlmacenes')">
               <div class="modal-collapse-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                3. Almacén Intermedio Asignado (Buffer WIP)
+                3. Almacenes Intermedios Asignados (Buffer WIP)
               </div>
-              <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-subtle" id="deptModalWhsCountBadge" style="font-weight:700;">0 seleccionados</span>
+                <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
             </div>
             <div class="modal-collapse-body">
               <input type="hidden" id="newDeptWarehouseLocation" value="Nave Central">
-              <div style="display:grid; grid-template-columns: 1fr 180px; gap:12px;">
-                <div class="form-group" style="margin-bottom:0;">
-                  <label class="field-label">
-                    <span>Nombre del Almacén Buffer de Salida:</span>
-                    <span class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Información">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <span class="info-tip-popup">Nombre del almacén intermedio donde se depositan los lotes terminados de este departamento.</span>
-                    </span>
-                  </label>
-                  <input type="text" id="newDeptWarehouse" class="form-input" placeholder="ej. Buffer de Salida Prensas, Pulmón Rampa" required>
+              <input type="hidden" id="newDeptWarehouse" value="">
+              <input type="hidden" id="newDeptCapacity" value="180">
+
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                <div style="flex:1; position:relative;">
+                  <input type="text" id="deptModalWhsSearch" class="form-input" placeholder="Buscar almacén buffer por nombre..." style="height:34px; font-size:12px; padding-left:30px;" autocomplete="off">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </div>
-                <div class="form-group" style="margin-bottom:0;">
-                  <label class="field-label">
-                    <span>Capacidad WIP del Buffer:</span>
-                    <span class="info-tip">
-                      <button type="button" class="info-tip-btn" aria-label="Información">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                      </button>
-                      <span class="info-tip-popup">Capacidad máxima en piezas que puede albergar este almacén buffer (el WIP le pertenece al almacén).</span>
-                    </span>
-                  </label>
-                  <input type="number" id="newDeptCapacity" class="form-input" value="180" min="10" max="2500" required>
+                <button type="button" class="btn-secondary" id="btnClearDeptModalWhs" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
+              </div>
+
+              <div id="deptModalWhsGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+                <!-- Inyectado dinámicamente con paginación/búsqueda -->
+              </div>
+
+              <!-- Paginación de Almacenes -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px dashed var(--border-subtle); font-size:11.5px;">
+                <span style="color:var(--text-muted);" id="deptModalWhsPageInfo">Página 1 de 1</span>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalWhsPrev" style="height:26px; font-size:11px; padding:0 8px;">Anterior</button>
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalWhsNext" style="height:26px; font-size:11px; padding:0 8px;">Siguiente</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- SECCIÓN 4: SUPERVISIÓN Y OPERADORES (COLAPSABLE) -->
+          <!-- SECCIÓN 4: PUNTOS DE CONTROL DE CALIDAD (CONSULTA Y ASIGNACIÓN) -->
+          <div class="modal-collapse-section active" id="secDeptCalidad">
+            <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptCalidad')">
+              <div class="modal-collapse-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                4. Puntos de Control de Calidad Asignados (C-XX)
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-subtle" id="deptModalQualityCountBadge" style="font-weight:700;">0 seleccionados</span>
+                <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <div class="modal-collapse-body">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                <div style="flex:1; position:relative;">
+                  <input type="text" id="deptModalQualitySearch" class="form-input" placeholder="Buscar punto de calidad por nombre..." style="height:34px; font-size:12px; padding-left:30px;" autocomplete="off">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <button type="button" class="btn-secondary" id="btnClearDeptModalQuality" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
+              </div>
+
+              <div id="deptModalQualityGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+                <!-- Inyectado dinámicamente con paginación/búsqueda -->
+              </div>
+
+              <!-- Paginación de Calidad -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px dashed var(--border-subtle); font-size:11.5px;">
+                <span style="color:var(--text-muted);" id="deptModalQualityPageInfo">Página 1 de 1</span>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalQualityPrev" style="height:26px; font-size:11px; padding:0 8px;">Anterior</button>
+                  <button type="button" class="btn-secondary btn-sm" id="btnDeptModalQualityNext" style="height:26px; font-size:11px; padding:0 8px;">Siguiente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 5: SUPERVISOR ASIGNADO (EXCLUSIVAMENTE 1 SUPERVISOR) -->
           <div class="modal-collapse-section active" id="secDeptSupervision">
             <div class="modal-collapse-header" onclick="window.toggleModalCollapse('secDeptSupervision')">
               <div class="modal-collapse-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                4. Asignación de Supervisor y Operadores
+                5. Asignación de Supervisor Responsable (1 Único)
               </div>
               <svg class="modal-collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
             <div class="modal-collapse-body">
-              <div class="form-group">
-                <label class="field-label">
-                  <span>Supervisor Responsable:</span>
-                  <span class="info-tip">
-                    <button type="button" class="info-tip-btn" aria-label="Información">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                    </button>
-                    <span class="info-tip-popup">Supervisor o Ingeniero a cargo del departamento. Puedes escribir en el buscador para filtrar rápidamente.</span>
-                  </span>
-                </label>
-                <!-- Buscador rápido y selector de supervisores -->
-                <div style="display:flex; flex-direction:column; gap:6px;">
-                  <div style="position:relative;">
-                    <input type="text" id="newDeptSupervisorSearch" class="form-input" placeholder="Escribe para buscar supervisor por nombre..." autocomplete="off" style="padding-left:32px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  </div>
-                  <select id="newDeptSupervisor" class="custom-select">
-                    <!-- Llenado dinámicamente con supervisores e ingenieros -->
-                  </select>
-                </div>
-              </div>
-
               <div class="form-group" style="margin-bottom:0;">
                 <label class="field-label">
-                  <span>Operadores Asignados a este Departamento:</span>
+                  <span>Selecciona al Supervisor Responsable:</span>
                   <span class="info-tip">
                     <button type="button" class="info-tip-btn" aria-label="Información">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
                     </button>
-                    <span class="info-tip-popup">Mano de obra asignada físicamente a las máquinas y puestos de trabajo de este departamento.</span>
+                    <span class="info-tip-popup">Solo se permite asignar un único supervisor a este departamento. Puedes buscar por nombre de supervisor.</span>
                   </span>
                 </label>
-                <div id="newDeptOperatorsList" style="max-height:120px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:8px; padding:10px; background:#FFFFFF; display:flex; flex-direction:column; gap:6px;">
-                  <!-- Checkboxes de operadores inyectados por JS -->
-                </div>
-              </div>
+                <!-- Buscador de supervisor por nombre -->
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="position:relative;">
+                    <input type="text" id="newDeptSupervisorSearch" class="form-input" placeholder="Buscar supervisor por nombre..." autocomplete="off" style="padding-left:32px; height:36px; font-size:12.5px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </div>
 
-              <div class="form-group" style="margin-top:10px; margin-bottom:0;">
-                <label class="field-label">+ O registrar nuevo operador en piso (Opcional):</label>
-                <div style="display:flex; gap:8px;">
-                  <input type="text" id="newDeptQuickOpName" class="form-input" placeholder="Nombre del operador (ej. Gabriel Santos)">
-                  <input type="text" id="newDeptQuickOpMachine" class="form-input" placeholder="Puesto / Máquina (ej. Prensas Hidráulicas)">
+                  <div id="deptModalSupervisorsList" style="display:flex; flex-direction:column; gap:6px; max-height:140px; overflow-y:auto; padding:4px 2px; border:1px solid var(--border-subtle); border-radius:8px; background:#FFFFFF;">
+                    <!-- Radios de supervisores inyectados dinámicamente (solo 1 seleccionable) -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -5658,11 +5687,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.97.0"></script>
-  <script src="js/andon.js?v=2.97.0"></script>
-  <script src="js/terminal.js?v=2.97.0"></script>
-  <script src="js/engineer.js?v=2.97.0"></script>
-  <script src="js/executive.js?v=2.97.0"></script>
-  <script src="js/config.js?v=2.97.0"></script>
+  <script src="js/app.js?v=2.98.0"></script>
+  <script src="js/andon.js?v=2.98.0"></script>
+  <script src="js/terminal.js?v=2.98.0"></script>
+  <script src="js/engineer.js?v=2.98.0"></script>
+  <script src="js/executive.js?v=2.98.0"></script>
+  <script src="js/config.js?v=2.98.0"></script>
 </body>
 </html>

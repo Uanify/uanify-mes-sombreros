@@ -1617,10 +1617,16 @@ window.initConfigView = function() {
   const newDeptSupervisor = document.getElementById('newDeptSupervisor');
   const newDeptOperatorsList = document.getElementById('newDeptOperatorsList');
   const deptProcessesContainer = document.getElementById('deptProcessesContainer');
-  const btnDeptAddProcessRow = document.getElementById('btnDeptAddProcessRow');
+  // ── ESTADO TEMPORAL DE ASIGNACIONES RELACIONALES EN MODAL DE DEPARTAMENTO ─
+  let modalDeptSelectedProcs = [];
+  let modalDeptSelectedWhs = [];
+  let modalDeptSelectedQuality = [];
+  let modalDeptSelectedSupervisor = '';
 
-  // Estado temporal de procesos y máquinas para el modal en edición/creación
-  let currentModalProcesses = [];
+  let modalDeptProcsPage = 1;
+  let modalDeptWhsPage = 1;
+  let modalDeptQualityPage = 1;
+  const MODAL_ITEMS_PER_PAGE = 4;
 
   // Toggle colapsable para secciones del modal de departamento (acordeón ergonómico)
   window.toggleModalCollapse = function(secId) {
@@ -1629,160 +1635,315 @@ window.initConfigView = function() {
     sec.classList.toggle('active');
   };
 
-  // Buscador interactivo de supervisores en el modal
-  const newDeptSupervisorSearch = document.getElementById('newDeptSupervisorSearch');
-  if (newDeptSupervisorSearch && newDeptSupervisor) {
-    newDeptSupervisorSearch.addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase().trim();
-      const options = Array.from(newDeptSupervisor.options);
-      let firstVisible = null;
-      options.forEach(opt => {
-        const matches = opt.textContent.toLowerCase().includes(q);
-        opt.style.display = matches ? '' : 'none';
-        if (matches && !firstVisible) firstVisible = opt;
-      });
-      if (firstVisible && !options.find(o => o.selected && o.style.display !== 'none')) {
-        firstVisible.selected = true;
-      }
-      if (newDeptSupervisor._uanifySelect) {
-        newDeptSupervisor._uanifySelect.updateLabel();
-      }
-    });
-  }
+  // 1. RENDERIZADO DE PROCESOS (CONSULTA Y ASIGNACIÓN CON BUSCADOR Y PAGINACIÓN)
+  function renderDeptModalProcs() {
+    const grid = document.getElementById('deptModalProcsGrid');
+    const searchInp = document.getElementById('deptModalProcsSearch');
+    const countBadge = document.getElementById('deptModalProcsCountBadge');
+    const pageInfo = document.getElementById('deptModalProcsPageInfo');
+    const btnPrev = document.getElementById('btnDeptModalProcsPrev');
+    const btnNext = document.getElementById('btnDeptModalProcsNext');
+    if (!grid) return;
 
-  function renderModalProcessesUI() {
-    if (!deptProcessesContainer) return;
-    if (currentModalProcesses.length === 0) {
-      deptProcessesContainer.innerHTML = `
-        <div style="padding:14px; text-align:center; background:#F8FAFC; border:1px dashed #CBD5E1; border-radius:8px; color:var(--text-secondary); font-size:12px;">
-          No hay procesos registrados para este departamento. Haz clic en <strong>"+ Agregar Proceso"</strong> para asociar operaciones o filtros de calidad.
-        </div>
-      `;
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const allProcs = (UanifyState.processes || []).filter(p => !p.type?.includes('calidad') && !p.name?.toLowerCase().includes('calidad'));
+    
+    // Filtrado por nombre
+    const filtered = allProcs.filter(p => !q || (p.name && p.name.toLowerCase().includes(q)) || (p.code && p.code.toLowerCase().includes(q)));
+    const totalPages = Math.max(1, Math.ceil(filtered.length / MODAL_ITEMS_PER_PAGE));
+    if (modalDeptProcsPage > totalPages) modalDeptProcsPage = totalPages;
+    if (modalDeptProcsPage < 1) modalDeptProcsPage = 1;
+
+    const startIdx = (modalDeptProcsPage - 1) * MODAL_ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + MODAL_ITEMS_PER_PAGE);
+
+    if (countBadge) countBadge.textContent = `${modalDeptSelectedProcs.length} seleccionados`;
+    if (pageInfo) pageInfo.textContent = `Página ${modalDeptProcsPage} de ${totalPages} (${filtered.length} total)`;
+    if (btnPrev) btnPrev.disabled = modalDeptProcsPage <= 1;
+    if (btnNext) btnNext.disabled = modalDeptProcsPage >= totalPages;
+
+    if (pageItems.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron procesos coincidentes</div>';
       return;
     }
 
-    deptProcessesContainer.innerHTML = currentModalProcesses.map((proc, pIdx) => {
-      const cleanProcName = (proc.name || '').replace(/^(PROC-\d+|C-\d+)\s*[-·:]?\s*/i, '');
-      const machinesListHtml = (proc.machines || []).map((m, mIdx) => {
-        const machVal = (m.name || m.id || '').trim();
-        return `
-          <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
-            <input type="text" class="form-input form-input-sm proc-mach-name" data-pidx="${pIdx}" data-midx="${mIdx}" value="${machVal}" placeholder="Nombre de máquina o puesto (ej. Mesa de Tendido 12m Alumínio, Cortadora KM-01)" style="min-height:38px; font-size:13px; flex:1;" required>
-            <button type="button" class="btn-table-action btn-action-delete" style="min-height:38px; min-width:38px; width:38px; height:38px; flex-shrink:0;" onclick="window.removeMachineFromProcess(${pIdx}, ${mIdx})" title="Quitar máquina">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          </div>
-        `;
-      }).join('');
-
+    grid.innerHTML = pageItems.map(p => {
+      const isChecked = modalDeptSelectedProcs.includes(p.name);
       return `
-        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:12px; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12px; font-weight:800; color:var(--color-brand); background:rgba(139, 94, 60, 0.1); padding:2px 8px; border-radius:6px;">
-                Proceso #${pIdx+1}
-              </span>
-            </div>
-            <button type="button" class="btn-table-action btn-action-delete" style="height:28px; width:28px;" onclick="window.removeProcessRow(${pIdx})" title="Eliminar este proceso">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${p.name}">
+          <input type="checkbox" class="dept-proc-cb" value="${p.name}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">⚙️ ${p.name}</strong>
+            <small style="color:var(--text-muted); font-size:10px;">${p.code || 'Proceso'} · ${p.machines ? p.machines.length : 0} máquinas</small>
           </div>
-
-          <!-- Solo nombre del proceso limpio (sin IDs, sin tipo, sin ciclo) -->
-          <div style="margin-bottom:10px;">
-            <label class="field-label" style="font-size:11px; margin-bottom:4px;">
-              <span>Nombre de la Operación / Proceso:</span>
-              <span class="info-tip">
-                <button type="button" class="info-tip-btn" aria-label="Información">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="1.25" fill="currentColor"/></svg>
-                </button>
-                <span class="info-tip-popup">Nombre de la operación productiva o parada de control de calidad.</span>
-              </span>
-            </label>
-            <input type="text" class="form-input form-input-sm proc-field-name" data-pidx="${pIdx}" value="${cleanProcName}" placeholder="ej. Tendido de Rollos, Baño de Dope, Calidad Final" style="height:36px; font-size:12.5px;" required>
-          </div>
-
-          <!-- Sub-lista: Máquinas y Áreas de Trabajo Limpias (sin IDs) -->
-          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <span style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
-                🏭 Máquinas & Puestos de Trabajo
-              </span>
-              <button type="button" class="btn-secondary btn-sm" style="min-height:26px; font-size:10.5px; padding:0 8px; font-weight:700;" onclick="window.addMachineToProcess(${pIdx})">
-                + Agregar Máquina / Puesto
-              </button>
-            </div>
-            <div class="proc-machines-list" data-pidx="${pIdx}">
-              ${machinesListHtml || '<div style="font-size:11.5px; color:var(--text-muted); font-style:italic; padding:4px 0;">No hay máquinas registradas en este proceso aún.</div>'}
-            </div>
-          </div>
-        </div>
+        </label>
       `;
     }).join('');
 
-    // Sincronizar inputs al escribir para no perder valores
-    deptProcessesContainer.querySelectorAll('.proc-field-name').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        if (currentModalProcesses[pIdx]) currentModalProcesses[pIdx].name = e.target.value;
+    grid.querySelectorAll('.dept-proc-cb').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (e.target.checked) {
+          if (!modalDeptSelectedProcs.includes(val)) modalDeptSelectedProcs.push(val);
+        } else {
+          modalDeptSelectedProcs = modalDeptSelectedProcs.filter(v => v !== val);
+        }
+        if (countBadge) countBadge.textContent = `${modalDeptSelectedProcs.length} seleccionados`;
       });
     });
-    deptProcessesContainer.querySelectorAll('.proc-mach-name').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const pIdx = parseInt(e.target.getAttribute('data-pidx'), 10);
-        const mIdx = parseInt(e.target.getAttribute('data-midx'), 10);
-        if (currentModalProcesses[pIdx] && currentModalProcesses[pIdx].machines[mIdx]) {
-          currentModalProcesses[pIdx].machines[mIdx].name = e.target.value;
+  }
+
+  // 2. RENDERIZADO DE ALMACENES BUFFER (CONSULTA Y ASIGNACIÓN CON BUSCADOR Y PAGINACIÓN)
+  function renderDeptModalWhs() {
+    const grid = document.getElementById('deptModalWhsGrid');
+    const searchInp = document.getElementById('deptModalWhsSearch');
+    const countBadge = document.getElementById('deptModalWhsCountBadge');
+    const pageInfo = document.getElementById('deptModalWhsPageInfo');
+    const btnPrev = document.getElementById('btnDeptModalWhsPrev');
+    const btnNext = document.getElementById('btnDeptModalWhsNext');
+    if (!grid) return;
+
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const allWhs = UanifyState.warehouses || [];
+
+    const filtered = allWhs.filter(w => !q || (w.name && w.name.toLowerCase().includes(q)) || (w.code && w.code.toLowerCase().includes(q)));
+    const totalPages = Math.max(1, Math.ceil(filtered.length / MODAL_ITEMS_PER_PAGE));
+    if (modalDeptWhsPage > totalPages) modalDeptWhsPage = totalPages;
+    if (modalDeptWhsPage < 1) modalDeptWhsPage = 1;
+
+    const startIdx = (modalDeptWhsPage - 1) * MODAL_ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + MODAL_ITEMS_PER_PAGE);
+
+    if (countBadge) countBadge.textContent = `${modalDeptSelectedWhs.length} seleccionados`;
+    if (pageInfo) pageInfo.textContent = `Página ${modalDeptWhsPage} de ${totalPages} (${filtered.length} total)`;
+    if (btnPrev) btnPrev.disabled = modalDeptWhsPage <= 1;
+    if (btnNext) btnNext.disabled = modalDeptWhsPage >= totalPages;
+
+    if (pageItems.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron almacenes coincidentes</div>';
+      return;
+    }
+
+    grid.innerHTML = pageItems.map(w => {
+      const isChecked = modalDeptSelectedWhs.includes(w.name);
+      return `
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${w.name}">
+          <input type="checkbox" class="dept-wh-cb" value="${w.name}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📦 ${w.name}</strong>
+            <small style="color:var(--text-muted); font-size:10px;">${w.code || 'ALM'} · ${w.type || 'Buffer'}</small>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.dept-wh-cb').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (e.target.checked) {
+          if (!modalDeptSelectedWhs.includes(val)) modalDeptSelectedWhs.push(val);
+        } else {
+          modalDeptSelectedWhs = modalDeptSelectedWhs.filter(v => v !== val);
+        }
+        if (countBadge) countBadge.textContent = `${modalDeptSelectedWhs.length} seleccionados`;
+      });
+    });
+  }
+
+  // 3. RENDERIZADO DE PUNTOS DE CONTROL DE CALIDAD (CONSULTA Y ASIGNACIÓN CON BUSCADOR Y PAGINACIÓN)
+  function renderDeptModalQuality() {
+    const grid = document.getElementById('deptModalQualityGrid');
+    const searchInp = document.getElementById('deptModalQualitySearch');
+    const countBadge = document.getElementById('deptModalQualityCountBadge');
+    const pageInfo = document.getElementById('deptModalQualityPageInfo');
+    const btnPrev = document.getElementById('btnDeptModalQualityPrev');
+    const btnNext = document.getElementById('btnDeptModalQualityNext');
+    if (!grid) return;
+
+    const q = searchInp ? searchInp.value.toLowerCase().trim() : '';
+    const allQuality = UanifyState.qualityAreas || [];
+
+    const filtered = allQuality.filter(qa => !q || (qa.name && qa.name.toLowerCase().includes(q)) || (qa.code && qa.code.toLowerCase().includes(q)));
+    const totalPages = Math.max(1, Math.ceil(filtered.length / MODAL_ITEMS_PER_PAGE));
+    if (modalDeptQualityPage > totalPages) modalDeptQualityPage = totalPages;
+    if (modalDeptQualityPage < 1) modalDeptQualityPage = 1;
+
+    const startIdx = (modalDeptQualityPage - 1) * MODAL_ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + MODAL_ITEMS_PER_PAGE);
+
+    if (countBadge) countBadge.textContent = `${modalDeptSelectedQuality.length} seleccionados`;
+    if (pageInfo) pageInfo.textContent = `Página ${modalDeptQualityPage} de ${totalPages} (${filtered.length} total)`;
+    if (btnPrev) btnPrev.disabled = modalDeptQualityPage <= 1;
+    if (btnNext) btnNext.disabled = modalDeptQualityPage >= totalPages;
+
+    if (pageItems.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron puntos de calidad</div>';
+      return;
+    }
+
+    grid.innerHTML = pageItems.map(qa => {
+      const isChecked = modalDeptSelectedQuality.includes(qa.code);
+      return `
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${qa.name}">
+          <input type="checkbox" class="dept-qa-cb" value="${qa.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🔬 ${qa.name}</strong>
+            <small style="color:var(--text-muted); font-size:10px;">${qa.code} · ${qa.location || 'Filtro'}</small>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.dept-qa-cb').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (e.target.checked) {
+          if (!modalDeptSelectedQuality.includes(val)) modalDeptSelectedQuality.push(val);
+        } else {
+          modalDeptSelectedQuality = modalDeptSelectedQuality.filter(v => v !== val);
+        }
+        if (countBadge) countBadge.textContent = `${modalDeptSelectedQuality.length} seleccionados`;
+      });
+    });
+  }
+
+  // 4. RENDERIZADO DE SUPERVISOR (EXCLUSIVAMENTE 1 MEDIANTE RADIOS CON BUSCADOR POR NOMBRE)
+  function renderDeptModalSupervisors(filterQuery = '') {
+    const listEl = document.getElementById('deptModalSupervisorsList');
+    if (!listEl || !UanifyState.users) return;
+
+    const q = filterQuery.toLowerCase().trim();
+    const supervisors = UanifyState.users.filter(u => u.role === 'supervisor' || u.role === 'admin' || u.role === 'ingeniero');
+    const filtered = supervisors.filter(s => !q || (s.name && s.name.toLowerCase().includes(q)) || (s.roleName && s.roleName.toLowerCase().includes(q)));
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron supervisores coincidentes</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(s => {
+      const isSelected = modalDeptSelectedSupervisor === s.id || modalDeptSelectedSupervisor === s.name;
+      return `
+        <label style="display:flex; align-items:center; gap:10px; font-size:12.5px; padding:7px 10px; background:${isSelected ? 'rgba(139, 94, 60, 0.06)' : '#FFFFFF'}; border:1px solid ${isSelected ? 'var(--color-brand)' : 'var(--border-subtle)'}; border-radius:6px; cursor:pointer;" title="${s.name}">
+          <input type="radio" name="deptSelectedSupervisorRadio" value="${s.id}" data-name="${s.name}" ${isSelected ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:16px; height:16px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12.5px;">${s.name}</strong>
+            <small style="color:var(--text-muted); font-size:11px;">${s.badge || s.roleName || 'Supervisor de Planta'}</small>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    listEl.querySelectorAll('input[name="deptSelectedSupervisorRadio"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          modalDeptSelectedSupervisor = e.target.value;
+          renderDeptModalSupervisors(newDeptSupervisorSearch ? newDeptSupervisorSearch.value : '');
         }
       });
     });
   }
 
-  // Funciones de gestión en modal expuestas globalmente
-  window.removeProcessRow = function(pIdx) {
-    if (currentModalProcesses.length <= 1) {
-      window.UanifyUI.toast('Un departamento debe tener al menos 1 proceso asignado.', 'warning');
-      return;
-    }
-    currentModalProcesses.splice(pIdx, 1);
-    renderModalProcessesUI();
-  };
-
-  window.addMachineToProcess = function(pIdx) {
-    if (!currentModalProcesses[pIdx]) return;
-    if (!Array.isArray(currentModalProcesses[pIdx].machines)) {
-      currentModalProcesses[pIdx].machines = [];
-    }
-    const nextMachNum = currentModalProcesses[pIdx].machines.length + 1;
-    currentModalProcesses[pIdx].machines.push({
-      id: `MAQ-${nextMachNum}`,
-      name: `Estación / Máquina ${nextMachNum}`,
-      status: 'operativa'
+  // Listeners de búsqueda y paginación en el modal de departamento
+  const deptModalProcsSearch = document.getElementById('deptModalProcsSearch');
+  if (deptModalProcsSearch) {
+    deptModalProcsSearch.addEventListener('input', () => {
+      modalDeptProcsPage = 1;
+      renderDeptModalProcs();
     });
-    renderModalProcessesUI();
-  };
-
-  window.removeMachineFromProcess = function(pIdx, mIdx) {
-    if (currentModalProcesses[pIdx] && currentModalProcesses[pIdx].machines) {
-      currentModalProcesses[pIdx].machines.splice(mIdx, 1);
-      renderModalProcessesUI();
-    }
-  };
-
-  window.addProcessRowToDeptModal = function() {
-    const nextPNum = currentModalProcesses.length + 1;
-    currentModalProcesses.push({
-      id: `PROC-${Date.now()}-${nextPNum}`,
-      code: `PROC-${String(nextPNum).padStart(2, '0')}`,
-      name: `Proceso ${nextPNum}`,
-      type: 'manufactura',
-      cycleTime: '35s',
-      machines: [
-        { id: `MAQ-${nextPNum}`, name: `Estación ${nextPNum}`, status: 'operativa' }
-      ]
+  }
+  const btnDeptModalProcsPrev = document.getElementById('btnDeptModalProcsPrev');
+  if (btnDeptModalProcsPrev) {
+    btnDeptModalProcsPrev.addEventListener('click', () => {
+      if (modalDeptProcsPage > 1) {
+        modalDeptProcsPage--;
+        renderDeptModalProcs();
+      }
     });
-    renderModalProcessesUI();
-  };
+  }
+  const btnDeptModalProcsNext = document.getElementById('btnDeptModalProcsNext');
+  if (btnDeptModalProcsNext) {
+    btnDeptModalProcsNext.addEventListener('click', () => {
+      modalDeptProcsPage++;
+      renderDeptModalProcs();
+    });
+  }
+  const btnClearDeptModalProcs = document.getElementById('btnClearDeptModalProcs');
+  if (btnClearDeptModalProcs) {
+    btnClearDeptModalProcs.addEventListener('click', () => {
+      modalDeptSelectedProcs = [];
+      renderDeptModalProcs();
+    });
+  }
+
+  const deptModalWhsSearch = document.getElementById('deptModalWhsSearch');
+  if (deptModalWhsSearch) {
+    deptModalWhsSearch.addEventListener('input', () => {
+      modalDeptWhsPage = 1;
+      renderDeptModalWhs();
+    });
+  }
+  const btnDeptModalWhsPrev = document.getElementById('btnDeptModalWhsPrev');
+  if (btnDeptModalWhsPrev) {
+    btnDeptModalWhsPrev.addEventListener('click', () => {
+      if (modalDeptWhsPage > 1) {
+        modalDeptWhsPage--;
+        renderDeptModalWhs();
+      }
+    });
+  }
+  const btnDeptModalWhsNext = document.getElementById('btnDeptModalWhsNext');
+  if (btnDeptModalWhsNext) {
+    btnDeptModalWhsNext.addEventListener('click', () => {
+      modalDeptWhsPage++;
+      renderDeptModalWhs();
+    });
+  }
+  const btnClearDeptModalWhs = document.getElementById('btnClearDeptModalWhs');
+  if (btnClearDeptModalWhs) {
+    btnClearDeptModalWhs.addEventListener('click', () => {
+      modalDeptSelectedWhs = [];
+      renderDeptModalWhs();
+    });
+  }
+
+  const deptModalQualitySearch = document.getElementById('deptModalQualitySearch');
+  if (deptModalQualitySearch) {
+    deptModalQualitySearch.addEventListener('input', () => {
+      modalDeptQualityPage = 1;
+      renderDeptModalQuality();
+    });
+  }
+  const btnDeptModalQualityPrev = document.getElementById('btnDeptModalQualityPrev');
+  if (btnDeptModalQualityPrev) {
+    btnDeptModalQualityPrev.addEventListener('click', () => {
+      if (modalDeptQualityPage > 1) {
+        modalDeptQualityPage--;
+        renderDeptModalQuality();
+      }
+    });
+  }
+  const btnDeptModalQualityNext = document.getElementById('btnDeptModalQualityNext');
+  if (btnDeptModalQualityNext) {
+    btnDeptModalQualityNext.addEventListener('click', () => {
+      modalDeptQualityPage++;
+      renderDeptModalQuality();
+    });
+  }
+  const btnClearDeptModalQuality = document.getElementById('btnClearDeptModalQuality');
+  if (btnClearDeptModalQuality) {
+    btnClearDeptModalQuality.addEventListener('click', () => {
+      modalDeptSelectedQuality = [];
+      renderDeptModalQuality();
+    });
+  }
+
+  const newDeptSupervisorSearch = document.getElementById('newDeptSupervisorSearch');
+  if (newDeptSupervisorSearch) {
+    newDeptSupervisorSearch.addEventListener('input', (e) => {
+      renderDeptModalSupervisors(e.target.value);
+    });
+  }
 
   function openCreateDeptModal() {
     if (!modalCreateDept) return;
@@ -1793,78 +1954,39 @@ window.initConfigView = function() {
 
     if (editModeInput) editModeInput.value = 'create';
     if (origCodeInput) origCodeInput.value = '';
-    if (modalTitle) modalTitle.textContent = 'Nuevo Departamento & Estructura Relacional';
+    if (modalTitle) modalTitle.textContent = 'Nuevo Departamento & Asignación Relacional';
 
-    // Sugerir código D-XX
     const newDeptCodeInput = document.getElementById('newDeptCode');
     const nextNum = (UanifyState.stations || []).length + 1;
     const nextCode = `D-${String(nextNum).padStart(2, '0')}`;
     if (newDeptCodeInput) newDeptCodeInput.value = nextCode;
 
     const nameInput = document.getElementById('newDeptName');
-    const descInput = document.getElementById('newDeptDesc');
-    const cycleTimeInput = document.getElementById('newDeptCycleTime');
-    const warehouseInput = document.getElementById('newDeptWarehouse');
-    const locationInput = document.getElementById('newDeptWarehouseLocation');
-    const capacityInput = document.getElementById('newDeptCapacity');
-
     if (nameInput) nameInput.value = '';
-    if (descInput) descInput.value = '';
-    if (cycleTimeInput) cycleTimeInput.value = '35s';
-    if (warehouseInput) warehouseInput.value = `Buffer Entrada (ALM-${nextCode}), Buffer Salida (ALM-${nextCode}-S)`;
-    if (locationInput) locationInput.value = 'Nave Central - Pasillo 2';
-    if (capacityInput) capacityInput.value = '180';
 
-    // Inicializar procesos relacionales con estructura por defecto
-    currentModalProcesses = [
-      {
-        id: `PROC-${nextCode}-01`,
-        code: `PROC-01`,
-        name: `Operación Primaria ${nextCode}`,
-        deptCode: nextCode,
-        type: 'manufactura',
-        cycleTime: '20s',
-        machines: [
-          { id: 'MAQ-01', name: 'Estación de Trabajo Primaria', status: 'operativa' }
-        ]
-      },
-      {
-        id: `PROC-${nextCode}-02`,
-        code: `PROC-02`,
-        name: `Operación Secundaria / Inspección`,
-        deptCode: nextCode,
-        type: 'manufactura',
-        cycleTime: '15s',
-        machines: [
-          { id: 'MAQ-02', name: 'Estación Auxiliar / Banco', status: 'operativa' }
-        ]
-      }
-    ];
-    renderModalProcessesUI();
+    // Asignaciones iniciales por defecto tomadas de registros existentes
+    const firstProc = (UanifyState.processes || [])[0];
+    const firstWh = (UanifyState.warehouses || [])[0];
+    const firstSup = (UanifyState.users || []).find(u => u.role === 'supervisor') || (UanifyState.users || [])[0];
 
-    // Poblar supervisores
-    if (newDeptSupervisor && UanifyState.users) {
-      const supervisors = UanifyState.users.filter(u => u.role === 'supervisor' || u.role === 'admin' || u.role === 'ingeniero');
-      newDeptSupervisor.innerHTML = supervisors.map(s => `
-        <option value="${s.id}">${s.name} (${s.roleName || s.role})</option>
-      `).join('');
-    }
+    modalDeptSelectedProcs = firstProc ? [firstProc.name] : [];
+    modalDeptSelectedWhs = firstWh ? [firstWh.name] : [];
+    modalDeptSelectedQuality = [];
+    modalDeptSelectedSupervisor = firstSup ? firstSup.id : '';
 
-    // Poblar lista de operadores existentes con checkboxes
-    if (newDeptOperatorsList && UanifyState.operators) {
-      newDeptOperatorsList.innerHTML = UanifyState.operators.map(op => `
-        <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:3px 0;">
-          <input type="checkbox" class="dept-op-cb" value="${op.empId || op.id}" style="cursor:pointer; accent-color:var(--color-brand);">
-          <span><strong>${op.name}</strong> · ${op.deptCode || 'Sin Depto'} (${op.machine || 'Puesto'})</span>
-        </label>
-      `).join('');
-    }
+    modalDeptProcsPage = 1;
+    modalDeptWhsPage = 1;
+    modalDeptQualityPage = 1;
 
-    // En acordeón ergonómico, abrir secciones 1 y 2 por defecto
-    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach((sec, idx) => {
-      if (idx === 0 || idx === 1) sec.classList.add('active');
-      else sec.classList.remove('active');
-    });
+    if (deptModalProcsSearch) deptModalProcsSearch.value = '';
+    if (deptModalWhsSearch) deptModalWhsSearch.value = '';
+    if (deptModalQualitySearch) deptModalQualitySearch.value = '';
+    if (newDeptSupervisorSearch) newDeptSupervisorSearch.value = '';
+
+    renderDeptModalProcs();
+    renderDeptModalWhs();
+    renderDeptModalQuality();
+    renderDeptModalSupervisors();
 
     modalCreateDept.classList.add('active');
   }
@@ -1880,84 +2002,47 @@ window.initConfigView = function() {
 
     if (editModeInput) editModeInput.value = 'edit';
     if (origCodeInput) origCodeInput.value = station.code || station.id;
-    if (modalTitle) modalTitle.textContent = `Editar Departamento ${station.code} - ${station.name}`;
+    if (modalTitle) modalTitle.textContent = `Editar Departamento · ${station.code} - ${station.name}`;
 
     const codeInput = document.getElementById('newDeptCode');
     const nameInput = document.getElementById('newDeptName');
-    const descInput = document.getElementById('newDeptDesc');
-    const cycleTimeInput = document.getElementById('newDeptCycleTime');
-    const warehouseInput = document.getElementById('newDeptWarehouse');
-    const locationInput = document.getElementById('newDeptWarehouseLocation');
-    const capacityInput = document.getElementById('newDeptCapacity');
 
     if (codeInput) codeInput.value = station.code || '';
     if (nameInput) nameInput.value = station.name || '';
-    if (descInput) descInput.value = station.desc || station.note || '';
-    if (cycleTimeInput) cycleTimeInput.value = station.cycleTime || '35s';
-    if (warehouseInput) warehouseInput.value = station.intermediateWarehouse || (`Buffer Intermedio ${station.code}`);
-    if (locationInput) locationInput.value = station.warehouseLocation || 'Nave Central';
-    if (capacityInput) capacityInput.value = station.wipCapacity || station.target || 180;
 
-    // Obtener procesos asociados desde UanifyState.processes o construir a partir de station
-    let linkedProcesses = (UanifyState.processes || []).filter(p => p.deptCode === station.code);
-    if (linkedProcesses.length === 0) {
-      const procStrings = (station.processes ? station.processes.split(/[,;]/) : [station.name]).map(p => p.trim()).filter(Boolean);
-      const parsedMachines = rawMachines.map((raw, rIdx) => {
-        // Limpiar prefijo tipo ID si existiese (ej. "MAQ-01 Celda...")
-        const cleanName = raw.replace(/^[A-Z0-9\-]+\s+/i, '').trim();
-        return {
-          id: `MAQ-${String(rIdx + 1).padStart(2, '0')}`,
-          name: cleanName || raw.trim(),
-          status: 'operativa'
-        };
-      });
+    // Extraer procesos asignados
+    const linkedProcs = (UanifyState.processes || []).filter(p => p.deptCode === station.code).map(p => p.name);
+    modalDeptSelectedProcs = linkedProcs.length > 0 
+      ? linkedProcs 
+      : (station.processes ? station.processes.split(/[,;]/).map(p => p.trim()).filter(Boolean) : []);
 
-      linkedProcesses = procStrings.map((procName, pIdx) => {
-        const isQ = procName.toLowerCase().includes('calidad') || procName.startsWith('C-') || station.type === 'calidad';
-        return {
-          id: `PROC-${station.code}-${pIdx+1}`,
-          code: isQ ? (procName.match(/C-\d+/) ? procName.match(/C-\d+/)[0] : `C-0${pIdx+1}`) : `PROC-${String(pIdx+1).padStart(2, '0')}`,
-          name: procName,
-          deptCode: station.code,
-          type: isQ ? 'calidad' : (station.type === 'prensas' ? 'prensas' : 'manufactura'),
-          cycleTime: station.cycleTime || '30s',
-          machines: pIdx === 0 ? parsedMachines : [{ id: `MAQ-0${pIdx+1}`, name: `Estación ${procName}`, status: 'operativa' }]
-        };
-      });
-    }
+    // Extraer almacenes asignados
+    const linkedWhs = station.intermediateWarehouse 
+      ? station.intermediateWarehouse.split(/[,;]/).map(w => w.replace(/\s*\([A-Z0-9\-]+\)/gi, '').trim()).filter(Boolean)
+      : [];
+    modalDeptSelectedWhs = linkedWhs;
 
-    currentModalProcesses = JSON.parse(JSON.stringify(linkedProcesses));
-    renderModalProcessesUI();
+    // Extraer puntos de calidad asignados
+    const linkedQualities = (UanifyState.qualityAreas || []).filter(q => q.deptCode === station.code || q.deptCode === station.id).map(q => q.code);
+    modalDeptSelectedQuality = linkedQualities;
 
-    const supSearchInput = document.getElementById('newDeptSupervisorSearch');
-    if (supSearchInput) supSearchInput.value = '';
+    // Extraer supervisor único asignado
+    const foundSup = (UanifyState.users || []).find(u => u.name === station.operator || (u.assignedDepartments && u.assignedDepartments.includes(station.code)));
+    modalDeptSelectedSupervisor = foundSup ? foundSup.id : '';
 
-    // En acordeón ergonómico, abrir la primera sección por defecto para evitar colapsos visuales y scroll infinito
-    document.querySelectorAll('#modalCreateDepartment .modal-collapse-section').forEach((sec, idx) => {
-      if (idx === 0 || idx === 1) sec.classList.add('active');
-      else sec.classList.remove('active');
-    });
+    modalDeptProcsPage = 1;
+    modalDeptWhsPage = 1;
+    modalDeptQualityPage = 1;
 
-    // Poblar supervisores
-    if (newDeptSupervisor && UanifyState.users) {
-      const supervisors = UanifyState.users.filter(u => u.role === 'supervisor' || u.role === 'admin' || u.role === 'ingeniero');
-      newDeptSupervisor.innerHTML = supervisors.map(s => `
-        <option value="${s.id}" ${s.name === station.operator ? 'selected' : ''}>${s.name} (${s.roleName || s.role})</option>
-      `).join('');
-    }
+    if (deptModalProcsSearch) deptModalProcsSearch.value = '';
+    if (deptModalWhsSearch) deptModalWhsSearch.value = '';
+    if (deptModalQualitySearch) deptModalQualitySearch.value = '';
+    if (newDeptSupervisorSearch) newDeptSupervisorSearch.value = '';
 
-    // Poblar operadores y marcar los asignados
-    if (newDeptOperatorsList && UanifyState.operators) {
-      newDeptOperatorsList.innerHTML = UanifyState.operators.map(op => {
-        const isAssigned = op.deptCode === station.code || op.department === station.name || op.deptName === station.name;
-        return `
-          <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; padding:3px 0;">
-            <input type="checkbox" class="dept-op-cb" value="${op.id}" ${isAssigned ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand);">
-            <span><strong>${op.name}</strong> · ${op.deptCode || 'Sin Depto'} (${op.machine || 'Puesto'})</span>
-          </label>
-        `;
-      }).join('');
-    }
+    renderDeptModalProcs();
+    renderDeptModalWhs();
+    renderDeptModalQuality();
+    renderDeptModalSupervisors();
 
     modalCreateDept.classList.add('active');
   }
@@ -1967,19 +2052,9 @@ window.initConfigView = function() {
     if (!station) return;
 
     window.UanifyUI.confirm(
-      `¿Estás seguro de eliminar el departamento ${station.code} - "${station.name}"? Esta acción removerá sus procesos, maquinaria y almacenes asociados de la configuración.`,
+      `¿Estás seguro de eliminar el departamento ${station.code} - "${station.name}"? Esta acción desvinculará sus procesos, maquinaria y almacenes asociados de la configuración.`,
       () => {
         UanifyState.stations = UanifyState.stations.filter(s => s.code !== deptCode && s.id !== deptCode);
-        // Remover también procesos asociados
-        if (UanifyState.processes) {
-          UanifyState.processes = UanifyState.processes.filter(p => p.deptCode !== deptCode);
-          try {
-            localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
-          } catch (e) {
-            console.warn('Error saving processes after delete:', e);
-          }
-        }
-
         try {
           localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
         } catch (e) {
@@ -1992,7 +2067,7 @@ window.initConfigView = function() {
         }
 
         window.UanifyUI.toast(
-          `Departamento ${station.code} "${station.name}" y sus procesos eliminados del catálogo.`,
+          `Departamento ${station.code} "${station.name}" eliminado del catálogo.`,
           'info',
           'Departamento Eliminado'
         );
@@ -2016,85 +2091,42 @@ window.initConfigView = function() {
       const origCode = document.getElementById('deptModalOriginalCode')?.value;
       const code = document.getElementById('newDeptCode')?.value.trim() || 'D-15';
       const name = document.getElementById('newDeptName')?.value.trim();
-      const desc = document.getElementById('newDeptDesc')?.value.trim() || 'Proceso de fabricación en planta';
-      const cycleTime = document.getElementById('newDeptCycleTime')?.value.trim() || '35s';
-      const warehouse = document.getElementById('newDeptWarehouse')?.value.trim() || `Buffer Intermedio ${name}`;
-      const location = document.getElementById('newDeptWarehouseLocation')?.value.trim() || 'Nave Central';
-      const capacity = parseInt(document.getElementById('newDeptCapacity')?.value, 10) || 180;
-      const supUserId = newDeptSupervisor?.value;
-      const supervisor = UanifyState.users.find(u => u.id === supUserId) || UanifyState.users[0];
 
       if (!name) {
         window.UanifyUI.toast('Por favor ingresa el nombre del departamento.', 'warning', 'Campo Requerido');
         return;
       }
 
-      if (currentModalProcesses.length === 0) {
-        window.UanifyUI.toast('Debes registrar al menos un proceso para este departamento.', 'warning', 'Procesos Requeridos');
+      if (!modalDeptSelectedSupervisor) {
+        window.UanifyUI.toast('Debes seleccionar exactamente un supervisor responsable.', 'warning', 'Supervisor Requerido');
         return;
       }
 
-      // Validar y vincular formalmente deptCode a los procesos y sus máquinas
-      currentModalProcesses.forEach((p, idx) => {
-        p.deptCode = code;
-        if (!p.code) p.code = `PROC-${String(idx+1).padStart(2, '0')}`;
-        if (!p.id) p.id = `PROC-${code}-${idx+1}`;
-        if (!Array.isArray(p.machines)) p.machines = [];
-      });
+      const supervisor = (UanifyState.users || []).find(u => u.id === modalDeptSelectedSupervisor || u.name === modalDeptSelectedSupervisor) || (UanifyState.users || [])[0];
 
-      // Actualizar colección formal UanifyState.processes
-      if (!UanifyState.processes) UanifyState.processes = [];
-      // Quitar los procesos viejos del departamento si es edición o reemplazo
-      UanifyState.processes = UanifyState.processes.filter(p => p.deptCode !== (isEdit ? origCode : code));
-      // Insertar los procesos actualizados
-      UanifyState.processes.push(...currentModalProcesses);
-      try {
-        localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
-      } catch (err) {
-        console.warn('Error saving uanify_processes:', err);
-      }
-
-      // Consolidar strings para compatibilidad con vistas Andon y Terminal
-      const processesSummary = currentModalProcesses.map(p => `${p.code} ${p.name}`).join(', ');
-      const allMachsSummary = currentModalProcesses.flatMap(p => (p.machines || []).map(m => `${m.id} ${m.name}`)).join(', ');
-
-      // Si se especificó un operador rápido, crearlo
-      const quickOpName = document.getElementById('newDeptQuickOpName')?.value.trim();
-      const quickOpMachine = document.getElementById('newDeptQuickOpMachine')?.value.trim();
-      if (quickOpName) {
-        if (!UanifyState.operators) UanifyState.operators = [];
-        UanifyState.operators.push({
-          id: 'op-' + Date.now(),
-          empId: 'TB-' + (8000 + UanifyState.operators.length + 1),
-          payrollNo: 'TB-' + (8000 + UanifyState.operators.length + 1),
-          name: quickOpName,
-          deptCode: code,
-          department: name,
-          deptName: name,
-          machine: quickOpMachine || 'MAQ-01',
-          shift: 'Turno Único',
-          producedToday: 0,
-          status: 'Activo'
-        });
-      }
-
-      // Asignar operadores seleccionados
-      const checkedOps = formCreateDept.querySelectorAll('.dept-op-cb:checked');
-      const checkedIds = Array.from(checkedOps).map(cb => cb.value);
-      (UanifyState.operators || []).forEach(op => {
-        if (checkedIds.includes(op.id)) {
-          op.deptCode = code;
-          op.department = name;
-          op.deptName = name;
-        } else if (isEdit && (op.deptCode === origCode || op.deptCode === code)) {
-          op.deptCode = '';
-          op.department = 'Sin Asignar';
-          op.deptName = 'Sin Asignar';
+      // Vincular procesos seleccionados a este departamento
+      (UanifyState.processes || []).forEach(p => {
+        if (modalDeptSelectedProcs.includes(p.name)) {
+          p.deptCode = code;
+        } else if (p.deptCode === (isEdit ? origCode : code)) {
+          p.deptCode = '';
         }
       });
 
-      const hasCalidad = currentModalProcesses.some(p => p.type === 'calidad' || (p.code && p.code.startsWith('C-')));
-      const hasPrensas = currentModalProcesses.some(p => p.type === 'prensas');
+      // Vincular puntos de calidad seleccionados a este departamento
+      (UanifyState.qualityAreas || []).forEach(qa => {
+        if (modalDeptSelectedQuality.includes(qa.code)) {
+          qa.deptCode = code;
+        } else if (qa.deptCode === (isEdit ? origCode : code)) {
+          qa.deptCode = '';
+        }
+      });
+
+      const processesSummary = modalDeptSelectedProcs.join(', ');
+      const warehousesSummary = modalDeptSelectedWhs.join(', ');
+
+      const hasCalidad = modalDeptSelectedQuality.length > 0;
+      const hasPrensas = modalDeptSelectedProcs.some(p => p.toLowerCase().includes('prensa'));
       const inferredType = hasCalidad ? 'calidad' : (hasPrensas || code === 'D-05' ? 'prensas' : (code === 'D-11' ? 'logistica' : 'manufactura'));
 
       if (isEdit) {
@@ -2103,77 +2135,70 @@ window.initConfigView = function() {
           const st = UanifyState.stations[stIndex];
           st.code = code;
           st.name = name;
-          st.desc = desc;
-          st.processes = processesSummary;
+          st.processes = processesSummary || name;
           st.type = inferredType;
-          st.cycleTime = cycleTime;
-          st.intermediateWarehouse = warehouse;
-          st.warehouseLocation = location;
-          st.wipCapacity = capacity;
-          st.target = capacity;
-          st.machines = allMachsSummary || 'Estación manual EST-01';
-          st.operator = supervisor.name;
-          st.note = desc;
+          st.intermediateWarehouse = warehousesSummary || `Buffer Intermedio ${name}`;
+          st.operator = supervisor ? supervisor.name : 'Supervisor de Turno';
         }
       } else {
         const newStation = {
           id: 'dept-' + code.toLowerCase().replace(/[^a-z0-9]/g, '-'),
           code: code,
           name: name,
-          desc: desc,
-          processes: processesSummary,
+          desc: `Departamento de manufactura en planta ${name}`,
+          processes: processesSummary || name,
           type: inferredType,
-          intermediateWarehouse: warehouse,
-          warehouseLocation: location,
-          wipCapacity: capacity,
-          target: capacity,
+          intermediateWarehouse: warehousesSummary || `Buffer Intermedio ${name}`,
+          warehouseLocation: 'Nave Central',
+          wipCapacity: 180,
+          target: 180,
           produced: 0,
           scrap: 0,
           wipWaiting: 0,
-          cycleTime: cycleTime,
-          machines: allMachsSummary || 'Estación manual EST-01',
-          operator: supervisor.name,
-          note: `Departamento registrado. Supervisado por ${supervisor.name}.`
+          cycleTime: '35s',
+          machines: 'Estaciones operativas',
+          operator: supervisor ? supervisor.name : 'Supervisor de Turno',
+          note: `Departamento registrado. Supervisado por ${supervisor ? supervisor.name : 'Planta'}.`
         };
 
         if (!UanifyState.stations) UanifyState.stations = [];
         UanifyState.stations.push(newStation);
       }
 
-      // Asignar departamento al supervisor si no tiene acceso global '*' (Relación M:N)
-      if (supervisor.assignedDepartments && supervisor.assignedDepartments[0] !== '*') {
-        if (!supervisor.assignedDepartments.includes(code)) {
-          supervisor.assignedDepartments.push(code);
+      // Asignar departamento exclusivamente al supervisor seleccionado (Relación estricta de 1 supervisor)
+      (UanifyState.users || []).forEach(u => {
+        if (u.id === supervisor.id) {
+          if (!u.assignedDepartments) u.assignedDepartments = [];
+          if (!u.assignedDepartments.includes('*') && !u.assignedDepartments.includes(code)) {
+            u.assignedDepartments.push(code);
+          }
+        } else if (isEdit && u.assignedDepartments && !u.assignedDepartments.includes('*')) {
+          u.assignedDepartments = u.assignedDepartments.filter(c => c !== origCode && c !== code);
         }
-      }
+      });
 
-      // Guardar departamentos en localStorage
+      // Persistencia
       try {
         localStorage.setItem('uanify_custom_stations', JSON.stringify(UanifyState.stations));
+        localStorage.setItem('uanify_processes', JSON.stringify(UanifyState.processes));
+        localStorage.setItem('uanify_quality_areas', JSON.stringify(UanifyState.qualityAreas));
+        localStorage.setItem('uanify_users', JSON.stringify(UanifyState.users));
       } catch (err) {
-        console.warn('Error saving stations:', err);
-      }
-
-      // Re-renderizar tablas e interfaces
-      renderDepartmentsConfig();
-      renderOperatorsTable();
-      renderUsersTable();
-
-      if (typeof EventBus !== 'undefined') {
-        EventBus.emit('stations-updated', UanifyState.stations);
+        console.warn('Error saving data:', err);
       }
 
       modalCreateDept.classList.remove('active');
-      formCreateDept.reset();
+      renderDepartmentsConfig();
+      renderUsersTable();
 
-      const totalMachinesCount = currentModalProcesses.reduce((acc, p) => acc + (p.machines ? p.machines.length : 0), 0);
       window.UanifyUI.toast(
-        isEdit 
-          ? `Departamento ${code} "${name}" actualizado con ${currentModalProcesses.length} proceso(s) y ${totalMachinesCount} máquina(s) con ID.`
-          : `Departamento ${code} "${name}" registrado exitosamente con ${currentModalProcesses.length} procesos, ${totalMachinesCount} máquinas con ID y supervisor ${supervisor.name}.`,
+        `Departamento ${code} "${name}" guardado exitosamente con ${modalDeptSelectedProcs.length} procesos, ${modalDeptSelectedWhs.length} almacenes y supervisor ${supervisor.name}.`,
         'success',
-        isEdit ? ' Departamento Actualizado' : ' Departamento Creado'
+        'Departamento Guardado'
       );
+      if (typeof EventBus !== 'undefined') {
+        EventBus.emit('stations-updated', UanifyState.stations);
+      }
     });
   }
 
