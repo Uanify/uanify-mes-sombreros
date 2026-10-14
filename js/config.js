@@ -400,33 +400,21 @@ window.initConfigView = function() {
           permInfo = `<div style="display:flex; flex-wrap:wrap; gap:4px; max-width:300px;">${permPills}</div>`;
         }
 
-        // Departamentos asignados compactos con botón de ver detalle idéntico
+        // Departamentos asignados compactos con badge limpio
         let deptsInfo = '';
         if (u.assignedDepartments && (u.assignedDepartments.includes('*') || u.role === 'admin' || u.role === 'ingeniero')) {
           deptsInfo = `
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">
-                Supervisión Global (14 Áreas)
-              </span>
-              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:26px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de departamentos y estaciones asignadas">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                Ver Detalle
-              </button>
-            </div>
+            <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--color-brand); background:rgba(139, 94, 60, 0.08); border:1px solid rgba(139, 94, 60, 0.25);">
+              Supervisión Global (14 Áreas)
+            </span>
           `;
         } else if (u.assignedDepartments && u.assignedDepartments.length > 0) {
           const isQualityUser = u.role === 'calidad';
           const labelPrefix = isQualityUser ? 'Filtro' : 'Departamento';
           deptsInfo = `
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
-                ${u.assignedDepartments.length} ${labelPrefix}${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
-              </span>
-              <button type="button" class="btn-secondary" onclick="window.viewUserDepts('${u.id}')" style="font-size:11.5px; padding:3px 10px; height:26px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ver detalle de asignaciones">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                Ver Detalle
-              </button>
-            </div>
+            <span class="badge-subtle" style="font-weight:700; font-size:11.5px; padding:3px 9px; color:var(--text-primary); background:#F1F5F9; border:1px solid var(--border-medium);">
+              ${u.assignedDepartments.length} ${labelPrefix}${u.assignedDepartments.length !== 1 ? 's' : ''} Asignado${u.assignedDepartments.length !== 1 ? 's' : ''}
+            </span>
           `;
         } else {
           deptsInfo = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Sin asignaciones</span>`;
@@ -448,6 +436,9 @@ window.initConfigView = function() {
             </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center; gap:6px;">
+                <button type="button" class="btn-table-action" onclick="window.viewUserDepts('${u.id}')" title="Ver detalle de departamentos y estaciones asignadas" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
                 <button type="button" class="btn-table-action btn-action-edit" onclick="openEditUserModal('${u.id}')" title="Editar permisos y departamentos de ${u.name}">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>

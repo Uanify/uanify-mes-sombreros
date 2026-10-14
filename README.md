@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.103.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.104.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -538,6 +538,11 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 - **Alineación Estricta 1:1 de Tablas:** Corrección del desfase de columnas en Departamentos y Filtros de Calidad; eliminación de descripciones largas innecesarias en celdas para evitar saturación visual y sobrecarga de información.
 - **Botones de Acción de Icono Puro con Colores Suaves Pastel:** Los botones de fila en todas las tablas (`.btn-table-action`) se estandarizaron como botones cuadrados compactos de 32x32px con iconos SVG claros (Editar en gris suave `#F1F5F9`/`#E2E8F0`, Eliminar en rojo pastel `#FEF2F2`/`#FEE2E2`, Ver/Ficha en verde pastel `#F0FDF4`/`#DCFCE7`), sin texto intrusivo y con tooltips nativos en `title`.
 - **Estandarización de Paleta de Botones del Sistema:** Unificación de todos los botones primarios a `--color-brand` artesanal, eliminando colores arbitrarios o ad-hoc en módulos aislados.
+### [2.104.0] - 2026-10-14
+- **Estandarización 100% de Botón de Detalle en Listado de Usuarios (RBAC):**
+  - **Botón de Acción Homogéneo:** El botón "Ver Detalle" que aparecía con texto e incrustado dentro de la celda de departamentos fue retirado y estandarizado como un botón de acción `.btn-table-action` (icono de ojo azul claro suave `#EFF6FF`/`#2563EB`) dentro de la columna **Acciones**, alineado exactamente igual que en las tablas de Departamentos, Procesos, Almacenes y Maquinaria.
+  - **Celda Limpia de Departamentos Asignados:** La columna de departamentos ahora muestra exclusivamente su badge o chip correspondiente de forma limpia y estilizada sin elementos desalineados.
+
 ### [2.103.0] - 2026-10-13
 - **Modal de Departamentos Limpio & Secciones Inicialmente Cerradas:**
   - **Acordeones Inicialmente Contraídos:** Las 5 secciones del modal de alta/edición de departamentos (`secDeptDatos`, `secDeptProcesos`, `secDeptAlmacenes`, `secDeptCalidad`, `secDeptSupervision`) ahora inician contraídas por defecto, presentando un modal ultra limpio, ordenado y sin saturación visual.
