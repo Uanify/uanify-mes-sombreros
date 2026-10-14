@@ -2212,12 +2212,10 @@ window.initConfigView = function() {
     if (!modalCreateProcStandalone) return;
     const nameInp = document.getElementById('procStandaloneName');
     const cycleInp = document.getElementById('procStandaloneCycle');
-    const machInp = document.getElementById('procStandaloneMachines');
     const deptSelect = document.getElementById('procStandaloneDept');
 
     if (nameInp) nameInp.value = '';
     if (cycleInp) cycleInp.value = '35s';
-    if (machInp) machInp.value = '';
 
     // Poblar selector de departamentos disponibles
     if (deptSelect && UanifyState.stations) {
@@ -2238,7 +2236,6 @@ window.initConfigView = function() {
       const procType = document.getElementById('procStandaloneType')?.value || 'manufactura';
       const procCycle = document.getElementById('procStandaloneCycle')?.value.trim() || '35s';
       const targetDeptCode = document.getElementById('procStandaloneDept')?.value;
-      const machRaw = document.getElementById('procStandaloneMachines')?.value.trim() || '';
 
       if (!procName) {
         return window.UanifyUI.toast('Por favor ingresa el nombre del proceso.', 'warning', 'Campo Requerido');
@@ -2260,12 +2257,6 @@ window.initConfigView = function() {
         );
       }
 
-      // Convertir máquinas
-      const machinesList = machRaw ? machRaw.split(',').map((m, i) => {
-        const cleanM = m.trim();
-        return { id: `M-${i+1}`, name: cleanM, status: 'operativa' };
-      }).filter(m => m.name) : [];
-
       const targetDept = (UanifyState.stations || []).find(s => s.code === targetDeptCode || s.id === targetDeptCode);
       const newProcObj = {
         id: `PROC-${targetDeptCode}-${Date.now().toString().slice(-4)}`,
@@ -2274,7 +2265,7 @@ window.initConfigView = function() {
         deptCode: targetDeptCode,
         type: procType,
         cycleTime: procCycle,
-        machines: machinesList
+        machines: []
       };
 
       UanifyState.processes.push(newProcObj);
@@ -2297,6 +2288,7 @@ window.initConfigView = function() {
 
       modalCreateProcStandalone.classList.remove('active');
       renderDepartmentsConfig();
+      if (typeof renderProcessesConfig === 'function') renderProcessesConfig();
 
       window.UanifyUI.toast(
         `Proceso "${procName}" creado y asignado exitosamente al departamento "${targetDept ? targetDept.name : targetDeptCode}".`,
@@ -2849,6 +2841,7 @@ window.initConfigView = function() {
       cfgProcessesTable.innerHTML = paginatedItems.map(p => {
         const dept = (UanifyState.stations || []).find(s => s.code === p.deptCode);
         const deptLabel = dept ? dept.name : (p.deptCode || 'Sin Departamento');
+        const machCount = (p.machines || []).length;
 
         return `
           <tr>
@@ -2861,7 +2854,9 @@ window.initConfigView = function() {
               </span>
             </td>
             <td style="text-align:center;">
-              <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-secondary);">${p.cycleTime || '35s'}</span>
+              <span class="chip-clean chip-clean-machine" style="font-size:12px; font-weight:700;">
+                🏭 ${machCount} ${machCount === 1 ? 'máquina' : 'máquinas'}
+              </span>
             </td>
             <td class="col-actions" style="text-align:center;">
               <div class="action-btns-cell" style="justify-content:center; gap:6px;">
@@ -2925,101 +2920,71 @@ window.initConfigView = function() {
 
     const titleEl = document.getElementById('procViewerTitle');
     const deptEl = document.getElementById('procViewerDept');
-    const cycleEl = document.getElementById('procViewerCycle');
     const machListEl = document.getElementById('procViewerMachinesList');
     const countBadge = document.getElementById('procViewerMachCountBadge');
-    const selectNewMach = document.getElementById('procViewerNewMachineSelect');
 
-    if (titleEl) titleEl.textContent = proc.name;
-    if (deptEl) deptEl.textContent = dept ? dept.name : (proc.deptCode || 'General');
-    if (cycleEl) cycleEl.textContent = proc.cycleTime || '35s';
+    if (titleEl) titleEl.innerHTML = `<span>${proc.name}</span>`;
+    if (deptEl) deptEl.textContent = dept ? dept.name : (proc.deptCode || 'Departamento');
 
-    // Obtener todas las máquinas registradas en el sistema
-    let allSystemMachines = [];
-    (UanifyState.processes || []).forEach(p => {
-      (p.machines || []).forEach(m => {
-        if (m && m.name && !allSystemMachines.some(x => x.name.toLowerCase() === m.name.toLowerCase())) {
-          allSystemMachines.push({ ...m });
-        }
-      });
-    });
+    // Obtener máquinas asignadas a este proceso
+    let currentMachines = proc.machines || [];
 
-    // Agregar también las máquinas que estén en las estaciones si no están ya
-    (UanifyState.stations || []).forEach(st => {
-      if (st.machines) {
-        const rawList = st.machines.split(/[,;]/).map(m => m.trim().replace(/^[A-Z0-9\-]+\s+/i, '')).filter(Boolean);
-        rawList.forEach(mName => {
-          if (!allSystemMachines.some(x => x.name.toLowerCase() === mName.toLowerCase())) {
-            allSystemMachines.push({ id: `M-${allSystemMachines.length+1}`, name: mName, type: 'maquinaria', status: 'operativa' });
-          }
-        });
-      }
-    });
-
-    const currentMachines = proc.machines || [];
-
-    // Poblar selector de máquinas disponibles (QUE NO ESTÉN ASIGNADAS A ESTE PROCESO)
-    if (selectNewMach) {
-      selectNewMach.innerHTML = '<option value="">Seleccionar máquina disponible...</option>';
-      const availableToAdd = allSystemMachines.filter(m => 
-        !currentMachines.some(cm => cm.name.toLowerCase() === m.name.toLowerCase())
-      );
-
-      if (availableToAdd.length === 0) {
-        selectNewMach.innerHTML = '<option value="">No hay más máquinas disponibles en catálogo</option>';
-        selectNewMach.disabled = true;
-      } else {
-        selectNewMach.disabled = false;
-        availableToAdd.forEach(m => {
-          const opt = document.createElement('option');
-          opt.value = m.name;
-          opt.textContent = `🏭 ${m.name}`;
-          selectNewMach.appendChild(opt);
-        });
+    // Si no tiene array machines, revisar si hay máquinas en stations que hagan referencia a este proceso
+    if (currentMachines.length === 0 && dept && dept.machines) {
+      const rawList = dept.machines.split(/[,;]/).map(m => m.trim().replace(/^[A-Z0-9\-]+\s+/i, '')).filter(Boolean);
+      // Asociar si el nombre del proceso coincide o si el proceso es el único
+      if (rawList.length > 0) {
+        currentMachines = rawList.map((mName, i) => ({
+          id: `M-${i+1}`,
+          name: mName,
+          status: 'operativa'
+        }));
       }
     }
 
     if (countBadge) {
-      countBadge.textContent = `${currentMachines.length} máquina(s) vinculada(s)`;
+      countBadge.textContent = `${currentMachines.length} ${currentMachines.length === 1 ? 'máquina' : 'máquinas'}`;
     }
 
-    // Renderizar máquinas vinculadas con operador asignado y botón de desvincular
+    // Renderizar máquinas vinculadas con operador asignado (consulta pura)
     if (machListEl) {
       if (currentMachines.length === 0) {
         machListEl.innerHTML = `
           <div style="text-align:center; padding:24px 16px; background:#F8FAFC; border:1px dashed var(--border-subtle); border-radius:10px;">
             <p style="margin:0; font-size:13px; color:var(--text-muted); font-style:italic;">No hay máquinas asignadas a este proceso actualmente.</p>
-            <p style="margin:4px 0 0 0; font-size:11.5px; color:var(--text-secondary);">Selecciona una máquina arriba para vincularla a este proceso.</p>
+            <p style="margin:4px 0 0 0; font-size:11.5px; color:var(--text-secondary);">Las máquinas se asignan a este proceso al momento de crearlas desde "+ Nueva Máquina".</p>
           </div>
         `;
       } else {
-        machListEl.innerHTML = currentMachines.map((m, idx) => {
+        machListEl.innerHTML = currentMachines.map(m => {
           const cleanM = (m.name || '').replace(/^[A-Z0-9\-]+\s+/i, '');
-          // Buscar operadores de esta máquina
+          
+          // Buscar en el padrón de operadores cuál está asignado a esta máquina
           const assignedOps = (UanifyState.operators || []).filter(op => {
-            return (op.machine && op.machine.toLowerCase().includes(cleanM.toLowerCase())) ||
+            return (op.machine && op.machine.toLowerCase().trim() === cleanM.toLowerCase().trim()) ||
+                   (op.machine && cleanM.toLowerCase().includes(op.machine.toLowerCase().trim())) ||
                    (Array.isArray(m.operatorIds) && (m.operatorIds.includes(op.empId) || m.operatorIds.includes(op.id)));
           });
 
           const opsHtml = assignedOps.length > 0
-            ? assignedOps.map(op => `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; background:#EFF6FF; color:#1E40AF; padding:3px 8px; border-radius:6px; font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${op.name}</span>`).join(' ')
-            : `<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Sin operador asignado</span>`;
+            ? assignedOps.map(op => `
+                <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; background:#EFF6FF; color:#1E40AF; padding:3px 10px; border-radius:6px; font-weight:700; border:1px solid #DBEAFE;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  ${op.name}
+                </span>
+              `).join(' ')
+            : `<span style="font-size:12px; color:var(--text-muted); font-style:italic; background:#F8FAFC; padding:3px 8px; border-radius:6px; border:1px solid var(--border-subtle);">Sin operador asignado</span>`;
 
           return `
-            <div style="background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
               <div style="display:flex; align-items:center; gap:10px;">
-                <span class="chip-clean chip-clean-machine" style="font-size:12.5px; padding:5px 12px; font-weight:700;">
+                <span class="chip-clean chip-clean-machine" style="font-size:13px; padding:6px 14px; font-weight:700;">
                   🏭 ${cleanM}
                 </span>
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Operador:</span>
-                  ${opsHtml}
-                </div>
               </div>
-              <div>
-                <button type="button" class="btn-table-action btn-action-delete" onclick="window.unassignMachineFromProc('${encodeURIComponent(m.name)}')" title="Desvincular máquina de este proceso" style="min-width:32px; min-height:32px;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                </button>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:11px; text-transform:uppercase; font-weight:800; color:var(--text-muted); letter-spacing:0.5px;">Operador(a):</span>
+                ${opsHtml}
               </div>
             </div>
           `;
@@ -3028,68 +2993,6 @@ window.initConfigView = function() {
     }
 
     modal.classList.add('active');
-  }
-
-  // Desvincular máquina de un proceso
-  window.unassignMachineFromProc = function(encodedMachName) {
-    const machName = decodeURIComponent(encodedMachName);
-    if (!activeProcessViewingId || !UanifyState.processes) return;
-
-    const proc = UanifyState.processes.find(p => p.id === activeProcessViewingId || p.code === activeProcessViewingId);
-    if (!proc || !proc.machines) return;
-
-    proc.machines = proc.machines.filter(m => m.name.toLowerCase() !== machName.toLowerCase());
-
-    if (window.UanifyUI && typeof window.UanifyUI.toast === 'function') {
-      window.UanifyUI.toast(`Máquina "${machName}" desvinculada del proceso`, 'success');
-    }
-
-    openProcessDetailViewer(activeProcessViewingId);
-    renderProcessesConfig();
-    if (typeof renderDepartmentsConfig === 'function') renderDepartmentsConfig();
-  };
-
-  // Asignar máquina a un proceso
-  const btnAssign = document.getElementById('btnAssignMachineToProc');
-  if (btnAssign) {
-    btnAssign.addEventListener('click', () => {
-      const select = document.getElementById('procViewerNewMachineSelect');
-      if (!select || !select.value) {
-        if (window.UanifyUI && typeof window.UanifyUI.toast === 'function') {
-          window.UanifyUI.toast('Por favor selecciona una máquina para vincular', 'warning');
-        }
-        return;
-      }
-
-      const machName = select.value;
-      if (!activeProcessViewingId || !UanifyState.processes) return;
-
-      const proc = UanifyState.processes.find(p => p.id === activeProcessViewingId || p.code === activeProcessViewingId);
-      if (!proc) return;
-
-      if (!Array.isArray(proc.machines)) proc.machines = [];
-      if (proc.machines.some(m => m.name.toLowerCase() === machName.toLowerCase())) {
-        if (window.UanifyUI && typeof window.UanifyUI.toast === 'function') {
-          window.UanifyUI.toast('Esta máquina ya está asignada a este proceso', 'warning');
-        }
-        return;
-      }
-
-      proc.machines.push({
-        id: `M-${Date.now().toString().slice(-4)}`,
-        name: machName,
-        type: 'maquinaria',
-        status: 'operativa'
-      });
-
-      if (window.UanifyUI && typeof window.UanifyUI.toast === 'function') {
-        window.UanifyUI.toast(`Máquina "${machName}" vinculada exitosamente al proceso`, 'success');
-      }
-
-      openProcessDetailViewer(activeProcessViewingId);
-      renderProcessesConfig();
-      if (typeof renderDepartmentsConfig === 'function') renderDepartmentsConfig();
-    });
   }
 
   window.openProcessDetailViewer = openProcessDetailViewer;
