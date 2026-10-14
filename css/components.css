@@ -5794,3 +5794,86 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   display: block;
 }
 
+/* ==========================================================================
+   ESTILOS DE CONTENEDORES Y GRIDS SIN SCROLL HORIZONTAL
+   ========================================================================== */
+#createAssignGrid,
+#editDeptsCheckboxesGrid,
+#deptModalProcsGrid,
+#deptModalWhsGrid,
+#deptModalQualityGrid,
+#deptModalSupervisorsList,
+#machStandaloneOperatorsList,
+#assignMachOperatorsList,
+#qualityDeptListContainer,
+#qualityInspectorListContainer {
+  overflow-x: hidden !important;
+  box-sizing: border-box;
+}
+
+#createAssignGrid label,
+#editDeptsCheckboxesGrid label,
+#deptModalProcsGrid label,
+#deptModalWhsGrid label,
+#deptModalQualityGrid label {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Scrollbars industriales limpios y delgados en modales y listas */
+#createAssignGrid::-webkit-scrollbar,
+#editDeptsCheckboxesGrid::-webkit-scrollbar,
+#deptModalProcsGrid::-webkit-scrollbar,
+#deptModalWhsGrid::-webkit-scrollbar,
+#deptModalQualityGrid::-webkit-scrollbar,
+#deptModalSupervisorsList::-webkit-scrollbar,
+#machStandaloneOperatorsList::-webkit-scrollbar,
+#assignMachOperatorsList::-webkit-scrollbar,
+#qualityDeptListContainer::-webkit-scrollbar,
+#qualityInspectorListContainer::-webkit-scrollbar {
+  width: 6px;
+  height: 0px; /* Previene scrollbar horizontal por completo */
+}
+
+#createAssignGrid::-webkit-scrollbar-track,
+#editDeptsCheckboxesGrid::-webkit-scrollbar-track,
+#deptModalProcsGrid::-webkit-scrollbar-track,
+#deptModalWhsGrid::-webkit-scrollbar-track,
+#deptModalQualityGrid::-webkit-scrollbar-track,
+#deptModalSupervisorsList::-webkit-scrollbar-track,
+#machStandaloneOperatorsList::-webkit-scrollbar-track,
+#assignMachOperatorsList::-webkit-scrollbar-track,
+#qualityDeptListContainer::-webkit-scrollbar-track,
+#qualityInspectorListContainer::-webkit-scrollbar-track {
+  background: #F1F5F9;
+  border-radius: 4px;
+}
+
+#createAssignGrid::-webkit-scrollbar-thumb,
+#editDeptsCheckboxesGrid::-webkit-scrollbar-thumb,
+#deptModalProcsGrid::-webkit-scrollbar-thumb,
+#deptModalWhsGrid::-webkit-scrollbar-thumb,
+#deptModalQualityGrid::-webkit-scrollbar-thumb,
+#deptModalSupervisorsList::-webkit-scrollbar-thumb,
+#machStandaloneOperatorsList::-webkit-scrollbar-thumb,
+#assignMachOperatorsList::-webkit-scrollbar-thumb,
+#qualityDeptListContainer::-webkit-scrollbar-thumb,
+#qualityInspectorListContainer::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+#createAssignGrid::-webkit-scrollbar-thumb:hover,
+#editDeptsCheckboxesGrid::-webkit-scrollbar-thumb:hover,
+#deptModalProcsGrid::-webkit-scrollbar-thumb:hover,
+#deptModalWhsGrid::-webkit-scrollbar-thumb:hover,
+#deptModalQualityGrid::-webkit-scrollbar-thumb:hover,
+#deptModalSupervisorsList::-webkit-scrollbar-thumb:hover,
+#machStandaloneOperatorsList::-webkit-scrollbar-thumb:hover,
+#assignMachOperatorsList::-webkit-scrollbar-thumb:hover,
+#qualityDeptListContainer::-webkit-scrollbar-thumb:hover,
+#qualityInspectorListContainer::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+

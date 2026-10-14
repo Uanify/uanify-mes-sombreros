@@ -899,9 +899,9 @@ window.initConfigView = function() {
         createAssignGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:12px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron puntos de calidad</div>';
       } else {
         createAssignGrid.innerHTML = filtered.map(a => `
-          <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${a.name}">
-            <input type="checkbox" class="create-assign-cb" value="${a.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
-            <div style="flex:1; min-width:0;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer; min-width:0; box-sizing:border-box;" title="${a.name}">
+            <input type="checkbox" class="create-assign-cb" value="${a.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px; flex-shrink:0;">
+            <div style="flex:1; min-width:0; overflow:hidden;">
               <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.name}</strong>
               <small style="color:var(--text-muted); font-size:10.5px;">${a.location || 'Planta'}</small>
             </div>
@@ -921,12 +921,12 @@ window.initConfigView = function() {
         createAssignGrid.innerHTML = filtered.map(s => {
           const opCount = (UanifyState.operators || []).filter(o => o.deptCode === s.code).length;
           return `
-            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${s.name}">
-              <input type="checkbox" class="create-assign-cb" value="${s.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
-              <div style="flex:1; min-width:0;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer; min-width:0; box-sizing:border-box;" title="${s.name}">
+              <input type="checkbox" class="create-assign-cb" value="${s.code}" style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px; flex-shrink:0;">
+              <div style="flex:1; min-width:0; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
                   <strong style="color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</strong>
-                  <small style="color:var(--text-muted); font-size:10px; margin-left:4px;">${opCount} ops</small>
+                  <small style="color:var(--text-muted); font-size:10px; flex-shrink:0;">${opCount} ops</small>
                 </div>
               </div>
             </label>
@@ -1383,9 +1383,9 @@ window.initConfigView = function() {
         editAssignGrid.innerHTML = filtered.map(a => {
           const isChecked = selectedCodes.includes(a.code);
           return `
-            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${a.name}">
-              <input type="checkbox" class="edit-dept-cb" value="${a.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
-              <div style="flex:1; min-width:0;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer; min-width:0; box-sizing:border-box;" title="${a.name}">
+              <input type="checkbox" class="edit-dept-cb" value="${a.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px; flex-shrink:0;">
+              <div style="flex:1; min-width:0; overflow:hidden;">
                 <strong style="display:block; color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.name}</strong>
                 <small style="color:var(--text-muted); font-size:10.5px;">${a.location || 'Planta'}</small>
               </div>
@@ -1407,12 +1407,12 @@ window.initConfigView = function() {
           const isChecked = selectedCodes.includes(s.code);
           const opCount = (UanifyState.operators || []).filter(o => o.deptCode === s.code).length;
           return `
-            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;" title="${s.name}">
-              <input type="checkbox" class="edit-dept-cb" value="${s.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
-              <div style="flex:1; min-width:0;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:12px; padding:6px 8px; background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer; min-width:0; box-sizing:border-box;" title="${s.name}">
+              <input type="checkbox" class="edit-dept-cb" value="${s.code}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px; flex-shrink:0;">
+              <div style="flex:1; min-width:0; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
                   <strong style="color:var(--text-primary); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</strong>
-                  <small style="color:var(--text-muted); font-size:10px; margin-left:4px;">${opCount} ops</small>
+                  <small style="color:var(--text-muted); font-size:10px; flex-shrink:0;">${opCount} ops</small>
                 </div>
               </div>
             </label>

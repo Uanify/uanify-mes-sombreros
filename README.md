@@ -1,7 +1,7 @@
 # Tombstone Hats MES · Control de Planta & Tablero Andon
 ### Digitalización Industrial para Planta Matriz Tombstone en San Francisco del Rincón, Guanajuato
 
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.104.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-2.105.0-8B5E3C?style=flat-square&logo=git)](https://github.com/Uanify/uanify-mes-sombreros)
 [![Despliegue](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 [![Operación](https://img.shields.io/badge/R%C3%A9gimen-Turno%20%C3%9Anico-blue?style=flat-square)](https://uanify.github.io/uanify-mes-sombreros/)
 
@@ -35,6 +35,13 @@ Alineada estrictamente con el **Diagrama de Flujo del Sistema & Catálogo de Mó
 ---
 
 ## Historial de Versiones (Changelog)
+
+### [2.105.0] - 2026-10-14
+- **Optimización Integral de Navegación de Pestañas y Erradicación Definitiva de Scroll Horizontal:**
+  - **Eliminación Total de Scroll Horizontal:** Se blindaron los modales y componentes (`#createAssignGrid`, `#editDeptsCheckboxesGrid`, `#deptModalProcsGrid`, `#deptModalWhsGrid`, `#deptModalQualityGrid`, `#deptModalSupervisorsList`) con `overflow-x: hidden !important`, `min-width: 0`, `repeat(2, minmax(0, 1fr))` y `text-overflow: ellipsis`, eliminando desplazamientos horizontales molestos al interactuar o seleccionar checkboxes.
+  - **Scrollbars Industriales Slim:** Implementación de barras de desplazamiento ultrafinas (6px) con paleta Slate/Gris y sin altura horizontal (`height: 0px`).
+  - **Navegación de Pestañas 100% Fluida:** Sincronización transparente y bidireccional entre la barra lateral (sidebar) y las sub-pestañas operativas de Configuración (`switchTab('config', subtab)`), con transiciones directas y sin colisiones de eventos.
+  - **Filtros Industriales Balanceados:** Toolbars compactas con alineación flex horizontal perfecta, selectores ergonómicos y buscadores rápidos integrados.
 
 ### [2.91.0] - 2026-10-13
 - **Optimización Integral de Almacenes Intermedios Buffer & Erradicación de Scroll Horizontal:**

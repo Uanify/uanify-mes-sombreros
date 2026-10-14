@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2.104.0">
-  <link rel="stylesheet" href="css/components.css?v=2.104.0">
+  <link rel="stylesheet" href="css/styles.css?v=2.105.0">
+  <link rel="stylesheet" href="css/components.css?v=2.105.0">
 </head>
 <body class="industrial-theme">
 
@@ -270,7 +270,7 @@
           <span class="shift-clock" id="liveClock">00:00:00</span>
         </div>
         <div class="sidebar-version-row">
-          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.104.0</span>
+          <span class="system-version-pill" id="systemVersionPill" title="Versión del Sistema MES">v2.105.0</span>
           <span class="sidebar-plant-tag">Planta Matriz · SFR</span>
         </div>
       </div>
@@ -3474,7 +3474,7 @@
               <input type="text" id="createAssignSearchInp" class="form-input" placeholder="Buscar por nombre..." style="height:34px; font-size:12px;" autocomplete="off">
             </div>
 
-            <div id="createAssignGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:160px; overflow-y:auto; padding:4px 2px;">
+            <div id="createAssignGrid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; max-height:175px; overflow-y:auto; overflow-x:hidden; padding:4px 2px;">
               <!-- Inyectado dinámicamente -->
             </div>
 
@@ -3551,7 +3551,7 @@
               <input type="text" id="editAssignSearchInp" class="form-input" placeholder="Buscar por nombre..." style="height:34px; font-size:12px;" autocomplete="off">
             </div>
 
-            <div id="editDeptsCheckboxesGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:160px; overflow-y:auto; padding:4px 2px;">
+            <div id="editDeptsCheckboxesGrid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; max-height:175px; overflow-y:auto; overflow-x:hidden; padding:4px 2px;">
               <!-- Inyectado dinámicamente -->
             </div>
 
@@ -4298,7 +4298,7 @@
                 <button type="button" class="btn-secondary" id="btnClearDeptModalProcs" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
               </div>
 
-              <div id="deptModalProcsGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+              <div id="deptModalProcsGrid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; max-height:140px; overflow-y:auto; overflow-x:hidden; padding:4px 2px;">
                 <!-- Inyectado dinámicamente con paginación/búsqueda -->
               </div>
 
@@ -4338,7 +4338,7 @@
                 <button type="button" class="btn-secondary" id="btnClearDeptModalWhs" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
               </div>
 
-              <div id="deptModalWhsGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+              <div id="deptModalWhsGrid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; max-height:140px; overflow-y:auto; overflow-x:hidden; padding:4px 2px;">
                 <!-- Inyectado dinámicamente con paginación/búsqueda -->
               </div>
 
@@ -4374,7 +4374,7 @@
                 <button type="button" class="btn-secondary" id="btnClearDeptModalQuality" style="padding:4px 10px; font-size:11px; height:32px;">Limpiar</button>
               </div>
 
-              <div id="deptModalQualityGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height:140px; overflow-y:auto; padding:4px 2px;">
+              <div id="deptModalQualityGrid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; max-height:140px; overflow-y:auto; overflow-x:hidden; padding:4px 2px;">
                 <!-- Inyectado dinámicamente con paginación/búsqueda -->
               </div>
 
@@ -5686,11 +5686,11 @@
   <div id="uanifyToastContainer" class="uanify-toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/app.js?v=2.104.0"></script>
-  <script src="js/andon.js?v=2.104.0"></script>
-  <script src="js/terminal.js?v=2.104.0"></script>
-  <script src="js/engineer.js?v=2.104.0"></script>
-  <script src="js/executive.js?v=2.104.0"></script>
-  <script src="js/config.js?v=2.104.0"></script>
+  <script src="js/app.js?v=2.105.0"></script>
+  <script src="js/andon.js?v=2.105.0"></script>
+  <script src="js/terminal.js?v=2.105.0"></script>
+  <script src="js/engineer.js?v=2.105.0"></script>
+  <script src="js/executive.js?v=2.105.0"></script>
+  <script src="js/config.js?v=2.105.0"></script>
 </body>
 </html>
