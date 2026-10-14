@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.100.0',
+  version: '2.101.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -566,6 +566,30 @@ const UanifyState = {
       payrollNumber: '105',
       permissions: ['terminal', 'andon', 'inventory'],
       assignedDepartments: ['C-01', 'C-02', 'C-03', 'C-04'],
+      badge: 'Inspector Calidad'
+    },
+    {
+      id: 'cal-2',
+      name: 'María Elena Morales',
+      email: 'mmorales@tombstone.mx',
+      role: 'calidad',
+      roleName: 'Inspectora de Calidad',
+      pin: '5556',
+      payrollNumber: '106',
+      permissions: ['terminal', 'andon', 'inventory'],
+      assignedDepartments: ['C-01', 'C-02'],
+      badge: 'Inspector Calidad'
+    },
+    {
+      id: 'cal-3',
+      name: 'Jorge Alberto Rocha',
+      email: 'jrocha@tombstone.mx',
+      role: 'calidad',
+      roleName: 'Inspector de Calidad',
+      pin: '5557',
+      payrollNumber: '107',
+      permissions: ['terminal', 'andon', 'inventory'],
+      assignedDepartments: ['C-03', 'C-04'],
       badge: 'Inspector Calidad'
     }
   ],

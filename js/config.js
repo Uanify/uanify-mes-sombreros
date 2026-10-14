@@ -3571,11 +3571,18 @@ window.initConfigView = function() {
         UanifyState.stations.map(st => `<option value="${st.code}">${st.name}</option>`).join('');
     }
 
-    // Poblar selector de inspectores si está vacío
-    if (inspectorFilter && inspectorFilter.options.length <= 1) {
-      const inspectors = [...new Set(areas.map(a => a.inspector).filter(Boolean))].sort();
+    // Poblar selector de inspectores de la toolbar exclusivamente con inspectores de calidad
+    if (inspectorFilter && UanifyState.users) {
+      const inspectoresUsers = UanifyState.users.filter(u => {
+        const r = (u.role || '').toLowerCase();
+        const rn = (u.roleName || '').toLowerCase();
+        const b = (u.badge || '').toLowerCase();
+        return r === 'calidad' || rn.includes('inspector') || b.includes('inspector');
+      });
+      const inspectorNames = [...new Set(inspectoresUsers.map(u => u.name).concat(areas.map(a => a.inspector).filter(Boolean)))].sort();
+      const currentSelected = inspectorFilter.value || 'all';
       inspectorFilter.innerHTML = '<option value="all">Todos los Inspectores</option>' +
-        inspectors.map(insp => `<option value="${insp}">${insp}</option>`).join('');
+        inspectorNames.map(insp => `<option value="${insp}" ${insp === currentSelected ? 'selected' : ''}>${insp}</option>`).join('');
     }
 
     const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
@@ -3725,44 +3732,131 @@ window.initConfigView = function() {
     }
   }
 
+  let modalQualitySelectedDept = '';
+  let modalQualitySelectedInspector = '';
+
+  function renderQualityDeptList(filterQuery = '') {
+    const listEl = document.getElementById('qualityDeptListContainer');
+    const inputHidden = document.getElementById('newQualityDept');
+    if (!listEl || !UanifyState.stations) return;
+
+    const q = filterQuery.toLowerCase().trim();
+    const stations = UanifyState.stations || [];
+    const filtered = stations.filter(st => !q || (st.name && st.name.toLowerCase().includes(q)) || (st.code && st.code.toLowerCase().includes(q)));
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron departamentos coincidentes</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(st => {
+      const code = st.code || st.id;
+      const isSelected = modalQualitySelectedDept === code;
+      return `
+        <label style="display:flex; align-items:center; gap:10px; font-size:12px; padding:6px 10px; background:${isSelected ? 'rgba(139, 94, 60, 0.08)' : '#FFFFFF'}; border:1px solid ${isSelected ? 'var(--color-brand)' : 'var(--border-subtle)'}; border-radius:6px; cursor:pointer;" title="${st.name}">
+          <input type="radio" name="qualityDeptSelectedRadio" value="${code}" ${isSelected ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12px;">${st.name}</strong>
+            <small style="color:var(--color-brand); font-size:11px; font-weight:600;">${st.code || ''}</small>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    listEl.querySelectorAll('input[name="qualityDeptSelectedRadio"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          modalQualitySelectedDept = e.target.value;
+          if (inputHidden) inputHidden.value = modalQualitySelectedDept;
+          const searchInp = document.getElementById('qualityDeptSearch');
+          renderQualityDeptList(searchInp ? searchInp.value : '');
+        }
+      });
+    });
+  }
+
+  function renderQualityInspectorList(filterQuery = '') {
+    const listEl = document.getElementById('qualityInspectorListContainer');
+    const inputHidden = document.getElementById('newQualityInspector');
+    if (!listEl) return;
+
+    const q = filterQuery.toLowerCase().trim();
+    const users = UanifyState.users || [];
+
+    // REGLA ESTRICTA: Solo deben poder salir inspectores (rol 'calidad' o roleName que incluya 'inspector')
+    let inspectores = users.filter(u => {
+      const r = (u.role || '').toLowerCase();
+      const rn = (u.roleName || '').toLowerCase();
+      const b = (u.badge || '').toLowerCase();
+      return r === 'calidad' || rn.includes('inspector') || b.includes('inspector');
+    });
+
+    // Si por alguna razón no hubiera inspectores dados de alta, tomar los que tengan permisos de inspección
+    if (inspectores.length === 0) {
+      inspectores = users.filter(u => Array.isArray(u.permissions) && u.permissions.includes('quality'));
+    }
+
+    const filtered = inspectores.filter(u => !q || (u.name && u.name.toLowerCase().includes(q)) || (u.payrollNumber && u.payrollNumber.toLowerCase().includes(q)));
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--text-muted); font-style:italic;">No se encontraron inspectores de calidad coincidentes</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(u => {
+      const isSelected = modalQualitySelectedInspector === u.name;
+      return `
+        <label style="display:flex; align-items:center; gap:10px; font-size:12px; padding:6px 10px; background:${isSelected ? 'rgba(139, 94, 60, 0.08)' : '#FFFFFF'}; border:1px solid ${isSelected ? 'var(--color-brand)' : 'var(--border-subtle)'}; border-radius:6px; cursor:pointer;" title="${u.name}">
+          <input type="radio" name="qualityInspectorSelectedRadio" value="${u.name}" ${isSelected ? 'checked' : ''} style="cursor:pointer; accent-color:var(--color-brand); width:15px; height:15px;">
+          <div style="flex:1; min-width:0;">
+            <strong style="display:block; color:var(--text-primary); font-size:12px;">${u.name}</strong>
+            <small style="color:#059669; font-size:11px; font-weight:700;">${u.roleName || 'Inspector de Calidad'} · Nómina #${u.payrollNumber || '-'}</small>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    listEl.querySelectorAll('input[name="qualityInspectorSelectedRadio"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          modalQualitySelectedInspector = e.target.value;
+          if (inputHidden) inputHidden.value = modalQualitySelectedInspector;
+          const searchInp = document.getElementById('qualityInspectorSearch');
+          renderQualityInspectorList(searchInp ? searchInp.value : '');
+        }
+      });
+    });
+  }
+
+  // Listeners de búsqueda para departamento e inspectores en el modal de calidad
+  const qualityDeptSearchInp = document.getElementById('qualityDeptSearch');
+  if (qualityDeptSearchInp) {
+    qualityDeptSearchInp.addEventListener('input', (e) => {
+      renderQualityDeptList(e.target.value);
+    });
+  }
+
+  const qualityInspectorSearchInp = document.getElementById('qualityInspectorSearch');
+  if (qualityInspectorSearchInp) {
+    qualityInspectorSearchInp.addEventListener('input', (e) => {
+      renderQualityInspectorList(e.target.value);
+    });
+  }
+
   function populateQualityDeptSelect(selectedDeptCode = '') {
-    const deptEl = document.getElementById('newQualityDept');
-    if (!deptEl || !UanifyState.stations) return;
-    deptEl.innerHTML = `
-      <option value="">-- Seleccionar Departamento Responsable --</option>
-      ${UanifyState.stations.map(st => `
-        <option value="${st.code || st.id}" ${st.code === selectedDeptCode ? 'selected' : ''}>
-          ${st.name}
-        </option>
-      `).join('')}
-    `;
+    modalQualitySelectedDept = selectedDeptCode || '';
+    const inputHidden = document.getElementById('newQualityDept');
+    if (inputHidden) inputHidden.value = modalQualitySelectedDept;
+    if (qualityDeptSearchInp) qualityDeptSearchInp.value = '';
+    renderQualityDeptList('');
   }
 
   function populateQualityInspectorsSelect(selectedInspector = '') {
-    const inspectorEl = document.getElementById('newQualityInspector');
-    if (!inspectorEl) return;
-
-    // Obtener inspectores y usuarios disponibles
-    const users = UanifyState.users || [];
-    // Priorizar usuarios con rol calidad o inspectores, e incluir supervisores e ingenieros
-    let eligible = users.filter(u => u.role === 'calidad' || (u.roleName && u.roleName.toLowerCase().includes('inspector')));
-    if (eligible.length === 0) {
-      eligible = users.filter(u => u.role === 'calidad' || u.role === 'supervisor' || u.role === 'ingeniero' || u.role === 'admin');
-    }
-
-    inspectorEl.innerHTML = `
-      <option value="">-- Seleccionar Inspector Responsable --</option>
-      ${users.map(u => `
-        <option value="${u.name}" ${u.name === selectedInspector ? 'selected' : ''}>
-          ${u.name} (${u.roleName || u.role})
-        </option>
-      `).join('')}
-    `;
-    if (selectedInspector) {
-      inspectorEl.value = selectedInspector;
-    } else {
-      inspectorEl.value = '';
-    }
+    modalQualitySelectedInspector = selectedInspector || '';
+    const inputHidden = document.getElementById('newQualityInspector');
+    if (inputHidden) inputHidden.value = modalQualitySelectedInspector;
+    if (qualityInspectorSearchInp) qualityInspectorSearchInp.value = '';
+    renderQualityInspectorList('');
   }
 
   window.openCreateQualityModal = function(defaultDeptCode = '') {
