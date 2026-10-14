@@ -4963,8 +4963,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   font-weight: 500;
   line-height: 1.5;
   width: max-content;
-  max-width: 320px;
-  min-width: 180px;
+  max-width: min(300px, 80vw);
+  min-width: 160px;
   box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
   pointer-events: none;
   opacity: 0;
@@ -4973,6 +4973,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   z-index: 99999999 !important;
   text-align: left;
   white-space: normal;
+  word-break: break-word;
 }
 
 /* Flecha apuntando al botón (cuando está arriba) */
@@ -4980,7 +4981,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   content: '';
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: var(--arrow-left, 50%);
   transform: translateX(-50%);
   border: 6px solid transparent;
   border-top-color: #0F172A;
@@ -5002,12 +5003,49 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   border-bottom-color: #0F172A;
 }
 
+/* Ajustes de alineación lateral inteligente para modales estrechos o bordes */
+.info-tip.align-right .info-tip-popup {
+  left: auto;
+  right: -8px;
+  transform: translateY(4px);
+  --arrow-left: calc(100% - 18px);
+}
+
+.info-tip.align-right.flip-down .info-tip-popup {
+  transform: translateY(-4px);
+}
+
+.info-tip.align-left .info-tip-popup {
+  left: -8px;
+  right: auto;
+  transform: translateY(4px);
+  --arrow-left: 18px;
+}
+
+.info-tip.align-left.flip-down .info-tip-popup {
+  transform: translateY(-4px);
+}
+
 /* Activación por hover o clic */
 .info-tip:hover .info-tip-popup,
 .info-tip.active .info-tip-popup {
   opacity: 1;
   visibility: visible;
+}
+
+.info-tip:hover .info-tip-popup:not(.align-right):not(.align-left),
+.info-tip.active .info-tip-popup:not(.align-right):not(.align-left) {
   transform: translateX(-50%) translateY(0);
+}
+
+.info-tip.align-right:hover .info-tip-popup,
+.info-tip.align-right.active .info-tip-popup {
+  transform: translateY(0);
+}
+
+.info-tip.align-left:hover .info-tip-popup,
+.info-tip.align-left.active .info-tip-popup {
+  transform: translateY(0);
 }
 
 /* Corrección de contraste para la Consola DevTools SuperAdmin */

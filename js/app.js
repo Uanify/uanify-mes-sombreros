@@ -489,7 +489,7 @@ window.UanifyUI = {
 };
 
 const UanifyState = {
-  version: '2.101.0',
+  version: '2.102.0',
   activeTab: 'terminal',
   currentShift: 'Turno Único (07:00 - 15:30 · Lunes a Viernes)',
   shiftSchedule: {
@@ -5153,22 +5153,46 @@ function enrichStationWithDefaults(st, idx) {
 
   // ── INICIALIZADOR DE PUNTOS DE INFORMACIÓN TÁCTILES / TOOLTIPS (REGLA 0.36) ──
   function initInfoTips() {
-    function checkFlipDown(tip) {
+    function adjustTooltipPosition(tip) {
       const btn = tip.querySelector('.info-tip-btn');
+      const popup = tip.querySelector('.info-tip-popup');
       if (!btn) return;
       const btnRect = btn.getBoundingClientRect();
-      // Si el botón está muy cerca del borde superior del viewport (< 90px), voltear hacia abajo
-      if (btnRect.top < 90) {
+      const modalBox = btn.closest('.modal-box') || btn.closest('.modal-body');
+      
+      // 1. Detección vertical (flip-down si está cerca del tope del modal o de la pantalla)
+      let needsFlipDown = btnRect.top < 110;
+      if (modalBox) {
+        const modalRect = modalBox.getBoundingClientRect();
+        if ((btnRect.top - modalRect.top) < 95) {
+          needsFlipDown = true;
+        }
+      }
+
+      if (needsFlipDown) {
         tip.classList.add('flip-down');
       } else {
         tip.classList.remove('flip-down');
       }
+
+      // 2. Detección horizontal (evitar que se tape a la derecha o izquierda del modal/pantalla)
+      tip.classList.remove('align-right', 'align-left');
+      const winWidth = window.innerWidth || document.documentElement.clientWidth;
+      const modalRight = modalBox ? modalBox.getBoundingClientRect().right : winWidth;
+      const modalLeft = modalBox ? modalBox.getBoundingClientRect().left : 0;
+
+      // Si el botón está pegado al borde derecho (< 150px del borde derecho del modal o ventana)
+      if ((modalRight - btnRect.right) < 140) {
+        tip.classList.add('align-right');
+      } else if ((btnRect.left - modalLeft) < 140) {
+        tip.classList.add('align-left');
+      }
     }
 
-    // Hover: comprobar si necesita voltear hacia abajo
+    // Hover: comprobar si necesita voltear hacia abajo o ajustarse lateralmente
     document.addEventListener('mouseenter', (e) => {
       const tip = e.target.closest ? e.target.closest('.info-tip') : null;
-      if (tip) checkFlipDown(tip);
+      if (tip) adjustTooltipPosition(tip);
     }, true);
 
     // Salir del tooltip: limpiar clase activa
@@ -5193,7 +5217,7 @@ function enrichStationWithDefaults(st, idx) {
         });
         if (!wasActive) {
           tip.classList.add('active');
-          checkFlipDown(tip);
+          adjustTooltipPosition(tip);
         }
         e.stopPropagation();
       } else {
@@ -5208,12 +5232,12 @@ function enrichStationWithDefaults(st, idx) {
     // Reposicionar en scroll/resize
     window.addEventListener('scroll', () => {
       const activeTip = document.querySelector('.info-tip.active');
-      if (activeTip) checkFlipDown(activeTip);
+      if (activeTip) adjustTooltipPosition(activeTip);
     }, { passive: true });
 
     window.addEventListener('resize', () => {
       const activeTip = document.querySelector('.info-tip.active');
-      if (activeTip) checkFlipDown(activeTip);
+      if (activeTip) adjustTooltipPosition(activeTip);
     }, { passive: true });
   }
 
