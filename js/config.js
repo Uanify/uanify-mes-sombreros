@@ -1964,15 +1964,11 @@ window.initConfigView = function() {
     const nameInput = document.getElementById('newDeptName');
     if (nameInput) nameInput.value = '';
 
-    // Asignaciones iniciales por defecto tomadas de registros existentes
-    const firstProc = (UanifyState.processes || [])[0];
-    const firstWh = (UanifyState.warehouses || [])[0];
-    const firstSup = (UanifyState.users || []).find(u => u.role === 'supervisor') || (UanifyState.users || [])[0];
-
-    modalDeptSelectedProcs = firstProc ? [firstProc.name] : [];
-    modalDeptSelectedWhs = firstWh ? [firstWh.name] : [];
+    // Asignaciones iniciales completamente vacías para un nuevo departamento
+    modalDeptSelectedProcs = [];
+    modalDeptSelectedWhs = [];
     modalDeptSelectedQuality = [];
-    modalDeptSelectedSupervisor = firstSup ? firstSup.id : '';
+    modalDeptSelectedSupervisor = '';
 
     modalDeptProcsPage = 1;
     modalDeptWhsPage = 1;
@@ -1982,6 +1978,12 @@ window.initConfigView = function() {
     if (deptModalWhsSearch) deptModalWhsSearch.value = '';
     if (deptModalQualitySearch) deptModalQualitySearch.value = '';
     if (newDeptSupervisorSearch) newDeptSupervisorSearch.value = '';
+
+    // Cerrar inicialmente todos los acordeones para una vista limpia y compacta
+    ['secDeptDatos', 'secDeptProcesos', 'secDeptAlmacenes', 'secDeptCalidad', 'secDeptSupervision'].forEach(secId => {
+      const el = document.getElementById(secId);
+      if (el) el.classList.remove('active');
+    });
 
     renderDeptModalProcs();
     renderDeptModalWhs();
@@ -2037,7 +2039,11 @@ window.initConfigView = function() {
     if (deptModalProcsSearch) deptModalProcsSearch.value = '';
     if (deptModalWhsSearch) deptModalWhsSearch.value = '';
     if (deptModalQualitySearch) deptModalQualitySearch.value = '';
-    if (newDeptSupervisorSearch) newDeptSupervisorSearch.value = '';
+    // Cerrar inicialmente los acordeones para una vista limpia y compacta
+    ['secDeptDatos', 'secDeptProcesos', 'secDeptAlmacenes', 'secDeptCalidad', 'secDeptSupervision'].forEach(secId => {
+      const el = document.getElementById(secId);
+      if (el) el.classList.remove('active');
+    });
 
     renderDeptModalProcs();
     renderDeptModalWhs();
